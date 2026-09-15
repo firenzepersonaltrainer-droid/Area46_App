@@ -260,26 +260,35 @@ function GiornoCard({ livello, giornoNum, label, stato, showLivello, onStatoChan
   onStatoChange: (livello: string, giornoNum: number, stato: Stato) => void;
 }) {
   const navigate = useNavigate();
-  const colors = getLivelloColors(livello);
   const cfg = statoConfig(stato);
   const [menuAperto, setMenuAperto] = useState(false);
 
   return (
     <div className="relative">
       <div
-        className="flex w-full items-center justify-between rounded-lg border bg-raised p-4 cursor-pointer hover:bg-inset"
-        style={{ borderColor: cfg.color, borderWidth: stato !== "non_iniziato" ? 2 : 1 }}
+        className="flex w-full items-center justify-between rounded-xl border bg-white p-3.5 cursor-pointer hover:bg-zinc-50 shadow-xs transition-all"
+        style={{ borderColor: stato !== "non_iniziato" ? cfg.color : "#e4e4e7", borderWidth: stato !== "non_iniziato" ? 2 : 1 }}
         onClick={() => navigate(`/allenamento/${encodeURIComponent(livello)}/${giornoNum}`)}
       >
-        <div className="flex items-center gap-4 min-w-0">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-bold" style={{ background: cfg.color, color: "#ffffff" }}>
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl text-sm font-black shadow-xs"
+            style={{
+              background: "#09090b",
+              color: "#ffffff",
+              border: `2px solid ${cfg.color}`,
+            }}
+          >
             {giornoNum}
           </div>
           <div className="min-w-0 text-left">
-            <p className="font-semibold text-primary">{label}</p>
-            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+            <p className="font-bold text-zinc-900 leading-snug">{label}</p>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               {showLivello && livello && (
-                <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold" style={{ background: colors.background, color: colors.color, border: `1px solid ${colors.border}` }}>
+                <span
+                  className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
+                  style={{ background: "#1c00ff", color: "#e3ff00" }}
+                >
                   {livello}
                 </span>
               )}
@@ -291,11 +300,11 @@ function GiornoCard({ livello, giornoNum, label, stato, showLivello, onStatoChan
           <button onClick={(e) => { e.stopPropagation(); setMenuAperto((v) => !v); }} className="rounded-md p-1.5 cursor-pointer hover:opacity-70" aria-label="Cambia stato">
             <cfg.icon className="size-5" style={{ color: cfg.color }} />
           </button>
-          <ChevronRight className="size-5 text-secondary" />
+          <ChevronRight className="size-5 text-zinc-400" />
         </div>
       </div>
       {menuAperto && (
-        <div className="absolute right-0 top-full mt-1 z-20 rounded-lg overflow-hidden shadow-2xl" style={{ border: "1px solid #e2e5ea", background: "#ffffff", minWidth: 160 }}>
+        <div className="absolute right-0 top-full mt-1 z-20 rounded-xl overflow-hidden shadow-2xl border border-zinc-200 bg-white" style={{ minWidth: 160 }}>
           {(["non_iniziato", "in_corso", "completato"] as Stato[]).map((s) => {
             const c = statoConfig(s);
             const attivo = stato === s;
@@ -333,8 +342,8 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
   if (giorni.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-20 text-center">
-        <Dumbbell className="size-10 text-secondary" />
-        <p className="text-secondary">Nessun allenamento disponibile.</p>
+        <Dumbbell className="size-10 text-zinc-400" />
+        <p className="text-zinc-500">Nessun allenamento disponibile.</p>
       </div>
     );
   }
@@ -344,9 +353,19 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
       {gruppi.map(([settimana, items]) => (
         <div key={settimana}>
           {mostraHeader && (
-            <div className="rounded-lg px-4 py-2.5 mb-3 flex items-center gap-2" style={{ background: "#1c00ff" }}>
-              <span className="text-sm font-bold" style={{ color: "#e3ff00" }}>{settimana}</span>
-              <span className="ml-auto text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>{items.length} {items.length === 1 ? "giorno" : "giorni"}</span>
+            <div
+              className="rounded-xl px-4 py-2.5 mb-3 flex items-center justify-between shadow-xs"
+              style={{ background: "#1c00ff", borderLeft: "5px solid #e3ff00" }}
+            >
+              <span className="text-sm font-black uppercase tracking-wider text-white">
+                {settimana}
+              </span>
+              <span
+                className="text-[11px] font-black px-2 py-0.5 rounded-full"
+                style={{ background: "#09090b", color: "#e3ff00" }}
+              >
+                {items.length} {items.length === 1 ? "giorno" : "giorni"}
+              </span>
             </div>
           )}
           <div className="space-y-2">
@@ -498,23 +517,59 @@ export default function AllenamentiPage() {
           <div className="space-y-6">
             {correnteItem && (
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-secondary uppercase tracking-wider">{correnteItem.tipo === "in_corso" ? "In corso" : "Prossimo allenamento"}</p>
-                <div className="rounded-xl border-2 p-5 cursor-pointer hover:bg-inset" style={{ borderColor: correnteItem.tipo === "in_corso" ? "#ea580c" : "#1c00ff", background: correnteItem.tipo === "in_corso" ? "rgba(234,88,12,0.05)" : "rgba(28,0,255,0.04)" }} onClick={() => { const lv = livello || correnteItem.item.livello || ""; navigate(`/allenamento/${encodeURIComponent(lv)}/${correnteItem.item.giorno_num}`); }}>
+                <p className="text-xs font-black text-zinc-500 uppercase tracking-wider">{correnteItem.tipo === "in_corso" ? "In corso" : "Prossimo allenamento"}</p>
+                <div
+                  className="rounded-2xl border-2 p-5 cursor-pointer hover:shadow-md transition-all relative overflow-hidden bg-white"
+                  style={{
+                    borderColor: correnteItem.tipo === "in_corso" ? "#ea580c" : "#1c00ff",
+                  }}
+                  onClick={() => {
+                    const lv = livello || correnteItem.item.livello || "";
+                    navigate(`/allenamento/${encodeURIComponent(lv)}/${correnteItem.item.giorno_num}`);
+                  }}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="flex size-14 shrink-0 items-center justify-center rounded-full text-2xl font-black" style={{ background: correnteItem.tipo === "in_corso" ? "#ea580c" : "#1c00ff", color: "#ffffff" }}>{correnteItem.item.giorno_num}</div>
+                      <div
+                        className="flex size-14 shrink-0 items-center justify-center rounded-2xl text-2xl font-black shadow-md"
+                        style={{
+                          background: "#09090b",
+                          color: "#e3ff00",
+                          border: `2px solid ${correnteItem.tipo === "in_corso" ? "#ea580c" : "#1c00ff"}`,
+                        }}
+                      >
+                        {correnteItem.item.giorno_num}
+                      </div>
                       <div>
-                        <p className="text-xl font-bold text-primary">{labelGiornoTesto(correnteItem.item)}</p>
-                        {(livello || correnteItem.item.livello) && <p className="text-sm text-secondary mt-0.5">{livello || correnteItem.item.livello}</p>}
+                        <p className="text-xl font-black text-zinc-900 tracking-tight leading-tight">
+                          {labelGiornoTesto(correnteItem.item)}
+                        </p>
+                        {(livello || correnteItem.item.livello) && (
+                          <span
+                            className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-black uppercase tracking-wider mt-1"
+                            style={{ background: "#1c00ff", color: "#e3ff00" }}
+                          >
+                            {livello || correnteItem.item.livello}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <ChevronRight className="size-6 shrink-0" style={{ color: correnteItem.tipo === "in_corso" ? "#ea580c" : "#1c00ff" }} />
                   </div>
                   {lista.length > 0 && (
                     <div className="mt-4">
-                      <div className="flex justify-between text-xs text-secondary mb-1"><span>Progressi</span><span>{completati}/{lista.length} completati</span></div>
-                      <div className="h-2 w-full rounded-full bg-inset overflow-hidden">
-                        <div className="h-full rounded-full transition-all" style={{ width: `${Math.round((completati / lista.length) * 100)}%`, background: "#16a34a" }} />
+                      <div className="flex justify-between text-xs font-bold text-zinc-500 mb-1.5">
+                        <span>Avanzamento Ciclo</span>
+                        <span className="text-zinc-900 font-black">{completati}/{lista.length} completati</span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-zinc-100 overflow-hidden border border-zinc-200">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${Math.round((completati / lista.length) * 100)}%`,
+                            background: "linear-gradient(90deg, #1c00ff 0%, #e3ff00 100%)",
+                          }}
+                        />
                       </div>
                     </div>
                   )}

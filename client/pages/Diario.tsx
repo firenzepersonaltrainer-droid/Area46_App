@@ -344,41 +344,71 @@ export default function DiarioPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-primary">Il Mio Diario</h1>
-        {user?.email && <p className="text-sm text-secondary mt-1">{user.email}</p>}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-zinc-900">Il Mio Diario</h1>
+          {user?.email && <p className="text-xs font-bold text-zinc-500 mt-0.5">{user.email}</p>}
+        </div>
+        <span
+          className="text-xs font-black uppercase px-2.5 py-1 rounded-full shadow-xs"
+          style={{ background: "#09090b", color: "#e3ff00", border: "1px solid #1c00ff" }}
+        >
+          {gruppi.length} {gruppi.length === 1 ? "Esercizio" : "Esercizi"}
+        </span>
       </div>
       {!isLoading && gruppi.length > 0 && (
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-secondary pointer-events-none" />
-          <input type="text" placeholder="Cerca esercizio…" value={ricerca} onChange={(e) => setRicerca(e.target.value)} className="w-full rounded-lg border border-border bg-raised pl-9 pr-9 py-2.5 text-sm text-primary placeholder:text-tertiary focus:outline-none focus:ring-2 focus:ring-focus-ring" />
-          {ricerca && <button onClick={() => setRicerca("")} className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-secondary hover:text-primary" aria-label="Cancella ricerca"><X className="size-4" /></button>}
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Cerca esercizio…"
+            value={ricerca}
+            onChange={(e) => setRicerca(e.target.value)}
+            className="w-full rounded-xl border border-zinc-200 bg-white pl-9 pr-9 py-2.5 text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 focus:border-[#1c00ff] shadow-xs"
+          />
+          {ricerca && <button onClick={() => setRicerca("")} className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-zinc-400 hover:text-zinc-700" aria-label="Cancella ricerca"><X className="size-4" /></button>}
         </div>
       )}
       {isLoading ? (
-        <div className="space-y-3">{[...Array(4)].map((_, i) => <div key={i} className="h-20 animate-pulse rounded-lg bg-inset" />)}</div>
+        <div className="space-y-3">{[...Array(4)].map((_, i) => <div key={i} className="h-20 animate-pulse rounded-xl bg-zinc-200" />)}</div>
       ) : gruppi.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-20 text-center">
-          <BookMarked className="size-10 text-secondary" />
-          <p className="text-secondary">Nessun carico registrato ancora.</p>
-          <p className="text-xs text-secondary">Apri un esercizio e premi "Registra Carico" per iniziare a tracciare i tuoi progressi.</p>
+          <BookMarked className="size-10 text-zinc-400" />
+          <p className="text-zinc-600 font-bold">Nessun carico registrato ancora.</p>
+          <p className="text-xs text-zinc-400">Apri un esercizio e premi "Registra Carico" per iniziare a tracciare i tuoi progressi.</p>
         </div>
       ) : gruppiFiltrati.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 py-12 text-center"><Search className="size-8 text-secondary" /><p className="text-secondary text-sm">Nessun risultato per "{ricerca}".</p></div>
+        <div className="flex flex-col items-center gap-2 py-12 text-center"><Search className="size-8 text-zinc-400" /><p className="text-zinc-500 text-sm">Nessun risultato per "{ricerca}".</p></div>
       ) : (
         <div className="space-y-2">
           {gruppiFiltrati.map((g) => (
-            <button key={g.id_esercizio} className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-border bg-raised p-4 hover:bg-inset text-left" onClick={() => setEsercizioSelezionato({ id: g.id_esercizio, nome: g.nome_esercizio })}>
+            <button
+              key={g.id_esercizio}
+              className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 hover:bg-zinc-50 text-left shadow-xs transition-all relative overflow-hidden"
+              onClick={() => setEsercizioSelezionato({ id: g.id_esercizio, nome: g.nome_esercizio })}
+            >
               <div className="min-w-0">
-                <p className="font-semibold text-primary truncate">{g.nome_esercizio}</p>
-                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                  <span className="text-xs text-secondary">Ultima sessione: {formatData(g.ultimaData)}</span>
-                  {g.ultimoCarico !== null && <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold" style={{ background: "#1c00ff", color: "#ffffff" }}>{g.ultimoCarico} kg</span>}
+                <p className="font-bold text-zinc-900 truncate leading-snug">{g.nome_esercizio}</p>
+                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                  <span className="text-xs text-zinc-500 font-medium">Ultima sessione: {formatData(g.ultimaData)}</span>
+                  {g.ultimoCarico !== null && (
+                    <span
+                      className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-black shadow-xs"
+                      style={{ background: "#1c00ff", color: "#e3ff00" }}
+                    >
+                      {g.ultimoCarico} kg
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0 ml-3">
-                <span className="text-xs text-secondary">{g.totaleLog} log</span>
-                <ChevronDown className="size-5 text-secondary rotate-[-90deg]" />
+                <span
+                  className="text-[11px] font-black px-2 py-0.5 rounded-full"
+                  style={{ background: "#09090b", color: "#ffffff" }}
+                >
+                  {g.totaleLog} log
+                </span>
+                <ChevronDown className="size-5 text-zinc-400 rotate-[-90deg]" />
               </div>
             </button>
           ))}

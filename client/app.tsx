@@ -57,39 +57,49 @@ function MobileHomeIndicator() {
 
 function AppHeader() {
   return (
-    <header
-      className="sticky top-0 z-30 flex items-center gap-3 px-4 py-3 bg-white border-b-2 shadow-xs shrink-0"
-      style={{ borderBottomColor: "#1c00ff" }}
-    >
-      {APP_LOGO_URL ? (
-        <img
-          src={APP_LOGO_URL}
-          alt="Area46 Landmine Lab logo"
-          className="h-8 w-auto object-contain"
-        />
-      ) : (
+    <header className="sticky top-0 z-30 flex items-center justify-between px-4 py-2.5 bg-white border-b shadow-xs shrink-0 relative">
+      <div className="flex items-center gap-2">
         <div className="flex flex-col leading-tight">
           <div className="text-lg font-black tracking-tight leading-none flex items-center">
             <span style={{ color: "#1c00ff" }}>Area</span>
             <span
-              className="inline-block px-1 ml-0.5 rounded text-sm font-black"
+              className="inline-block px-1.5 py-0.5 ml-1 rounded text-xs font-black"
               style={{
                 background: "#e3ff00",
-                color: "#1c00ff",
-                border: "1px solid #1c00ff",
+                color: "#09090b",
+                border: "1.5px solid #09090b",
               }}
             >
               46
             </span>
           </div>
           <div
-            className="text-xs font-bold leading-none mt-1"
+            className="text-[10px] font-black uppercase tracking-wider leading-none mt-1"
             style={{ color: "#09090b" }}
           >
             Landmine Lab
           </div>
         </div>
-      )}
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        <span
+          className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs"
+          style={{
+            background: "#1c00ff",
+            color: "#e3ff00",
+          }}
+        >
+          <span className="size-1.5 rounded-full bg-[#e3ff00] animate-pulse" />
+          LIVELLO PRO
+        </span>
+      </div>
+
+      {/* Linea d'accento bicolore Area46 */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2.5px] flex">
+        <div className="h-full w-2/3 bg-[#1c00ff]" />
+        <div className="h-full w-1/3 bg-[#e3ff00]" />
+      </div>
     </header>
   );
 }

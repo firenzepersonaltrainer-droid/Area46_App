@@ -21,9 +21,9 @@ export function Nav({ items, className }: NavProps) {
       data-slot="nav-mobile"
       className={cn(
         "fixed sm:absolute bottom-3 left-1/2 -translate-x-1/2 z-40",
-        "w-[calc(100%-24px)] max-w-[390px]",
-        "rounded-full bg-white/95 border border-zinc-200/90 shadow-xl backdrop-blur-md",
-        "p-1",
+        "w-[calc(100%-20px)] max-w-[390px]",
+        "rounded-full bg-[#09090b]/95 border border-zinc-800 shadow-2xl backdrop-blur-md",
+        "p-1.5",
         className,
       )}
     >
@@ -36,20 +36,23 @@ export function Nav({ items, className }: NavProps) {
               to={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5",
+                "flex flex-col items-center justify-center relative",
                 "rounded-full px-2.5 py-1.5",
                 "min-w-[60px] flex-1 shrink-0",
-                "text-[10px] font-medium",
-                "transition-colors duration-150",
-                "outline-none focus-visible:ring-focus-ring/50 focus-visible:ring-[3px]",
+                "text-[10px] font-bold tracking-tight",
+                "transition-all duration-200",
+                "outline-none focus-visible:ring-focus-ring/50 focus-visible:ring-[2px]",
                 "[&_svg]:size-5",
                 active
-                  ? "bg-[#1c00ff]/10 text-[#1c00ff] font-bold"
-                  : "text-zinc-500 hover:text-zinc-900",
+                  ? "bg-[#1c00ff] text-white shadow-lg"
+                  : "text-zinc-400 hover:text-white",
               )}
             >
               {item.icon}
-              <span className="truncate">{item.label}</span>
+              <span className="truncate mt-0.5">{item.label}</span>
+              {active && (
+                <span className="w-1 h-1 rounded-full bg-[#e3ff00] absolute -bottom-0.5 shadow-[0_0_6px_#e3ff00]" />
+              )}
             </Link>
           );
         })}

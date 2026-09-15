@@ -57,10 +57,11 @@ function CustomTooltip({ active, payload, label }: any) {
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-lg border border-border bg-raised p-4 flex flex-col gap-1">
-      <p className="text-xs text-secondary">{label}</p>
-      <p className="text-xl font-bold" style={{ color: "#1c00ff" }}>{value}</p>
-      {sub && <p className="text-xs text-secondary">{sub}</p>}
+    <div className="rounded-xl border border-zinc-200 bg-white p-4 flex flex-col gap-1 shadow-xs relative overflow-hidden">
+      <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#1c00ff]" />
+      <p className="text-[11px] font-black text-zinc-500 uppercase tracking-wider">{label}</p>
+      <p className="text-xl font-black text-zinc-900">{value}</p>
+      {sub && <p className="text-[11px] font-semibold text-zinc-400">{sub}</p>}
     </div>
   );
 }
@@ -111,8 +112,8 @@ export default function TonnellaggioPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-primary">Tonnellaggio</h1>
-        <div className="space-y-3">{[...Array(3)].map((_, i) => <div key={i} className="h-20 animate-pulse rounded-lg bg-inset" />)}</div>
+        <h1 className="text-2xl font-black tracking-tight text-zinc-900">Tonnellaggio</h1>
+        <div className="space-y-3">{[...Array(3)].map((_, i) => <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-200" />)}</div>
       </div>
     );
   }
@@ -120,11 +121,11 @@ export default function TonnellaggioPage() {
   if (vociValide.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-primary">Tonnellaggio</h1>
+        <h1 className="text-2xl font-black tracking-tight text-zinc-900">Tonnellaggio</h1>
         <div className="flex flex-col items-center gap-3 py-20 text-center">
-          <Weight className="size-10 text-secondary" />
-          <p className="text-secondary">Nessun dato di tonnellaggio disponibile.</p>
-          <p className="text-xs text-secondary">Registra carichi con Serie e Ripetizioni per vedere i grafici.</p>
+          <Weight className="size-10 text-zinc-400" />
+          <p className="text-zinc-600 font-bold">Nessun dato di tonnellaggio disponibile.</p>
+          <p className="text-xs text-zinc-400">Registra carichi con Serie e Ripetizioni per vedere i grafici.</p>
         </div>
       </div>
     );
@@ -132,7 +133,19 @@ export default function TonnellaggioPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight text-primary">Tonnellaggio</h1>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-zinc-900">Tonnellaggio</h1>
+          <p className="text-xs font-bold text-zinc-500 mt-0.5">Analisi del carico cumulativo sollevato</p>
+        </div>
+        <span
+          className="text-xs font-black uppercase px-2.5 py-1 rounded-full shadow-xs"
+          style={{ background: "#09090b", color: "#e3ff00", border: "1px solid #1c00ff" }}
+        >
+          kg Totali
+        </span>
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <StatCard label="Tonnellaggio totale" value={`${Math.round(totaleAssoluto).toLocaleString("it-IT")} kg`} sub={`su ${vociValide.length} sessioni`} />
         <StatCard label="Max in una sessione" value={`${maxSessione.toLocaleString("it-IT")} kg`} />
@@ -148,14 +161,14 @@ export default function TonnellaggioPage() {
 
         <TabsContent value="sessione">
           <div className="mt-4 space-y-2">
-            <p className="text-xs text-secondary">Tonnellaggio totale per giorno di allenamento</p>
-            <div className="rounded-lg border border-border bg-raised p-4">
+            <p className="text-xs font-bold text-zinc-500">Tonnellaggio totale per giorno di allenamento</p>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-xs">
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={perSessione} margin={{ top: 8, right: 8, left: -12, bottom: 4 }}>
-                  <CartesianGrid stroke="var(--color-border-weak)" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: "var(--color-secondary)", fontSize: 11 }} tickLine={false} />
-                  <YAxis tick={{ fill: "var(--color-secondary)", fontSize: 11 }} tickLine={false} axisLine={false} unit=" kg" />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--color-inset)" }} />
+                  <CartesianGrid stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} />
+                  <YAxis tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} axisLine={false} unit=" kg" />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(28,0,255,0.05)" }} />
                   <Bar dataKey="tonnellaggio" fill="#1c00ff" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -165,15 +178,15 @@ export default function TonnellaggioPage() {
 
         <TabsContent value="settimana">
           <div className="mt-4 space-y-2">
-            <p className="text-xs text-secondary">Tonnellaggio totale per settimana</p>
-            <div className="rounded-lg border border-border bg-raised p-4">
+            <p className="text-xs font-bold text-zinc-500">Tonnellaggio totale per settimana</p>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-xs">
               <ResponsiveContainer width="100%" height={240}>
                 <LineChart data={perSettimana} margin={{ top: 8, right: 8, left: -12, bottom: 4 }}>
-                  <CartesianGrid stroke="var(--color-border-weak)" />
-                  <XAxis dataKey="name" tick={{ fill: "var(--color-secondary)", fontSize: 11 }} tickLine={false} />
-                  <YAxis tick={{ fill: "var(--color-secondary)", fontSize: 11 }} tickLine={false} axisLine={false} unit=" kg" />
-                  <Tooltip content={<CustomTooltip />} cursor={{ stroke: "var(--color-border)", strokeWidth: 1 }} />
-                  <Line type="monotone" dataKey="tonnellaggio" stroke="#1c00ff" strokeWidth={2.5} dot={{ fill: "#1c00ff", r: 4, strokeWidth: 0 }} activeDot={{ fill: "#e3ff00", stroke: "#1c00ff", strokeWidth: 2, r: 6 }} />
+                  <CartesianGrid stroke="#f1f5f9" />
+                  <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} />
+                  <YAxis tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} axisLine={false} unit=" kg" />
+                  <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }} />
+                  <Line type="monotone" dataKey="tonnellaggio" stroke="#1c00ff" strokeWidth={2.5} dot={{ fill: "#1c00ff", r: 4, strokeWidth: 0 }} activeDot={{ fill: "#e3ff00", stroke: "#09090b", strokeWidth: 2, r: 6 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -182,15 +195,15 @@ export default function TonnellaggioPage() {
 
         <TabsContent value="mese">
           <div className="mt-4 space-y-2">
-            <p className="text-xs text-secondary">Tonnellaggio totale per mese</p>
-            <div className="rounded-lg border border-border bg-raised p-4">
+            <p className="text-xs font-bold text-zinc-500">Tonnellaggio totale per mese</p>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-xs">
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={perMese} margin={{ top: 8, right: 8, left: -12, bottom: 4 }}>
-                  <CartesianGrid stroke="var(--color-border-weak)" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: "var(--color-secondary)", fontSize: 11 }} tickLine={false} />
-                  <YAxis tick={{ fill: "var(--color-secondary)", fontSize: 11 }} tickLine={false} axisLine={false} unit=" kg" />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: "var(--color-inset)" }} />
-                  <Bar dataKey="tonnellaggio" fill="#e3ff00" radius={[4, 4, 0, 0]} />
+                  <CartesianGrid stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} />
+                  <YAxis tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} axisLine={false} unit=" kg" />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(28,0,255,0.05)" }} />
+                  <Bar dataKey="tonnellaggio" fill="#1c00ff" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -415,7 +415,7 @@ export default function FloatingTimer() {
   const totalPhase = state.phase === "work" ? state.workSecs : state.restSecs;
   const phasePct =
     totalPhase > 0 ? Math.round((state.phaseLeft / totalPhase) * 100) : 0;
-  const phaseColor = state.phase === "work" ? "#1c00ff" : "#ea580c";
+  const phaseColor = state.phase === "work" ? "#38bdf8" : "#fb923c";
 
   if (typeof document === "undefined") return null;
 
@@ -423,11 +423,12 @@ export default function FloatingTimer() {
     return (
       <button
         onClick={handleOpen}
-        className="absolute bottom-20 right-4 flex size-12 cursor-pointer items-center justify-center rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 z-50"
+        className="absolute bottom-20 right-4 flex size-12 cursor-pointer items-center justify-center rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 z-50"
         style={{
           background: "#1c00ff",
-          color: "#ffffff",
-          boxShadow: "0 8px 24px rgba(28,0,255,0.45)",
+          border: "2px solid #e3ff00",
+          color: "#e3ff00",
+          boxShadow: "0 8px 24px rgba(28,0,255,0.5)",
         }}
         aria-label="Apri timer"
       >
@@ -445,12 +446,12 @@ export default function FloatingTimer() {
   return (
     <div
       ref={containerRef}
-      className="absolute w-[calc(100%-24px)] rounded-2xl shadow-2xl overflow-hidden select-none transition-shadow z-50"
+      className="absolute w-[calc(100%-24px)] rounded-2xl shadow-2xl overflow-hidden select-none transition-shadow z-50 text-white"
       style={{
         ...positionStyle,
         border: "2px solid #1c00ff",
-        background: "#ffffff",
-        boxShadow: "0 16px 36px -6px rgba(0,0,0,0.28), 0 0 16px rgba(28,0,255,0.18)",
+        background: "#0d0d12",
+        boxShadow: "0 20px 45px -8px rgba(0,0,0,0.65), 0 0 20px rgba(28,0,255,0.3)",
       }}
     >
       {/* Header Trascinabile */}
@@ -458,13 +459,13 @@ export default function FloatingTimer() {
         onMouseDown={onPointerDownDrag}
         onTouchStart={onPointerDownDrag}
         className="flex items-center justify-between px-3 py-2.5 cursor-grab active:cursor-grabbing"
-        style={{ borderBottom: "1px solid #e2e5ea", background: "#f8f9fa" }}
+        style={{ borderBottom: "1px solid #232332", background: "#15151e" }}
         title="Trascina per spostare il timer"
       >
         <div className="flex items-center gap-1.5 pointer-events-none">
-          <GripHorizontal className="size-4 text-zinc-400 mr-0.5" />
-          <Timer className="size-4" style={{ color: "#1c00ff" }} />
-          <span className="text-xs font-black uppercase tracking-wider text-zinc-900">
+          <GripHorizontal className="size-4 text-zinc-500 mr-0.5" />
+          <Timer className="size-4" style={{ color: "#e3ff00" }} />
+          <span className="text-xs font-black uppercase tracking-wider text-white">
             Timer Lab
           </span>
         </div>
@@ -475,7 +476,7 @@ export default function FloatingTimer() {
             onClick={() =>
               playAlert(mode === "interval" ? "final_cycle" : "phase")
             }
-            className="rounded p-1 cursor-pointer hover:bg-zinc-200 transition-colors"
+            className="rounded p-1 cursor-pointer hover:bg-zinc-800 transition-colors"
             title={
               mode === "interval"
                 ? "Test fischietto termine ciclo (triplice fischio lungo)"
@@ -483,27 +484,27 @@ export default function FloatingTimer() {
             }
             aria-label="Test segnale acustico"
           >
-            <Volume2 className="size-3.5" style={{ color: "#1c00ff" }} />
+            <Volume2 className="size-3.5" style={{ color: "#e3ff00" }} />
           </button>
 
           {/* Riduci / Ingrandisci */}
           <button
             onClick={handleMinimize}
-            className="rounded p-1 cursor-pointer hover:bg-zinc-200 transition-colors"
+            className="rounded p-1 cursor-pointer hover:bg-zinc-800 transition-colors"
             aria-label={minimized ? "Espandi" : "Riduci"}
             title={minimized ? "Espandi" : "Riduci"}
           >
             {minimized ? (
-              <Maximize2 className="size-3.5 text-zinc-600" />
+              <Maximize2 className="size-3.5 text-zinc-400 hover:text-white" />
             ) : (
-              <Minimize2 className="size-3.5 text-zinc-600" />
+              <Minimize2 className="size-3.5 text-zinc-400 hover:text-white" />
             )}
           </button>
 
           {/* Chiudi */}
           <button
             onClick={handleClose}
-            className="rounded p-1 cursor-pointer hover:bg-zinc-200 transition-colors text-zinc-600 hover:text-zinc-950"
+            className="rounded p-1 cursor-pointer hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-white"
             aria-label="Chiudi timer"
             title="Chiudi"
           >
@@ -514,8 +515,9 @@ export default function FloatingTimer() {
 
       {minimized ? (
         <div
-          className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-zinc-50 transition-colors"
+          className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-zinc-900/60 transition-colors"
           onClick={handleMinimize}
+          style={{ background: "#0d0d12" }}
         >
           <span
             className="text-2xl font-black tabular-nums"
@@ -524,7 +526,7 @@ export default function FloatingTimer() {
                 mode === "countdown"
                   ? cdLeft <= 5
                     ? "#ea580c"
-                    : "#1c00ff"
+                    : "#e3ff00"
                   : phaseColor,
             }}
           >
@@ -532,8 +534,8 @@ export default function FloatingTimer() {
           </span>
           {mode === "interval" && (
             <span
-              className="text-xs font-bold rounded-full px-2 py-0.5"
-              style={{ background: phaseColor, color: "#ffffff" }}
+              className="text-xs font-bold rounded-full px-2.5 py-0.5"
+              style={{ background: "#1c00ff", color: "#ffffff" }}
             >
               {state.phase === "work" ? "LAVORO" : "RIPOSO"} {state.currentRound}/
               {state.rounds}
@@ -543,17 +545,17 @@ export default function FloatingTimer() {
       ) : (
         <div className="p-4 space-y-4">
           <div
-            className="flex rounded-lg overflow-hidden"
-            style={{ border: "1px solid #1c00ff" }}
+            className="flex rounded-lg overflow-hidden p-0.5"
+            style={{ background: "#15151e", border: "1px solid #232332" }}
           >
             {(["countdown", "interval"] as Mode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className="flex-1 py-1.5 text-xs font-bold cursor-pointer transition-all"
+                className="flex-1 py-1.5 text-xs font-black cursor-pointer transition-all rounded-md"
                 style={{
-                  background: mode === m ? "#1c00ff" : "#f1f3f6",
-                  color: mode === m ? "#ffffff" : "#52525b",
+                  background: mode === m ? "#1c00ff" : "transparent",
+                  color: mode === m ? "#ffffff" : "#a1a1aa",
                 }}
               >
                 {m === "countdown" ? "Countdown" : "Interval"}
@@ -577,11 +579,15 @@ export default function FloatingTimer() {
             />
           )}
 
-          <div className="flex items-center justify-center gap-4 pt-1">
+          <div className="flex items-center justify-center gap-5 pt-1">
             <button
               onClick={handleReset}
-              className="flex size-9 cursor-pointer items-center justify-center rounded-full border transition-all hover:border-zinc-900 hover:text-zinc-900"
-              style={{ borderColor: "#d1d5db", color: "#6b7280" }}
+              className="flex size-10 cursor-pointer items-center justify-center rounded-full border transition-all hover:scale-105 active:scale-95"
+              style={{
+                background: "#181822",
+                borderColor: "#303042",
+                color: "#e4e4e7",
+              }}
               aria-label="Reset"
               title="Azzera"
             >
@@ -590,17 +596,22 @@ export default function FloatingTimer() {
             <button
               onClick={handlePlayPause}
               className="flex size-14 cursor-pointer items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95"
-              style={{ background: "#1c00ff", color: "#ffffff" }}
+              style={{
+                background: "#1c00ff",
+                border: "2px solid #e3ff00",
+                color: "#e3ff00",
+                boxShadow: "0 0 24px rgba(28,0,255,0.55)",
+              }}
               aria-label={running ? "Pausa" : "Avvia"}
               title={running ? "Pausa" : "Avvia"}
             >
               {running ? (
-                <Pause className="size-6" />
+                <Pause className="size-6 text-[#e3ff00]" />
               ) : (
-                <Play className="size-6 ml-0.5" />
+                <Play className="size-6 ml-0.5 text-[#e3ff00]" />
               )}
             </button>
-            <div className="size-9" />
+            <div className="size-10" />
           </div>
         </div>
       )}
@@ -619,7 +630,7 @@ function CountdownPanel({
   cdLeft: number;
   cdPct: number;
 }) {
-  const alertColor = cdLeft <= 5 ? "#ea580c" : "#1c00ff";
+  const alertColor = cdLeft <= 5 ? "#ea580c" : "#e3ff00";
   function adjustTime(delta: number) {
     if (state.running) return;
     setState((s) => {
@@ -631,12 +642,15 @@ function CountdownPanel({
     <div className="space-y-4">
       <div className="flex flex-col items-center gap-1">
         <span
-          className="text-5xl font-black tabular-nums transition-colors"
-          style={{ color: alertColor }}
+          className="text-5xl font-black tabular-nums transition-colors tracking-tight"
+          style={{
+            color: alertColor,
+            textShadow: alertColor === "#e3ff00" ? "0 0 20px rgba(227,255,0,0.3)" : "0 0 20px rgba(234,88,12,0.4)",
+          }}
         >
           {fmt(cdLeft)}
         </span>
-        <div className="w-full h-1.5 rounded-full overflow-hidden bg-inset mt-1">
+        <div className="w-full h-1.5 rounded-full overflow-hidden bg-zinc-800 mt-1">
           <div
             className="h-full rounded-full transition-all"
             style={{ width: `${cdPct}%`, background: alertColor }}
@@ -649,12 +663,11 @@ function CountdownPanel({
             <button
               key={d}
               onClick={() => adjustTime(d)}
-              className="rounded px-2.5 py-1 text-xs font-bold cursor-pointer transition-all hover:scale-105"
+              className="rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer transition-all hover:scale-105 active:scale-95"
               style={{
-                background:
-                  d > 0 ? "rgba(28,0,255,0.08)" : "#f1f3f6",
-                color: d > 0 ? "#1c00ff" : "#52525b",
-                border: d > 0 ? "1px solid rgba(28,0,255,0.3)" : "1px solid transparent",
+                background: d > 0 ? "rgba(28,0,255,0.3)" : "#181822",
+                color: d > 0 ? "#e3ff00" : "#d4d4d8",
+                border: d > 0 ? "1px solid #1c00ff" : "1px solid #2a2a3a",
               }}
             >
               {d > 0 ? `+${d}s` : `${d}s`}
@@ -703,12 +716,15 @@ function IntervalPanel({
             {state.currentRound}/{state.rounds}
           </span>
           <span
-            className="text-5xl font-black tabular-nums"
-            style={{ color: phaseColor }}
+            className="text-5xl font-black tabular-nums tracking-tight"
+            style={{
+              color: phaseColor,
+              textShadow: `0 0 20px ${phaseColor}40`,
+            }}
           >
             {fmt(state.phaseLeft)}
           </span>
-          <div className="w-full h-1.5 rounded-full overflow-hidden bg-inset mt-1">
+          <div className="w-full h-1.5 rounded-full overflow-hidden bg-zinc-800 mt-1">
             <div
               className="h-full rounded-full transition-all"
               style={{ width: `${phasePct}%`, background: phaseColor }}
@@ -717,7 +733,7 @@ function IntervalPanel({
         </div>
       ) : (
         <div className="flex flex-col items-center py-1">
-          <span className="text-xs text-secondary">
+          <span className="text-xs text-zinc-400">
             {state.rounds} round · {fmt(state.workSecs)} lavoro ·{" "}
             {fmt(state.restSecs)} riposo
           </span>
@@ -730,7 +746,7 @@ function IntervalPanel({
                 state.restSecs * (state.rounds - 1),
             )}
           </span>
-          <span className="text-[10px] uppercase font-semibold tracking-wider text-secondary">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
             Durata Totale
           </span>
         </div>
@@ -742,14 +758,14 @@ function IntervalPanel({
             value={fmt(state.workSecs)}
             onMinus={() => adjustSetting("workSecs", -5)}
             onPlus={() => adjustSetting("workSecs", +5)}
-            color="#1c00ff"
+            color="#38bdf8"
           />
           <SettingRow
             label="Riposo"
             value={fmt(state.restSecs)}
             onMinus={() => adjustSetting("restSecs", -5)}
             onPlus={() => adjustSetting("restSecs", +5)}
-            color="#ea580c"
+            color="#fb923c"
           />
           <SettingRow
             label="Round"
@@ -778,23 +794,23 @@ function SettingRow({
   color: string;
 }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-xs font-bold" style={{ color, minWidth: 56 }}>
+    <div className="flex items-center justify-between py-0.5">
+      <span className="text-xs font-black uppercase tracking-wider" style={{ color, minWidth: 60 }}>
         {label}
       </span>
       <div className="flex items-center gap-2">
         <button
           onClick={onMinus}
-          className="flex size-7 cursor-pointer items-center justify-center rounded-full border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white transition-colors"
+          className="flex size-7 cursor-pointer items-center justify-center rounded-lg border border-zinc-700 hover:border-zinc-500 bg-[#181822] text-zinc-200 hover:text-white transition-colors active:scale-95"
         >
           <ChevronDown className="size-3.5" />
         </button>
-        <span className="text-sm font-bold tabular-nums w-12 text-center text-white">
+        <span className="text-sm font-black tabular-nums w-12 text-center text-white">
           {value}
         </span>
         <button
           onClick={onPlus}
-          className="flex size-7 cursor-pointer items-center justify-center rounded-full border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white transition-colors"
+          className="flex size-7 cursor-pointer items-center justify-center rounded-lg border border-zinc-700 hover:border-zinc-500 bg-[#181822] text-zinc-200 hover:text-white transition-colors active:scale-95"
         >
           <ChevronUp className="size-3.5" />
         </button>

@@ -272,37 +272,46 @@ export default function EsercizioDetailPage() {
       {/* Intestazione */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <div className="mb-1 inline-flex items-center rounded-md bg-inset px-2 py-1 text-xs font-bold text-secondary">
-            Seq. {esercizio.sequenza}
+          <div
+            className="mb-1.5 inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-black tracking-wider shadow-xs"
+            style={{ background: "#09090b", color: "#e3ff00", border: "1.5px solid #1c00ff" }}
+          >
+            SEQ. {esercizio.sequenza}
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-primary">
+          <h1 className="text-2xl font-black tracking-tight text-zinc-900 leading-tight">
             {esercizio.nome_esercizio}
           </h1>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Button onClick={() => setStoricoOpen(true)} variant="secondary">
-            <History />
-            Storico esercizio
+          <Button onClick={() => setStoricoOpen(true)} variant="secondary" className="border-zinc-300 font-bold">
+            <History className="size-4" />
+            Storico
           </Button>
-          <Button onClick={() => setDialogOpen(true)} variant="primary">
-            <ClipboardList />
+          <button
+            onClick={() => setDialogOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+            style={{ background: "#1c00ff", color: "#ffffff", border: "1.5px solid #e3ff00" }}
+          >
+            <ClipboardList className="size-4 text-[#e3ff00]" />
             Registra Carico
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* Parametri principali */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {esercizio.parametri && (
-          <div className="rounded-lg border border-border bg-raised p-4 shadow-xs">
-            <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Parametri</p>
-            <p className="text-base sm:text-lg font-bold text-primary">{esercizio.parametri}</p>
+          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-xs relative overflow-hidden">
+            <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#1c00ff]" />
+            <p className="text-[11px] font-black text-zinc-400 uppercase tracking-wider mb-1">Parametri</p>
+            <p className="text-base sm:text-lg font-black text-zinc-900 leading-tight">{esercizio.parametri}</p>
           </div>
         )}
         {esercizio.recupero && (
-          <div className="rounded-lg border border-border bg-raised p-4 shadow-xs">
-            <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Recupero</p>
-            <p className="text-base sm:text-lg font-bold text-primary">{esercizio.recupero}</p>
+          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-xs relative overflow-hidden">
+            <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#e3ff00]" />
+            <p className="text-[11px] font-black text-zinc-400 uppercase tracking-wider mb-1">Recupero</p>
+            <p className="text-base sm:text-lg font-black text-zinc-900 leading-tight">{esercizio.recupero}</p>
           </div>
         )}
       </div>
@@ -311,10 +320,10 @@ export default function EsercizioDetailPage() {
       {videoId && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Play className="size-4 text-accent" />
-            <h2 className="text-base font-semibold text-primary">Video dimostrativo</h2>
+            <Play className="size-4 text-[#1c00ff]" />
+            <h2 className="text-sm font-black uppercase tracking-wider text-zinc-800">Video dimostrativo</h2>
           </div>
-          <div className="aspect-video w-full overflow-hidden rounded-lg border border-border bg-inset">
+          <div className="aspect-video w-full overflow-hidden rounded-2xl border-2 border-zinc-200 bg-black shadow-sm">
             <iframe
               src={`https://www.youtube.com/embed/${videoId}`}
               title={esercizio.nome_esercizio}
@@ -329,8 +338,8 @@ export default function EsercizioDetailPage() {
       {/* Note Tecniche */}
       {esercizio.note_tecniche && (
         <div className="space-y-2">
-          <h2 className="text-base font-semibold text-primary">Note Tecniche</h2>
-          <div className="rounded-lg border border-border bg-raised p-4 shadow-xs">
+          <h2 className="text-sm font-black uppercase tracking-wider text-zinc-800">Note Tecniche</h2>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-xs">
             <p className="text-sm font-medium text-zinc-800 leading-relaxed whitespace-pre-line">
               {esercizio.note_tecniche}
             </p>
@@ -339,26 +348,28 @@ export default function EsercizioDetailPage() {
       )}
 
       {/* Navigazione fondo pagina */}
-      <div className="flex items-center justify-between gap-3 pt-2 pb-4 border-t border-border">
+      <div className="flex items-center justify-between gap-3 pt-3 pb-4 border-t border-zinc-200">
         <Button
           variant="secondary"
+          className="font-bold border-zinc-300"
           onClick={() => navigate(`/allenamento/${encodeURIComponent(livello!)}/${giorno}`)}
         >
           <ChevronLeft />
-          Torna all'Allenamento
+          Allenamento
         </Button>
         {nextEsercizio && (
-          <Button
-            variant="primary"
+          <button
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-black shadow-xs cursor-pointer transition-transform hover:scale-105 active:scale-95"
+            style={{ background: "#09090b", color: "#e3ff00", border: "1px solid #1c00ff" }}
             onClick={() =>
               navigate(`/esercizio/${encodeURIComponent(livello!)}/${giorno}/${encodeURIComponent(nextEsercizio.id_esercizio)}`)
             }
           >
-            {nextEsercizio.nome_esercizio.length > 22
-              ? nextEsercizio.nome_esercizio.slice(0, 22) + "…"
+            {nextEsercizio.nome_esercizio.length > 20
+              ? nextEsercizio.nome_esercizio.slice(0, 20) + "…"
               : nextEsercizio.nome_esercizio}
-            <ChevronRight />
-          </Button>
+            <ChevronRight className="size-4 text-[#e3ff00]" />
+          </button>
         )}
       </div>
 
@@ -479,18 +490,18 @@ export default function EsercizioDetailPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <span
-                        className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-bold text-white"
-                        style={{ background: "#1c00ff" }}
+                        className="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-black tracking-wider shadow-xs"
+                        style={{ background: "#09090b", color: "#e3ff00", border: "1.5px solid #1c00ff" }}
                       >
-                        Seq. {esercizio.sequenza}
+                        SEQ. {esercizio.sequenza}
                       </span>
                       {esercizio.parametri && (
-                        <span className="text-[13px] font-bold text-zinc-800 bg-black/5 px-2.5 py-1 rounded-md">
+                        <span className="text-[12px] font-bold text-zinc-900 bg-white border border-zinc-200 px-2.5 py-1 rounded-lg shadow-xs">
                           {esercizio.parametri}
                         </span>
                       )}
                       {esercizio.recupero && (
-                        <span className="text-[13px] font-bold text-zinc-800 bg-black/5 px-2.5 py-1 rounded-md">
+                        <span className="text-[12px] font-bold text-[#1c00ff] bg-[#1c00ff]/10 px-2.5 py-1 rounded-lg">
                           Rec: {esercizio.recupero}
                         </span>
                       )}
@@ -662,14 +673,14 @@ export default function EsercizioDetailPage() {
                   type="button"
                   onClick={handleSalva}
                   disabled={saving}
-                  className="flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-50"
-                  style={{ background: "#1c00ff" }}
+                  className="flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-black text-white shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-50"
+                  style={{ background: "#1c00ff", border: "1.5px solid #e3ff00" }}
                 >
                   {saving ? (
                     <span>Salvataggio…</span>
                   ) : (
                     <>
-                      <Check className="size-4" />
+                      <Check className="size-4 text-[#e3ff00]" />
                       <span>Salva nel Diario</span>
                     </>
                   )}

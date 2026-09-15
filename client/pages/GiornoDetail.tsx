@@ -90,32 +90,43 @@ function EsercizioRow({ ex, livello, giorno, inWod }: {
       onClick={() =>
         navigate(`/esercizio/${encodeURIComponent(livello)}/${giorno}/${encodeURIComponent(ex.id_esercizio)}`)
       }
-      className="flex w-full cursor-pointer items-center justify-between rounded-lg p-4 hover:bg-inset text-left"
-      style={{ background: inWod ? "rgba(28,0,255,0.04)" : "transparent" }}
+      className="flex w-full cursor-pointer items-center justify-between p-3.5 hover:bg-zinc-50 text-left transition-colors"
+      style={{ background: inWod ? "rgba(28,0,255,0.03)" : "transparent" }}
     >
-      <div className="flex items-center gap-4 min-w-0 flex-1">
+      <div className="flex items-center gap-3.5 min-w-0 flex-1">
         <div
-          className="flex min-w-[2.5rem] items-center justify-center rounded-md px-2 py-1 text-xs font-bold shrink-0"
-          style={{ background: inWod ? "#e3ff00" : "#1c00ff", color: inWod ? "#1c00ff" : "#ffffff" }}
+          className="flex min-w-[2.6rem] items-center justify-center rounded-lg px-2 py-1 text-xs font-black shrink-0 shadow-xs"
+          style={{
+            background: inWod ? "#e3ff00" : "#09090b",
+            color: inWod ? "#09090b" : "#ffffff",
+            border: inWod ? "1px solid #09090b" : "1.5px solid #1c00ff",
+          }}
         >
           {ex.sequenza}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-primary truncate">{ex.nome_esercizio}</p>
+          <p className="font-bold text-zinc-900 truncate leading-snug">{ex.nome_esercizio}</p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5">
-            {ex.parametri && <span className="text-[13.5px] font-bold text-zinc-800">{ex.parametri}</span>}
-            {ex.recupero && <span className="text-[13px] font-semibold text-zinc-600">Rec: {ex.recupero}</span>}
+            {ex.parametri && <span className="text-xs font-bold text-zinc-700">{ex.parametri}</span>}
+            {ex.recupero && (
+              <span className="text-[11px] font-bold text-[#1c00ff] bg-[#1c00ff]/10 px-1.5 py-0.5 rounded">
+                Rec: {ex.recupero}
+              </span>
+            )}
           </div>
         </div>
       </div>
       <div className="flex items-center gap-1.5 shrink-0 ml-2">
         {ex.link_video && (
-          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold" style={{ background: "#1c00ff", color: "#ffffff" }}>
-            <PlayCircle className="size-3" />
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold shadow-xs"
+            style={{ background: "#1c00ff", color: "#e3ff00" }}
+          >
+            <PlayCircle className="size-3 text-[#e3ff00]" />
             Video
           </span>
         )}
-        <ChevronRight className="size-5 text-secondary" />
+        <ChevronRight className="size-5 text-zinc-400" />
       </div>
     </button>
   );
@@ -123,14 +134,14 @@ function EsercizioRow({ ex, livello, giorno, inWod }: {
 
 function WodBlocco({ blocco, livello, giorno }: { blocco: Blocco; livello: string; giorno: string }) {
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: "2px solid #1c00ff" }}>
-      <div className="flex items-center gap-2 px-4 py-2" style={{ background: "#1c00ff" }}>
+    <div className="rounded-2xl overflow-hidden shadow-xs bg-white" style={{ border: "2px solid #1c00ff" }}>
+      <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "#1c00ff" }}>
         <Zap className="size-3.5" style={{ color: "#e3ff00" }} />
-        <span className="text-xs font-bold" style={{ color: "#ffffff" }}>
+        <span className="text-xs font-black uppercase tracking-wider text-white">
           {extractCircuitTitle(blocco.esercizi)} — BLOCCO {blocco.key}
         </span>
       </div>
-      <div className="divide-y divide-border">
+      <div className="divide-y divide-zinc-100">
         {blocco.esercizi.map((ex) => (
           <EsercizioRow key={ex.id} ex={ex} livello={livello} giorno={giorno} inWod={true} />
         ))}
@@ -164,21 +175,22 @@ export default function GiornoDetailPage() {
         <span className="text-primary font-medium">{cicloLabel ? `${cicloLabel} — ${giornoLabel}` : giornoLabel}</span>
       </nav>
 
-      <div className="flex items-center gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-primary">{giornoLabel}</h1>
-          <div className="flex items-center gap-2 mt-1 flex-wrap">
+      <div className="rounded-2xl bg-white border border-zinc-200 p-4 shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-[#1c00ff]" />
+        <div className="pl-1">
+          <h1 className="text-2xl font-black tracking-tight text-zinc-900">{giornoLabel}</h1>
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
             {livello && (
               <span
-                className="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-semibold"
-                style={{ background: colors.background, color: colors.color, border: `1px solid ${colors.border}` }}
+                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-black uppercase tracking-wider"
+                style={{ background: "#09090b", color: "#ffffff" }}
               >
                 {livello}
               </span>
             )}
             {cicloLabel && (
               <span
-                className="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-bold"
+                className="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-black uppercase tracking-wider"
                 style={{ background: "#1c00ff", color: "#e3ff00" }}
               >
                 {cicloLabel}
@@ -190,12 +202,12 @@ export default function GiornoDetailPage() {
 
       {isLoading ? (
         <div className="space-y-3">
-          {[...Array(5)].map((_, i) => <div key={i} className="h-20 animate-pulse rounded-lg bg-inset" />)}
+          {[...Array(5)].map((_, i) => <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-200" />)}
         </div>
       ) : blocchi.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-20 text-center">
-          <Dumbbell className="size-10 text-secondary" />
-          <p className="text-secondary">Nessun esercizio trovato per questo allenamento.</p>
+          <Dumbbell className="size-10 text-zinc-400" />
+          <p className="text-zinc-500 font-semibold">Nessun esercizio trovato per questo allenamento.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -203,7 +215,7 @@ export default function GiornoDetailPage() {
             blocco.isWod && blocco.esercizi.length > 1 ? (
               <WodBlocco key={blocco.key} blocco={blocco} livello={livello!} giorno={giorno!} />
             ) : (
-              <div key={blocco.key} className="rounded-lg border border-border bg-raised overflow-hidden">
+              <div key={blocco.key} className="rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-xs divide-y divide-zinc-100">
                 {blocco.esercizi.map((ex) => (
                   <EsercizioRow key={ex.id} ex={ex} livello={livello!} giorno={giorno!} inWod={false} />
                 ))}
