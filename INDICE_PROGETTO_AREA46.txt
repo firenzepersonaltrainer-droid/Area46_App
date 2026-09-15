@@ -1,0 +1,29 @@
+==============================================================================
+AREA46 TRAINING LAB - ARCHIVIO E SINCRONIZZAZIONE DATI CLOUD DRIVE
+==============================================================================
+Questa cartella contiene tutti i file dati e le specifiche metodologiche 
+utilizzate da Antigravity e dal team di Area46 per la gestione del Livello PRO.
+
+DOCUMENTI E LINK MASTER (GOOGLE FOGLI ATTIVI):
+------------------------------------------------------------------------------
+1. PRO database esercizi (Catalogo Master 163 Esercizi):
+   https://docs.google.com/spreadsheets/d/1AQHkYjXhI6WhRPORJ4DntiGZQd8ob54wJxkwP_LymwY/edit
+
+2. database esercizi Lab (Database Generale):
+   https://docs.google.com/spreadsheets/d/1SNy8IJk1E20BcAdar0F1TqqnpRIDkjlkNn6P2ljKPNY/edit
+
+3. Scheda Registro e Linee Guida PRO (Sui Fogli Google):
+   Scheda 'REGISTRO PERIODIZZAZIONE PRO' presente all'interno del file master.
+
+FILE DATI SINCRONIZZATI IN QUESTA CARTELLA:
+------------------------------------------------------------------------------
+- PRO database esercizi.xlsx: File Excel locale con le 6 schede categorie e collegamenti incrociati.
+- database esercizi Lab.xlsx: File Excel master Lab completo.
+- demo-data.json: File dati JSON per l'applicazione con i 12 allenamenti di Ciclo 1 e Ciclo 2.
+- registro_periodizzazione_pro.json: Database di stato della periodizzazione e tracciamento 163 esercizi.
+- LINEE_GUIDA_AREA46_PRO.md: Documento metodologico ufficiale Area46 PRO.
+- AGENTS.md / GEMINI.md: Regole di comportamento e guardrails vincolanti per gli agenti AI.
+
+Sincronizzazione automatica gestita dall'account di servizio:
+bot-allenamenti@landmine-lab-level-pro.iam.gserviceaccount.com
+==============================================================================

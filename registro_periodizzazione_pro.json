@@ -1,0 +1,1672 @@
+{
+  "programma": "Landmine Lab - Livello PRO",
+  "fonte_catalogo_esclusiva": "PRO database esercizi (escluso foglio elenco completo)",
+  "macrociclo_attuale": "Sviluppo Multicompetenze e Rotazione Catalogo PRO (163 esercizi)",
+  "mesociclo_attuale": "Mesociclo 1 (Cicli 1, 2, 3)",
+  "ciclo_attivo_da_pianificare": "Ciclo 3",
+  "storico_cicli": {
+    "Ciclo 1": {
+      "status": "completato / transizione",
+      "sessioni": 6
+    },
+    "Ciclo 2": {
+      "status": "in corso di test",
+      "sessioni": 6
+    },
+    "Ciclo 3": {
+      "status": "da pianificare (inizio nuovo corso metodologico)",
+      "sessioni": 6
+    }
+  },
+  "pattern_status": {
+    "spinta_orizzontale": {
+      "stato": "intensificazione (Bench press introdotta nel Ciclo 2)"
+    },
+    "trazione_orizzontale": {
+      "stato": "consolidamento (Meadow row, Push the wall)"
+    },
+    "accosciata_squat": {
+      "stato": "consolidamento (Biker squat)"
+    },
+    "cerniera_anca": {
+      "stato": "scarico parziale necessario (troppo volume in Cicli 1-2)"
+    },
+    "braccia_spalle": {
+      "stato": "richiede inserimento prioritario nel Ciclo 3"
+    }
+  },
+  "totale_esercizi_catalogo": 163,
+  "esercizi_utilizzati": 32,
+  "esercizi": [
+    {
+      "id": "43",
+      "nome": "Pounce squat",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, simmetrico, accosciata",
+      "ruolo": "fondamentale",
+      "categoria": "forza e struttura",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "44",
+      "nome": "Coiled Reverse Lunge",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, asimmetrico, affondo",
+      "ruolo": "fondamentale",
+      "categoria": "forza e struttura",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 2
+    },
+    {
+      "id": "56",
+      "nome": "Landmine coiled Deadlift",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, trazione verticale dal basso, asimmetrico",
+      "ruolo": "fondamentale",
+      "categoria": "forza e struttura",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "82",
+      "nome": "Landmine Biker's Squat",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, asimmetrico, accosciata",
+      "ruolo": "fondamentale",
+      "categoria": "forza e struttura",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 2
+    },
+    {
+      "id": "218",
+      "nome": "Landmine Jerk",
+      "attrezzo": "landmine",
+      "pattern": "spinta verticale, asimmetrico",
+      "ruolo": "fondamentale",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "61",
+      "nome": "Kettlebell Step clean",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "188",
+      "nome": "Kettlebell Snatch",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "189",
+      "nome": "Kettlebell Coiled Thruster",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso, spinta verticale",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "230",
+      "nome": "kettlebell clean and press",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso, spinta verticale",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "75",
+      "nome": "One arm press",
+      "attrezzo": "manubri",
+      "pattern": "spinta verticale, asimmetrico",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "76",
+      "nome": "Push the wall row",
+      "attrezzo": "manubri",
+      "pattern": "trazione verticale dal basso",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "80",
+      "nome": "Coiled Bench Row",
+      "attrezzo": "manubri",
+      "pattern": "trazione verticale dal basso",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "95",
+      "nome": "Yin yang sit up press",
+      "attrezzo": "manubri",
+      "pattern": "core strenght, spinta verticale asimmetrica",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "96",
+      "nome": "coiled Ax Sit up",
+      "attrezzo": "manubri",
+      "pattern": "core strenght, spinta verticale asimmetrica",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "190",
+      "nome": "Dumbbell Coiled Thruster",
+      "attrezzo": "manubri",
+      "pattern": "spinta verticale, asimmetrico",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "79",
+      "nome": "Bench press",
+      "attrezzo": "bilanciere",
+      "pattern": "spinta orizzontale",
+      "ruolo": "fondamentale",
+      "categoria": "forza e struttura",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "86",
+      "nome": "Power Coiled plank progressioni",
+      "attrezzo": "corpo libero",
+      "pattern": "core training",
+      "ruolo": "complementare a tutto",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "90",
+      "nome": "dragon flag progressioni",
+      "attrezzo": "corpo libero",
+      "pattern": "core training",
+      "ruolo": "complementare a tutto",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "91",
+      "nome": "Elbow Spiderman Toe Tap",
+      "attrezzo": "corpo libero",
+      "pattern": "core training",
+      "ruolo": "complementare a tutto",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "92",
+      "nome": "Bicycle Crunches",
+      "attrezzo": "corpo libero",
+      "pattern": "core training",
+      "ruolo": "complementare a tutto",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "28",
+      "nome": "Transverse hold",
+      "attrezzo": "elastico o cavo",
+      "pattern": "core stablity in piedi",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "93",
+      "nome": "Pallof Press con elastico",
+      "attrezzo": "elastico o cavo",
+      "pattern": "core stablity in piedi",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "94",
+      "nome": "Transverse twist",
+      "attrezzo": "elastico o cavo",
+      "pattern": "core stablity in rotazione su piano trasverso",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "24",
+      "nome": "Flag Bearer ISOINERZIALE",
+      "attrezzo": "isoinerziale",
+      "pattern": "core stablity in estensione catene crociate e spirali",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "77",
+      "nome": "Coiled Punch iso.",
+      "attrezzo": "isoinerziale",
+      "pattern": "core stablity catene crociate e spirali in spinta monolaterale",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "219",
+      "nome": "Punch isoinerziale",
+      "attrezzo": "isoinerziale",
+      "pattern": "core stablity catene crociate spinta monolaterale",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "78",
+      "nome": "pull up Progressioni",
+      "attrezzo": "sbarra, anelli, TRX",
+      "pattern": "estensione dell'omero sul piano sagittale in trazione",
+      "ruolo": "fondamentale",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "97",
+      "nome": "Endless rope Plank Alternating Pull",
+      "attrezzo": "endless rope",
+      "pattern": "core training in trazione verticale monolaterale alternato",
+      "ruolo": "accessrio",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "191",
+      "nome": "Endless rope Standing Power Pull",
+      "attrezzo": "endless rope",
+      "pattern": "core training in trazione verticale simmetrica",
+      "ruolo": "accessrio",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "192",
+      "nome": "Endless rope kneeling pull",
+      "attrezzo": "endless rope",
+      "pattern": "core training in trazione verticale monolaterale alternato in ginocchio",
+      "ruolo": "accessrio",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "193",
+      "nome": "Endless rope Half kneeling lateral pull",
+      "attrezzo": "endless rope",
+      "pattern": "core training in trazione verticale spiralizzata",
+      "ruolo": "accessrio",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "195",
+      "nome": "Sitting endless rope climbing",
+      "attrezzo": "endless rope",
+      "pattern": "core training, trazione orizzontale",
+      "ruolo": "accessrio",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "89",
+      "nome": "Deadbug",
+      "attrezzo": "slamball",
+      "pattern": "core training catene crociate",
+      "ruolo": "accessorio",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "232",
+      "nome": "rope rotation",
+      "attrezzo": "climbing rope",
+      "pattern": "core training, trazione orizzontale",
+      "ruolo": "accessorio",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "239",
+      "nome": "Gymnasty ABS",
+      "attrezzo": "corpo libero",
+      "pattern": "core strenght, piano sagittale",
+      "ruolo": "complementare",
+      "categoria": "forza e struttura",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "45",
+      "nome": "Landmine rotational Lunges",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, asimmetrico, ciclico",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "59",
+      "nome": "Split Clean and Jerk",
+      "attrezzo": "landmine",
+      "pattern": "spinta verticale, asimmetrico, due tempi",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "69",
+      "nome": "Split Snatch",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, asimmetrico, trazione verticale dal basso, lancio verticale",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "81",
+      "nome": "Meadow Row",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca asimmetrico, trazione verticale dal basso",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 2
+    },
+    {
+      "id": "84",
+      "nome": "Kneeling Transition over head press",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca asimmetrico, spinta verticale",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "208",
+      "nome": "Landmine Plyo Lift NO DOWN",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca asimmetrico",
+      "ruolo": "accessorio",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "221",
+      "nome": "Half kneeling snatch",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca asimmetrico, lancio verticale",
+      "ruolo": "accessorio",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "172",
+      "nome": "Kettlebell swing to clean",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "223",
+      "nome": "Kettlebell snatch lounge",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, affondo, trazione verticale dal basso",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "226",
+      "nome": "Coiled kettlebell swing to snatch",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso",
+      "ruolo": "accessorio",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "175",
+      "nome": "half kneeling clubbell Snatch",
+      "attrezzo": "clubbell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso, accosciata statica",
+      "ruolo": "accessorio",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "176",
+      "nome": "half kneeling to stand clubbell snatch",
+      "attrezzo": "clubbell",
+      "pattern": "cerniera d'anca, trazione verticale dal basso, lancio dal basso verso l'alto",
+      "ruolo": "accessorio",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "177",
+      "nome": "Clubbell Throw 180°",
+      "attrezzo": "clubbell",
+      "pattern": "lancio ciclico, rotazione piano trasverso",
+      "ruolo": "propedeutico L master",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "179",
+      "nome": "Clubbell Ax lunge",
+      "attrezzo": "clubbell",
+      "pattern": "cerniera d'anca, spostamento sagittale",
+      "ruolo": "propedeutico L master",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "182",
+      "nome": "Diagonal Clubbell T/S",
+      "attrezzo": "clubbell",
+      "pattern": "cerniera d'anca, core stability",
+      "ruolo": "propedeutico L master",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "52",
+      "nome": "Dumbell Jerk",
+      "attrezzo": "manubri",
+      "pattern": "spinta verticale, asimmetrico, affondo",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "70",
+      "nome": "Dumbbell Split Snatch",
+      "attrezzo": "manubri",
+      "pattern": "trazione verticale dal basso, affondo, cerniera d'anca",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "174",
+      "nome": "DB/Kett split snatch",
+      "attrezzo": "manubri, kettlebell",
+      "pattern": "trazione verticale dal basso, affondo, cerniera d'anca",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "180",
+      "nome": "single Dumbbell Pendulum lunge",
+      "attrezzo": "manubri",
+      "pattern": "cerniera d'anca, core stability, affondo",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "187",
+      "nome": "Sprawl to Broad Jump",
+      "attrezzo": "corpo libero",
+      "pattern": "cerniera d'anca, accosciata, salto",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "203",
+      "nome": "Plyometric lunges",
+      "attrezzo": "corpo libero",
+      "pattern": "cerniera d'anca, affondo, salto",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "204",
+      "nome": "Tuck Jump burpees",
+      "attrezzo": "corpo libero",
+      "pattern": "cerniera d'anca, accosciata, salto",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "101",
+      "nome": "Sprinter Push up",
+      "attrezzo": "corpo libero",
+      "pattern": "spinta orizzontale, cerniera d'anca",
+      "ruolo": "fondamentale",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "72",
+      "nome": "Lateral Band clean",
+      "attrezzo": "elastico o cavo",
+      "pattern": "traslitterazione laterale, flessione laterale del rachide",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "231",
+      "nome": "Banded hoock",
+      "attrezzo": "lloop band",
+      "pattern": "core training in rotazione sul piano trasverso",
+      "ruolo": "complementare a tutto",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "124",
+      "nome": "Slamball Skater jump",
+      "attrezzo": "slamball",
+      "pattern": "cerniera d'anca, coiled position, traslitterazione laterale",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "233",
+      "nome": "rotation slam",
+      "attrezzo": "slamball-medbal",
+      "pattern": "core training, rotazione sul piano trasverso",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "234",
+      "nome": "rebound push up",
+      "attrezzo": "corpo libero",
+      "pattern": "spinta orizzontale",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "235",
+      "nome": "kettlebell + band swing",
+      "attrezzo": "kettlebell + loop band",
+      "pattern": "cerniera d'anca, flessoestensione del tronco, catena posteriore, simmetrico",
+      "ruolo": "complementare",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "236",
+      "nome": "kneeling power jump",
+      "attrezzo": "corpo libero",
+      "pattern": "cerniera d'anca, accosciata",
+      "ruolo": "accessorio",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "237",
+      "nome": "rotational medball box lunge",
+      "attrezzo": "medball+box o rialzo",
+      "pattern": "cerniera d'anca, rotazione del tronco",
+      "ruolo": "accessorio",
+      "categoria": "potenza e balistica",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "53",
+      "nome": "Split C&J Touch & Go",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, spinta verticale",
+      "ruolo": "fondamentale",
+      "categoria": "skill e combo",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "127",
+      "nome": "COMBO: Landmine clean ALT. SCRD T/GO",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, trasferimento di carico",
+      "ruolo": "fondamentale",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "128",
+      "nome": "COMBO: Landmine Split snatch High hand switch T/GO",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, lancio verticale, trasferimento di carico",
+      "ruolo": "fondamentale",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "129",
+      "nome": "COMBO: Landmine Clean & Jerk High hand switch T/GO",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, spinta verticale, trasferimento di carico",
+      "ruolo": "fondamentale",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "224",
+      "nome": "Kettlebell snatch swing to snatch lounge",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, affondo, trazione verticale dal basso",
+      "ruolo": "fondamentale",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "205",
+      "nome": "Kick-through progression",
+      "attrezzo": "corpo libero",
+      "pattern": "body folw",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "206",
+      "nome": "Side kick through",
+      "attrezzo": "corpo libero",
+      "pattern": "body folw",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 2
+    },
+    {
+      "id": "228",
+      "nome": "COMBO Side kick trough + Sprawl",
+      "attrezzo": "corpo libero",
+      "pattern": "body folw, cerniera d'anca, accosciata",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "115",
+      "nome": "in in-out out sprawl",
+      "attrezzo": "speed ladder",
+      "pattern": "saltelli, agility, footwork",
+      "ruolo": "accessorio",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "103",
+      "nome": "Heavy ROPE - race & chase",
+      "attrezzo": "heavy rope",
+      "pattern": "rope flow",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "104",
+      "nome": "Overhand Matadors Wheel",
+      "attrezzo": "heavy rope",
+      "pattern": "rope flow",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "105",
+      "nome": "Underhand Matadors Wheel",
+      "attrezzo": "heavy rope",
+      "pattern": "rope flow",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "106",
+      "nome": "Dragon Roll",
+      "attrezzo": "heavy rope",
+      "pattern": "rope flow",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "107",
+      "nome": "underhand Sneak",
+      "attrezzo": "heavy rope",
+      "pattern": "rope flow",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "108",
+      "nome": "overhand sneak",
+      "attrezzo": "heavy rope",
+      "pattern": "rope flow",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "238",
+      "nome": "medball side kick thrue",
+      "attrezzo": "medball-slamball",
+      "pattern": "core conditioning, catena flessoria",
+      "ruolo": "complementare",
+      "categoria": "skill e combo",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "63",
+      "nome": "Landmine Clean and jerk NO DOWN",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, spinta verticale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "120",
+      "nome": "Aerial Jerk",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, salto",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "121",
+      "nome": "reverse aerial jerk",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, salto",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "229",
+      "nome": "Split Clean T&go",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, trazione verticale dal basso",
+      "ruolo": "engine, benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "170",
+      "nome": "Coiled Kettlebell Swing",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca",
+      "ruolo": "engine, benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "173",
+      "nome": "DB/Kett. step Snatch",
+      "attrezzo": "manubri",
+      "pattern": "cerniera d'anca, trazione verticale dal basso, core stability",
+      "ruolo": "engine, benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "181",
+      "nome": "Single Dumbbell T/S",
+      "attrezzo": "manubri",
+      "pattern": "cerniera d'anca, core stability",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "100",
+      "nome": "Speed skater touch",
+      "attrezzo": "corpo libero",
+      "pattern": "traslazione laterale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "1",
+      "nome": "skierg regular",
+      "attrezzo": "skierg",
+      "pattern": "cerniera d'anca, flessione del tronco su piano sagittale",
+      "ruolo": "engine, benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "2",
+      "nome": "skierg pagaia mono",
+      "attrezzo": "skierg",
+      "pattern": "stabilizzazione anca e core in pattern biomeccanico funzonale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "3",
+      "nome": "skierg pagaia alternato",
+      "attrezzo": "skierg",
+      "pattern": "stabilizzazione anca e core in pattern biomeccanico funzonale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "4",
+      "nome": "skierg wood chopper",
+      "attrezzo": "skierg",
+      "pattern": "stabilizzazione core in pattern biomeccanico funzonale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "5",
+      "nome": "skyerg manipoli alternato",
+      "attrezzo": "skierg",
+      "pattern": "stabilizzazione core in trasferimento di carico",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "6",
+      "nome": "skyerg manipoli regular",
+      "attrezzo": "skierg",
+      "pattern": "cerniera d'anca, flessione del tronco su piano sagittale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "7",
+      "nome": "Coiled skyerg",
+      "attrezzo": "skierg",
+      "pattern": "integrazione di tutte le linee ed i vettori di forza in un movimento spiralizzato",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "8",
+      "nome": "Skyerg superman row",
+      "attrezzo": "skierg",
+      "pattern": "tirata verticale in quadrupedia",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "10",
+      "nome": "Run",
+      "attrezzo": "treadmill meccanico curvo",
+      "pattern": "corsa su treadmill meccanico curvo",
+      "ruolo": "engine, benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "11",
+      "nome": "Air bike regular",
+      "attrezzo": "airbike",
+      "pattern": "pedalare con movimento di spinta e trazione simultaneo delle braccia",
+      "ruolo": "engine, benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "13",
+      "nome": "camminata in salita",
+      "attrezzo": "treadmill frenato inclinato",
+      "pattern": "camminata",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "14",
+      "nome": "corsa in salita",
+      "attrezzo": "treadmill meccanico in pendenza frenato",
+      "pattern": "corsa",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "15",
+      "nome": "spingere in salita",
+      "attrezzo": "tapiroulant in salita frenato con funzionalità di slitta",
+      "pattern": "spingere slitta in salita",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "16",
+      "nome": "Trainare in salita",
+      "attrezzo": "tapiroulant in salita frenato con funzionalità di slitta",
+      "pattern": "trainare slitta in salita (esercizio monolaterale)",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "34",
+      "nome": "air bike solo braccia",
+      "attrezzo": "airbike",
+      "pattern": "airbike con utilizzo delle sole braccia",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "196",
+      "nome": "Sprint Max Watt airbike",
+      "attrezzo": "airbike",
+      "pattern": "sprint massima potenza su airbike",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "227",
+      "nome": "Skyerg lunges",
+      "attrezzo": "skierg",
+      "pattern": "affondi alternati con trazione verso il basso",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "201",
+      "nome": "Step Up esplosivo alternato",
+      "attrezzo": "scalino, box, plinto",
+      "pattern": "scalino, salita monolaterale alternata esplosiva",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "225",
+      "nome": "Ball over shoulder",
+      "attrezzo": "med ball, slam ball",
+      "pattern": "cerniera d'anca, accosciata",
+      "ruolo": "engine benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "110",
+      "nome": "quarter turn",
+      "attrezzo": "speed ladder",
+      "pattern": "",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "113",
+      "nome": "180° rotation jump",
+      "attrezzo": "speed ladder",
+      "pattern": "",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "114",
+      "nome": "Skier touch",
+      "attrezzo": "speed ladder",
+      "pattern": "",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "102",
+      "nome": "jumping rope",
+      "attrezzo": "jumping rope",
+      "pattern": "",
+      "ruolo": "engine, benchmark",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "138",
+      "nome": "jump 2-1-2",
+      "attrezzo": "box o rialzo",
+      "pattern": "saltello, salto verticale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "134",
+      "nome": "Split Jumps (sagittale)",
+      "attrezzo": "corpo libero",
+      "pattern": "cerniera d'anca, salto verticale",
+      "ruolo": "engine",
+      "categoria": "engine e benchmark",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "99",
+      "nome": "Landmine quick Hops",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca",
+      "ruolo": "accessorio",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "116",
+      "nome": "High pull bounce",
+      "attrezzo": "landmine",
+      "pattern": "trazione verticale dal basso, trasferimento di carico",
+      "ruolo": "accessorio",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "119",
+      "nome": "Super Mario Jump",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, salto",
+      "ruolo": "complementare",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "73",
+      "nome": "Lateral landmine clean",
+      "attrezzo": "landmine",
+      "pattern": "cerniera d'anca, traslazione laterale, trazione verticale dal basso",
+      "ruolo": "fondamentale",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "171",
+      "nome": "Kettlebell Skater Swing",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, traslazione laterale, trazione verticale dal basso",
+      "ruolo": "fondamentale",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "168",
+      "nome": "Pendulum TS side move",
+      "attrezzo": "manubri",
+      "pattern": "core stability, traslazione laterale",
+      "ruolo": "propedeutico L master",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "130",
+      "nome": "cross jump double touch",
+      "attrezzo": "corpo libero",
+      "pattern": "destrezza, saltello",
+      "ruolo": "accessorio",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "131",
+      "nome": "A-Skip",
+      "attrezzo": "corpo libero",
+      "pattern": "saltello",
+      "ruolo": "accessorio",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "135",
+      "nome": "Salto alfiere",
+      "attrezzo": "corpo libero",
+      "pattern": "destrezza, asaltello",
+      "ruolo": "accessorio",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "145",
+      "nome": "one leg forward hops",
+      "attrezzo": "corpo libero",
+      "pattern": "destrezza, asaltello",
+      "ruolo": "accessorio",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "240",
+      "nome": "Knee drives",
+      "attrezzo": "corpo libero",
+      "pattern": "pliometria, saltelli, multidirezionale",
+      "ruolo": "accessorio",
+      "categoria": "pliometria e agility",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "46",
+      "nome": "Split Switch Screwdriver",
+      "attrezzo": "landmine",
+      "pattern": "gioco di gambe, flessione laterale della colonna, cerniera d'anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "49",
+      "nome": "Step/Step back press",
+      "attrezzo": "landmine",
+      "pattern": "spinta verticale",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "51",
+      "nome": "High hand switch",
+      "attrezzo": "landmine",
+      "pattern": "gioco di gambe, coordinazione alto-basso",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "54",
+      "nome": "Landmine press Cross Step",
+      "attrezzo": "landmine",
+      "pattern": "flessione laterale della colonna, spinta verticale",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "55",
+      "nome": "Hang Position ISO",
+      "attrezzo": "landmine",
+      "pattern": "acosciata asimmatrica, tenuta isometrica, trazione verticale dal basso",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "64",
+      "nome": "High Pull ISO",
+      "attrezzo": "landmine",
+      "pattern": "trazione verticale dal basso, tenuta isometrica, cerniera d'anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": "Ciclo 1",
+      "usage_count": 1
+    },
+    {
+      "id": "65",
+      "nome": "High Pull",
+      "attrezzo": "landmine",
+      "pattern": "trazione verticcal dal basso, cerniera d'anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "98",
+      "nome": "Avenger Blade passing",
+      "attrezzo": "landmine",
+      "pattern": "gioco di gambe, flessione laterale della colonna",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": "Ciclo 2",
+      "usage_count": 1
+    },
+    {
+      "id": "154",
+      "nome": "band split clean",
+      "attrezzo": "landmine",
+      "pattern": "traslazione laterale, flessione laterale della colonna, gioco di gambe",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "222",
+      "nome": "Total kneeling snatch",
+      "attrezzo": "landmine",
+      "pattern": "trazione verticale dal basso, lancio verticale, cerniera d'anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "169",
+      "nome": "Kettlebell Swing BASIC",
+      "attrezzo": "kettlebell",
+      "pattern": "cerniera d'anca, trasferimento di carico",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "17",
+      "nome": "Throwing",
+      "attrezzo": "palla",
+      "pattern": "lancio, ciclcico",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "158",
+      "nome": "Bat around the head 90° e 180°",
+      "attrezzo": "stick, bat",
+      "pattern": "circonduzione spalle, rotazione piano trasverso",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "160",
+      "nome": "Bat Circular Throw",
+      "attrezzo": "clubbell",
+      "pattern": "lancio, ciclico",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "162",
+      "nome": "Bat Circular Throw 180°",
+      "attrezzo": "stick, bat",
+      "pattern": "lancio, ciclico, rotazione piano trasverso",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "183",
+      "nome": "neutral Clubbell T/S 90° e 180°",
+      "attrezzo": "clubbell, bat",
+      "pattern": "flessoestensione della spalla, rotazione sul piano trasverso",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "163",
+      "nome": "Arm basic DB pendulum",
+      "attrezzo": "manubri",
+      "pattern": "core stability, flessoestensione spalle",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "167",
+      "nome": "Pendulum TS Single arm- 90°-180°",
+      "attrezzo": "manubri",
+      "pattern": "core stability, flessoestensione spalle, rotazione sul piano trasverso",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "29",
+      "nome": "Ground Stretch",
+      "attrezzo": "corpo libero",
+      "pattern": "routine di esercizi completa",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "30",
+      "nome": "Wall Stretch",
+      "attrezzo": "corpo libero",
+      "pattern": "routine di esercizi completa",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "31",
+      "nome": "Cobra to Down dog",
+      "attrezzo": "corpo libero",
+      "pattern": "stretching catena flessoria anteriore e ischiocrurali",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "32",
+      "nome": "Cat-cow",
+      "attrezzo": "corpo libero",
+      "pattern": "mobilità sul piano sagittale del rachide",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "33",
+      "nome": "Coiled Cobra",
+      "attrezzo": "corpo libero",
+      "pattern": "mobilità anche, allungamento catena flessoria anteriore",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "42",
+      "nome": "Push the wall squat",
+      "attrezzo": "corpo libero",
+      "pattern": "accosciata, cerniera d'anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "47",
+      "nome": "wall driver",
+      "attrezzo": "corpo libero",
+      "pattern": "cerniera d'anca, spinta controlaterale da terra sul muro",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "74",
+      "nome": "Side move",
+      "attrezzo": "corpo libero",
+      "pattern": "traslazione laterale",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "147",
+      "nome": "Hurdle Step",
+      "attrezzo": "corpo libero",
+      "pattern": "circonduzione e mobiltà di anca, saltello",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "220",
+      "nome": "Wall High Pull",
+      "attrezzo": "corpo libero",
+      "pattern": "attivazione pattern di high pull e deadlift",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "21",
+      "nome": "Band hip Circuit",
+      "attrezzo": "elastico o cavo",
+      "pattern": "abduzione ed flessione di anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "22",
+      "nome": "Coiled Cable Punch",
+      "attrezzo": "elastico o cavo",
+      "pattern": "coordinazione alto basso, core stability in spinta monolaterale, cerniera d'anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "23",
+      "nome": "Coiled Cable ROW",
+      "attrezzo": "elastico o cavo",
+      "pattern": "coordinazione alto basso, core stability in trazione monolaterale, cerniera d'anca",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "25",
+      "nome": "Side Closing",
+      "attrezzo": "elastico o cavo",
+      "pattern": "flessione laterale del bacino sul torace",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "26",
+      "nome": "Digonal Band Deadlift",
+      "attrezzo": "elastico o cavo",
+      "pattern": "cerniera d'anca, estensione d'anca, attivazione catena estensoria crociata posteriore",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "27",
+      "nome": "Neutral Band Deadlift",
+      "attrezzo": "elastico o cavo",
+      "pattern": "cerniera d'anca, estensione d'anca, attivazione catena estensoria posteriore",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "87",
+      "nome": "banded hollow March (solo gambe)",
+      "attrezzo": "elastico o cavo",
+      "pattern": "core strenght, flessoestensione di anca, supino",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "39",
+      "nome": "Slam bal blade pos. dynamic",
+      "attrezzo": "slamball, elastico",
+      "pattern": "cerniera d'anca, affondo, posizione coiled",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    },
+    {
+      "id": "207",
+      "nome": "Seated Endless rope power pull",
+      "attrezzo": "endless rope",
+      "pattern": "trazione verticale da seduto, core training",
+      "ruolo": "",
+      "categoria": "warm up e mobilità",
+      "last_cycle_used": null,
+      "usage_count": 0
+    }
+  ]
+}
