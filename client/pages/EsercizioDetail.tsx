@@ -13,6 +13,7 @@ import {
   Trash2,
   X,
   Check,
+  LayoutList,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -191,6 +192,8 @@ export default function EsercizioDetailPage() {
   const esercizio = esercizi.find((e) => e.id_esercizio === idEsercizio);
 
   const currentIndex = esercizi.findIndex((e) => e.id_esercizio === idEsercizio);
+  const prevEsercizio =
+    currentIndex > 0 ? esercizi[currentIndex - 1] : null;
   const nextEsercizio =
     currentIndex >= 0 && currentIndex < esercizi.length - 1
       ? esercizi[currentIndex + 1]
@@ -347,30 +350,121 @@ export default function EsercizioDetailPage() {
         </div>
       )}
 
-      {/* Navigazione fondo pagina */}
-      <div className="flex items-center justify-between gap-3 pt-3 pb-4 border-t border-zinc-200">
-        <Button
-          variant="secondary"
-          className="font-bold border-zinc-300"
-          onClick={() => navigate(`/allenamento/${encodeURIComponent(livello!)}/${giorno}`)}
+      {/* Navigazione fondo pagina tra esercizi e scheda allenamento */}
+      <div className="pt-4 pb-4 border-t border-zinc-200 space-y-2.5">
+        {/* Griglia Esercizio Precedente / Esercizio Successivo */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {prevEsercizio ? (
+            <button
+              onClick={() =>
+                navigate(
+                  `/esercizio/${encodeURIComponent(livello!)}/${giorno}/${encodeURIComponent(prevEsercizio.id_esercizio)}`,
+                )
+              }
+              className="flex items-center gap-2 p-2.5 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50 shadow-xs cursor-pointer text-left transition-all active:scale-[0.98] group"
+              title={`Esercizio precedente: ${prevEsercizio.nome_esercizio}`}
+            >
+              <div
+                className="flex size-9 shrink-0 items-center justify-center rounded-xl shadow-xs transition-transform group-hover:scale-105"
+                style={{
+                  background: "#09090b",
+                  color: "#e3ff00",
+                  border: "1.5px solid #1c00ff",
+                }}
+              >
+                <ChevronLeft className="size-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                    Precedente
+                  </span>
+                  <span className="text-[9px] font-black px-1 rounded bg-zinc-100 text-zinc-700">
+                    {prevEsercizio.sequenza}
+                  </span>
+                </div>
+                <p className="text-xs font-bold text-zinc-900 truncate leading-tight mt-0.5">
+                  {prevEsercizio.nome_esercizio}
+                </p>
+              </div>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 p-2.5 rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/50 opacity-40 select-none">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-zinc-200 text-zinc-400">
+                <ChevronLeft className="size-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                  Inizio
+                </span>
+                <p className="text-xs font-semibold text-zinc-400 truncate leading-tight mt-0.5">
+                  1° Esercizio
+                </p>
+              </div>
+            </div>
+          )}
+
+          {nextEsercizio ? (
+            <button
+              onClick={() =>
+                navigate(
+                  `/esercizio/${encodeURIComponent(livello!)}/${giorno}/${encodeURIComponent(nextEsercizio.id_esercizio)}`,
+                )
+              }
+              className="flex items-center justify-between gap-2 p-2.5 rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50 shadow-xs cursor-pointer text-right transition-all active:scale-[0.98] group"
+              title={`Esercizio successivo: ${nextEsercizio.nome_esercizio}`}
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-end gap-1">
+                  <span className="text-[9px] font-black px-1 rounded bg-[#1c00ff]/10 text-[#1c00ff]">
+                    {nextEsercizio.sequenza}
+                  </span>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#1c00ff]">
+                    Successivo
+                  </span>
+                </div>
+                <p className="text-xs font-bold text-zinc-900 truncate leading-tight mt-0.5">
+                  {nextEsercizio.nome_esercizio}
+                </p>
+              </div>
+              <div
+                className="flex size-9 shrink-0 items-center justify-center rounded-xl shadow-xs transition-transform group-hover:scale-105"
+                style={{
+                  background: "#1c00ff",
+                  color: "#e3ff00",
+                  border: "1.5px solid #e3ff00",
+                }}
+              >
+                <ChevronRight className="size-5" />
+              </div>
+            </button>
+          ) : (
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/50 opacity-40 select-none text-right">
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                  Fine
+                </span>
+                <p className="text-xs font-semibold text-zinc-400 truncate leading-tight mt-0.5">
+                  Ultimo Esercizio
+                </p>
+              </div>
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-zinc-200 text-zinc-400">
+                <ChevronRight className="size-5" />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Tasto Torna alla Scheda Allenamento */}
+        <button
+          onClick={() =>
+            navigate(`/allenamento/${encodeURIComponent(livello!)}/${giorno}`)
+          }
+          className="flex w-full items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-800 hover:text-zinc-950 text-xs font-black uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
         >
-          <ChevronLeft />
-          Allenamento
-        </Button>
-        {nextEsercizio && (
-          <button
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-black shadow-xs cursor-pointer transition-transform hover:scale-105 active:scale-95"
-            style={{ background: "#09090b", color: "#e3ff00", border: "1px solid #1c00ff" }}
-            onClick={() =>
-              navigate(`/esercizio/${encodeURIComponent(livello!)}/${giorno}/${encodeURIComponent(nextEsercizio.id_esercizio)}`)
-            }
-          >
-            {nextEsercizio.nome_esercizio.length > 20
-              ? nextEsercizio.nome_esercizio.slice(0, 20) + "…"
-              : nextEsercizio.nome_esercizio}
-            <ChevronRight className="size-4 text-[#e3ff00]" />
-          </button>
-        )}
+          <LayoutList className="size-4 text-[#1c00ff]" />
+          <span>Torna alla Scheda Allenamento</span>
+        </button>
       </div>
 
       {/* Dialog Storico Esercizio */}
