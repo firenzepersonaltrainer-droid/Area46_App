@@ -302,19 +302,27 @@ export default function EsercizioDetailPage() {
       </div>
 
       {/* Parametri principali */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2.5">
         {esercizio.parametri && (
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-xs relative overflow-hidden">
+          <div className="rounded-xl border border-zinc-200 bg-white p-3.5 shadow-xs relative overflow-hidden flex flex-col justify-center">
             <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#1c00ff]" />
-            <p className="text-[11px] font-black text-zinc-400 uppercase tracking-wider mb-1">Parametri</p>
-            <p className="text-base sm:text-lg font-black text-zinc-900 leading-tight">{esercizio.parametri}</p>
+            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-wider mb-1">
+              Parametri
+            </p>
+            <p className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-snug break-words">
+              {esercizio.parametri}
+            </p>
           </div>
         )}
         {esercizio.recupero && (
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-xs relative overflow-hidden">
+          <div className="rounded-xl border border-zinc-200 bg-white p-3.5 shadow-xs relative overflow-hidden flex flex-col justify-center">
             <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#e3ff00]" />
-            <p className="text-[11px] font-black text-zinc-400 uppercase tracking-wider mb-1">Recupero</p>
-            <p className="text-base sm:text-lg font-black text-zinc-900 leading-tight">{esercizio.recupero}</p>
+            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-wider mb-1">
+              Recupero
+            </p>
+            <p className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-snug break-words">
+              {esercizio.recupero}
+            </p>
           </div>
         )}
       </div>
