@@ -12,6 +12,7 @@ import {
   Users,
   Settings,
   ShieldCheck,
+  User,
 } from "lucide-react";
 import { Nav } from "./components/Nav";
 import { Toaster } from "./components/Toast";
@@ -25,6 +26,7 @@ import DiarioPage from "./pages/Diario";
 import LibreriaPage from "./pages/Libreria";
 import TonnellaggioPage from "./pages/Tonnellaggio";
 import ArchivioPage from "./pages/ArchivioAllenamenti";
+import AreaPersonalePage from "./pages/AreaPersonale";
 import PrenotaSlotPage from "./pages/PrenotaSlot";
 import TariffarioPage from "./pages/Tariffario";
 import ManagerCalendarPage from "./pages/ManagerCalendar";
@@ -146,10 +148,9 @@ function AppContent() {
       ]
     : [
         { href: "/", label: "Allenamenti", icon: <Dumbbell /> },
-        { href: "/prenota", label: "Prenota 1:1", icon: <CalendarCheck /> },
-        { href: "/diario", label: "Diario", icon: <BookMarked /> },
-        { href: "/tariffario", label: "Tariffario", icon: <Coins /> },
         { href: "/libreria", label: "Database", icon: <BookOpen /> },
+        { href: "/diario", label: "Diario", icon: <BookMarked /> },
+        { href: "/account", label: "Area Personale", icon: <User /> },
       ];
 
   return (
@@ -185,8 +186,9 @@ function AppContent() {
             path="/esercizio/:livello/:giorno/:idEsercizio"
             element={<EsercizioDetailPage />}
           />
-          <Route path="/prenota" element={<PrenotaSlotPage />} />
-          <Route path="/tariffario" element={<TariffarioPage />} />
+          <Route path="/account" element={<AreaPersonalePage />} />
+          <Route path="/prenota" element={<AreaPersonalePage />} />
+          <Route path="/tariffario" element={<AreaPersonalePage />} />
           <Route path="/diario" element={<DiarioPage />} />
           <Route path="/libreria" element={<LibreriaPage />} />
           <Route path="/tonnellaggio" element={<TonnellaggioPage />} />

@@ -468,14 +468,39 @@ app.post("/app-api/profili", async (c) => {
   const id = `usr-atleta-${Date.now()}`;
   const rows = await sql`
     INSERT INTO profili_utenti (
-      id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, data_scadenza_crediti, note_coach
+      id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach
     ) VALUES (
       ${id}, ${body.email}, ${body.nome}, ${body.cognome}, ${body.telefono || null}, ${body.codice_fiscale || null},
-      ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}
+      ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}
     )
     RETURNING *
   `;
   return c.json(rows[0], 201);
+});
+
+app.put("/app-api/profili/:id", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const id = c.req.param("id");
+  const body = await c.req.json();
+  const rows = await sql`
+    UPDATE profili_utenti
+    SET
+      nome = COALESCE(${body.nome}, nome),
+      cognome = COALESCE(${body.cognome}, cognome),
+      email = COALESCE(${body.email}, email),
+      telefono = COALESCE(${body.telefono}, telefono),
+      codice_fiscale = COALESCE(${body.codice_fiscale}, codice_fiscale),
+      indirizzo = COALESCE(${body.indirizzo}, indirizzo),
+      crediti = COALESCE(${body.crediti !== undefined ? Number(body.crediti) : null}, crediti),
+      tempo_cancellazione_ore = COALESCE(${body.tempo_cancellazione_ore !== undefined ? Number(body.tempo_cancellazione_ore) : null}, tempo_cancellazione_ore),
+      data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti}, data_scadenza_crediti),
+      note_coach = COALESCE(${body.note_coach}, note_coach),
+      updated_at = NOW()
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  if (rows.length === 0) return c.json({ error: "Profilo non trovato" }, 404);
+  return c.json(rows[0]);
 });
 
 app.post("/app-api/profili/:id/modifica-crediti", async (c) => {
@@ -610,8 +635,9 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
   if (rows.length === 0) return c.json({ error: "Prenotazione non trovata" }, 404);
   const bk = rows[0];
 
+  const atletaRows = await sql`SELECT tempo_cancellazione_ore FROM profili_utenti WHERE email = ${bk.email_cliente} LIMIT 1`;
   const configRows = await sql`SELECT tempo_cancellazione_ore FROM configurazione_lab WHERE id = 1 LIMIT 1`;
-  const policyOre = configRows[0]?.tempo_cancellazione_ore || 24;
+  const policyOre = Number(atletaRows[0]?.tempo_cancellazione_ore || configRows[0]?.tempo_cancellazione_ore || 24);
 
   const slotTs = new Date(`${bk.data.toISOString().slice(0, 10)}T${bk.orario}:00`).getTime();
   const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
@@ -637,8 +663,8 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
     rimborsato,
     stato: statoFinale,
     messaggio: rimborsato
-      ? `Cancellazione effettuata in tempo. 1 credito riaccreditato.`
-      : `Cancellazione tardiva (meno di ${policyOre}h). Credito trattenuto come da regolamento.`,
+      ? `Cancellazione effettuata in tempo (oltre ${policyOre}h di preavviso). 1 credito riaccreditato.`
+      : `Cancellazione tardiva (meno di ${policyOre}h). Credito trattenuto come da tua policy.`,
   });
 });
 
@@ -647,10 +673,10 @@ app.get("/app-api/tariffario", async (c) => {
   const rows = await sql`SELECT * FROM tariffario_pacchetti WHERE attivo = true ORDER BY prezzo_euro ASC`;
   if (rows.length === 0) {
     return c.json([
-      { id: "pack-singolo", nome: "Seduta Singola 1:1", descrizione: "1 Allenamento individuale con Coach", crediti: 1, giorni_validita: 15, prezzo_euro: 45, tipo: "consumo", attivo: true, badge: "Flessibile" },
-      { id: "pack-10", nome: "Carnet 10 Sedute", descrizione: "10 Sessioni Landmine Lab con validità 60 giorni", crediti: 10, giorni_validita: 60, prezzo_euro: 380, tipo: "consumo", attivo: true, badge: "Più Scelto" },
-      { id: "pack-20", nome: "Carnet 20 Sedute", descrizione: "20 Sessioni intensive con validità 90 giorni", crediti: 20, giorni_validita: 90, prezzo_euro: 680, tipo: "consumo", attivo: true, badge: "Miglior Valore" },
-      { id: "pack-4mesi", nome: "Membership Continuativa 4 Mesi", descrizione: "4 Mesi di percorso continuativo (32 crediti) con slot prioritari", crediti: 32, giorni_validita: 120, prezzo_euro: 990, tipo: "ricorrente_4mesi", attivo: true, badge: "Pro Lab" },
+      { id: "pack-8", nome: "Carnet 8 Sedute", descrizione: "8 Sessioni individuali Landmine Lab (validità 45 giorni)", crediti: 8, giorni_validita: 45, prezzo_euro: 320, tipo: "consumo", attivo: true, badge: "Base" },
+      { id: "pack-12", nome: "Carnet 12 Sedute", descrizione: "12 Sessioni individuali Landmine Lab (validità 60 giorni)", crediti: 12, giorni_validita: 60, prezzo_euro: 450, tipo: "consumo", attivo: true, badge: "Più Scelto" },
+      { id: "pack-24", nome: "Carnet 24 Sedute", descrizione: "24 Sessioni individuali Landmine Lab (validità 120 giorni)", crediti: 24, giorni_validita: 120, prezzo_euro: 840, tipo: "consumo", attivo: true, badge: "Avanzato" },
+      { id: "pack-36", nome: "Carnet 36 Sedute", descrizione: "36 Sessioni individuali Landmine Lab (validità 180 giorni)", crediti: 36, giorni_validita: 180, prezzo_euro: 1190, tipo: "consumo", attivo: true, badge: "Pro Season" },
     ]);
   }
   return c.json(rows);
@@ -759,6 +785,89 @@ app.post("/app-api/transazioni/:codice/approva-bonifico", async (c) => {
     RETURNING *
   `;
   return c.json({ ok: true, tx: updated[0] });
+});
+
+// ─── Movimenti Crediti (Audit Ledger) ───────────────────────────────────────
+app.get("/app-api/movimenti-crediti", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const atletaId = c.req.query("atleta_id");
+  const email = c.req.query("email");
+
+  const rows = await sql`
+    SELECT * FROM movimenti_crediti
+    WHERE (${atletaId}::text IS NULL OR atleta_id = ${atletaId})
+      AND (${email}::text IS NULL OR email_cliente = ${email})
+    ORDER BY data_ora DESC
+  `;
+  return c.json(rows);
+});
+
+app.post("/app-api/movimenti-crediti", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const body = await c.req.json();
+
+  const atletaRows = await sql`SELECT * FROM profili_utenti WHERE id = ${body.atleta_id} LIMIT 1`;
+  if (atletaRows.length === 0) return c.json({ error: "Atleta non trovato" }, 404);
+  const atleta = atletaRows[0];
+
+  const currentCrediti = Number(atleta.crediti || 0);
+  const delta = Number(body.delta_crediti || 0);
+  const newCrediti = currentCrediti + delta;
+
+  await sql`
+    UPDATE profili_utenti
+    SET crediti = ${newCrediti}, updated_at = NOW()
+    WHERE id = ${atleta.id}
+  `;
+
+  const movId = `mov-${Date.now()}`;
+  const rows = await sql`
+    INSERT INTO movimenti_crediti (
+      id, atleta_id, email_cliente, nome_cliente, data_ora, tipo, delta_crediti, saldo_risultante, motivazione, operatore
+    ) VALUES (
+      ${movId}, ${atleta.id}, ${atleta.email}, ${`${atleta.nome} ${atleta.cognome}`},
+      NOW(), ${body.tipo || 'modifica_manuale'}, ${delta}, ${newCrediti},
+      ${body.motivazione || 'Rettifica crediti'}, 'coach'
+    )
+    RETURNING *
+  `;
+  return c.json(rows[0], 201);
+});
+
+// ─── Eccezioni Calendario (Slot straordinari / Chiusure) ────────────────────
+app.get("/app-api/eccezioni-calendario", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const dataParam = c.req.query("data");
+
+  const rows = await sql`
+    SELECT * FROM eccezioni_calendario
+    WHERE (${dataParam}::text IS NULL OR data::text = ${dataParam})
+    ORDER BY data ASC, orario ASC NULLS FIRST
+  `;
+  return c.json(rows);
+});
+
+app.post("/app-api/eccezioni-calendario", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const body = await c.req.json();
+  const id = `ecc-${Date.now()}`;
+
+  const rows = await sql`
+    INSERT INTO eccezioni_calendario (
+      id, data, orario, tipo, motivo
+    ) VALUES (
+      ${id}, ${body.data}::date, ${body.orario || null}, ${body.tipo}, ${body.motivo || null}
+    )
+    RETURNING *
+  `;
+  return c.json(rows[0], 201);
+});
+
+app.delete("/app-api/eccezioni-calendario/:id", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const id = c.req.param("id");
+  await sql`DELETE FROM eccezioni_calendario WHERE id = ${id}`;
+  return c.json({ ok: true });
 });
 
 export default { fetch: app.fetch };

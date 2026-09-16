@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { useProfili, useLabConfig } from "../lib/useUser";
+import { useProfili, useLabConfig, useEccezioniCalendario } from "../lib/useUser";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -14,9 +14,12 @@ import {
   CheckCircle,
   XCircle,
   ShieldCheck,
-  Filter,
+  Ban,
+  Sun,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "../components/Button";
+import { Input } from "../components/Input";
 import {
   Dialog,
   DialogContent,
@@ -58,16 +61,28 @@ export default function ManagerCalendarPage() {
   const { profili } = useProfili();
   const { config } = useLabConfig();
 
-  // Data correntemente visualizzata (default oggi)
+  // Data visualizzata
   const [selectedDate, setSelectedDate] = useState(() => formatDateISO(new Date()));
 
-  // Modale Dettaglio / Cancellazione Prenotazione Esistente
-  const [selectedBooking, setSelectedBooking] = useState<Prenotazione | null>(null);
+  // Eccezioni calendario per la data (aperture straordinarie / blocchi / ferie)
+  const { eccezioni, aggiungiEccezione, rimuoviEccezione } = useEccezioniCalendario();
 
-  // Modale Nuova Prenotazione Manuale del Coach
+  // Modali
+  const [selectedBooking, setSelectedBooking] = useState<Prenotazione | null>(null);
   const [manualSlot, setManualSlot] = useState<string | null>(null);
   const [selectedAtletaId, setSelectedAtletaId] = useState("");
   const [manualNote, setManualNote] = useState("");
+
+  // Modale Aggiungi Slot Straordinario
+  const [extraSlotModal, setExtraSlotModal] = useState(false);
+  const [extraOrario, setExtraOrario] = useState("12:30");
+  const [extraMotivo, setExtraMotivo] = useState("Apertura straordinaria");
+
+  // Modale Blocca Slot / Chiusura Ferie
+  const [blockModal, setBlockModal] = useState(false);
+  const [blockTipo, setBlockTipo] = useState<"chiusura_giornata" | "slot_bloccato">("chiusura_giornata");
+  const [blockOrario, setBlockOrario] = useState("08:30");
+  const [blockMotivo, setBlockMotivo] = useState("Chiusura per ferie / imprevisto");
 
   // Query Prenotazioni
   const { data: prenotazioni = [] } = useQuery<Prenotazione[]>({
@@ -80,12 +95,32 @@ export default function ManagerCalendarPage() {
     refetchInterval: 10000,
   });
 
-  const orariDisponibili = config?.orari_disponibili || [
+  const orariBase = config?.orari_disponibili || [
     "07:30", "08:30", "09:30", "10:30", "11:30",
-    "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
+    "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
   ];
 
-  // Prenotazioni per la data selezionata
+  // Eccezioni relative al giorno selezionato
+  const eccezioniGiorno = useMemo(() => {
+    return eccezioni.filter((e) => e.data === selectedDate);
+  }, [eccezioni, selectedDate]);
+
+  const isGiornoChiuso = useMemo(() => {
+    return eccezioniGiorno.some((e) => e.tipo === "chiusura_giornata");
+  }, [eccezioniGiorno]);
+
+  // Lista unificata orari del giorno
+  const orariGiorno = useMemo(() => {
+    const setOrari = new Set(orariBase);
+    eccezioniGiorno.forEach((e) => {
+      if (e.tipo === "slot_straordinario" && e.orario) {
+        setOrari.add(e.orario);
+      }
+    });
+    return Array.from(setOrari).sort();
+  }, [orariBase, eccezioniGiorno]);
+
+  // Prenotazioni attive del giorno
   const prenotazioniGiorno = useMemo(() => {
     return prenotazioni.filter((p) => p.data === selectedDate && p.stato === "confermata");
   }, [prenotazioni, selectedDate]);
@@ -105,36 +140,34 @@ export default function ManagerCalendarPage() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
       queryClient.invalidateQueries({ queryKey: ["profili"] });
-      queryClient.invalidateQueries({ queryKey: ["current-user"] });
-      toast.success(data.messaggio || "Prenotazione registrata!");
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+      toast.success(data.messaggio || "Slot assegnato!");
       setManualSlot(null);
       setSelectedAtletaId("");
       setManualNote("");
     },
     onError: (err: any) => {
-      toast.error(err.message || "Errore durante l'inserimento dello slot");
+      toast.error(err.message || "Errore durante l'assegnazione dello slot");
     },
   });
 
   // Mutation Cancellazione Coach
   const cancellaMutation = useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/app-api/prenotazioni/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`/app-api/prenotazioni/${id}`, { method: "DELETE" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Errore cancellazione");
       return json;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
       queryClient.invalidateQueries({ queryKey: ["profili"] });
-      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
       toast.success("Prenotazione annullata dal Coach. Credito ripristinato.");
       setSelectedBooking(null);
     },
     onError: (err: any) => {
-      toast.error(err.message || "Errore nella cancellazione");
+      toast.error(err.message || "Errore cancellazione");
     },
   });
 
@@ -146,6 +179,27 @@ export default function ManagerCalendarPage() {
 
   const handleToday = () => {
     setSelectedDate(formatDateISO(new Date()));
+  };
+
+  const handleSaveExtraSlot = async () => {
+    if (!extraOrario) return;
+    await aggiungiEccezione({
+      data: selectedDate,
+      orario: extraOrario,
+      tipo: "slot_straordinario",
+      motivo: extraMotivo,
+    });
+    setExtraSlotModal(false);
+  };
+
+  const handleSaveBlock = async () => {
+    await aggiungiEccezione({
+      data: selectedDate,
+      orario: blockTipo === "slot_bloccato" ? blockOrario : undefined,
+      tipo: blockTipo,
+      motivo: blockMotivo,
+    });
+    setBlockModal(false);
   };
 
   const atleti = profili.filter((p) => p.ruolo === "atleta");
@@ -171,18 +225,18 @@ export default function ManagerCalendarPage() {
             to="/manager/atleti"
             className="px-2.5 py-1 rounded-xl text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-800 transition-colors"
           >
-            Gestione Atleti
+            Atleti
           </Link>
           <Link
             to="/manager/fisco"
             className="px-2.5 py-1 rounded-xl text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-800 transition-colors"
           >
-            Fisco & Policy
+            Fisco & Lab
           </Link>
         </div>
       </div>
 
-      {/* BARRA NAVIGATORE DATA (GOOGLE CALENDAR STYLE) */}
+      {/* BARRA NAVIGATORE DATA */}
       <div className="bg-white rounded-2xl border border-zinc-200 p-3 shadow-2xs flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Button
@@ -190,7 +244,6 @@ export default function ManagerCalendarPage() {
             size="sm"
             onClick={() => handleStepDay(-1)}
             className="h-8 w-8 p-0"
-            aria-label="Giorno precedente"
           >
             <ChevronLeft className="size-4" />
           </Button>
@@ -207,7 +260,6 @@ export default function ManagerCalendarPage() {
             size="sm"
             onClick={() => handleStepDay(1)}
             className="h-8 w-8 p-0"
-            aria-label="Giorno successivo"
           >
             <ChevronRight className="size-4" />
           </Button>
@@ -218,85 +270,374 @@ export default function ManagerCalendarPage() {
             {formatGiornoItaliano(selectedDate)}
           </div>
           <div className="text-[10px] font-bold text-zinc-500">
-            {prenotazioniGiorno.length} sedute pianificate
+            {isGiornoChiuso ? "Chiusura Programmata" : `${prenotazioniGiorno.length} sedute pianificate`}
           </div>
         </div>
       </div>
 
-      {/* GRIGLIA ORARIA (SLOT LIBERI VS OCCUPATI) */}
-      <div className="space-y-2">
-        {orariDisponibili.map((orario) => {
-          const booking = prenotazioniGiorno.find((p) => p.orario === orario);
-          const isOccupato = !!booking;
+      {/* PULSANTI CONTROLLO FLESSIBILE COACH (+ SLOT / BLOCCO / FERIE) */}
+      <div className="flex items-center gap-2">
+        <Button
+          size="sm"
+          onClick={() => setExtraSlotModal(true)}
+          className="flex-1 bg-[#1c00ff] text-white hover:bg-[#1600cc] text-xs font-bold rounded-xl h-9"
+        >
+          <Plus className="size-3.5 mr-1" /> Slot Straordinario
+        </Button>
 
-          if (isOccupato) {
-            return (
-              <div
-                key={orario}
-                onClick={() => setSelectedBooking(booking)}
-                className="p-3.5 rounded-2xl bg-white border-2 border-[#1c00ff] shadow-xs flex items-center justify-between cursor-pointer hover:bg-blue-50/40 transition-colors"
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setBlockModal(true)}
+          className="flex-1 border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 text-xs font-bold rounded-xl h-9"
+        >
+          <Ban className="size-3.5 mr-1 text-amber-700" /> Blocca Slot / Ferie
+        </Button>
+      </div>
+
+      {/* LISTA ECCEZIONI ATTIVE PER QUESTA DATA (SE PRESENTI) */}
+      {eccezioniGiorno.length > 0 && (
+        <div className="p-3 rounded-2xl bg-zinc-100 border border-zinc-200 space-y-1.5 text-xs">
+          <div className="font-bold text-zinc-700 text-[11px] uppercase tracking-wider">
+            Variazioni Orario per questa data:
+          </div>
+          {eccezioniGiorno.map((exc) => (
+            <div
+              key={exc.id}
+              className="flex items-center justify-between p-2 rounded-xl bg-white border border-zinc-200"
+            >
+              <div className="flex items-center gap-2">
+                {exc.tipo === "slot_straordinario" ? (
+                  <Sparkles className="size-3.5 text-[#1c00ff]" />
+                ) : (
+                  <Ban className="size-3.5 text-red-600" />
+                )}
+                <div>
+                  <strong>
+                    {exc.tipo === "chiusura_giornata"
+                      ? "Intera Giornata Chiusa"
+                      : `${exc.orario} (${exc.tipo === "slot_straordinario" ? "Straordinario" : "Bloccato"})`}
+                  </strong>
+                  {exc.motivo && <span className="text-zinc-500 ml-1.5">• {exc.motivo}</span>}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => rimuoviEccezione(exc.id)}
+                className="text-red-600 hover:text-red-800 text-[11px] font-bold cursor-pointer"
               >
-                <div className="flex items-center gap-3">
-                  <div className="size-11 rounded-xl bg-[#1c00ff] text-white flex flex-col items-center justify-center font-black leading-tight shadow-xs">
-                    <Clock className="size-3.5" />
-                    <span className="text-xs">{orario}</span>
-                  </div>
+                Rimuovi
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-black text-zinc-900">
-                        {booking.nome_cliente}
-                      </span>
-                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                        1:1 Confermato
-                      </span>
-                    </div>
+      {/* GRIGLIA ORARIA (SLOT LIBERI, OCCUPATI, BLOCCATI) */}
+      <div className="space-y-2">
+        {isGiornoChiuso ? (
+          <div className="p-8 text-center bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 space-y-2">
+            <Ban className="size-8 text-amber-600 mx-auto" />
+            <div className="font-black text-sm">Giornata Chiusa dal Coach</div>
+            <p className="text-xs text-amber-800">
+              Nessun atleta può prenotare in questa data. Puoi rimuovere la chiusura dall&apos;elenco variazioni in alto.
+            </p>
+          </div>
+        ) : (
+          orariGiorno.map((orario) => {
+            const booking = prenotazioniGiorno.find((p) => p.orario === orario);
+            const isOccupato = !!booking;
+            const isBloccato = eccezioniGiorno.some(
+              (e) => e.tipo === "slot_bloccato" && e.orario === orario
+            );
+            const isStraordinario = eccezioniGiorno.some(
+              (e) => e.tipo === "slot_straordinario" && e.orario === orario
+            );
 
-                    <div className="text-xs text-zinc-500 flex items-center gap-2 mt-0.5">
-                      <span>{booking.email_cliente}</span>
-                      {booking.telefono_cliente && (
-                        <span>• Tel: {booking.telefono_cliente}</span>
-                      )}
-                    </div>
+            if (isBloccato) {
+              return (
+                <div
+                  key={orario}
+                  className="p-3 rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-400 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Ban className="size-4 text-zinc-400" />
+                    <span className="text-xs font-bold">{orario}</span>
+                    <span className="text-[10px] font-bold text-zinc-500">
+                      Slot Bloccato dal Coach (Non prenotabile)
+                    </span>
                   </div>
                 </div>
+              );
+            }
 
-                <div className="text-right">
+            if (isOccupato) {
+              return (
+                <div
+                  key={orario}
+                  onClick={() => setSelectedBooking(booking)}
+                  className="p-3.5 rounded-2xl bg-white border-2 border-[#1c00ff] shadow-xs flex items-center justify-between cursor-pointer hover:bg-blue-50/40 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="size-11 rounded-xl bg-[#1c00ff] text-white flex flex-col items-center justify-center font-black leading-tight shadow-xs">
+                      <Clock className="size-3.5" />
+                      <span className="text-xs">{orario}</span>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-black text-zinc-900">
+                          {booking.nome_cliente}
+                        </span>
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          1:1 Confermato
+                        </span>
+                      </div>
+
+                      <div className="text-xs text-zinc-500 flex items-center gap-2 mt-0.5">
+                        <span>{booking.email_cliente}</span>
+                        {booking.telefono_cliente && <span>• Tel: {booking.telefono_cliente}</span>}
+                      </div>
+                    </div>
+                  </div>
+
                   <span className="text-xs font-bold text-[#1c00ff] hover:underline">
                     Dettagli &rarr;
                   </span>
                 </div>
+              );
+            }
+
+            return (
+              <div
+                key={orario}
+                onClick={() => {
+                  setManualSlot(orario);
+                  if (atleti.length > 0) setSelectedAtletaId(atleti[0].id);
+                }}
+                className={`p-3 rounded-2xl border border-dashed flex items-center justify-between transition-colors cursor-pointer group ${
+                  isStraordinario
+                    ? "bg-purple-50/50 border-purple-300 hover:border-purple-600"
+                    : "bg-zinc-50 hover:bg-white border-zinc-300 hover:border-[#1c00ff]"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-9 rounded-xl bg-zinc-200 text-zinc-700 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                    {orario}
+                  </div>
+                  <div className="text-xs text-zinc-600 font-semibold flex items-center gap-1.5">
+                    <span>Slot Libero (1 posto)</span>
+                    {isStraordinario && (
+                      <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 font-black">
+                        Straordinario
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <span className="text-xs font-bold text-zinc-400 group-hover:text-[#1c00ff] flex items-center gap-1">
+                  <Plus className="size-3.5" /> Assegna ad Atleta
+                </span>
               </div>
             );
-          }
-
-          return (
-            <div
-              key={orario}
-              onClick={() => {
-                setManualSlot(orario);
-                if (atleti.length > 0) setSelectedAtletaId(atleti[0].id);
-              }}
-              className="p-3 rounded-2xl bg-zinc-50 hover:bg-white border border-dashed border-zinc-300 hover:border-[#1c00ff] flex items-center justify-between transition-colors cursor-pointer group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="size-9 rounded-xl bg-zinc-200 text-zinc-600 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
-                  {orario}
-                </div>
-                <div className="text-xs text-zinc-500 group-hover:text-zinc-900 font-semibold">
-                  Slot Libero (1 posto disponibile)
-                </div>
-              </div>
-
-              <span className="text-xs font-bold text-zinc-400 group-hover:text-[#1c00ff] flex items-center gap-1">
-                <Plus className="size-3.5" /> Inserisci Atleta
-              </span>
-            </div>
-          );
-        })}
+          })
+        )}
       </div>
 
-      {/* MODALE DETTAGLIO PRENOTAZIONE MANAGER */}
+      {/* MODALE SLOT STRAORDINARIO */}
+      <Dialog open={extraSlotModal} onOpenChange={setExtraSlotModal}>
+        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
+              <Plus className="size-5 text-[#1c00ff]" />
+              Aggiungi Slot Straordinario
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500">
+              Aggiungi un orario non previsto nella routine per il {formatGiornoItaliano(selectedDate)}.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="my-3 space-y-3 text-xs">
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                Orario Slot (es. 12:15 o 16:30)
+              </label>
+              <Input
+                value={extraOrario}
+                onChange={(e) => setExtraOrario(e.target.value)}
+                placeholder="HH:mm"
+                className="font-mono text-base font-bold"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                Motivazione / Nota
+              </label>
+              <Input
+                value={extraMotivo}
+                onChange={(e) => setExtraMotivo(e.target.value)}
+                placeholder="es. Pausa pranzo, apertura extra"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="flex gap-2">
+            <Button variant="outline" onClick={() => setExtraSlotModal(false)} className="flex-1 rounded-xl">
+              Annulla
+            </Button>
+            <Button
+              onClick={handleSaveExtraSlot}
+              className="flex-1 rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black"
+            >
+              Crea Slot
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE BLOCCA / FERIE */}
+      <Dialog open={blockModal} onOpenChange={setBlockModal}>
+        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
+              <Ban className="size-5 text-amber-600" />
+              Blocco Slot o Chiusura Lab
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500">
+              Rendi indisponibile uno slot o chiudi l&apos;intera giornata alle prenotazioni.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="my-3 space-y-3 text-xs">
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setBlockTipo("chiusura_giornata")}
+                className={`p-2.5 rounded-xl border-2 text-left transition-all ${
+                  blockTipo === "chiusura_giornata"
+                    ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff]"
+                    : "border-zinc-200 font-bold text-zinc-700"
+                }`}
+              >
+                Intera Giornata
+              </button>
+              <button
+                type="button"
+                onClick={() => setBlockTipo("slot_bloccato")}
+                className={`p-2.5 rounded-xl border-2 text-left transition-all ${
+                  blockTipo === "slot_bloccato"
+                    ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff]"
+                    : "border-zinc-200 font-bold text-zinc-700"
+                }`}
+              >
+                Singolo Orario
+              </button>
+            </div>
+
+            {blockTipo === "slot_bloccato" && (
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                  Orario da bloccare
+                </label>
+                <select
+                  value={blockOrario}
+                  onChange={(e) => setBlockOrario(e.target.value)}
+                  className="w-full p-2 rounded-xl border border-zinc-300 bg-white font-bold text-xs"
+                >
+                  {orariGiorno.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                Motivazione (visibile a te e atleti)
+              </label>
+              <Input
+                value={blockMotivo}
+                onChange={(e) => setBlockMotivo(e.target.value)}
+                placeholder="es. Ferie Coach, manutenzione, festivo"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="flex gap-2">
+            <Button variant="outline" onClick={() => setBlockModal(false)} className="flex-1 rounded-xl">
+              Annulla
+            </Button>
+            <Button
+              onClick={handleSaveBlock}
+              className="flex-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black"
+            >
+              Applica Blocco
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE ASSEGNAZIONE MANUALE A UN ATLETA */}
+      <Dialog open={!!manualSlot} onOpenChange={(open) => !open && setManualSlot(null)}>
+        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
+              <Plus className="size-5 text-[#1c00ff]" />
+              Assegna Slot ad Atleta
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="my-3 space-y-3 text-xs">
+            <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200">
+              Slot: <strong>{formatGiornoItaliano(selectedDate)}</strong> alle{" "}
+              <strong>{manualSlot}</strong>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-black uppercase tracking-wider text-zinc-500 block mb-1">
+                Seleziona Atleta
+              </label>
+              <select
+                value={selectedAtletaId}
+                onChange={(e) => setSelectedAtletaId(e.target.value)}
+                className="w-full p-2.5 rounded-xl border border-zinc-300 bg-white font-bold text-xs"
+              >
+                {atleti.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.nome} {a.cognome} (Crediti: {a.crediti} • Policy: {a.tempo_cancellazione_ore || 24}h)
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <DialogFooter className="flex gap-2">
+            <Button variant="outline" onClick={() => setManualSlot(null)} className="flex-1 rounded-xl">
+              Annulla
+            </Button>
+            <Button
+              onClick={() => {
+                if (manualSlot && selectedAtletaId) {
+                  prenotaManualeMutation.mutate({
+                    data: selectedDate,
+                    orario: manualSlot,
+                    atleta_id: selectedAtletaId,
+                    note: manualNote,
+                  });
+                }
+              }}
+              disabled={prenotaManualeMutation.isPending || !selectedAtletaId}
+              className="flex-1 rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black"
+            >
+              {prenotaManualeMutation.isPending ? "Salvataggio..." : "Conferma"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE DETTAGLIO PRENOTAZIONE */}
       <Dialog open={!!selectedBooking} onOpenChange={(open) => !open && setSelectedBooking(null)}>
         <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
           <DialogHeader>
@@ -304,17 +645,14 @@ export default function ManagerCalendarPage() {
               <User className="size-5 text-[#1c00ff]" />
               Dettaglio Seduta 1:1
             </DialogTitle>
-            <DialogDescription className="text-xs text-zinc-500">
-              Gestione della prenotazione da pannello coach.
-            </DialogDescription>
           </DialogHeader>
 
           {selectedBooking && (
-            <div className="my-3 space-y-2.5 text-xs">
-              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-2">
+            <div className="my-3 space-y-2 text-xs">
+              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5">
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Atleta:</span>
-                  <strong className="text-zinc-900 text-sm">{selectedBooking.nome_cliente}</strong>
+                  <strong className="text-zinc-900">{selectedBooking.nome_cliente}</strong>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Email:</span>
@@ -332,7 +670,7 @@ export default function ManagerCalendarPage() {
                   </div>
                 )}
                 <div className="flex justify-between border-t border-zinc-200 pt-1.5">
-                  <span className="text-zinc-500">Data & Ora:</span>
+                  <span className="text-zinc-500">Orario:</span>
                   <strong className="text-zinc-900">
                     {formatGiornoItaliano(selectedBooking.data)} alle {selectedBooking.orario}
                   </strong>
@@ -342,11 +680,7 @@ export default function ManagerCalendarPage() {
           )}
 
           <DialogFooter className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setSelectedBooking(null)}
-              className="flex-1 rounded-xl"
-            >
+            <Button variant="outline" onClick={() => setSelectedBooking(null)} className="flex-1 rounded-xl">
               Chiudi
             </Button>
             <Button
@@ -360,71 +694,6 @@ export default function ManagerCalendarPage() {
               className="flex-1 rounded-xl font-bold bg-red-600 hover:bg-red-700 text-white"
             >
               {cancellaMutation.isPending ? "Annullamento..." : "Annulla Seduta"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* MODALE INSERIMENTO MANUALE COACH */}
-      <Dialog open={!!manualSlot} onOpenChange={(open) => !open && setManualSlot(null)}>
-        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
-              <Plus className="size-5 text-[#1c00ff]" />
-              Assegna Slot Manuale
-            </DialogTitle>
-            <DialogDescription className="text-xs text-zinc-500">
-              Prenota direttamente uno slot per un atleta del Lab.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="my-3 space-y-3 text-xs">
-            <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200">
-              Slot: <strong>{formatGiornoItaliano(selectedDate)}</strong> alle{" "}
-              <strong>{manualSlot}</strong>
-            </div>
-
-            <div>
-              <label className="text-[11px] font-black uppercase tracking-wider text-zinc-500 block mb-1">
-                Seleziona Atleta
-              </label>
-              <select
-                value={selectedAtletaId}
-                onChange={(e) => setSelectedAtletaId(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-zinc-300 bg-white font-bold text-xs"
-              >
-                {atleti.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.nome} {a.cognome} (Crediti: {a.crediti})
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <DialogFooter className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setManualSlot(null)}
-              className="flex-1 rounded-xl"
-            >
-              Annulla
-            </Button>
-            <Button
-              onClick={() => {
-                if (manualSlot && selectedAtletaId) {
-                  prenotaManualeMutation.mutate({
-                    data: selectedDate,
-                    orario: manualSlot,
-                    atleta_id: selectedAtletaId,
-                    note: manualNote,
-                  });
-                }
-              }}
-              disabled={prenotaManualeMutation.isPending || !selectedAtletaId}
-              className="flex-1 rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black"
-            >
-              {prenotaManualeMutation.isPending ? "Salvataggio..." : "Conferma Slot"}
             </Button>
           </DialogFooter>
         </DialogContent>

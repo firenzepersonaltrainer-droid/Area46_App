@@ -13479,8 +13479,9 @@
       "ruolo": "manager",
       "crediti": 999,
       "data_scadenza_crediti": "2099-12-31",
-      "data_ultimo_accesso": "2026-09-16T12:03:43.432Z",
-      "note_coach": "Account Amministratore / Head Coach"
+      "data_ultimo_accesso": "2026-09-16T12:38:13.269Z",
+      "note_coach": "Account Amministratore / Head Coach",
+      "tempo_cancellazione_ore": 12
     },
     {
       "id": "usr-atleta-01",
@@ -13493,8 +13494,9 @@
       "ruolo": "atleta",
       "crediti": 4,
       "data_scadenza_crediti": "2026-10-31",
-      "data_ultimo_accesso": "2026-09-16T12:03:43.440Z",
-      "note_coach": "Atleta costante, nessun infortunio pregresso."
+      "data_ultimo_accesso": "2026-09-16T12:39:36.533Z",
+      "note_coach": "Atleta costante, nessun infortunio pregresso.",
+      "tempo_cancellazione_ore": 24
     },
     {
       "id": "usr-atleta-02",
@@ -13505,14 +13507,15 @@
       "codice_fiscale": "BNCLRA90A41D612K",
       "indirizzo": "Viale Europa 88, Firenze",
       "ruolo": "atleta",
-      "crediti": -1,
-      "data_scadenza_crediti": "2026-09-14",
-      "data_ultimo_accesso": "2026-09-16T12:03:43.440Z",
-      "note_coach": "1 seduta di debito da regolarizzare al prossimo rinnovo carnet."
+      "crediti": 10,
+      "data_scadenza_crediti": "2026-11-15",
+      "data_ultimo_accesso": "2026-09-16T12:16:48.305Z",
+      "note_coach": "1 seduta di debito da regolarizzare al prossimo rinnovo carnet.",
+      "tempo_cancellazione_ore": 12
     }
   ],
   "configurazione_lab": {
-    "tempo_cancellazione_ore": 24,
+    "tempo_cancellazione_ore": 36,
     "iban": "IT46X0306909606100000046460",
     "intestatario_iban": "Area46 Training Lab SSD a r.l.",
     "banca": "Banca Sella - Filiale Firenze",
@@ -13545,48 +13548,48 @@
   },
   "tariffario_pacchetti": [
     {
-      "id": "pack-singolo",
-      "nome": "Seduta Singola 1:1",
-      "descrizione": "1 Allenamento individuale esclusivo con Coach dedicato",
-      "crediti": 1,
-      "giorni_validita": 15,
-      "prezzo_euro": 45,
+      "id": "pack-8",
+      "nome": "Carnet 8 Sedute",
+      "descrizione": "8 Sessioni individuali Landmine Lab (1-2x/settimana)",
+      "crediti": 8,
+      "giorni_validita": 45,
+      "prezzo_euro": 320,
       "tipo": "consumo",
       "attivo": true,
       "badge": "Flessibile"
     },
     {
-      "id": "pack-10",
-      "nome": "Carnet 10 Sedute",
-      "descrizione": "10 Sessioni Landmine Lab con validità 60 giorni",
-      "crediti": 10,
+      "id": "pack-12",
+      "nome": "Carnet 12 Sedute",
+      "descrizione": "12 Sessioni con programmazione continuativa (validità 60gg)",
+      "crediti": 12,
       "giorni_validita": 60,
-      "prezzo_euro": 380,
+      "prezzo_euro": 450,
       "tipo": "consumo",
       "attivo": true,
-      "badge": "Più Scelto"
+      "badge": "Consigliato"
     },
     {
-      "id": "pack-20",
-      "nome": "Carnet 20 Sedute",
-      "descrizione": "20 Sessioni intensive con validità 90 giorni",
-      "crediti": 20,
+      "id": "pack-24",
+      "nome": "Carnet 24 Sedute",
+      "descrizione": "24 Sessioni intensive per progressione costante (validità 90gg)",
+      "crediti": 24,
       "giorni_validita": 90,
-      "prezzo_euro": 680,
+      "prezzo_euro": 840,
       "tipo": "consumo",
       "attivo": true,
       "badge": "Miglior Valore"
     },
     {
-      "id": "pack-4mesi",
-      "nome": "Membership Continuativa 4 Mesi",
-      "descrizione": "4 Mesi di percorso continuativo (32 crediti) con slot prioritari",
-      "crediti": 32,
+      "id": "pack-36",
+      "nome": "Carnet 36 Sedute",
+      "descrizione": "36 Sessioni percorso completo Lab con slot prioritari (validità 120gg)",
+      "crediti": 36,
       "giorni_validita": 120,
-      "prezzo_euro": 990,
+      "prezzo_euro": 1190,
       "tipo": "ricorrente_4mesi",
       "attivo": true,
-      "badge": "Pro Lab"
+      "badge": "Pro Lab Continuativo"
     }
   ],
   "prenotazioni_slot": [
@@ -13615,6 +13618,44 @@
   ],
   "transazioni_pagamenti": [
     {
+      "codice_transazione": "TX-46-008299",
+      "atleta_id": "usr-atleta-02",
+      "email_cliente": "laura.bianchi@example.com",
+      "nome_cliente": "Laura Bianchi",
+      "codice_fiscale": "BNCLRA90A41D612K",
+      "indirizzo": "Viale Europa 88, Firenze",
+      "id_pacchetto": "pack-10",
+      "nome_pacchetto": "Carnet 10 Sedute",
+      "importo_euro": 380,
+      "metodo": "paypal",
+      "crediti_acquistati": 10,
+      "debiti_decurtati": 0,
+      "crediti_effettivi_aggiunti": 10,
+      "causale_bonifico": null,
+      "stato": "completato",
+      "stato_fattura": "da_emettere",
+      "created_at": "2026-09-16T12:16:48.299Z"
+    },
+    {
+      "codice_transazione": "TX-46-992926",
+      "atleta_id": "usr-atleta-02",
+      "email_cliente": "laura.bianchi@example.com",
+      "nome_cliente": "Laura Bianchi",
+      "codice_fiscale": "BNCLRA90A41D612K",
+      "indirizzo": "Viale Europa 88, Firenze",
+      "id_pacchetto": "pack-singolo",
+      "nome_pacchetto": "Seduta Singola 1:1",
+      "importo_euro": 45,
+      "metodo": "apple_pay",
+      "crediti_acquistati": 1,
+      "debiti_decurtati": 1,
+      "crediti_effettivi_aggiunti": 0,
+      "causale_bonifico": null,
+      "stato": "completato",
+      "stato_fattura": "da_emettere",
+      "created_at": "2026-09-16T12:16:32.926Z"
+    },
+    {
       "codice_transazione": "TX-46-2026-001",
       "email_cliente": "mario.rossi@example.com",
       "nome_cliente": "Mario Rossi",
@@ -13632,5 +13673,65 @@
       "created_at": "2026-09-01T12:03:43.440Z"
     }
   ],
-  "active_user_id": "usr-atleta-01"
+  "active_user_id": "usr-atleta-01",
+  "movimenti_crediti": [
+    {
+      "id": "mov-001",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-01T12:46:42.896Z",
+      "tipo": "acquisto_carnet",
+      "delta_crediti": 12,
+      "saldo_risultante": 12,
+      "motivazione": "Acquisto Carnet 12 Sedute",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-002",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-11T12:46:42.898Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 11,
+      "motivazione": "Prenotazione slot Landmine Lab",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-003",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-14T12:46:42.898Z",
+      "tipo": "bonus_regalo",
+      "delta_crediti": 1,
+      "saldo_risultante": 4,
+      "motivazione": "Bonus fedeltà offerto dal Coach",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-004",
+      "atleta_id": "usr-atleta-02",
+      "email_cliente": "laura.bianchi@example.com",
+      "nome_cliente": "Laura Bianchi",
+      "data_ora": "2026-09-14T12:46:42.898Z",
+      "tipo": "penalty",
+      "delta_crediti": -1,
+      "saldo_risultante": -1,
+      "motivazione": "Seduta effettuata con saldo a debito autorizzato dal Coach",
+      "operatore": "coach"
+    }
+  ],
+  "eccezioni_calendario": [
+    {
+      "id": "exc-001",
+      "data": "2026-09-17",
+      "orario": "12:15",
+      "tipo": "slot_straordinario",
+      "motivo": "Apertura straordinaria pausa pranzo",
+      "created_at": "2026-09-16T12:46:42.898Z"
+    }
+  ]
 }

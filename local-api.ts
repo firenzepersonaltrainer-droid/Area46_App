@@ -22,6 +22,8 @@ function loadData() {
       prenotazioni_slot: [],
       tariffario_pacchetti: [],
       transazioni_pagamenti: [],
+      movimenti_crediti: [],
+      eccezioni_calendario: [],
       active_user_id: "usr-atleta-01",
     };
   }
@@ -55,6 +57,36 @@ export function getCurrentUser(database: any) {
     ruolo: "manager",
     crediti: 999,
   };
+}
+
+function addMovimentoCrediti(
+  database: any,
+  params: {
+    atleta_id: string;
+    email_cliente: string;
+    nome_cliente: string;
+    tipo: string;
+    delta_crediti: number;
+    saldo_risultante: number;
+    motivazione: string;
+    operatore?: string;
+  }
+) {
+  database.movimenti_crediti = database.movimenti_crediti || [];
+  const mov = {
+    id: `mov-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    atleta_id: params.atleta_id,
+    email_cliente: params.email_cliente,
+    nome_cliente: params.nome_cliente,
+    data_ora: new Date().toISOString(),
+    tipo: params.tipo,
+    delta_crediti: params.delta_crediti,
+    saldo_risultante: params.saldo_risultante,
+    motivazione: params.motivazione,
+    operatore: params.operatore || "sistema",
+  };
+  database.movimenti_crediti.unshift(mov);
+  return mov;
 }
 
 export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: () => void) {
@@ -95,7 +127,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify(currentUser));
     }
 
-    // POST /app-api/auth/switch-user
+    // POST /app-api/auth/switch-user (Per switch Coach / Atleta)
     if (pathname === "/app-api/auth/switch-user" && method === "POST") {
       const targetId = parsedBody.userId;
       const found = (db.profili_utenti || []).find(
@@ -111,7 +143,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify({ error: "Utente non trovato" }));
     }
 
-    // GET /app-api/profili (Lista completa atleti e manager)
+    // GET /app-api/profili (Lista atleti & coach con policy personale)
     if (pathname === "/app-api/profili" && method === "GET") {
       const now = new Date();
       const profili = (db.profili_utenti || []).map((p: any) => {
@@ -129,13 +161,15 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         let avviso_inattivita = false;
         if (p.data_ultimo_accesso) {
           const diffMesi =
-            (now.getTime() - new Date(p.data_ultimo_accesso).getTime()) / (1000 * 60 * 60 * 24 * 30.43);
+            (now.getTime() - new Date(p.data_ultimo_accesso).getTime()) /
+            (1000 * 60 * 60 * 24 * 30.43);
           mesi_inattivita = Math.floor(diffMesi);
           if (mesi_inattivita >= 5) avviso_inattivita = true;
         }
 
         return {
           ...p,
+          tempo_cancellazione_ore: p.tempo_cancellazione_ore || 24,
           giorni_a_scadenza,
           avviso_scadenza,
           mesi_inattivita,
@@ -145,8 +179,9 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify(profili));
     }
 
-    // POST /app-api/profili (Creazione nuovo profilo atleta)
+    // POST /app-api/profili (Nuovo atleta con policy cancellazione personalizzata)
     if (pathname === "/app-api/profili" && method === "POST") {
+      const creditiIniziali = Number(parsedBody.crediti ?? 0);
       const nuovo = {
         id: `usr-atleta-${Date.now()}`,
         nome: parsedBody.nome || "Nuovo",
@@ -156,7 +191,8 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         codice_fiscale: parsedBody.codice_fiscale || "",
         indirizzo: parsedBody.indirizzo || "",
         ruolo: "atleta",
-        crediti: Number(parsedBody.crediti ?? 0),
+        crediti: creditiIniziali,
+        tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
         data_scadenza_crediti:
           parsedBody.data_scadenza_crediti ||
           new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10),
@@ -166,12 +202,26 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       };
       db.profili_utenti = db.profili_utenti || [];
       db.profili_utenti.push(nuovo);
+
+      if (creditiIniziali !== 0) {
+        addMovimentoCrediti(db, {
+          atleta_id: nuovo.id,
+          email_cliente: nuovo.email,
+          nome_cliente: `${nuovo.nome} ${nuovo.cognome}`,
+          tipo: creditiIniziali > 0 ? "bonus_regalo" : "penalty",
+          delta_crediti: creditiIniziali,
+          saldo_risultante: creditiIniziali,
+          motivazione: "Crediti iniziali configurati in anagrafica",
+          operatore: "coach",
+        });
+      }
+
       saveData(db);
       res.statusCode = 201;
       return res.end(JSON.stringify(nuovo));
     }
 
-    // POST /app-api/profili/:id/modifica-crediti (Gestione Crediti e Debiti negativi)
+    // POST /app-api/profili/:id/modifica-crediti
     const modCreditiMatch = pathname.match(/^\/app-api\/profili\/([a-zA-Z0-9_-]+)\/modifica-crediti$/);
     if (modCreditiMatch && method === "POST") {
       const targetId = modCreditiMatch[1];
@@ -180,20 +230,47 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         res.statusCode = 404;
         return res.end(JSON.stringify({ error: "Profilo non trovato" }));
       }
+
+      const saldoPrecedente = Number(profilo.crediti) || 0;
+      let delta = 0;
+
       if (parsedBody.crediti !== undefined) {
-        profilo.crediti = Number(parsedBody.crediti);
+        const nuovoVal = Number(parsedBody.crediti);
+        delta = nuovoVal - saldoPrecedente;
+        profilo.crediti = nuovoVal;
       } else if (parsedBody.delta !== undefined) {
-        profilo.crediti = (Number(profilo.crediti) || 0) + Number(parsedBody.delta);
+        delta = Number(parsedBody.delta);
+        profilo.crediti = saldoPrecedente + delta;
       }
+
       if (parsedBody.data_scadenza_crediti) {
         profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
       }
+
+      // Registra nel ledger movimenti crediti
+      if (delta !== 0) {
+        addMovimentoCrediti(db, {
+          atleta_id: profilo.id,
+          email_cliente: profilo.email,
+          nome_cliente: `${profilo.nome} ${profilo.cognome}`,
+          tipo:
+            parsedBody.tipo ||
+            (delta > 0 ? "bonus_regalo" : delta < 0 ? "penalty" : "modifica_manuale"),
+          delta_crediti: delta,
+          saldo_risultante: profilo.crediti,
+          motivazione:
+            parsedBody.motivazione ||
+            (delta > 0 ? "Bonus/Regalo assegnato dal Coach" : "Rettifica/Penalty manuale Coach"),
+          operatore: "coach",
+        });
+      }
+
       profilo.updated_at = new Date().toISOString();
       saveData(db);
       return res.end(JSON.stringify(profilo));
     }
 
-    // PUT /app-api/profili/:id (Modifica anagrafica profilo)
+    // PUT /app-api/profili/:id (Modifica anagrafica profilo e policy cancellazione)
     const profiliPutMatch = pathname.match(/^\/app-api\/profili\/([a-zA-Z0-9_-]+)$/);
     if (profiliPutMatch && method === "PUT") {
       const targetId = profiliPutMatch[1];
@@ -209,7 +286,12 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       if (parsedBody.codice_fiscale !== undefined) profilo.codice_fiscale = parsedBody.codice_fiscale;
       if (parsedBody.indirizzo !== undefined) profilo.indirizzo = parsedBody.indirizzo;
       if (parsedBody.crediti !== undefined) profilo.crediti = Number(parsedBody.crediti);
-      if (parsedBody.data_scadenza_crediti !== undefined) profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
+      if (parsedBody.tempo_cancellazione_ore !== undefined) {
+        profilo.tempo_cancellazione_ore = Number(parsedBody.tempo_cancellazione_ore);
+      }
+      if (parsedBody.data_scadenza_crediti !== undefined) {
+        profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
+      }
       if (parsedBody.note_coach !== undefined) profilo.note_coach = parsedBody.note_coach;
       profilo.updated_at = new Date().toISOString();
       saveData(db);
@@ -217,7 +299,102 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // CONFIGURAZIONE LAB (Policy cancellazione, orari, IBAN)
+    // MOVIMENTI CREDITI (Ledger / Storico contabile per cliente)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // GET /app-api/movimenti-crediti
+    if (pathname === "/app-api/movimenti-crediti" && method === "GET") {
+      const atletaId = url.searchParams.get("atleta_id");
+      const emailParam = url.searchParams.get("email");
+
+      let rows = db.movimenti_crediti || [];
+      if (currentUser.ruolo === "atleta") {
+        rows = rows.filter(
+          (m: any) => m.email_cliente === currentUser.email || m.atleta_id === currentUser.id
+        );
+      } else if (atletaId) {
+        rows = rows.filter((m: any) => m.atleta_id === atletaId);
+      } else if (emailParam) {
+        rows = rows.filter((m: any) => m.email_cliente === emailParam);
+      }
+
+      rows.sort(
+        (a: any, b: any) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime()
+      );
+      return res.end(JSON.stringify(rows));
+    }
+
+    // POST /app-api/movimenti-crediti (Registrazione Bonus, Penalty o Regalo del Coach)
+    if (pathname === "/app-api/movimenti-crediti" && method === "POST") {
+      const atletaId = parsedBody.atleta_id;
+      const atleta = (db.profili_utenti || []).find((p: any) => p.id === atletaId);
+      if (!atleta) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Atleta non trovato" }));
+      }
+
+      const delta = Number(parsedBody.delta_crediti || 0);
+      atleta.crediti = (Number(atleta.crediti) || 0) + delta;
+      atleta.updated_at = new Date().toISOString();
+
+      const mov = addMovimentoCrediti(db, {
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+        tipo: parsedBody.tipo || (delta >= 0 ? "bonus_regalo" : "penalty"),
+        delta_crediti: delta,
+        saldo_risultante: atleta.crediti,
+        motivazione: parsedBody.motivazione || (delta >= 0 ? "Regalo Coach" : "Penalty"),
+        operatore: "coach",
+      });
+
+      saveData(db);
+      res.statusCode = 201;
+      return res.end(JSON.stringify({ ok: true, movimento: mov, crediti_attuali: atleta.crediti }));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ECCEZIONI CALENDARIO (Slot straordinari, blocchi, ferie, chiusure Lab)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // GET /app-api/eccezioni-calendario
+    if (pathname === "/app-api/eccezioni-calendario" && method === "GET") {
+      const dataFilter = url.searchParams.get("data");
+      let list = db.eccezioni_calendario || [];
+      if (dataFilter) {
+        list = list.filter((e: any) => e.data === dataFilter);
+      }
+      return res.end(JSON.stringify(list));
+    }
+
+    // POST /app-api/eccezioni-calendario
+    if (pathname === "/app-api/eccezioni-calendario" && method === "POST") {
+      const nuova = {
+        id: `exc-${Date.now()}`,
+        data: parsedBody.data,
+        orario: parsedBody.orario || null,
+        tipo: parsedBody.tipo || "slot_straordinario", // 'slot_straordinario', 'slot_bloccato', 'chiusura_giornata'
+        motivo: parsedBody.motivo || "",
+        created_at: new Date().toISOString(),
+      };
+      db.eccezioni_calendario = db.eccezioni_calendario || [];
+      db.eccezioni_calendario.push(nuova);
+      saveData(db);
+      res.statusCode = 201;
+      return res.end(JSON.stringify(nuova));
+    }
+
+    // DELETE /app-api/eccezioni-calendario/:id
+    const excDeleteMatch = pathname.match(/^\/app-api\/eccezioni-calendario\/([a-zA-Z0-9_-]+)$/);
+    if (excDeleteMatch && method === "DELETE") {
+      const id = excDeleteMatch[1];
+      db.eccezioni_calendario = (db.eccezioni_calendario || []).filter((e: any) => e.id !== id);
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true }));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CONFIGURAZIONE LAB (Policy globale di default, orari, IBAN)
     // ─────────────────────────────────────────────────────────────────────────
 
     if (pathname === "/app-api/lab-config" && method === "GET") {
@@ -234,7 +411,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // PRENOTAZIONI SLOT 1:1 & CANCELLAZIONE
+    // PRENOTAZIONI SLOT 1:1
     // ─────────────────────────────────────────────────────────────────────────
 
     // GET /app-api/prenotazioni
@@ -251,7 +428,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify(prenotazioni));
     }
 
-    // POST /app-api/prenotazioni (Prenotazione slot 1:1 con controllo crediti e lock esclusivo)
+    // POST /app-api/prenotazioni
     if (pathname === "/app-api/prenotazioni" && method === "POST") {
       const atletaId = parsedBody.atleta_id || currentUser.id;
       const atleta =
@@ -263,6 +440,24 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       if (!dataSlot || !orarioSlot) {
         res.statusCode = 400;
         return res.end(JSON.stringify({ error: "Data e orario sono obbligatori." }));
+      }
+
+      // Controllo chiusure o blocchi del Coach
+      const eccezioni = db.eccezioni_calendario || [];
+      const bloccato = eccezioni.find(
+        (e: any) =>
+          e.data === dataSlot &&
+          (e.tipo === "chiusura_giornata" || (e.tipo === "slot_bloccato" && e.orario === orarioSlot))
+      );
+      if (bloccato) {
+        res.statusCode = 400;
+        return res.end(
+          JSON.stringify({
+            error: `Lo slot non è prenotabile: ${
+              bloccato.motivo || "Chiusura straordinaria o ferie del Lab."
+            }`,
+          })
+        );
       }
 
       db.prenotazioni_slot = db.prenotazioni_slot || [];
@@ -280,7 +475,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         );
       }
 
-      // 2. Controllo Crediti e Scadenza (se non è un manager che forza la prenotazione)
+      // 2. Controllo Crediti e Scadenza
       const isManager = currentUser.ruolo === "manager";
       if (!isManager) {
         if ((atleta.crediti ?? 0) <= 0) {
@@ -321,7 +516,8 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         orario: orarioSlot,
         atleta_id: atleta.id,
         email_cliente: atleta.email,
-        nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+        nome_cliente:
+          `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
         telefono_cliente: atleta.telefono || "",
         stato: "confermata",
         credito_scalato: true,
@@ -330,6 +526,19 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       };
 
       db.prenotazioni_slot.push(nuovaPrenotazione);
+
+      // Tracciamento nel registro movimenti crediti
+      addMovimentoCrediti(db, {
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente: nuovaPrenotazione.nome_cliente,
+        tipo: "prenotazione_slot",
+        delta_crediti: -1,
+        saldo_risultante: atleta.crediti,
+        motivazione: `Prenotazione slot del ${dataSlot} ore ${orarioSlot}`,
+        operatore: isManager ? "coach" : "atleta",
+      });
+
       saveData(db);
 
       res.statusCode = 201;
@@ -343,7 +552,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       );
     }
 
-    // DELETE /app-api/prenotazioni/:id (Cancellazione conforme a policy configurata)
+    // DELETE /app-api/prenotazioni/:id (Cancellazione conforme a policy personale atleta)
     const bkDeleteMatch = pathname.match(/^\/app-api\/prenotazioni\/([a-zA-Z0-9_-]+)$/);
     if (bkDeleteMatch && method === "DELETE") {
       const bkId = bkDeleteMatch[1];
@@ -354,16 +563,17 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       }
 
       const isManager = currentUser.ruolo === "manager";
-      const labConfig = db.configurazione_lab || { tempo_cancellazione_ore: 24 };
-      const oreLimite = labConfig.tempo_cancellazione_ore || 24;
+      const atleta = (db.profili_utenti || []).find(
+        (p: any) => p.email === bk.email_cliente || p.id === bk.atleta_id
+      );
+
+      // Policy personalizzata dell'atleta (o fallback configurazione lab)
+      const oreLimite =
+        atleta?.tempo_cancellazione_ore || db.configurazione_lab?.tempo_cancellazione_ore || 24;
 
       const slotTimestamp = new Date(`${bk.data}T${bk.orario}:00`).getTime();
       const nowTimestamp = Date.now();
       const orePreavviso = (slotTimestamp - nowTimestamp) / (1000 * 60 * 60);
-
-      const atleta = (db.profili_utenti || []).find(
-        (p: any) => p.email === bk.email_cliente || p.id === bk.atleta_id
-      );
 
       let rimborsato = false;
       let statoFinale = "cancellata_tardiva";
@@ -374,6 +584,17 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         statoFinale = "cancellata_in_tempo";
         if (bk.credito_scalato && atleta) {
           atleta.crediti = (atleta.crediti ?? 0) + 1;
+
+          addMovimentoCrediti(db, {
+            atleta_id: atleta.id,
+            email_cliente: atleta.email,
+            nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+            tipo: "rimborso_cancellazione",
+            delta_crediti: 1,
+            saldo_risultante: atleta.crediti,
+            motivazione: `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}`,
+            operatore: isManager ? "coach" : "atleta",
+          });
         }
         messaggio = `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
           0,
@@ -382,6 +603,18 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       } else {
         rimborsato = false;
         statoFinale = "cancellata_tardiva";
+        if (atleta) {
+          addMovimentoCrediti(db, {
+            atleta_id: atleta.id,
+            email_cliente: atleta.email,
+            nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+            tipo: "penalty",
+            delta_crediti: 0,
+            saldo_risultante: atleta.crediti,
+            motivazione: `Cancellazione tardiva slot del ${bk.data} ${bk.orario} (preavviso < ${oreLimite}h: credito trattenuto)`,
+            operatore: "sistema",
+          });
+        }
         messaggio = `Prenotazione annullata oltre il termine di tolleranza di ${oreLimite} ore (preavviso di sole ${Math.max(
           0,
           Math.round(orePreavviso)
@@ -406,7 +639,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // TARIFFARIO PACCHETTI
+    // TARIFFARIO PACCHETTI (8, 12, 24, 36)
     // ─────────────────────────────────────────────────────────────────────────
 
     // GET /app-api/tariffario
@@ -471,7 +704,8 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         codice_transazione: txCode,
         atleta_id: atleta.id,
         email_cliente: atleta.email,
-        nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+        nome_cliente:
+          `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
         codice_fiscale: parsedBody.codice_fiscale || atleta.codice_fiscale || "",
         indirizzo: parsedBody.indirizzo || atleta.indirizzo || "",
         id_pacchetto: pacchetto.id,
@@ -500,6 +734,19 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
           atleta.data_scadenza_crediti = nuovaScadenza;
         }
         atleta.data_ultimo_accesso = new Date().toISOString();
+
+        addMovimentoCrediti(db, {
+          atleta_id: atleta.id,
+          email_cliente: atleta.email,
+          nome_cliente: nuovaTransazione.nome_cliente,
+          tipo: "acquisto_carnet",
+          delta_crediti: creditiEffettivi,
+          saldo_risultante: atleta.crediti,
+          motivazione: `Acquisto ${pacchetto.nome}${
+            debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""
+          }`,
+          operatore: "atleta",
+        });
       }
 
       db.transazioni_pagamenti = db.transazioni_pagamenti || [];
@@ -529,7 +776,9 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     }
 
     // POST /app-api/transazioni/:codice/approva-bonifico
-    const bonificoMatch = pathname.match(/^\/app-api\/transazioni\/([a-zA-Z0-9_-]+)\/approva-bonifico$/);
+    const bonificoMatch = pathname.match(
+      /^\/app-api\/transazioni\/([a-zA-Z0-9_-]+)\/approva-bonifico$/
+    );
     if (bonificoMatch && method === "POST") {
       const txCode = bonificoMatch[1];
       const tx = (db.transazioni_pagamenti || []).find((t: any) => t.codice_transazione === txCode);
@@ -560,6 +809,17 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
           atleta.data_scadenza_crediti = nuovaScadenza;
         }
         atleta.data_ultimo_accesso = new Date().toISOString();
+
+        addMovimentoCrediti(db, {
+          atleta_id: atleta.id,
+          email_cliente: atleta.email,
+          nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+          tipo: "acquisto_carnet",
+          delta_crediti: tx.crediti_effettivi_aggiunti,
+          saldo_risultante: atleta.crediti,
+          motivazione: `Bonifico confermato per ${tx.nome_pacchetto}`,
+          operatore: "coach",
+        });
       }
 
       tx.stato = "completato";
@@ -582,7 +842,9 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         regime_fiscale: "Forfettario (art. 1, commi 54-89, L. 190/2014)",
         metodo_pagamento: t.metodo,
         stato: t.stato,
-        stringa_copia_rapida: `${t.created_at?.slice(0, 10) || ""} | ${t.nome_cliente} | CF: ${t.codice_fiscale || "N/D"} | ${t.nome_pacchetto} | € ${t.importo_euro}`,
+        stringa_copia_rapida: `${t.created_at?.slice(0, 10) || ""} | ${t.nome_cliente} | CF: ${
+          t.codice_fiscale || "N/D"
+        } | ${t.nome_pacchetto} | € ${t.importo_euro}`,
       }));
       return res.end(JSON.stringify(transazioni));
     }
@@ -712,12 +974,15 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       let filtered = db.database_esercizi.filter((ex: any) => {
         if (search && !ex.nome_esercizio?.toLowerCase().includes(search)) return false;
         if (target && ex.target !== target) return false;
-        if (attrezzo && !ex.attrezzatura?.toLowerCase().includes(attrezzo.toLowerCase())) return false;
+        if (attrezzo && !ex.attrezzatura?.toLowerCase().includes(attrezzo.toLowerCase()))
+          return false;
         if (livello && ex.livello !== livello) return false;
         return true;
       });
 
-      filtered.sort((a: any, b: any) => (a.nome_esercizio ?? "").localeCompare(b.nome_esercizio ?? ""));
+      filtered.sort((a: any, b: any) =>
+        (a.nome_esercizio ?? "").localeCompare(b.nome_esercizio ?? "")
+      );
       return res.end(JSON.stringify(filtered));
     }
 
@@ -763,12 +1028,14 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
 
       const initialCount = db.diario_utente.length;
       db.diario_utente = db.diario_utente.filter(
-        (d: any) => !(d.email_cliente === currentUser.email && eserciziGiorno.includes(d.id_esercizio))
+        (d: any) =>
+          !(d.email_cliente === currentUser.email && eserciziGiorno.includes(d.id_esercizio))
       );
       const eliminati = initialCount - db.diario_utente.length;
 
       const existing = db.stato_allenamenti.find(
-        (s: any) => s.email_cliente === currentUser.email && s.livello === livello && s.giorno === giornoInt
+        (s: any) =>
+          s.email_cliente === currentUser.email && s.livello === livello && s.giorno === giornoInt
       );
       if (existing) {
         existing.stato = "non_iniziato";
@@ -790,7 +1057,10 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     if (pathname === "/app-api/stati" && method === "POST") {
       const { livello, giorno, stato } = parsedBody;
       const existing = db.stato_allenamenti.find(
-        (s: any) => s.email_cliente === currentUser.email && s.livello === livello && s.giorno === Number(giorno)
+        (s: any) =>
+          s.email_cliente === currentUser.email &&
+          s.livello === livello &&
+          s.giorno === Number(giorno)
       );
       if (existing) {
         existing.stato = stato;
@@ -811,7 +1081,8 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     // 12. Diario: GET /app-api/diario
     if (pathname === "/app-api/diario" && method === "GET") {
       const targetEmail = url.searchParams.get("email");
-      const filterEmail = targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
+      const filterEmail =
+        targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
 
       const rows = [...db.diario_utente]
         .filter((d: any) => !filterEmail || d.email_cliente === filterEmail)
@@ -824,11 +1095,13 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     if (diarioExMatch && method === "GET") {
       const idEsercizio = decodeURIComponent(diarioExMatch[1]);
       const targetEmail = url.searchParams.get("email");
-      const filterEmail = targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
+      const filterEmail =
+        targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
 
       const rows = [...db.diario_utente]
         .filter(
-          (d: any) => (!filterEmail || d.email_cliente === filterEmail) && d.id_esercizio === idEsercizio
+          (d: any) =>
+            (!filterEmail || d.email_cliente === filterEmail) && d.id_esercizio === idEsercizio
         )
         .sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
       return res.end(JSON.stringify(rows));

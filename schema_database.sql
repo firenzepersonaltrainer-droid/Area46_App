@@ -238,22 +238,23 @@ COMMENT ON TABLE stato_allenamenti IS 'Tracciamento dello stato degli allenament
 -- profili_utenti
 -- ─────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS profili_utenti (
-  id                    text PRIMARY KEY,
-  email                 text NOT NULL UNIQUE,
-  nome                  text NOT NULL,
-  cognome               text NOT NULL,
-  telefono              text,
-  codice_fiscale        text,
-  indirizzo             text,
-  ruolo                 text NOT NULL DEFAULT 'atleta', -- 'manager' | 'atleta'
-  crediti               integer NOT NULL DEFAULT 0, -- supporta valori negativi per debiti
-  data_scadenza_crediti date,
-  data_ultimo_accesso   timestamptz DEFAULT now(),
-  note_coach            text,
-  created_at            timestamptz DEFAULT now(),
-  updated_at            timestamptz DEFAULT now()
+  id                      text PRIMARY KEY,
+  email                   text NOT NULL UNIQUE,
+  nome                    text NOT NULL,
+  cognome                 text NOT NULL,
+  telefono                text,
+  codice_fiscale          text,
+  indirizzo               text,
+  ruolo                   text NOT NULL DEFAULT 'atleta', -- 'manager' | 'atleta'
+  crediti                 integer NOT NULL DEFAULT 0, -- supporta valori negativi per debiti
+  tempo_cancellazione_ore integer NOT NULL DEFAULT 24, -- policy personalizzata per atleta: 12, 24, 36, 48 ore
+  data_scadenza_crediti   date,
+  data_ultimo_accesso     timestamptz DEFAULT now(),
+  note_coach              text,
+  created_at              timestamptz DEFAULT now(),
+  updated_at              timestamptz DEFAULT now()
 );
-COMMENT ON TABLE profili_utenti IS 'Anagrafica atleti e staff coach Area46. Contiene saldo crediti (anche negativo per debiti), scadenza e monitoraggio inattività 6 mesi.';
+COMMENT ON TABLE profili_utenti IS 'Anagrafica atleti e staff coach Area46. Contiene saldo crediti (anche negativo per debiti), scadenza, policy cancellazione dedicata e monitoraggio inattività 6 mesi.';
 
 -- ─────────────────────────────────────────
 -- configurazione_lab
@@ -334,4 +335,35 @@ CREATE TABLE IF NOT EXISTS transazioni_pagamenti (
   created_at                 timestamptz DEFAULT now()
 );
 COMMENT ON TABLE transazioni_pagamenti IS 'Storico pagamenti e ricariche con tracciamento detrazione debiti e predisposizione fiscale per InvoiceBuddy e futura app autonoma.';
+
+-- ─────────────────────────────────────────
+-- movimenti_crediti (Audit Ledger)
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS movimenti_crediti (
+  id               text PRIMARY KEY,
+  atleta_id        text REFERENCES profili_utenti(id),
+  email_cliente    text NOT NULL,
+  nome_cliente     text NOT NULL,
+  data_ora         timestamptz DEFAULT now(),
+  tipo             text NOT NULL, -- 'acquisto_carnet', 'prenotazione_slot', 'rimborso_cancellazione', 'bonus_regalo', 'penalty', 'regolazione_debito', 'modifica_manuale'
+  delta_crediti    integer NOT NULL,
+  saldo_risultante integer NOT NULL,
+  motivazione      text NOT NULL,
+  operatore        text NOT NULL DEFAULT 'coach', -- 'atleta', 'coach', 'sistema'
+  created_at       timestamptz DEFAULT now()
+);
+COMMENT ON TABLE movimenti_crediti IS 'Audit ledger contabile di tutte le variazioni crediti per ciascun atleta: carnet, prenotazioni, rimborsi, bonus regalo e penalità disciplinari.';
+
+-- ─────────────────────────────────────────
+-- eccezioni_calendario (Slot straordinari & Blocchi)
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS eccezioni_calendario (
+  id         text PRIMARY KEY,
+  data       date NOT NULL,
+  orario     text, -- NULL per chiusura_giornata, HH:mm per slot specifico
+  tipo       text NOT NULL, -- 'slot_straordinario', 'slot_bloccato', 'chiusura_giornata'
+  motivo     text,
+  created_at timestamptz DEFAULT now()
+);
+COMMENT ON TABLE eccezioni_calendario IS 'Gestione orari flessibili coach: orari straordinari (es. 12:15), blocchi singoli o ferie/chiusura intera giornata.';
 ```

@@ -3,7 +3,7 @@
   "fonte_catalogo_esclusiva": "PRO database esercizi (escluso foglio elenco completo)",
   "macrociclo_attuale": "Sviluppo Multicompetenze e Rotazione Catalogo PRO (163 esercizi)",
   "mesociclo_attuale": "Mesociclo 1 (Cicli 1, 2, 3)",
-  "ciclo_attivo_da_pianificare": "Ciclo 3",
+  "ciclo_attivo_da_pianificare": "Ciclo 4 (Completamento Mesociclo 1 / Deload selettivo)",
   "storico_cicli": {
     "Ciclo 1": {
       "status": "completato / transizione",
@@ -14,13 +14,14 @@
       "sessioni": 6
     },
     "Ciclo 3": {
-      "status": "da pianificare (inizio nuovo corso metodologico)",
-      "sessioni": 6
+      "status": "attivo / programmato",
+      "sessioni": 6,
+      "focus": "Scarico anca (Mod. B), Priorità Braccia/Spalle, Bench press progressione 4x6, Pull up, Landmine Jerk"
     }
   },
   "pattern_status": {
     "spinta_orizzontale": {
-      "stato": "intensificazione (Bench press introdotta nel Ciclo 2)"
+      "stato": "picco di forza (Bench press 4x6 @ RPE 8.5)"
     },
     "trazione_orizzontale": {
       "stato": "consolidamento (Meadow row, Push the wall)"
@@ -29,14 +30,14 @@
       "stato": "consolidamento (Biker squat)"
     },
     "cerniera_anca": {
-      "stato": "scarico parziale necessario (troppo volume in Cicli 1-2)"
+      "stato": "SCARICO SELETTIVO (Modalità B attiva)"
     },
     "braccia_spalle": {
-      "stato": "richiede inserimento prioritario nel Ciclo 3"
+      "stato": "attivato e prioritario (One arm press, Landmine jerk, Endless rope, Air bike braccia)"
     }
   },
   "totale_esercizi_catalogo": 163,
-  "esercizi_utilizzati": 32,
+  "esercizi_utilizzati": 46,
   "esercizi": [
     {
       "id": "43",
@@ -75,8 +76,8 @@
       "pattern": "cerniera d'anca, asimmetrico, accosciata",
       "ruolo": "fondamentale",
       "categoria": "forza e struttura",
-      "last_cycle_used": "Ciclo 2",
-      "usage_count": 2
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 3
     },
     {
       "id": "218",
@@ -85,8 +86,8 @@
       "pattern": "spinta verticale, asimmetrico",
       "ruolo": "fondamentale",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "61",
@@ -135,8 +136,8 @@
       "pattern": "spinta verticale, asimmetrico",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "76",
@@ -155,8 +156,8 @@
       "pattern": "trazione verticale dal basso",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "95",
@@ -165,8 +166,8 @@
       "pattern": "core strenght, spinta verticale asimmetrica",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "96",
@@ -195,8 +196,8 @@
       "pattern": "spinta orizzontale",
       "ruolo": "fondamentale",
       "categoria": "forza e struttura",
-      "last_cycle_used": "Ciclo 2",
-      "usage_count": 1
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 2
     },
     {
       "id": "86",
@@ -255,8 +256,8 @@
       "pattern": "core stablity in piedi",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "94",
@@ -305,8 +306,8 @@
       "pattern": "estensione dell'omero sul piano sagittale in trazione",
       "ruolo": "fondamentale",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "97",
@@ -325,8 +326,8 @@
       "pattern": "core training in trazione verticale simmetrica",
       "ruolo": "accessrio",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "192",
@@ -665,8 +666,8 @@
       "pattern": "spinta orizzontale",
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "235",
@@ -755,8 +756,8 @@
       "pattern": "body folw",
       "ruolo": "complementare",
       "categoria": "skill e combo",
-      "last_cycle_used": "Ciclo 1",
-      "usage_count": 1
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 2
     },
     {
       "id": "206",
@@ -875,8 +876,8 @@
       "pattern": "cerniera d'anca, salto",
       "ruolo": "engine",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "121",
@@ -1085,8 +1086,8 @@
       "pattern": "airbike con utilizzo delle sole braccia",
       "ruolo": "engine",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "196",
@@ -1125,8 +1126,8 @@
       "pattern": "cerniera d'anca, accosciata",
       "ruolo": "engine benchmark",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "110",
@@ -1465,8 +1466,8 @@
       "pattern": "core stability, flessoestensione spalle",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "167",
@@ -1525,8 +1526,8 @@
       "pattern": "mobilità anche, allungamento catena flessoria anteriore",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "42",
@@ -1575,8 +1576,8 @@
       "pattern": "attivazione pattern di high pull e deadlift",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 3",
+      "usage_count": 1
     },
     {
       "id": "21",

@@ -13,6 +13,7 @@ export interface UserProfile {
   indirizzo?: string;
   ruolo: "manager" | "atleta";
   crediti: number;
+  tempo_cancellazione_ore?: number; // 12, 24, 36, 48
   data_scadenza_crediti?: string;
   data_ultimo_accesso?: string;
   note_coach?: string;
@@ -20,6 +21,35 @@ export interface UserProfile {
   avviso_scadenza?: boolean;
   mesi_inattivita?: number;
   avviso_inattivita?: boolean;
+}
+
+export interface MovimentoCrediti {
+  id: string;
+  atleta_id: string;
+  email_cliente: string;
+  nome_cliente: string;
+  data_ora: string;
+  tipo:
+    | "acquisto_carnet"
+    | "prenotazione_slot"
+    | "rimborso_cancellazione"
+    | "bonus_regalo"
+    | "penalty"
+    | "regolazione_debito"
+    | "modifica_manuale";
+  delta_crediti: number;
+  saldo_risultante: number;
+  motivazione: string;
+  operatore: "atleta" | "coach" | "sistema";
+}
+
+export interface EccezioneCalendario {
+  id: string;
+  data: string; // YYYY-MM-DD
+  orario?: string | null; // HH:mm
+  tipo: "slot_straordinario" | "slot_bloccato" | "chiusura_giornata";
+  motivo?: string;
+  created_at: string;
 }
 
 export interface LabConfig {
@@ -72,10 +102,13 @@ export function useCurrentUser() {
       queryClient.setQueryData(["current-user"], updatedUser);
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
       queryClient.invalidateQueries({ queryKey: ["diario"] });
       queryClient.invalidateQueries({ queryKey: ["stati"] });
       queryClient.invalidateQueries({ queryKey: ["preferenze"] });
-      toast.success(`Accesso effettuato come: ${updatedUser.name} (${updatedUser.ruolo === "manager" ? "Coach" : "Atleta"})`);
+      toast.success(
+        `Sessione attiva: ${updatedUser.name} (${updatedUser.ruolo === "manager" ? "Coach / Manager" : "Atleta"})`
+      );
     },
     onError: () => {
       toast.error("Impossibile cambiare profilo utente.");
@@ -119,17 +152,21 @@ export function useProfili() {
       id,
       crediti,
       delta,
+      tipo,
+      motivazione,
       data_scadenza_crediti,
     }: {
       id: string;
       crediti?: number;
       delta?: number;
+      tipo?: string;
+      motivazione?: string;
       data_scadenza_crediti?: string;
     }) => {
       const res = await fetch(`/app-api/profili/${id}/modifica-crediti`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ crediti, delta, data_scadenza_crediti }),
+        body: JSON.stringify({ crediti, delta, tipo, motivazione, data_scadenza_crediti }),
       });
       if (!res.ok) throw new Error("Errore modifica crediti");
       return res.json();
@@ -137,7 +174,8 @@ export function useProfili() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
-      toast.success("Crediti / scadenza aggiornati con successo!");
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+      toast.success("Crediti / Scadenza aggiornati con successo!");
     },
     onError: (err: any) => {
       toast.error(err.message || "Errore aggiornamento crediti");
@@ -170,6 +208,119 @@ export function useProfili() {
     refetch,
     modificaCrediti: modificaCrediti.mutateAsync,
     salvaProfilo: salvaProfilo.mutateAsync,
+  };
+}
+
+export function useMovimentiCrediti(atletaId?: string, email?: string) {
+  const queryClient = useQueryClient();
+
+  const { data: movimenti = [], isLoading, refetch } = useQuery<MovimentoCrediti[]>({
+    queryKey: ["movimenti-crediti", atletaId, email],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (atletaId) params.set("atleta_id", atletaId);
+      if (email) params.set("email", email);
+      const res = await fetch(`/app-api/movimenti-crediti?${params.toString()}`);
+      if (!res.ok) throw new Error("Errore recupero movimenti crediti");
+      return res.json();
+    },
+  });
+
+  const registraMovimento = useMutation({
+    mutationFn: async ({
+      atleta_id,
+      tipo,
+      delta_crediti,
+      motivazione,
+    }: {
+      atleta_id: string;
+      tipo: "bonus_regalo" | "penalty" | "modifica_manuale";
+      delta_crediti: number;
+      motivazione: string;
+    }) => {
+      const res = await fetch("/app-api/movimenti-crediti", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ atleta_id, tipo, delta_crediti, motivazione }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Errore salvataggio movimento");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+      queryClient.invalidateQueries({ queryKey: ["profili"] });
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      toast.success("Movimento crediti registrato nel ledger!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore nella registrazione");
+    },
+  });
+
+  return {
+    movimenti,
+    isLoading,
+    refetch,
+    registraMovimento: registraMovimento.mutateAsync,
+  };
+}
+
+export function useEccezioniCalendario(data?: string) {
+  const queryClient = useQueryClient();
+
+  const { data: eccezioni = [], isLoading, refetch } = useQuery<EccezioneCalendario[]>({
+    queryKey: ["eccezioni-calendario", data],
+    queryFn: async () => {
+      const url = data ? `/app-api/eccezioni-calendario?data=${data}` : "/app-api/eccezioni-calendario";
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Errore recupero eccezioni calendario");
+      return res.json();
+    },
+  });
+
+  const aggiungiEccezione = useMutation({
+    mutationFn: async (payload: {
+      data: string;
+      orario?: string;
+      tipo: "slot_straordinario" | "slot_bloccato" | "chiusura_giornata";
+      motivo?: string;
+    }) => {
+      const res = await fetch("/app-api/eccezioni-calendario", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Errore salvataggio eccezione calendario");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["eccezioni-calendario"] });
+      queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+      toast.success("Orario / Chiusura aggiornata nel calendario!");
+    },
+  });
+
+  const rimuoviEccezione = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/app-api/eccezioni-calendario/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Errore rimozione eccezione");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["eccezioni-calendario"] });
+      toast.success("Eccezione rimossa.");
+    },
+  });
+
+  return {
+    eccezioni,
+    isLoading,
+    refetch,
+    aggiungiEccezione: aggiungiEccezione.mutateAsync,
+    rimuoviEccezione: rimuoviEccezione.mutateAsync,
   };
 }
 
