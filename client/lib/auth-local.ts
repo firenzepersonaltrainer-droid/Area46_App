@@ -1,9 +1,35 @@
-import type { AppUser, AuthClient, SessionClient } from "../../auth";
+export interface AppUser {
+  id: string;
+  email: string;
+  name: string;
+  nome?: string;
+  cognome?: string;
+  telefono?: string;
+  codice_fiscale?: string;
+  indirizzo?: string;
+  ruolo?: "manager" | "atleta";
+  crediti?: number;
+  data_scadenza_crediti?: string;
+  data_ultimo_accesso?: string;
+  note_coach?: string;
+}
+
+export interface AuthClient {
+  user: () => AppUser;
+}
+
+export interface SessionClient {
+  get: () => Promise<AppUser>;
+}
 
 export const DEMO_USER: AppUser = {
-  id: "demo-coach-46",
+  id: "usr-coach-01",
   email: "coach@area46.it",
   name: "Coach Area46",
+  nome: "Coach",
+  cognome: "Area46",
+  ruolo: "manager",
+  crediti: 999,
 };
 
 export function auth(_c?: any): AuthClient {
@@ -13,9 +39,19 @@ export function auth(_c?: any): AuthClient {
 }
 
 export const session: SessionClient = {
-  get: async () => DEMO_USER,
+  get: async () => {
+    try {
+      const res = await fetch("/app-api/auth/current-user");
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // fallback in caso di SSR o mancata connettività
+    }
+    return DEMO_USER;
+  },
 };
 
 export function signOut(): void {
-  console.log("Demo mode: sessione coach sempre attiva.");
+  console.log("Area46 Demo mode: sessione attiva.");
 }

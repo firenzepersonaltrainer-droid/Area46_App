@@ -234,9 +234,104 @@ CREATE TABLE IF NOT EXISTS stato_allenamenti (
 
 COMMENT ON TABLE stato_allenamenti IS 'Tracciamento dello stato degli allenamenti per atleta. Uno stato per combinazione email+livello+giorno. Valori: non_iniziato, in_corso, completato.';
 
+-- ─────────────────────────────────────────
+-- profili_utenti
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS profili_utenti (
+  id                    text PRIMARY KEY,
+  email                 text NOT NULL UNIQUE,
+  nome                  text NOT NULL,
+  cognome               text NOT NULL,
+  telefono              text,
+  codice_fiscale        text,
+  indirizzo             text,
+  ruolo                 text NOT NULL DEFAULT 'atleta', -- 'manager' | 'atleta'
+  crediti               integer NOT NULL DEFAULT 0, -- supporta valori negativi per debiti
+  data_scadenza_crediti date,
+  data_ultimo_accesso   timestamptz DEFAULT now(),
+  note_coach            text,
+  created_at            timestamptz DEFAULT now(),
+  updated_at            timestamptz DEFAULT now()
+);
+COMMENT ON TABLE profili_utenti IS 'Anagrafica atleti e staff coach Area46. Contiene saldo crediti (anche negativo per debiti), scadenza e monitoraggio inattività 6 mesi.';
+
+-- ─────────────────────────────────────────
+-- configurazione_lab
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS configurazione_lab (
+  id                      integer PRIMARY KEY DEFAULT 1,
+  tempo_cancellazione_ore integer NOT NULL DEFAULT 24, -- 12, 24, 36, 48
+  iban                    text,
+  intestatario_iban       text,
+  banca                   text,
+  notifica_email          text,
+  notifica_whatsapp       text,
+  orari_disponibili       jsonb,
+  giorni_aperti           jsonb,
+  inattivita_mesi_reset   integer NOT NULL DEFAULT 6,
+  updated_at              timestamptz DEFAULT now()
+);
+COMMENT ON TABLE configurazione_lab IS 'Configurazione globale del Lab: policy cancellazione slot, coordinate bancarie, orari e alert.';
+
+-- ─────────────────────────────────────────
+-- prenotazioni_slot
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS prenotazioni_slot (
+  id                text PRIMARY KEY,
+  data              date NOT NULL,
+  orario            text NOT NULL,
+  atleta_id         text REFERENCES profili_utenti(id),
+  email_cliente     text NOT NULL,
+  nome_cliente      text NOT NULL,
+  telefono_cliente  text,
+  stato             text NOT NULL DEFAULT 'confermata', -- 'confermata', 'cancellata_in_tempo', 'cancellata_tardiva', 'completata'
+  credito_scalato   boolean NOT NULL DEFAULT true,
+  note              text,
+  cancellato_il     timestamptz,
+  created_at        timestamptz DEFAULT now(),
+  UNIQUE (data, orario, stato) -- garantisce slot 1:1 rigoroso
+);
+COMMENT ON TABLE prenotazioni_slot IS 'Prenotazioni individuali 1:1 degli slot Landmine Lab. Lock rigoroso a capienza 1.';
+
+-- ─────────────────────────────────────────
+-- tariffario_pacchetti
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS tariffario_pacchetti (
+  id              text PRIMARY KEY,
+  nome            text NOT NULL,
+  descrizione     text,
+  crediti         integer NOT NULL,
+  giorni_validita integer NOT NULL,
+  prezzo_euro     numeric(10,2) NOT NULL,
+  tipo            text NOT NULL DEFAULT 'consumo', -- 'consumo', 'ricorrente_4mesi'
+  attivo          boolean NOT NULL DEFAULT true,
+  badge           text,
+  created_at      timestamptz DEFAULT now()
+);
+COMMENT ON TABLE tariffario_pacchetti IS 'Catalogo carnet e pacchetti di sedute 1:1 con prezzi, crediti e durata.';
+
+-- ─────────────────────────────────────────
+-- transazioni_pagamenti
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS transazioni_pagamenti (
+  codice_transazione         text PRIMARY KEY,
+  atleta_id                  text REFERENCES profili_utenti(id),
+  email_cliente              text NOT NULL,
+  nome_cliente               text NOT NULL,
+  codice_fiscale             text,
+  indirizzo                  text,
+  id_pacchetto               text REFERENCES tariffario_pacchetti(id),
+  nome_pacchetto             text NOT NULL,
+  importo_euro               numeric(10,2) NOT NULL,
+  metodo                     text NOT NULL, -- 'carta', 'apple_pay', 'google_pay', 'paypal', 'bonifico'
+  crediti_acquistati         integer NOT NULL,
+  debiti_decurtati           integer NOT NULL DEFAULT 0,
+  crediti_effettivi_aggiunti integer NOT NULL,
+  causale_bonifico           text,
+  stato                      text NOT NULL DEFAULT 'completato', -- 'completato', 'in_attesa_bonifico'
+  stato_fattura              text NOT NULL DEFAULT 'da_emettere', -- 'da_emettere', 'emessa', 'sincronizzata_esterna'
+  approvato_il               timestamptz,
+  created_at                 timestamptz DEFAULT now()
+);
+COMMENT ON TABLE transazioni_pagamenti IS 'Storico pagamenti e ricariche con tracciamento detrazione debiti e predisposizione fiscale per InvoiceBuddy e futura app autonoma.';
 ```
-
-
-
----
-

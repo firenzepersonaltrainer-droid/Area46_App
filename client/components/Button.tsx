@@ -31,6 +31,8 @@ const buttonVariants = cva(
         secondary: "bg-inset text-primary hover:bg-border",
         "secondary-destructive": "bg-error/10 text-error hover:bg-error/20",
         tertiary: "border border-border bg-background hover:bg-inset",
+        outline: "border border-border bg-background hover:bg-inset",
+        destructive: "bg-error text-white hover:bg-error/90 focus-visible:ring-error/20",
         ghost: "hover:bg-inset",
         "ghost-destructive": "text-error hover:bg-error/10",
       },
