@@ -144,7 +144,7 @@ export function WalletBar() {
             <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-semibold flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5">
                 <AlertTriangle className="size-3.5 text-amber-600 shrink-0" />
-                <span>Crediti esauriti. Gli slot 1:1 sono temporaneamente bloccati.</span>
+                <span>Crediti esauriti. Le prenotazioni degli slot sono temporaneamente bloccate.</span>
               </div>
               <Link
                 to="/account"

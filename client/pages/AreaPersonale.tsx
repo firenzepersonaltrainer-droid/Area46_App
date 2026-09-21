@@ -7,6 +7,7 @@ import {
   useEccezioniCalendario,
   useLabConfig,
 } from "../lib/useUser";
+import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
 import {
   CalendarCheck,
   Coins,
@@ -384,7 +385,7 @@ export default function AreaPersonalePage() {
         </button>
       </div>
 
-      {/* ─── TAB 1: PRENOTAZIONE SLOT 1:1 ────────────────────────────────────── */}
+      {/* ─── TAB 1: PRENOTAZIONE SLOT ────────────────────────────────────────── */}
       {activeTab === "prenota" && (
         <div className="space-y-4">
           {/* LE MIE PRENOTAZIONI ATTIVE */}
@@ -431,71 +432,22 @@ export default function AreaPersonalePage() {
             </div>
           )}
 
-          {/* SELETTORE GIORNO */}
-          <div className="bg-white rounded-2xl border border-zinc-200 p-3 shadow-2xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-black text-zinc-900 uppercase tracking-wide">
-                Seleziona Giorno
-              </span>
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setWeekOffset((prev) => Math.max(0, prev - 1))}
-                  disabled={weekOffset === 0}
-                  className="h-7 w-7 p-0"
-                >
-                  <ChevronLeft className="size-4" />
-                </Button>
-                <span className="text-xs font-bold text-zinc-600 px-1">
-                  {weekOffset === 0 ? "Questa settimana" : `Settimana +${weekOffset}`}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setWeekOffset((prev) => prev + 1)}
-                  className="h-7 w-7 p-0"
-                >
-                  <ChevronRight className="size-4" />
-                </Button>
-              </div>
-            </div>
+          {/* CALENDARIO MENSILE & SETTIMANALE NAVIGABILE */}
+          <CalendarioMeseNavigabile
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            prenotazioni={prenotazioni}
+            eccezioni={eccezioni}
+            userEmail={user?.email}
+            isManager={false}
+          />
 
-            <div className="grid grid-cols-6 gap-1.5">
-              {giorniSettimana.map((g) => {
-                const isSelected = g.dateStr === selectedDate;
-                return (
-                  <button
-                    key={g.dateStr}
-                    type="button"
-                    onClick={() => setSelectedDate(g.dateStr)}
-                    className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all cursor-pointer ${
-                      isSelected
-                        ? "bg-[#1c00ff] text-white shadow-sm ring-2 ring-[#1c00ff]/30 font-black"
-                        : "bg-zinc-50 hover:bg-zinc-100 text-zinc-700 font-bold border border-zinc-200"
-                    }`}
-                  >
-                    <span className="text-[10px] uppercase">{g.dayName}</span>
-                    <span className="text-sm tabular-nums mt-0.5">{g.dayNum}</span>
-                    {g.isToday && (
-                      <span
-                        className={`size-1 rounded-full mt-1 ${
-                          isSelected ? "bg-[#e3ff00]" : "bg-[#1c00ff]"
-                        }`}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* GRIGLIA SLOT 1:1 */}
+          {/* GRIGLIA SLOT */}
           <div>
             <div className="flex items-center justify-between mb-2 px-1">
               <span className="text-xs font-black uppercase tracking-wider text-zinc-700 flex items-center gap-1.5">
                 <Clock className="size-3.5 text-[#1c00ff]" />
-                Slot 1:1 • {formatGiornoItaliano(selectedDate)}
+                Slot • {formatGiornoItaliano(selectedDate)}
               </span>
               <span className="text-[11px] font-bold text-zinc-500">
                 {isInteroGiornoChiuso ? "Lab Chiuso" : `${orariGiorno.length - prenotazioniGiorno.length} slot liberi`}
@@ -556,7 +508,7 @@ export default function AreaPersonalePage() {
                           </span>
                         </div>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-500 flex items-center gap-1">
-                          <Lock className="size-3" /> Occupato (1:1)
+                          <Lock className="size-3" /> Occupato
                         </span>
                       </div>
                     );
@@ -931,7 +883,7 @@ export default function AreaPersonalePage() {
               Checkout {selectedPack?.nome}
             </DialogTitle>
             <DialogDescription className="text-xs text-zinc-500">
-              Acquisto sedute individuali 1:1 al Landmine Lab.
+              Acquisto sedute di allenamento al Landmine Lab.
             </DialogDescription>
           </DialogHeader>
 
@@ -1269,7 +1221,7 @@ export default function AreaPersonalePage() {
           </DialogTitle>
 
           <DialogDescription className="text-xs text-zinc-600 mt-2 leading-relaxed">
-            Per prenotare uno slot 1:1 è necessario avere un credito attivo nel wallet.
+            Per prenotare uno slot è necessario avere un credito attivo nel wallet.
           </DialogDescription>
 
           <div className="mt-5 flex flex-col gap-2">

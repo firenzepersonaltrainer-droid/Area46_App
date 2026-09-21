@@ -850,8 +850,25 @@ app.get("/app-api/eccezioni-calendario", async (c) => {
 app.post("/app-api/eccezioni-calendario", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const body = await c.req.json();
-  const id = `ecc-${Date.now()}`;
 
+  if (body.orari && Array.isArray(body.orari) && body.orari.length > 0) {
+    const createdList = [];
+    for (const o of body.orari) {
+      const id = `ecc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+      const rows = await sql`
+        INSERT INTO eccezioni_calendario (
+          id, data, orario, tipo, motivo
+        ) VALUES (
+          ${id}, ${body.data}::date, ${o}, ${body.tipo || 'slot_bloccato'}, ${body.motivo || null}
+        )
+        RETURNING *
+      `;
+      createdList.push(rows[0]);
+    }
+    return c.json(createdList, 201);
+  }
+
+  const id = `ecc-${Date.now()}`;
   const rows = await sql`
     INSERT INTO eccezioni_calendario (
       id, data, orario, tipo, motivo

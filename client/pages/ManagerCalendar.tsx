@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useProfili, useLabConfig, useEccezioniCalendario } from "../lib/useUser";
+import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -80,8 +81,8 @@ export default function ManagerCalendarPage() {
 
   // Modale Blocca Slot / Chiusura Ferie
   const [blockModal, setBlockModal] = useState(false);
-  const [blockTipo, setBlockTipo] = useState<"chiusura_giornata" | "slot_bloccato">("chiusura_giornata");
-  const [blockOrario, setBlockOrario] = useState("08:30");
+  const [blockTipo, setBlockTipo] = useState<"chiusura_giornata" | "slot_bloccato">("slot_bloccato");
+  const [blockOrariSelezionati, setBlockOrariSelezionati] = useState<string[]>([]);
   const [blockMotivo, setBlockMotivo] = useState("Chiusura per ferie / imprevisto");
 
   // Query Prenotazioni
@@ -193,13 +194,30 @@ export default function ManagerCalendarPage() {
   };
 
   const handleSaveBlock = async () => {
-    await aggiungiEccezione({
-      data: selectedDate,
-      orario: blockTipo === "slot_bloccato" ? blockOrario : undefined,
-      tipo: blockTipo,
-      motivo: blockMotivo,
-    });
-    setBlockModal(false);
+    try {
+      if (blockTipo === "chiusura_giornata") {
+        await aggiungiEccezione({
+          data: selectedDate,
+          tipo: "chiusura_giornata",
+          motivo: blockMotivo || "Chiusura intera giornata",
+        });
+      } else {
+        if (blockOrariSelezionati.length === 0) {
+          toast.error("Seleziona almeno uno slot da bloccare");
+          return;
+        }
+        await aggiungiEccezione({
+          data: selectedDate,
+          orari: blockOrariSelezionati,
+          tipo: "slot_bloccato",
+          motivo: blockMotivo || "Slot bloccati dal Coach",
+        });
+      }
+      setBlockModal(false);
+      setBlockOrariSelezionati([]);
+    } catch {
+      // toast gestito da hook
+    }
   };
 
   const atleti = profili.filter((p) => p.ruolo === "atleta");
@@ -216,7 +234,7 @@ export default function ManagerCalendarPage() {
           </div>
           <h1 className="text-xl font-black tracking-tight text-zinc-900 mt-1 flex items-center gap-2">
             <CalendarIcon className="size-5 text-[#1c00ff]" />
-            Calendario Lab 1:1
+            Calendario Lab
           </h1>
         </div>
 
@@ -236,44 +254,14 @@ export default function ManagerCalendarPage() {
         </div>
       </div>
 
-      {/* BARRA NAVIGATORE DATA */}
-      <div className="bg-white rounded-2xl border border-zinc-200 p-3 shadow-2xs flex items-center justify-between">
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleStepDay(-1)}
-            className="h-8 w-8 p-0"
-          >
-            <ChevronLeft className="size-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleToday}
-            className="text-xs font-black h-8 px-2.5"
-          >
-            Oggi
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleStepDay(1)}
-            className="h-8 w-8 p-0"
-          >
-            <ChevronRight className="size-4" />
-          </Button>
-        </div>
-
-        <div className="text-right">
-          <div className="text-sm font-black text-zinc-900 capitalize leading-tight">
-            {formatGiornoItaliano(selectedDate)}
-          </div>
-          <div className="text-[10px] font-bold text-zinc-500">
-            {isGiornoChiuso ? "Chiusura Programmata" : `${prenotazioniGiorno.length} sedute pianificate`}
-          </div>
-        </div>
-      </div>
+      {/* CALENDARIO MENSILE & SETTIMANALE NAVIGABILE COACH */}
+      <CalendarioMeseNavigabile
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
+        prenotazioni={prenotazioni}
+        eccezioni={eccezioni}
+        isManager={true}
+      />
 
       {/* PULSANTI CONTROLLO FLESSIBILE COACH (+ SLOT / BLOCCO / FERIE) */}
       <div className="flex items-center gap-2">
@@ -390,7 +378,7 @@ export default function ManagerCalendarPage() {
                           {booking.nome_cliente}
                         </span>
                         <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                          1:1 Confermato
+                          Prenotazione Confermata
                         </span>
                       </div>
 
@@ -495,85 +483,217 @@ export default function ManagerCalendarPage() {
         </DialogContent>
       </Dialog>
 
-      {/* MODALE BLOCCA / FERIE */}
+      {/* MODALE BLOCCA / FERIE (SELEZIONE MULTIPLA SLOT) */}
       <Dialog open={blockModal} onOpenChange={setBlockModal}>
-        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
               <Ban className="size-5 text-amber-600" />
               Blocco Slot o Chiusura Lab
             </DialogTitle>
             <DialogDescription className="text-xs text-zinc-500">
-              Rendi indisponibile uno slot o chiudi l&apos;intera giornata alle prenotazioni.
+              Spunta uno o più orari contemporaneamente per il giorno selezionato oppure imposta chiusura totale.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="my-3 space-y-3 text-xs">
+          <div className="my-3 space-y-3.5 text-xs">
+            {/* SELETTORE DATA DIRETTO DENTRO IL MODALE */}
+            <div className="flex items-center justify-between bg-zinc-50 border border-zinc-200 rounded-2xl p-2 px-3">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleStepDay(-1);
+                  setBlockOrariSelezionati([]);
+                }}
+                className="h-7 w-7 p-0 rounded-lg hover:bg-zinc-200 text-zinc-700"
+                title="Giorno precedente"
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+              <div className="text-center">
+                <div className="text-xs font-black text-zinc-900 capitalize">
+                  {formatGiornoItaliano(selectedDate)}
+                </div>
+                <div className="text-[10px] text-zinc-500 font-medium">
+                  {selectedDate}
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleStepDay(1);
+                  setBlockOrariSelezionati([]);
+                }}
+                className="h-7 w-7 p-0 rounded-lg hover:bg-zinc-200 text-zinc-700"
+                title="Giorno successivo"
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setBlockTipo("chiusura_giornata")}
-                className={`p-2.5 rounded-xl border-2 text-left transition-all ${
+                className={`p-2.5 rounded-2xl border-2 text-left transition-all ${
                   blockTipo === "chiusura_giornata"
-                    ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff]"
-                    : "border-zinc-200 font-bold text-zinc-700"
+                    ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff] shadow-xs"
+                    : "border-zinc-200 font-bold text-zinc-700 hover:bg-zinc-50"
                 }`}
               >
-                Intera Giornata
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <Sun className="size-3.5 text-amber-600" />
+                  <span>Intera Giornata</span>
+                </div>
+                <div className="text-[10px] text-zinc-500 font-normal">
+                  Ferie o chiusura completa
+                </div>
               </button>
               <button
                 type="button"
                 onClick={() => setBlockTipo("slot_bloccato")}
-                className={`p-2.5 rounded-xl border-2 text-left transition-all ${
+                className={`p-2.5 rounded-2xl border-2 text-left transition-all ${
                   blockTipo === "slot_bloccato"
-                    ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff]"
-                    : "border-zinc-200 font-bold text-zinc-700"
+                    ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff] shadow-xs"
+                    : "border-zinc-200 font-bold text-zinc-700 hover:bg-zinc-50"
                 }`}
               >
-                Singolo Orario
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <Clock className="size-3.5 text-[#1c00ff]" />
+                  <span>Slot Multipli</span>
+                </div>
+                <div className="text-[10px] text-zinc-500 font-normal">
+                  Spunta gli orari a scelta
+                </div>
               </button>
             </div>
 
             {blockTipo === "slot_bloccato" && (
-              <div>
-                <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                  Orario da bloccare
-                </label>
-                <select
-                  value={blockOrario}
-                  onChange={(e) => setBlockOrario(e.target.value)}
-                  className="w-full p-2 rounded-xl border border-zinc-300 bg-white font-bold text-xs"
-                >
-                  {orariGiorno.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-black uppercase text-zinc-500">
+                    Spunta gli orari da bloccare:
+                  </label>
+                  <div className="flex items-center gap-1.5 text-[11px]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const liberi = orariGiorno.filter(
+                          (o) =>
+                            !prenotazioniGiorno.some((p) => p.orario === o) &&
+                            !eccezioniGiorno.some(
+                              (e) => e.orario === o && e.tipo === "slot_bloccato"
+                            )
+                        );
+                        setBlockOrariSelezionati(liberi);
+                      }}
+                      className="text-[#1c00ff] font-black hover:underline"
+                    >
+                      Tutti liberi
+                    </button>
+                    <span className="text-zinc-300">•</span>
+                    <button
+                      type="button"
+                      onClick={() => setBlockOrariSelezionati([])}
+                      className="text-zinc-500 font-bold hover:underline"
+                    >
+                      Deseleziona
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-1.5 max-h-52 overflow-y-auto p-1.5 bg-zinc-50 rounded-2xl border border-zinc-200 [scrollbar-width:thin]">
+                  {orariGiorno.map((o) => {
+                    const booking = prenotazioniGiorno.find((p) => p.orario === o);
+                    const isGiaBloccato = eccezioniGiorno.some(
+                      (e) => e.orario === o && e.tipo === "slot_bloccato"
+                    );
+                    const isChecked = blockOrariSelezionati.includes(o);
+
+                    return (
+                      <label
+                        key={o}
+                        className={`flex items-center justify-between p-2 rounded-xl border text-xs transition-all ${
+                          isGiaBloccato
+                            ? "bg-zinc-100 border-zinc-200 text-zinc-400 cursor-not-allowed opacity-75"
+                            : isChecked
+                            ? "bg-amber-50 border-amber-400 font-black text-amber-900 shadow-2xs cursor-pointer ring-1 ring-amber-400"
+                            : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 cursor-pointer"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            disabled={isGiaBloccato}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setBlockOrariSelezionati((prev) => [...prev, o]);
+                              } else {
+                                setBlockOrariSelezionati((prev) => prev.filter((h) => h !== o));
+                              }
+                            }}
+                            className="rounded border-zinc-300 text-amber-600 focus:ring-amber-500 size-3.5 cursor-pointer"
+                          />
+                          <span className="tabular-nums font-black">{o}</span>
+                        </div>
+                        {isGiaBloccato ? (
+                          <span className="text-[9px] font-black uppercase px-1.5 py-0.2 rounded bg-zinc-200 text-zinc-600">
+                            Bloccato
+                          </span>
+                        ) : booking ? (
+                          <span
+                            className="text-[9px] font-bold text-zinc-500 truncate max-w-[65px]"
+                            title={booking.nome_cliente}
+                          >
+                            {booking.nome_cliente.split(" ")[0]}
+                          </span>
+                        ) : null}
+                      </label>
+                    );
+                  })}
+                </div>
+
+                <div className="text-[10px] text-zinc-500 font-bold text-right">
+                  <strong>{blockOrariSelezionati.length}</strong> slot selezionati per il blocco
+                </div>
               </div>
             )}
 
             <div>
               <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                Motivazione (visibile a te e atleti)
+                Motivazione del blocco (visibile ad atleti e manager)
               </label>
               <Input
                 value={blockMotivo}
                 onChange={(e) => setBlockMotivo(e.target.value)}
                 placeholder="es. Ferie Coach, manutenzione, festivo"
+                className="text-xs"
               />
             </div>
           </div>
 
           <DialogFooter className="flex gap-2">
-            <Button variant="outline" onClick={() => setBlockModal(false)} className="flex-1 rounded-xl">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setBlockModal(false);
+                setBlockOrariSelezionati([]);
+              }}
+              className="flex-1 rounded-xl"
+            >
               Annulla
             </Button>
             <Button
               onClick={handleSaveBlock}
               className="flex-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black"
             >
-              Applica Blocco
+              {blockTipo === "chiusura_giornata"
+                ? "Chiudi Intera Giornata"
+                : `Blocca i ${blockOrariSelezionati.length} Slot`}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -643,7 +763,7 @@ export default function ManagerCalendarPage() {
           <DialogHeader>
             <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
               <User className="size-5 text-[#1c00ff]" />
-              Dettaglio Seduta 1:1
+              Dettaglio Seduta
             </DialogTitle>
           </DialogHeader>
 

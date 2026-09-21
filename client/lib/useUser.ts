@@ -283,6 +283,7 @@ export function useEccezioniCalendario(data?: string) {
     mutationFn: async (payload: {
       data: string;
       orario?: string;
+      orari?: string[];
       tipo: "slot_straordinario" | "slot_bloccato" | "chiusura_giornata";
       motivo?: string;
     }) => {

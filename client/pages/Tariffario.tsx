@@ -115,7 +115,7 @@ export default function TariffarioPage() {
               Tariffario & Ricarica Crediti
             </h1>
             <p className="text-xs text-zinc-500">
-              1 Credito = 1 Seduta 1:1 con Coach Landmine Lab
+              1 Credito = 1 Allenamento con Coach Landmine Lab
             </p>
           </div>
         </div>
@@ -220,7 +220,7 @@ export default function TariffarioPage() {
                         : "bg-[#1c00ff]/10 text-[#1c00ff]"
                     }`}
                   >
-                    {pack.crediti} Allenamenti 1:1
+                    {pack.crediti} Allenamenti
                   </span>
                   <span
                     className={`text-[11px] ${

@@ -367,17 +367,38 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify(list));
     }
 
-    // POST /app-api/eccezioni-calendario
+    // POST /app-api/eccezioni-calendario (supporta singolo slot, array o orari multipli)
     if (pathname === "/app-api/eccezioni-calendario" && method === "POST") {
+      db.eccezioni_calendario = db.eccezioni_calendario || [];
+
+      // Se riceve un array di orari per la stessa data (blocco multiplo)
+      if (parsedBody.orari && Array.isArray(parsedBody.orari) && parsedBody.orari.length > 0) {
+        const createList = [];
+        for (const o of parsedBody.orari) {
+          const nuova = {
+            id: `exc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            data: parsedBody.data,
+            orario: o,
+            tipo: parsedBody.tipo || "slot_bloccato",
+            motivo: parsedBody.motivo || "",
+            created_at: new Date().toISOString(),
+          };
+          db.eccezioni_calendario.push(nuova);
+          createList.push(nuova);
+        }
+        saveData(db);
+        res.statusCode = 201;
+        return res.end(JSON.stringify(createList));
+      }
+
       const nuova = {
-        id: `exc-${Date.now()}`,
+        id: `exc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
         data: parsedBody.data,
         orario: parsedBody.orario || null,
         tipo: parsedBody.tipo || "slot_straordinario", // 'slot_straordinario', 'slot_bloccato', 'chiusura_giornata'
         motivo: parsedBody.motivo || "",
         created_at: new Date().toISOString(),
       };
-      db.eccezioni_calendario = db.eccezioni_calendario || [];
       db.eccezioni_calendario.push(nuova);
       saveData(db);
       res.statusCode = 201;

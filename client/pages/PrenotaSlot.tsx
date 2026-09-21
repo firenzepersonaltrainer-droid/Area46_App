@@ -199,7 +199,7 @@ export default function PrenotaSlotPage() {
         <div>
           <h1 className="text-xl font-black tracking-tight text-zinc-900 flex items-center gap-2">
             <CalendarCheck className="size-5 text-[#1c00ff]" />
-            Prenotazione Slot 1:1
+            Prenotazione Slot
           </h1>
           <p className="text-xs text-zinc-500 mt-0.5">
             1 persona per slot esclusivo al Landmine Lab.
@@ -244,7 +244,7 @@ export default function PrenotaSlotPage() {
                       {formatGiornoItaliano(bk.data)} alle {bk.orario}
                     </div>
                     <div className="text-[10px] text-zinc-500">
-                      Slot 1:1 con Coach • Valido per diario
+                      Slot con Coach • Valido per diario
                     </div>
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export default function PrenotaSlotPage() {
         </div>
       </div>
 
-      {/* GRIGLIA ORARI SLOT 1:1 */}
+      {/* GRIGLIA ORARI SLOT */}
       <div>
         <div className="flex items-center justify-between mb-2 px-1">
           <span className="text-xs font-black uppercase tracking-wider text-zinc-700 flex items-center gap-1.5">
@@ -382,7 +382,7 @@ export default function PrenotaSlotPage() {
                     </span>
                   </div>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-500 flex items-center gap-1">
-                    <Lock className="size-3" /> Occupato (1:1)
+                    <Lock className="size-3" /> Occupato
                   </span>
                 </div>
               );
@@ -425,7 +425,7 @@ export default function PrenotaSlotPage() {
           Regole di Prenotazione Area46
         </div>
         <p className="text-[11px] leading-relaxed">
-          • <strong>1 Credito = 1 Seduta 1:1</strong> con programmazione e assistenza Coach.
+          • <strong>1 Credito = 1 Allenamento</strong> con programmazione e assistenza Coach.
           <br />• <strong>Cancellazione gratuita</strong> fino a <strong>{policyOre} ore</strong> prima dell&apos;inizio dello slot con riaccredito automatico.
           <br />• Oltre tale termine, il credito viene trattenuto per rispetto della pianificazione del Lab.
         </p>
@@ -590,11 +590,11 @@ export default function PrenotaSlotPage() {
               <>
                 I tuoi crediti sono scaduti il{" "}
                 <strong>{user?.data_scadenza_crediti}</strong>. Rinnova il pacchetto per continuare ad
-                allenarti 1:1 con il Coach.
+                allenarti al Lab con il Coach.
               </>
             ) : (
               <>
-                Hai <strong>0 crediti disponibili</strong>. Per prenotare uno slot esclusivo 1:1 è
+                Hai <strong>0 crediti disponibili</strong>. Per prenotare uno slot al Lab è
                 necessario acquistare una seduta singola o un carnet.
               </>
             )}
