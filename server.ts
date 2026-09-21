@@ -887,4 +887,162 @@ app.delete("/app-api/eccezioni-calendario/:id", async (c) => {
   return c.json({ ok: true });
 });
 
+// ─── Attività Lab & Regole Palinsesto ────────────────────────────────────────
+app.get("/app-api/attivita", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const rows = await sql`SELECT * FROM attivita_lab ORDER BY created_at ASC`;
+    return c.json(rows);
+  } catch {
+    return c.json([
+      {
+        id: "act-landmine-lab",
+        nome: "Landmine Lab",
+        descrizione: "Allenamento guidato al Landmine Lab con programmazione progressiva",
+        costo_crediti: 1,
+        max_partecipanti: 1,
+        durata_minuti: 60,
+        colore: "#1c00ff",
+        attiva: true,
+      },
+    ]);
+  }
+});
+
+app.post("/app-api/attivita", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const body = await c.req.json();
+    const id = body.id || `act-${Date.now()}`;
+    const rows = await sql`
+      INSERT INTO attivita_lab (id, nome, descrizione, costo_crediti, max_partecipanti, durata_minuti, colore, attiva)
+      VALUES (${id}, ${body.nome}, ${body.descrizione || ""}, ${body.costo_crediti || 1}, ${body.max_partecipanti || 1}, ${body.durata_minuti || 60}, ${body.colore || "#1c00ff"}, ${body.attiva !== false})
+      RETURNING *
+    `;
+    return c.json(rows[0], 201);
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.put("/app-api/attivita/:id", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const id = c.req.param("id");
+    const body = await c.req.json();
+    const rows = await sql`
+      UPDATE attivita_lab
+      SET nome = COALESCE(${body.nome}, nome),
+          descrizione = COALESCE(${body.descrizione}, descrizione),
+          costo_crediti = COALESCE(${body.costo_crediti}, costo_crediti),
+          max_partecipanti = COALESCE(${body.max_partecipanti}, max_partecipanti),
+          durata_minuti = COALESCE(${body.durata_minuti}, durata_minuti),
+          colore = COALESCE(${body.colore}, colore),
+          attiva = COALESCE(${body.attiva}, attiva)
+      WHERE id = ${id}
+      RETURNING *
+    `;
+    return c.json(rows[0] || { ok: true });
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.delete("/app-api/attivita/:id", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const id = c.req.param("id");
+    await sql`DELETE FROM attivita_lab WHERE id = ${id}`;
+    return c.json({ ok: true });
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.get("/app-api/regole-palinsesto", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const rows = await sql`SELECT * FROM regole_palinsesto ORDER BY created_at ASC`;
+    return c.json(rows);
+  } catch {
+    return c.json([
+      {
+        id: "rule-landmine-2026-2027",
+        nome: "Orario Ordinario Landmine Lab",
+        id_attivita: "act-landmine-lab",
+        data_inizio: "2026-09-01",
+        data_fine: "2027-07-31",
+        giorni_settimana: [1, 3, 5],
+        fasce_orarie: [
+          {
+            nome: "Mattina",
+            ora_inizio: "09:00",
+            ultimo_accesso: "11:00",
+            ora_fine_finestra: "12:30",
+            intervallo_minuti: 15,
+          },
+          {
+            nome: "Pomeriggio",
+            ora_inizio: "17:00",
+            ultimo_accesso: "19:00",
+            ora_fine_finestra: "20:30",
+            intervallo_minuti: 15,
+          },
+        ],
+        attiva: true,
+      },
+    ]);
+  }
+});
+
+app.post("/app-api/regole-palinsesto", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const body = await c.req.json();
+    const id = body.id || `rule-${Date.now()}`;
+    const rows = await sql`
+      INSERT INTO regole_palinsesto (id, nome, id_attivita, data_inizio, data_fine, giorni_settimana, fasce_orarie, attiva)
+      VALUES (${id}, ${body.nome}, ${body.id_attivita || "act-landmine-lab"}, ${body.data_inizio}, ${body.data_fine || null}, ${JSON.stringify(body.giorni_settimana)}::jsonb, ${JSON.stringify(body.fasce_orarie)}::jsonb, ${body.attiva !== false})
+      RETURNING *
+    `;
+    return c.json(rows[0], 201);
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.put("/app-api/regole-palinsesto/:id", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const id = c.req.param("id");
+    const body = await c.req.json();
+    const rows = await sql`
+      UPDATE regole_palinsesto
+      SET nome = COALESCE(${body.nome}, nome),
+          id_attivita = COALESCE(${body.id_attivita}, id_attivita),
+          data_inizio = COALESCE(${body.data_inizio}, data_inizio),
+          data_fine = COALESCE(${body.data_fine}, data_fine),
+          giorni_settimana = COALESCE(${body.giorni_settimana ? JSON.stringify(body.giorni_settimana) : null}::jsonb, giorni_settimana),
+          fasce_orarie = COALESCE(${body.fasce_orarie ? JSON.stringify(body.fasce_orarie) : null}::jsonb, fasce_orarie),
+          attiva = COALESCE(${body.attiva}, attiva)
+      WHERE id = ${id}
+      RETURNING *
+    `;
+    return c.json(rows[0] || { ok: true });
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.delete("/app-api/regole-palinsesto/:id", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const id = c.req.param("id");
+    await sql`DELETE FROM regole_palinsesto WHERE id = ${id}`;
+    return c.json({ ok: true });
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
 export default { fetch: app.fetch };

@@ -1,10 +1,19 @@
 import React, { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { useProfili, useLabConfig, useEccezioniCalendario } from "../lib/useUser";
+import {
+  useProfili,
+  useLabConfig,
+  useEccezioniCalendario,
+  useAttivita,
+  useRegolePalinsesto,
+} from "../lib/useUser";
+import { calcolaSlotPerGiorno } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
+import { ManagerPalinsestoModal } from "../components/ManagerPalinsestoModal";
 import {
   Calendar as CalendarIcon,
+  CalendarRange,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -85,6 +94,13 @@ export default function ManagerCalendarPage() {
   const [blockOrariSelezionati, setBlockOrariSelezionati] = useState<string[]>([]);
   const [blockMotivo, setBlockMotivo] = useState("Chiusura per ferie / imprevisto");
 
+  // Modale Palinsesto & Attività (Stile Bookyway)
+  const [palinsestoModalOpen, setPalinsestoModalOpen] = useState(false);
+
+  // Dati Attività e Palinsesto Ricorrente
+  const { attivita } = useAttivita();
+  const { regole } = useRegolePalinsesto();
+
   // Query Prenotazioni
   const { data: prenotazioni = [] } = useQuery<Prenotazione[]>({
     queryKey: ["prenotazioni"],
@@ -96,30 +112,25 @@ export default function ManagerCalendarPage() {
     refetchInterval: 10000,
   });
 
-  const orariBase = config?.orari_disponibili || [
-    "07:30", "08:30", "09:30", "10:30", "11:30",
-    "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
-  ];
-
   // Eccezioni relative al giorno selezionato
   const eccezioniGiorno = useMemo(() => {
     return eccezioni.filter((e) => e.data === selectedDate);
   }, [eccezioni, selectedDate]);
 
-  const isGiornoChiuso = useMemo(() => {
-    return eccezioniGiorno.some((e) => e.tipo === "chiusura_giornata");
-  }, [eccezioniGiorno]);
+  // Calcolo dinamico degli slot a scaglioni di 15 min basati su palinsesto attivo
+  const {
+    slots: slotDinamici,
+    isChiuso: isGiornoChiuso,
+    motivoChiusura,
+    hasPalinsesto,
+  } = useMemo(() => {
+    return calcolaSlotPerGiorno(selectedDate, regole, eccezioni, attivita);
+  }, [selectedDate, regole, eccezioni, attivita]);
 
-  // Lista unificata orari del giorno
+  // Lista orari del giorno generati dinamicamente
   const orariGiorno = useMemo(() => {
-    const setOrari = new Set(orariBase);
-    eccezioniGiorno.forEach((e) => {
-      if (e.tipo === "slot_straordinario" && e.orario) {
-        setOrari.add(e.orario);
-      }
-    });
-    return Array.from(setOrari).sort();
-  }, [orariBase, eccezioniGiorno]);
+    return slotDinamici.map((s) => s.orario);
+  }, [slotDinamici]);
 
   // Prenotazioni attive del giorno
   const prenotazioniGiorno = useMemo(() => {
@@ -260,27 +271,38 @@ export default function ManagerCalendarPage() {
         onSelectDate={setSelectedDate}
         prenotazioni={prenotazioni}
         eccezioni={eccezioni}
+        regole={regole}
         isManager={true}
       />
 
-      {/* PULSANTI CONTROLLO FLESSIBILE COACH (+ SLOT / BLOCCO / FERIE) */}
-      <div className="flex items-center gap-2">
+      {/* PULSANTI CONTROLLO COACH (PALINSESTO / + SLOT / BLOCCO / FERIE) */}
+      <div className="flex flex-col sm:flex-row items-stretch gap-2">
         <Button
           size="sm"
-          onClick={() => setExtraSlotModal(true)}
-          className="flex-1 bg-[#1c00ff] text-white hover:bg-[#1600cc] text-xs font-bold rounded-xl h-9"
+          onClick={() => setPalinsestoModalOpen(true)}
+          className="bg-zinc-900 text-[#e3ff00] hover:bg-zinc-800 text-xs font-black rounded-xl h-9 border border-zinc-800 shadow-xs flex items-center justify-center gap-1.5"
         >
-          <Plus className="size-3.5 mr-1" /> Slot Straordinario
+          <CalendarRange className="size-3.5 text-[#e3ff00]" /> Palinsesto & Attività
         </Button>
 
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => setBlockModal(true)}
-          className="flex-1 border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 text-xs font-bold rounded-xl h-9"
-        >
-          <Ban className="size-3.5 mr-1 text-amber-700" /> Blocca Slot / Ferie
-        </Button>
+        <div className="flex items-center gap-2 flex-1">
+          <Button
+            size="sm"
+            onClick={() => setExtraSlotModal(true)}
+            className="flex-1 bg-[#1c00ff] text-white hover:bg-[#1600cc] text-xs font-bold rounded-xl h-9"
+          >
+            <Plus className="size-3.5 mr-1" /> Slot Straordinario
+          </Button>
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setBlockModal(true)}
+            className="flex-1 border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 text-xs font-bold rounded-xl h-9"
+          >
+            <Ban className="size-3.5 mr-1 text-amber-700" /> Blocca Slot / Ferie
+          </Button>
+        </div>
       </div>
 
       {/* LISTA ECCEZIONI ATTIVE PER QUESTA DATA (SE PRESENTI) */}
@@ -309,38 +331,61 @@ export default function ManagerCalendarPage() {
                   {exc.motivo && <span className="text-zinc-500 ml-1.5">• {exc.motivo}</span>}
                 </div>
               </div>
-              <button
-                type="button"
+
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => rimuoviEccezione(exc.id)}
-                className="text-red-600 hover:text-red-800 text-[11px] font-bold cursor-pointer"
+                className="h-6 w-6 p-0 text-red-600 hover:bg-red-50 rounded-lg"
+                title="Rimuovi variazione"
               >
-                Rimuovi
-              </button>
+                <Trash2 className="size-3.5" />
+              </Button>
             </div>
           ))}
         </div>
       )}
 
-      {/* GRIGLIA ORARIA (SLOT LIBERI, OCCUPATI, BLOCCATI) */}
+      {/* DETTAGLIO DELLA GIORNATA SELEZIONATA */}
       <div className="space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-black uppercase tracking-wider text-zinc-700">
+            Slot Programmati • {formatGiornoItaliano(selectedDate)}
+          </span>
+          <span className="text-xs font-bold text-zinc-500">
+            {orariGiorno.length > 0
+              ? `${prenotazioniGiorno.length} / ${orariGiorno.length} occupati`
+              : "0 slot programmati"}
+          </span>
+        </div>
+
         {isGiornoChiuso ? (
-          <div className="p-8 text-center bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 space-y-2">
-            <Ban className="size-8 text-amber-600 mx-auto" />
+          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-1">
             <div className="font-black text-sm">Giornata Chiusa dal Coach</div>
             <p className="text-xs text-amber-800">
               Nessun atleta può prenotare in questa data. Puoi rimuovere la chiusura dall&apos;elenco variazioni in alto.
             </p>
           </div>
+        ) : orariGiorno.length === 0 ? (
+          <div className="p-6 rounded-3xl bg-white border border-dashed border-zinc-300 text-center space-y-2">
+            <CalendarIcon className="size-6 text-zinc-400 mx-auto" />
+            <div className="text-xs font-black text-zinc-800">
+              Nessun palinsesto ordinario per {formatGiornoItaliano(selectedDate)}
+            </div>
+            <p className="text-[11px] text-zinc-500 max-w-xs mx-auto">
+              Questa data non prevede sessioni di palinsesto ordinario (es. martedì/giovedì/weekend).
+              Puoi comunque aprire uno slot straordinario con il pulsante in alto.
+            </p>
+          </div>
         ) : (
           orariGiorno.map((orario) => {
+            const slotInfo = slotDinamici.find((s) => s.orario === orario);
             const booking = prenotazioniGiorno.find((p) => p.orario === orario);
             const isOccupato = !!booking;
             const isBloccato = eccezioniGiorno.some(
               (e) => e.tipo === "slot_bloccato" && e.orario === orario
             );
-            const isStraordinario = eccezioniGiorno.some(
-              (e) => e.tipo === "slot_straordinario" && e.orario === orario
-            );
+            const isStraordinario = slotInfo?.is_straordinario;
 
             if (isBloccato) {
               return (
@@ -818,6 +863,12 @@ export default function ManagerCalendarPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* MODALE PALINSESTO RICORRENTE & ATTIVITÀ STILE BOOKYWAY */}
+      <ManagerPalinsestoModal
+        open={palinsestoModalOpen}
+        onOpenChange={setPalinsestoModalOpen}
+      />
     </div>
   );
 }

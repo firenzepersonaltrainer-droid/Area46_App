@@ -14230,6 +14230,11 @@
       "email_cliente": "coach@area46.it",
       "memoria_livello": "PRO",
       "updated_at": "2026-09-15T14:48:25.634Z"
+    },
+    {
+      "email_cliente": "mario.rossi@example.com",
+      "memoria_livello": "PRO",
+      "updated_at": "2026-09-21T08:32:25.124Z"
     }
   ],
   "profili_utenti": [
@@ -14244,7 +14249,7 @@
       "ruolo": "manager",
       "crediti": 999,
       "data_scadenza_crediti": "2099-12-31",
-      "data_ultimo_accesso": "2026-09-16T14:53:24.554Z",
+      "data_ultimo_accesso": "2026-09-21T08:33:13.515Z",
       "note_coach": "Account Amministratore / Head Coach",
       "tempo_cancellazione_ore": 12
     },
@@ -14259,7 +14264,7 @@
       "ruolo": "atleta",
       "crediti": 3,
       "data_scadenza_crediti": "2026-10-31",
-      "data_ultimo_accesso": "2026-09-16T14:42:12.961Z",
+      "data_ultimo_accesso": "2026-09-21T08:32:17.527Z",
       "note_coach": "Atleta costante, nessun infortunio pregresso.",
       "tempo_cancellazione_ore": 24
     },
@@ -14514,5 +14519,44 @@
       "operatore": "coach"
     }
   ],
-  "eccezioni_calendario": []
+  "eccezioni_calendario": [],
+  "attivita_lab": [
+    {
+      "id": "act-landmine-lab",
+      "nome": "Landmine Lab",
+      "descrizione": "Allenamento guidato al Landmine Lab con programmazione progressiva",
+      "costo_crediti": 1,
+      "max_partecipanti": 1,
+      "durata_minuti": 60,
+      "colore": "#1c00ff",
+      "attiva": true
+    }
+  ],
+  "regole_palinsesto": [
+    {
+      "id": "rule-landmine-2026-2027",
+      "nome": "Orario Ordinario Landmine Lab",
+      "id_attivita": "act-landmine-lab",
+      "data_inizio": "2026-09-01",
+      "data_fine": "2027-07-31",
+      "giorni_settimana": [1, 3, 5],
+      "fasce_orarie": [
+        {
+          "nome": "Mattina",
+          "ora_inizio": "09:00",
+          "ultimo_accesso": "11:00",
+          "ora_fine_finestra": "12:30",
+          "intervallo_minuti": 15
+        },
+        {
+          "nome": "Pomeriggio",
+          "ora_inizio": "17:00",
+          "ultimo_accesso": "19:00",
+          "ora_fine_finestra": "20:30",
+          "intervallo_minuti": 15
+        }
+      ],
+      "attiva": true
+    }
+  ]
 }

@@ -24,6 +24,8 @@ function loadData() {
       transazioni_pagamenti: [],
       movimenti_crediti: [],
       eccezioni_calendario: [],
+      attivita_lab: [],
+      regole_palinsesto: [],
       active_user_id: "usr-atleta-01",
     };
   }
@@ -410,6 +412,112 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     if (excDeleteMatch && method === "DELETE") {
       const id = excDeleteMatch[1];
       db.eccezioni_calendario = (db.eccezioni_calendario || []).filter((e: any) => e.id !== id);
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true }));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ATTIVITÀ LAB (Landmine Lab, Personal, Mobility, ecc.)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // GET /app-api/attivita
+    if (pathname === "/app-api/attivita" && method === "GET") {
+      return res.end(JSON.stringify(db.attivita_lab || []));
+    }
+
+    // POST /app-api/attivita
+    if (pathname === "/app-api/attivita" && method === "POST") {
+      db.attivita_lab = db.attivita_lab || [];
+      const nuovaAttivita = {
+        id: parsedBody.id || `act-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        nome: parsedBody.nome || "Nuova Attività",
+        descrizione: parsedBody.descrizione || "",
+        costo_crediti: Number(parsedBody.costo_crediti) ?? 1,
+        max_partecipanti: Number(parsedBody.max_partecipanti) ?? 1,
+        durata_minuti: Number(parsedBody.durata_minuti) ?? 60,
+        colore: parsedBody.colore || "#1c00ff",
+        attiva: parsedBody.attiva !== false,
+        created_at: new Date().toISOString(),
+      };
+      db.attivita_lab.push(nuovaAttivita);
+      saveData(db);
+      res.statusCode = 201;
+      return res.end(JSON.stringify(nuovaAttivita));
+    }
+
+    // PUT /app-api/attivita/:id
+    const actPutMatch = pathname.match(/^\/app-api\/attivita\/([a-zA-Z0-9_-]+)$/);
+    if (actPutMatch && method === "PUT") {
+      const id = actPutMatch[1];
+      db.attivita_lab = db.attivita_lab || [];
+      const idx = db.attivita_lab.findIndex((a: any) => a.id === id);
+      if (idx === -1) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Attività non trovata" }));
+      }
+      db.attivita_lab[idx] = { ...db.attivita_lab[idx], ...parsedBody, id };
+      saveData(db);
+      return res.end(JSON.stringify(db.attivita_lab[idx]));
+    }
+
+    // DELETE /app-api/attivita/:id
+    const actDelMatch = pathname.match(/^\/app-api\/attivita\/([a-zA-Z0-9_-]+)$/);
+    if (actDelMatch && method === "DELETE") {
+      const id = actDelMatch[1];
+      db.attivita_lab = (db.attivita_lab || []).filter((a: any) => a.id !== id);
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true }));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // REGOLE DI PALINSESTO RICORRENTE (Stile Bookyway)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // GET /app-api/regole-palinsesto
+    if (pathname === "/app-api/regole-palinsesto" && method === "GET") {
+      return res.end(JSON.stringify(db.regole_palinsesto || []));
+    }
+
+    // POST /app-api/regole-palinsesto
+    if (pathname === "/app-api/regole-palinsesto" && method === "POST") {
+      db.regole_palinsesto = db.regole_palinsesto || [];
+      const nuovaRegola = {
+        id: parsedBody.id || `rule-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        nome: parsedBody.nome || "Nuovo Palinsesto",
+        id_attivita: parsedBody.id_attivita || "act-landmine-lab",
+        data_inizio: parsedBody.data_inizio || new Date().toISOString().slice(0, 10),
+        data_fine: parsedBody.data_fine || null,
+        giorni_settimana: Array.isArray(parsedBody.giorni_settimana) ? parsedBody.giorni_settimana : [1, 3, 5],
+        fasce_orarie: Array.isArray(parsedBody.fasce_orarie) ? parsedBody.fasce_orarie : [],
+        attiva: parsedBody.attiva !== false,
+        created_at: new Date().toISOString(),
+      };
+      db.regole_palinsesto.push(nuovaRegola);
+      saveData(db);
+      res.statusCode = 201;
+      return res.end(JSON.stringify(nuovaRegola));
+    }
+
+    // PUT /app-api/regole-palinsesto/:id
+    const rulePutMatch = pathname.match(/^\/app-api\/regole-palinsesto\/([a-zA-Z0-9_-]+)$/);
+    if (rulePutMatch && method === "PUT") {
+      const id = rulePutMatch[1];
+      db.regole_palinsesto = db.regole_palinsesto || [];
+      const idx = db.regole_palinsesto.findIndex((r: any) => r.id === id);
+      if (idx === -1) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Regola di palinsesto non trovata" }));
+      }
+      db.regole_palinsesto[idx] = { ...db.regole_palinsesto[idx], ...parsedBody, id };
+      saveData(db);
+      return res.end(JSON.stringify(db.regole_palinsesto[idx]));
+    }
+
+    // DELETE /app-api/regole-palinsesto/:id
+    const ruleDelMatch = pathname.match(/^\/app-api\/regole-palinsesto\/([a-zA-Z0-9_-]+)$/);
+    if (ruleDelMatch && method === "DELETE") {
+      const id = ruleDelMatch[1];
+      db.regole_palinsesto = (db.regole_palinsesto || []).filter((r: any) => r.id !== id);
       saveData(db);
       return res.end(JSON.stringify({ ok: true }));
     }

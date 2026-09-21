@@ -1,6 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { toast } from "sonner";
+import {
+  AttivitaLab,
+  RegolaPalinsesto,
+  ATTIVITA_DEFAULT_LANDMINE,
+  REGOLA_DEFAULT_LANDMINE,
+} from "./palinsesto";
+export type { AttivitaLab, RegolaPalinsesto };
 
 export interface UserProfile {
   id: string;
@@ -373,5 +380,155 @@ export function useLabConfig() {
     },
     isLoading,
     aggiornaConfig: aggiornaConfig.mutateAsync,
+  };
+}
+
+export function useAttivita() {
+  const queryClient = useQueryClient();
+
+  const { data: attivita = [ATTIVITA_DEFAULT_LANDMINE], isLoading } = useQuery<AttivitaLab[]>({
+    queryKey: ["attivita"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/attivita");
+      if (!res.ok) throw new Error("Errore caricamento attività");
+      const json = await res.json();
+      return json.length > 0 ? json : [ATTIVITA_DEFAULT_LANDMINE];
+    },
+  });
+
+  const creaAttivita = useMutation({
+    mutationFn: async (nuova: Partial<AttivitaLab>) => {
+      const res = await fetch("/app-api/attivita", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuova),
+      });
+      if (!res.ok) throw new Error("Errore creazione attività");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["attivita"] });
+      toast.success("Attività creata!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore salvataggio attività");
+    },
+  });
+
+  const aggiornaAttivita = useMutation({
+    mutationFn: async ({ id, ...dati }: Partial<AttivitaLab> & { id: string }) => {
+      const res = await fetch(`/app-api/attivita/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dati),
+      });
+      if (!res.ok) throw new Error("Errore modifica attività");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["attivita"] });
+      toast.success("Attività aggiornata!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore aggiornamento attività");
+    },
+  });
+
+  const eliminaAttivita = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/app-api/attivita/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Errore eliminazione attività");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["attivita"] });
+      toast.success("Attività eliminata.");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore eliminazione attività");
+    },
+  });
+
+  return {
+    attivita,
+    isLoading,
+    creaAttivita: creaAttivita.mutateAsync,
+    aggiornaAttivita: aggiornaAttivita.mutateAsync,
+    eliminaAttivita: eliminaAttivita.mutateAsync,
+  };
+}
+
+export function useRegolePalinsesto() {
+  const queryClient = useQueryClient();
+
+  const { data: regole = [REGOLA_DEFAULT_LANDMINE], isLoading } = useQuery<RegolaPalinsesto[]>({
+    queryKey: ["regole-palinsesto"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/regole-palinsesto");
+      if (!res.ok) throw new Error("Errore caricamento palinsesto");
+      const json = await res.json();
+      return json.length > 0 ? json : [REGOLA_DEFAULT_LANDMINE];
+    },
+  });
+
+  const creaRegola = useMutation({
+    mutationFn: async (nuova: Partial<RegolaPalinsesto>) => {
+      const res = await fetch("/app-api/regole-palinsesto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuova),
+      });
+      if (!res.ok) throw new Error("Errore creazione regola palinsesto");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["regole-palinsesto"] });
+      toast.success("Regola di palinsesto creata con successo!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore salvataggio regola");
+    },
+  });
+
+  const aggiornaRegola = useMutation({
+    mutationFn: async ({ id, ...dati }: Partial<RegolaPalinsesto> & { id: string }) => {
+      const res = await fetch(`/app-api/regole-palinsesto/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dati),
+      });
+      if (!res.ok) throw new Error("Errore modifica regola");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["regole-palinsesto"] });
+      toast.success("Palinsesto aggiornato!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore aggiornamento regola");
+    },
+  });
+
+  const eliminaRegola = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/app-api/regole-palinsesto/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Errore eliminazione regola");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["regole-palinsesto"] });
+      toast.success("Periodo di palinsesto eliminato.");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore eliminazione regola");
+    },
+  });
+
+  return {
+    regole,
+    isLoading,
+    creaRegola: creaRegola.mutateAsync,
+    aggiornaRegola: aggiornaRegola.mutateAsync,
+    eliminaRegola: eliminaRegola.mutateAsync,
   };
 }

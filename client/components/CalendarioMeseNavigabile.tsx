@@ -11,6 +11,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Button } from "./Button";
+import {
+  hasGiornoPalinsesto,
+  REGOLA_DEFAULT_LANDMINE,
+  RegolaPalinsesto,
+} from "../lib/palinsesto";
 
 export interface CalendarioPrenotazioneInfo {
   id: string;
@@ -34,6 +39,7 @@ interface CalendarioMeseNavigabileProps {
   onSelectDate: (dateStr: string) => void;
   prenotazioni?: CalendarioPrenotazioneInfo[];
   eccezioni?: CalendarioEccezioneInfo[];
+  regole?: RegolaPalinsesto[];
   userEmail?: string;
   isManager?: boolean;
   minDate?: string;
@@ -69,10 +75,11 @@ export function CalendarioMeseNavigabile({
   onSelectDate,
   prenotazioni = [],
   eccezioni = [],
+  regole = [REGOLA_DEFAULT_LANDMINE],
   userEmail,
   isManager = false,
   minDate,
-  orariBaseCount = 13,
+  orariBaseCount = 18,
 }: CalendarioMeseNavigabileProps) {
   // Modalità vista: 'mese' (griglia mensile interattiva) o 'settimana' (striscia 7 giorni)
   const [viewMode, setViewMode] = useState<"mese" | "settimana">("mese");
@@ -216,13 +223,15 @@ export function CalendarioMeseNavigabile({
     const isChiuso = exceptions.some((e) => e.tipo === "chiusura_giornata");
     const hasBlocchi = exceptions.some((e) => e.tipo === "slot_bloccato");
     const haMiaPrenotazione = !!userEmail && bookings.some((b) => b.email_cliente === userEmail);
+    const hasPalinsesto = hasGiornoPalinsesto(dateStr, regole) || exceptions.some((e) => e.tipo === "slot_straordinario");
 
     return {
       count: bookings.length,
       isChiuso,
       hasBlocchi,
       haMiaPrenotazione,
-      hasSlotsLiberi: !isChiuso && bookings.length < orariBaseCount,
+      hasPalinsesto,
+      hasSlotsLiberi: !isChiuso && hasPalinsesto && bookings.length < orariBaseCount,
     };
   };
 

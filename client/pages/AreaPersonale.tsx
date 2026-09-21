@@ -6,9 +6,13 @@ import {
   useMovimentiCrediti,
   useEccezioniCalendario,
   useLabConfig,
+  useAttivita,
+  useRegolePalinsesto,
 } from "../lib/useUser";
+import { calcolaSlotPerGiorno } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
 import {
+  Calendar as CalendarIcon,
   CalendarCheck,
   Coins,
   Receipt,
@@ -165,37 +169,32 @@ export default function AreaPersonalePage() {
     },
   });
 
-  // Orari del giorno (combinando orari base + slot straordinari - slot bloccati)
+  // Dati Attività e Palinsesto Ricorrente
+  const { attivita } = useAttivita();
+  const { regole } = useRegolePalinsesto();
+
+  // Calcolo dinamico degli slot a scaglioni di 15 min basati su palinsesto attivo
+  const {
+    slots: slotDinamici,
+    isChiuso: isInteroGiornoChiuso,
+    motivoChiusura,
+    hasPalinsesto,
+  } = useMemo(() => {
+    return calcolaSlotPerGiorno(selectedDate, regole, eccezioni, attivita);
+  }, [selectedDate, regole, eccezioni, attivita]);
+
+  // Orari del giorno depurati da eventuali blocchi singoli del Coach
   const orariGiorno = useMemo(() => {
-    const base = config?.orari_disponibili || [
-      "07:30", "08:30", "09:30", "10:30", "11:30",
-      "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
-    ];
-
-    // Verifica chiusura totale giornata
-    const isGiornoChiuso = eccezioni.some(
-      (e) => e.data === selectedDate && e.tipo === "chiusura_giornata"
+    if (isInteroGiornoChiuso) return [];
+    const bloccati = new Set(
+      eccezioni
+        .filter((e) => e.data === selectedDate && e.tipo === "slot_bloccato" && e.orario)
+        .map((e) => e.orario!)
     );
-    if (isGiornoChiuso) return [];
-
-    const setOrari = new Set(base);
-
-    // Aggiungi straordinari
-    eccezioni
-      .filter((e) => e.data === selectedDate && e.tipo === "slot_straordinario" && e.orario)
-      .forEach((e) => setOrari.add(e.orario!));
-
-    // Rimuovi bloccati
-    eccezioni
-      .filter((e) => e.data === selectedDate && e.tipo === "slot_bloccato" && e.orario)
-      .forEach((e) => setOrari.delete(e.orario!));
-
-    return Array.from(setOrari).sort();
-  }, [config, eccezioni, selectedDate]);
-
-  const isInteroGiornoChiuso = useMemo(() => {
-    return eccezioni.some((e) => e.data === selectedDate && e.tipo === "chiusura_giornata");
-  }, [eccezioni, selectedDate]);
+    return slotDinamici
+      .filter((s) => !bloccati.has(s.orario))
+      .map((s) => s.orario);
+  }, [slotDinamici, isInteroGiornoChiuso, eccezioni, selectedDate]);
 
   // Prenotazioni del giorno selezionato
   const prenotazioniGiorno = useMemo(() => {
@@ -438,6 +437,7 @@ export default function AreaPersonalePage() {
             onSelectDate={setSelectedDate}
             prenotazioni={prenotazioni}
             eccezioni={eccezioni}
+            regole={regole}
             userEmail={user?.email}
             isManager={false}
           />
@@ -459,12 +459,24 @@ export default function AreaPersonalePage() {
                 <AlertTriangle className="size-6 mx-auto text-amber-600 mb-1" />
                 <div className="font-black text-sm">Lab Chiuso in questa data</div>
                 <p className="text-[11px] text-amber-800">
-                  Il Lab è chiuso per ferie o pausa programmata dal Coach. Seleziona un altro giorno.
+                  {motivoChiusura || "Il Lab è chiuso per ferie o pausa programmata dal Coach. Seleziona un altro giorno."}
+                </p>
+              </div>
+            ) : orariGiorno.length === 0 ? (
+              <div className="p-6 rounded-3xl bg-zinc-50 border border-dashed border-zinc-200 text-center text-xs text-zinc-500 space-y-2">
+                <CalendarIcon className="size-6 mx-auto text-zinc-400" />
+                <div className="font-black text-xs text-zinc-800">
+                  Nessuna sessione di palinsesto ordinario
+                </div>
+                <p className="text-[11px] text-zinc-500 max-w-xs mx-auto">
+                  Il palinsesto ordinario del Lab è attivo il Lunedì, Mercoledì e Venerdì (09:00 - 12:30 e 17:00 - 20:30).
+                  Seleziona uno dei giorni attivi sul calendario.
                 </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {orariGiorno.map((orario) => {
+                  const slotInfo = slotDinamici.find((s) => s.orario === orario);
                   const booking = prenotazioniGiorno.find((p) => p.orario === orario);
                   const isOccupato = !!booking;
                   const isMio = booking?.email_cliente === user?.email;
@@ -519,7 +531,7 @@ export default function AreaPersonalePage() {
                       key={orario}
                       type="button"
                       onClick={() => {
-                        if (isZeroCredits || hasDebt || isExpired) {
+                        if (crediti <= 0) {
                           setShowBlockModal(true);
                           return;
                         }
@@ -532,8 +544,12 @@ export default function AreaPersonalePage() {
                           {orario}
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-xs font-black text-zinc-900">Slot Disponibile</span>
-                          <span className="text-[10px] text-zinc-500">Capienza 1 persona</span>
+                          <span className="text-xs font-black text-zinc-900">
+                            {slotInfo?.nome_attivita || "Landmine Lab"}
+                          </span>
+                          <span className="text-[10px] text-zinc-500">
+                            1 Posto • {slotInfo?.costo_crediti ?? 1} Credito
+                          </span>
                         </div>
                       </div>
 
