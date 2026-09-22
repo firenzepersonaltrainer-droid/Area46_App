@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -446,9 +446,62 @@ export default function AreaPersonalePage() {
     },
   });
 
+  // Gestione ritorno da Stripe Checkout (?session_id=...&success=true)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    const isSuccess = params.get("success") === "true";
+    const isCanceled = params.get("canceled") === "true";
+
+    if (isCanceled) {
+      toast.info("Operazione di pagamento Stripe annullata.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    if (sessionId && isSuccess) {
+      fetch("/app-api/pagamenti/stripe-verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.ok && data.transazione) {
+            queryClient.invalidateQueries({ queryKey: ["current-user"] });
+            queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+            queryClient.invalidateQueries({ queryKey: ["transazioni"] });
+            setCompletedTx(data);
+            toast.success("Pagamento confermato! Crediti aggiunti al tuo wallet.");
+          } else {
+            toast.error(data.error || "Impossibile verificare il pagamento Stripe.");
+          }
+        })
+        .catch(() => {
+          toast.error("Errore durante la verifica del pagamento.");
+        })
+        .finally(() => {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+  }, [queryClient]);
+
   // Mutation Checkout
   const checkoutMutation = useMutation({
     mutationFn: async (payload: any) => {
+      // Se metodo è digitale (carta, apple_pay, paypal): passa da Stripe Checkout
+      if (payload.metodo !== "bonifico") {
+        const res = await fetch("/app-api/pagamenti/stripe-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Errore durante il checkout");
+        return data;
+      }
+
+      // Altrimenti bonifico bancario tradizionale
       const res = await fetch("/app-api/transazioni/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -459,12 +512,18 @@ export default function AreaPersonalePage() {
       return data;
     },
     onSuccess: (data) => {
+      // Se Stripe restituisce checkout_url, reindirizza
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+        return;
+      }
+
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
       queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
       queryClient.invalidateQueries({ queryKey: ["transazioni"] });
       setCompletedTx(data);
       setSelectedPack(null);
-      if (data.transazione.stato === "in_attesa_bonifico") {
+      if (data.transazione?.stato === "in_attesa_bonifico") {
         toast.info("Richiesta registrata! Effettua il bonifico con la causale generata.");
       } else {
         toast.success("Pacchetto Lab acquistato! Crediti accreditati nel wallet.");
@@ -1759,16 +1818,24 @@ export default function AreaPersonalePage() {
               ) : (
                 <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5 font-mono text-[11px]">
                   <div className="flex justify-between border-b pb-1 font-sans font-bold">
-                    <span>Codice:</span>
-                    <span>{completedTx.ricevuta?.codice}</span>
+                    <span>Codice Transazione:</span>
+                    <span className="font-mono text-zinc-900">
+                      {completedTx.ricevuta?.codice || completedTx.transazione?.codice_transazione}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500 font-sans">Pacchetto:</span>
-                    <span>{completedTx.ricevuta?.descrizione}</span>
+                    <span className="font-sans font-bold text-zinc-800">
+                      {completedTx.ricevuta?.descrizione || completedTx.transazione?.nome_pacchetto}
+                    </span>
                   </div>
                   <div className="flex justify-between font-sans text-emerald-700 font-bold border-t pt-1">
                     <span>Nuovo Saldo Wallet:</span>
-                    <span>{completedTx.crediti_attuali} crediti</span>
+                    <span>
+                      {completedTx.crediti_attuali !== undefined
+                        ? `${completedTx.crediti_attuali} crediti`
+                        : `${completedTx.transazione?.crediti_effettivi_aggiunti} crediti aggiunti`}
+                    </span>
                   </div>
                 </div>
               )}

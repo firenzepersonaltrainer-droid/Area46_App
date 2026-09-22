@@ -69,6 +69,11 @@ export interface LabConfig {
   orari_disponibili: string[];
   giorni_aperti: number[];
   inattivita_mesi_reset: number;
+  stripe_mode?: "test" | "live";
+  stripe_publishable_key?: string;
+  stripe_secret_key?: string;
+  stripe_webhook_secret?: string;
+  stripe_collegato?: boolean;
 }
 
 export function useCurrentUser() {

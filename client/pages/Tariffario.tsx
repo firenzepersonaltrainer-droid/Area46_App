@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser, useLabConfig } from "../lib/useUser";
@@ -60,6 +60,46 @@ export default function TariffarioPage() {
     },
   });
 
+  // Gestione ritorno da Stripe Checkout (?session_id=...&success=true)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    const isSuccess = params.get("success") === "true";
+    const isCanceled = params.get("canceled") === "true";
+
+    if (isCanceled) {
+      toast.info("Operazione di pagamento Stripe annullata.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    if (sessionId && isSuccess) {
+      fetch("/app-api/pagamenti/stripe-verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.ok && data.transazione) {
+            queryClient.invalidateQueries({ queryKey: ["current-user"] });
+            queryClient.invalidateQueries({ queryKey: ["profili"] });
+            queryClient.invalidateQueries({ queryKey: ["transazioni"] });
+            setCompletedTx(data);
+            toast.success("Pagamento confermato! Crediti aggiunti al tuo wallet.");
+          } else {
+            toast.error(data.error || "Impossibile verificare il pagamento Stripe.");
+          }
+        })
+        .catch(() => {
+          toast.error("Errore durante la verifica del pagamento.");
+        })
+        .finally(() => {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+  }, [queryClient]);
+
   // Mutation Checkout
   const checkoutMutation = useMutation({
     mutationFn: async (payload: {
@@ -68,6 +108,17 @@ export default function TariffarioPage() {
       codice_fiscale: string;
       indirizzo: string;
     }) => {
+      if (payload.metodo !== "bonifico") {
+        const res = await fetch("/app-api/pagamenti/stripe-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Errore durante il checkout");
+        return data;
+      }
+
       const res = await fetch("/app-api/transazioni/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -78,12 +129,17 @@ export default function TariffarioPage() {
       return data;
     },
     onSuccess: (data) => {
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+        return;
+      }
+
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["transazioni"] });
       setCompletedTx(data);
       setSelectedPack(null);
-      if (data.transazione.stato === "in_attesa_bonifico") {
+      if (data.transazione?.stato === "in_attesa_bonifico") {
         toast.info("Richiesta registrata! Effettua il bonifico con la causale generata.");
       } else {
         toast.success("Pagamento completato con successo! Crediti aggiornati.");
@@ -464,24 +520,28 @@ export default function TariffarioPage() {
               ) : (
                 <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-2 font-mono text-[11px]">
                   <div className="flex justify-between border-b pb-1 font-sans font-bold text-zinc-900">
-                    <span>Codice Ricevuta:</span>
-                    <span>{completedTx.ricevuta?.codice}</span>
+                    <span>Codice Transazione:</span>
+                    <span className="font-mono">{completedTx.ricevuta?.codice || completedTx.transazione?.codice_transazione}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500 font-sans">Cliente:</span>
-                    <span>{completedTx.ricevuta?.cliente}</span>
+                    <span>{completedTx.ricevuta?.cliente || completedTx.transazione?.nome_cliente}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500 font-sans">Pacchetto:</span>
-                    <span>{completedTx.ricevuta?.descrizione}</span>
+                    <span className="font-sans font-bold text-zinc-800">{completedTx.ricevuta?.descrizione || completedTx.transazione?.nome_pacchetto}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500 font-sans">Importo Totale:</span>
-                    <span className="font-bold text-zinc-900">{completedTx.ricevuta?.importo}</span>
+                    <span className="font-bold text-zinc-900">{completedTx.ricevuta?.importo || `${completedTx.transazione?.importo_euro} €`}</span>
                   </div>
                   <div className="flex justify-between border-t pt-1 font-sans text-emerald-700 font-bold">
                     <span>Crediti Attuali:</span>
-                    <span>{completedTx.crediti_attuali} sedute disponibili</span>
+                    <span>
+                      {completedTx.crediti_attuali !== undefined
+                        ? `${completedTx.crediti_attuali} sedute disponibili`
+                        : `+${completedTx.transazione?.crediti_effettivi_aggiunti} sedute accreditate`}
+                    </span>
                   </div>
                 </div>
               )}

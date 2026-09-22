@@ -554,24 +554,53 @@ app.get("/app-api/lab-config", async (c) => {
 app.put("/app-api/lab-config", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const body = await c.req.json();
-  const rows = await sql`
-    INSERT INTO configurazione_lab (
-      id, tempo_cancellazione_ore, iban, intestatario_iban, banca, notifica_email, notifica_whatsapp, updated_at
-    ) VALUES (
-      1, ${body.tempo_cancellazione_ore || 24}, ${body.iban || null}, ${body.intestatario_iban || null},
-      ${body.banca || null}, ${body.notifica_email || null}, ${body.notifica_whatsapp || null}, NOW()
-    )
-    ON CONFLICT (id) DO UPDATE SET
-      tempo_cancellazione_ore = EXCLUDED.tempo_cancellazione_ore,
-      iban = COALESCE(EXCLUDED.iban, configurazione_lab.iban),
-      intestatario_iban = COALESCE(EXCLUDED.intestatario_iban, configurazione_lab.intestatario_iban),
-      banca = COALESCE(EXCLUDED.banca, configurazione_lab.banca),
-      notifica_email = COALESCE(EXCLUDED.notifica_email, configurazione_lab.notifica_email),
-      notifica_whatsapp = COALESCE(EXCLUDED.notifica_whatsapp, configurazione_lab.notifica_whatsapp),
-      updated_at = NOW()
-    RETURNING *
-  `;
-  return c.json(rows[0]);
+  try {
+    const rows = await sql`
+      INSERT INTO configurazione_lab (
+        id, tempo_cancellazione_ore, iban, intestatario_iban, banca, notifica_email, notifica_whatsapp,
+        stripe_mode, stripe_publishable_key, stripe_secret_key, stripe_webhook_secret, stripe_collegato, updated_at
+      ) VALUES (
+        1, ${body.tempo_cancellazione_ore || 24}, ${body.iban || null}, ${body.intestatario_iban || null},
+        ${body.banca || null}, ${body.notifica_email || null}, ${body.notifica_whatsapp || null},
+        ${body.stripe_mode || "test"}, ${body.stripe_publishable_key || null}, ${body.stripe_secret_key || null},
+        ${body.stripe_webhook_secret || null}, ${body.stripe_collegato || false}, NOW()
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        tempo_cancellazione_ore = EXCLUDED.tempo_cancellazione_ore,
+        iban = COALESCE(EXCLUDED.iban, configurazione_lab.iban),
+        intestatario_iban = COALESCE(EXCLUDED.intestatario_iban, configurazione_lab.intestatario_iban),
+        banca = COALESCE(EXCLUDED.banca, configurazione_lab.banca),
+        notifica_email = COALESCE(EXCLUDED.notifica_email, configurazione_lab.notifica_email),
+        notifica_whatsapp = COALESCE(EXCLUDED.notifica_whatsapp, configurazione_lab.notifica_whatsapp),
+        stripe_mode = COALESCE(EXCLUDED.stripe_mode, configurazione_lab.stripe_mode),
+        stripe_publishable_key = COALESCE(EXCLUDED.stripe_publishable_key, configurazione_lab.stripe_publishable_key),
+        stripe_secret_key = COALESCE(EXCLUDED.stripe_secret_key, configurazione_lab.stripe_secret_key),
+        stripe_webhook_secret = COALESCE(EXCLUDED.stripe_webhook_secret, configurazione_lab.stripe_webhook_secret),
+        stripe_collegato = COALESCE(EXCLUDED.stripe_collegato, configurazione_lab.stripe_collegato),
+        updated_at = NOW()
+      RETURNING *
+    `;
+    return c.json(rows[0]);
+  } catch {
+    const rows = await sql`
+      INSERT INTO configurazione_lab (
+        id, tempo_cancellazione_ore, iban, intestatario_iban, banca, notifica_email, notifica_whatsapp, updated_at
+      ) VALUES (
+        1, ${body.tempo_cancellazione_ore || 24}, ${body.iban || null}, ${body.intestatario_iban || null},
+        ${body.banca || null}, ${body.notifica_email || null}, ${body.notifica_whatsapp || null}, NOW()
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        tempo_cancellazione_ore = EXCLUDED.tempo_cancellazione_ore,
+        iban = COALESCE(EXCLUDED.iban, configurazione_lab.iban),
+        intestatario_iban = COALESCE(EXCLUDED.intestatario_iban, configurazione_lab.intestatario_iban),
+        banca = COALESCE(EXCLUDED.banca, configurazione_lab.banca),
+        notifica_email = COALESCE(EXCLUDED.notifica_email, configurazione_lab.notifica_email),
+        notifica_whatsapp = COALESCE(EXCLUDED.notifica_whatsapp, configurazione_lab.notifica_whatsapp),
+        updated_at = NOW()
+      RETURNING *
+    `;
+    return c.json({ ...rows[0], ...body });
+  }
 });
 
 app.get("/app-api/prenotazioni", async (c) => {
@@ -828,6 +857,321 @@ app.post("/app-api/transazioni/:codice/approva-bonifico", async (c) => {
     RETURNING *
   `;
   return c.json({ ok: true, tx: updated[0] });
+});
+
+// ─── Stripe Connect & Pagamenti Digitali ─────────────────────────────────────
+app.post("/app-api/config/stripe/test-connection", async (c) => {
+  try {
+    const body = await c.req.json();
+    let secretKey = body.stripe_secret_key;
+    if (!secretKey) {
+      try {
+        const sql = neon(c.env.DATABASE_URL);
+        const rows = await sql`SELECT stripe_secret_key FROM configurazione_lab WHERE id = 1 LIMIT 1`;
+        if (rows.length > 0) secretKey = rows[0].stripe_secret_key;
+      } catch {}
+    }
+    if (!secretKey && typeof process !== "undefined" && process.env) {
+      secretKey = process.env.STRIPE_SECRET_KEY;
+    }
+
+    if (!secretKey) {
+      return c.json({ ok: false, error: "Nessuna Stripe Secret Key fornita per il test." }, 400);
+    }
+
+    const stripeRes = await fetch("https://api.stripe.com/v1/balance", {
+      headers: { Authorization: `Bearer ${secretKey.trim()}` },
+    });
+    const stripeData = (await stripeRes.json()) as any;
+
+    if (!stripeRes.ok) {
+      return c.json(
+        {
+          ok: false,
+          error: stripeData.error?.message || "Chiave segreta Stripe non valida o non autorizzata.",
+        },
+        400
+      );
+    }
+
+    try {
+      const sql = neon(c.env.DATABASE_URL);
+      await sql`
+        UPDATE configurazione_lab
+        SET stripe_collegato = true,
+            stripe_secret_key = COALESCE(${body.stripe_secret_key?.trim() || null}, stripe_secret_key),
+            stripe_publishable_key = COALESCE(${body.stripe_publishable_key?.trim() || null}, stripe_publishable_key),
+            stripe_mode = COALESCE(${body.stripe_mode || null}, stripe_mode),
+            updated_at = NOW()
+        WHERE id = 1
+      `;
+    } catch {}
+
+    return c.json({
+      ok: true,
+      livemode: stripeData.livemode,
+      message: `Connessione a Stripe riuscita! Modalità: ${
+        stripeData.livemode ? "LIVE (Incassi Reali attivi)" : "TEST (Sandbox di prova)"
+      }`,
+    });
+  } catch (err: any) {
+    return c.json({ ok: false, error: err.message || "Impossibile contattare i server di Stripe." }, 500);
+  }
+});
+
+app.post("/app-api/pagamenti/stripe-checkout", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const body = await c.req.json();
+    const user = auth(c).user();
+
+    const atletaId = body.atleta_id || user?.id;
+    let atleta: any = null;
+    if (atletaId) {
+      const atletaRows = await sql`SELECT * FROM profili_utenti WHERE id = ${atletaId} OR email = ${atletaId} LIMIT 1`;
+      atleta = atletaRows[0];
+    }
+    if (!atleta && user?.email) {
+      const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${user.email} LIMIT 1`;
+      atleta = atletaRows[0];
+    }
+
+    const packRows = await sql`SELECT * FROM tariffario_pacchetti WHERE id = ${body.id_pacchetto} LIMIT 1`;
+    const pacchetto = packRows[0] || {
+      id: body.id_pacchetto,
+      nome: "Pacchetto Sedute",
+      crediti: 10,
+      prezzo_euro: 380,
+      giorni_validita: 60,
+    };
+
+    let secretKey = "";
+    try {
+      const confRows = await sql`SELECT stripe_secret_key FROM configurazione_lab WHERE id = 1 LIMIT 1`;
+      if (confRows.length > 0) secretKey = confRows[0].stripe_secret_key;
+    } catch {}
+    if (!secretKey && typeof process !== "undefined" && process.env) {
+      secretKey = process.env.STRIPE_SECRET_KEY || "";
+    }
+
+    const origin = c.req.header("origin") || "http://localhost:5173";
+
+    if (secretKey && secretKey.startsWith("sk_")) {
+      try {
+        const params = new URLSearchParams();
+        params.append("mode", "payment");
+        params.append("payment_method_types[0]", "card");
+        params.append("line_items[0][price_data][currency]", "eur");
+        params.append("line_items[0][price_data][unit_amount]", String(Math.round(pacchetto.prezzo_euro * 100)));
+        params.append("line_items[0][price_data][product_data][name]", pacchetto.nome);
+        params.append(
+          "line_items[0][price_data][product_data][description]",
+          pacchetto.descrizione || "Pacchetto ingressi Area46 Landmine Lab"
+        );
+        params.append("line_items[0][quantity]", "1");
+        params.append("customer_email", atleta?.email || user?.email || "");
+        params.append("client_reference_id", atleta?.id || user?.id || "");
+        params.append("metadata[pack_id]", pacchetto.id);
+        params.append("metadata[pack_nome]", pacchetto.nome);
+        params.append("metadata[pack_crediti]", String(pacchetto.crediti));
+        params.append("metadata[giorni_validita]", String(pacchetto.giorni_validita || 60));
+        params.append("metadata[atleta_id]", atleta?.id || user?.id || "");
+        params.append("metadata[atleta_email]", atleta?.email || user?.email || "");
+        params.append("metadata[codice_fiscale]", body.codice_fiscale || atleta?.codice_fiscale || "");
+        params.append("metadata[indirizzo]", body.indirizzo || atleta?.indirizzo || "");
+        params.append("success_url", `${origin}/account?session_id={CHECKOUT_SESSION_ID}&success=true`);
+        params.append("cancel_url", `${origin}/account?canceled=true`);
+
+        const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${secretKey.trim()}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: params.toString(),
+        });
+        const session = (await stripeRes.json()) as any;
+        if (!stripeRes.ok) {
+          throw new Error(session.error?.message || "Errore nella creazione della sessione di pagamento Stripe");
+        }
+        return c.json({
+          ok: true,
+          checkout_url: session.url,
+          session_id: session.id,
+        });
+      } catch (err: any) {
+        return c.json({ error: err.message || "Errore di connessione a Stripe" }, 502);
+      }
+    }
+
+    // Modalità demo se nessuna chiave Stripe configurata
+    const currentCrediti = Number(atleta?.crediti || 0);
+    const packCrediti = Number(pacchetto.crediti || 0);
+    let debitiDecurtati = 0;
+    let creditiEffettivi = packCrediti;
+    if (currentCrediti < 0) {
+      debitiDecurtati = Math.abs(currentCrediti);
+      creditiEffettivi = packCrediti - debitiDecurtati;
+    }
+    const finalCrediti = currentCrediti < 0 ? creditiEffettivi : currentCrediti + packCrediti;
+    const txCode = `TX-DEMO-${Date.now().toString().slice(-6)}`;
+
+    if (atleta) {
+      await sql`
+        UPDATE profili_utenti
+        SET crediti = ${finalCrediti},
+            data_scadenza_crediti = (CURRENT_DATE + (${pacchetto.giorni_validita || 60} || ' days')::interval)::date,
+            data_ultimo_accesso = NOW()
+        WHERE id = ${atleta.id}
+      `;
+    }
+
+    const txRows = await sql`
+      INSERT INTO transazioni_pagamenti (
+        codice_transazione, atleta_id, email_cliente, nome_cliente, codice_fiscale, indirizzo,
+        id_pacchetto, nome_pacchetto, importo_euro, metodo, crediti_acquistati, debiti_decurtati,
+        crediti_effettivi_aggiunti, causale_bonifico, stato, stato_fattura
+      ) VALUES (
+        ${txCode}, ${atleta?.id || null}, ${atleta?.email || user?.email}, ${
+      atleta ? `${atleta.nome} ${atleta.cognome}` : user?.name || "Atleta"
+    },
+        ${body.codice_fiscale || atleta?.codice_fiscale || null}, ${body.indirizzo || atleta?.indirizzo || null},
+        ${pacchetto.id}, ${pacchetto.nome}, ${pacchetto.prezzo_euro}, 'carta', ${packCrediti},
+        ${debitiDecurtati}, ${creditiEffettivi}, null, 'completato', 'da_emettere'
+      )
+      RETURNING *
+    `;
+
+    return c.json(
+      {
+        ok: true,
+        demo_mode: true,
+        transazione: txRows[0],
+        messaggio:
+          "Pacchetto Lab acquistato in modalità demo. Per incassare realmente sul tuo conto bancario inserisci le chiavi Stripe nel pannello Fisco.",
+        crediti_attuali: finalCrediti,
+      },
+      201
+    );
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.post("/app-api/pagamenti/stripe-verify", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const body = await c.req.json();
+    const sessionId = body.session_id;
+
+    if (!sessionId) {
+      return c.json({ error: "Session ID mancante" }, 400);
+    }
+
+    const existingTx = await sql`
+      SELECT * FROM transazioni_pagamenti 
+      WHERE codice_transazione = ${sessionId} 
+         OR stripe_session_id = ${sessionId} 
+      LIMIT 1
+    `;
+    if (existingTx.length > 0) {
+      return c.json({
+        ok: true,
+        already_processed: true,
+        transazione: existingTx[0],
+        messaggio: "Pagamento già registrato con successo.",
+      });
+    }
+
+    let secretKey = "";
+    try {
+      const confRows = await sql`SELECT stripe_secret_key FROM configurazione_lab WHERE id = 1 LIMIT 1`;
+      if (confRows.length > 0) secretKey = confRows[0].stripe_secret_key;
+    } catch {}
+    if (!secretKey && typeof process !== "undefined" && process.env) {
+      secretKey = process.env.STRIPE_SECRET_KEY || "";
+    }
+
+    if (!secretKey) {
+      return c.json({ error: "Stripe non configurato" }, 400);
+    }
+
+    const stripeRes = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
+      headers: { Authorization: `Bearer ${secretKey.trim()}` },
+    });
+    const session = (await stripeRes.json()) as any;
+
+    if (!stripeRes.ok) {
+      return c.json({ error: session.error?.message || "Sessione Stripe non valida" }, 400);
+    }
+
+    if (session.payment_status !== "paid") {
+      return c.json({ error: `Stato pagamento non completato: ${session.payment_status}` }, 400);
+    }
+
+    const meta = session.metadata || {};
+    const packId = meta.pack_id;
+    const atletaEmail = meta.atleta_email || session.customer_email;
+
+    const packRows = await sql`SELECT * FROM tariffario_pacchetti WHERE id = ${packId} LIMIT 1`;
+    const pacchetto = packRows[0] || {
+      id: packId,
+      nome: meta.pack_nome || "Pacchetto Lab",
+      crediti: Number(meta.pack_crediti) || 10,
+      prezzo_euro: (session.amount_total || 0) / 100,
+      giorni_validita: Number(meta.giorni_validita) || 60,
+    };
+
+    const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${atletaEmail} OR id = ${meta.atleta_id} LIMIT 1`;
+    const atleta = atletaRows[0];
+
+    const currentCrediti = Number(atleta?.crediti || 0);
+    const packCrediti = Number(pacchetto.crediti || 0);
+    let debitiDecurtati = 0;
+    let creditiEffettivi = packCrediti;
+    if (currentCrediti < 0) {
+      debitiDecurtati = Math.abs(currentCrediti);
+      creditiEffettivi = packCrediti - debitiDecurtati;
+    }
+    const finalCrediti = currentCrediti < 0 ? creditiEffettivi : currentCrediti + packCrediti;
+
+    if (atleta) {
+      await sql`
+        UPDATE profili_utenti
+        SET crediti = ${finalCrediti},
+            data_scadenza_crediti = (CURRENT_DATE + (${pacchetto.giorni_validita || 60} || ' days')::interval)::date,
+            data_ultimo_accesso = NOW()
+        WHERE id = ${atleta.id}
+      `;
+    }
+
+    const txCode = `TX-ST-${Date.now().toString().slice(-6)}`;
+    const txRows = await sql`
+      INSERT INTO transazioni_pagamenti (
+        codice_transazione, stripe_session_id, stripe_payment_intent, atleta_id, email_cliente, nome_cliente,
+        codice_fiscale, indirizzo, id_pacchetto, nome_pacchetto, importo_euro, metodo,
+        crediti_acquistati, debiti_decurtati, crediti_effettivi_aggiunti, causale_bonifico, stato, stato_fattura
+      ) VALUES (
+        ${txCode}, ${session.id}, ${session.payment_intent || null}, ${atleta?.id || null}, ${atleta?.email || atletaEmail},
+        ${atleta ? `${atleta.nome} ${atleta.cognome}` : "Atleta"}, ${meta.codice_fiscale || atleta?.codice_fiscale || null},
+        ${meta.indirizzo || atleta?.indirizzo || null}, ${pacchetto.id}, ${pacchetto.nome}, ${(session.amount_total || 0) / 100},
+        'stripe_card', ${packCrediti}, ${debitiDecurtati}, ${creditiEffettivi}, null, 'completato', 'da_emettere'
+      )
+      RETURNING *
+    `;
+
+    return c.json(
+      {
+        ok: true,
+        transazione: txRows[0],
+        crediti_attuali: finalCrediti,
+        messaggio: "Pagamento Stripe verificato e accreditato con successo!",
+      },
+      200
+    );
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
 });
 
 // ─── Movimenti Crediti (Audit Ledger) ───────────────────────────────────────

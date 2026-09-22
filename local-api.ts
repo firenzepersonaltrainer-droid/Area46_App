@@ -108,7 +108,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     body += chunk;
   });
 
-  req.on("end", () => {
+  req.on("end", async () => {
     let parsedBody: any = {};
     if (body) {
       try {
@@ -930,7 +930,367 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify(db.transazioni_pagamenti || []));
     }
 
-    // POST /app-api/transazioni/checkout
+    // ─────────────────────────────────────────────────────────────────────────
+    // INTEGRAZIONE PAGAMENTI STRIPE & INCASSO DIRETTO SU CONTO BANCARIO
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // POST /app-api/config/stripe/test-connection (Verifica API Key Stripe)
+    if (pathname === "/app-api/config/stripe/test-connection" && method === "POST") {
+      const secretKey =
+        parsedBody.stripe_secret_key ||
+        db.configurazione_lab?.stripe_secret_key ||
+        process.env.STRIPE_SECRET_KEY;
+
+      if (!secretKey) {
+        res.statusCode = 400;
+        return res.end(
+          JSON.stringify({ ok: false, error: "Nessuna Stripe Secret Key fornita per il test." })
+        );
+      }
+
+      try {
+        const stripeRes = await fetch("https://api.stripe.com/v1/balance", {
+          headers: {
+            Authorization: `Bearer ${secretKey.trim()}`,
+          },
+        });
+        const stripeData = await stripeRes.json();
+
+        if (!stripeRes.ok) {
+          res.statusCode = 400;
+          return res.end(
+            JSON.stringify({
+              ok: false,
+              error: stripeData.error?.message || "Chiave segreta Stripe non valida o non autorizzata.",
+            })
+          );
+        }
+
+        db.configurazione_lab = db.configurazione_lab || {};
+        db.configurazione_lab.stripe_collegato = true;
+        if (parsedBody.stripe_secret_key) {
+          db.configurazione_lab.stripe_secret_key = parsedBody.stripe_secret_key.trim();
+        }
+        if (parsedBody.stripe_publishable_key) {
+          db.configurazione_lab.stripe_publishable_key = parsedBody.stripe_publishable_key.trim();
+        }
+        if (parsedBody.stripe_mode) {
+          db.configurazione_lab.stripe_mode = parsedBody.stripe_mode;
+        }
+        saveData(db);
+
+        return res.end(
+          JSON.stringify({
+            ok: true,
+            livemode: stripeData.livemode,
+            message: `Connessione a Stripe riuscita! Modalità: ${
+              stripeData.livemode ? "LIVE (Incassi Reali attivi)" : "TEST (Sandbox di prova)"
+            }`,
+          })
+        );
+      } catch (err: any) {
+        res.statusCode = 500;
+        return res.end(
+          JSON.stringify({
+            ok: false,
+            error: err.message || "Impossibile contattare i server di Stripe.",
+          })
+        );
+      }
+    }
+
+    // POST /app-api/pagamenti/stripe-checkout (Creazione Sessione di Pagamento Stripe)
+    if (pathname === "/app-api/pagamenti/stripe-checkout" && method === "POST") {
+      const atletaId = parsedBody.atleta_id || currentUser.id;
+      const atleta =
+        (db.profili_utenti || []).find((p: any) => p.id === atletaId || p.email === atletaId) ||
+        currentUser;
+      const packId = parsedBody.id_pacchetto;
+      const pacchetto = (db.tariffario_pacchetti || []).find((p: any) => p.id === packId);
+
+      if (!pacchetto) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Pacchetto selezionato non valido" }));
+      }
+
+      const secretKey =
+        db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
+      const origin = req.headers.origin || "http://localhost:5173";
+
+      // SE LE CHIAVI STRIPE SONO VALIDE: GENERA SESSIONE DI CHECKOUT REALE SU STRIPE
+      if (secretKey && secretKey.startsWith("sk_")) {
+        try {
+          const params = new URLSearchParams();
+          params.append("mode", "payment");
+          params.append("payment_method_types[0]", "card");
+          params.append("line_items[0][price_data][currency]", "eur");
+          params.append("line_items[0][price_data][unit_amount]", String(Math.round(pacchetto.prezzo_euro * 100)));
+          params.append("line_items[0][price_data][product_data][name]", pacchetto.nome);
+          params.append(
+            "line_items[0][price_data][product_data][description]",
+            pacchetto.descrizione || "Pacchetto ingressi Area46 Landmine Lab"
+          );
+          params.append("line_items[0][quantity]", "1");
+          params.append("customer_email", atleta.email);
+          params.append("client_reference_id", atleta.id);
+          params.append("metadata[pack_id]", pacchetto.id);
+          params.append("metadata[pack_nome]", pacchetto.nome);
+          params.append("metadata[pack_crediti]", String(pacchetto.crediti));
+          params.append("metadata[giorni_validita]", String(pacchetto.giorni_validita || 60));
+          params.append("metadata[atleta_id]", atleta.id);
+          params.append("metadata[atleta_email]", atleta.email);
+          params.append("metadata[codice_fiscale]", parsedBody.codice_fiscale || atleta.codice_fiscale || "");
+          params.append("metadata[indirizzo]", parsedBody.indirizzo || atleta.indirizzo || "");
+          params.append(
+            "success_url",
+            `${origin}/account?session_id={CHECKOUT_SESSION_ID}&success=true`
+          );
+          params.append("cancel_url", `${origin}/account?canceled=true`);
+
+          const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${secretKey.trim()}`,
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: params.toString(),
+          });
+
+          const session = await stripeRes.json();
+          if (!stripeRes.ok) {
+            throw new Error(session.error?.message || "Errore nella creazione della sessione di pagamento Stripe");
+          }
+
+          return res.end(
+            JSON.stringify({
+              ok: true,
+              checkout_url: session.url,
+              session_id: session.id,
+            })
+          );
+        } catch (err: any) {
+          res.statusCode = 502;
+          return res.end(JSON.stringify({ error: err.message || "Errore di connessione a Stripe" }));
+        }
+      }
+
+      // MODALITÀ DEMO / SIMULATA SE IL COACH NON HA ANCORA INSERITO LE CHIAVI STRIPE
+      const currentCrediti = Number(atleta.crediti) || 0;
+      const packCrediti = Number(pacchetto.crediti) || 0;
+      let debitiDecurtati = 0;
+      let creditiEffettivi = packCrediti;
+      if (currentCrediti < 0) {
+        debitiDecurtati = Math.abs(currentCrediti);
+        creditiEffettivi = packCrediti - debitiDecurtati;
+      }
+
+      const txCode = `TX-DEMO-${Date.now().toString().slice(-6)}`;
+      const nuovaTransazione = {
+        codice_transazione: txCode,
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+        codice_fiscale: parsedBody.codice_fiscale || atleta.codice_fiscale || "",
+        indirizzo: parsedBody.indirizzo || atleta.indirizzo || "",
+        id_pacchetto: pacchetto.id,
+        nome_pacchetto: pacchetto.nome,
+        importo_euro: pacchetto.prezzo_euro,
+        metodo: "carta",
+        crediti_acquistati: packCrediti,
+        debiti_decurtati: debitiDecurtati,
+        crediti_effettivi_aggiunti: creditiEffettivi,
+        causale_bonifico: null,
+        stato: "completato",
+        stato_fattura: "da_emettere",
+        is_demo: true,
+        created_at: new Date().toISOString(),
+      };
+
+      if (currentCrediti < 0) {
+        atleta.crediti = creditiEffettivi;
+      } else {
+        atleta.crediti = currentCrediti + packCrediti;
+      }
+      const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 86400000)
+        .toISOString()
+        .slice(0, 10);
+      if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
+        atleta.data_scadenza_crediti = nuovaScadenza;
+      }
+      atleta.data_ultimo_accesso = new Date().toISOString();
+
+      addMovimentoCrediti(db, {
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente: nuovaTransazione.nome_cliente,
+        tipo: "acquisto_carnet",
+        delta_crediti: creditiEffettivi,
+        saldo_risultante: atleta.crediti,
+        motivazione: `Acquisto ${pacchetto.nome}${
+          debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""
+        }`,
+        operatore: "atleta",
+      });
+
+      db.transazioni_pagamenti = db.transazioni_pagamenti || [];
+      db.transazioni_pagamenti.unshift(nuovaTransazione);
+      saveData(db);
+
+      res.statusCode = 201;
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          demo_mode: true,
+          transazione: nuovaTransazione,
+          messaggio:
+            "Pacchetto Lab acquistato in modalità demo. Per incassare realmente sul tuo conto bancario inserisci le chiavi Stripe nel pannello Fisco.",
+          crediti_attuali: atleta.crediti,
+        })
+      );
+    }
+
+    // POST /app-api/pagamenti/stripe-verify (Verifica sessione al rientro dell'atleta da Stripe)
+    if (pathname === "/app-api/pagamenti/stripe-verify" && method === "POST") {
+      const sessionId = parsedBody.session_id;
+      if (!sessionId) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Session ID mancante" }));
+      }
+
+      // Verifica se già registrata per evitare doppi accrediti
+      const existingTx = (db.transazioni_pagamenti || []).find(
+        (t: any) => t.codice_transazione === sessionId || t.stripe_session_id === sessionId
+      );
+      if (existingTx) {
+        return res.end(
+          JSON.stringify({
+            ok: true,
+            already_processed: true,
+            transazione: existingTx,
+            messaggio: "Pagamento già registrato con successo.",
+          })
+        );
+      }
+
+      const secretKey =
+        db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
+
+      if (!secretKey) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Stripe non configurato" }));
+      }
+
+      try {
+        const stripeRes = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
+          headers: { Authorization: `Bearer ${secretKey.trim()}` },
+        });
+        const session = await stripeRes.json();
+
+        if (!stripeRes.ok) {
+          throw new Error(session.error?.message || "Sessione non valida");
+        }
+
+        if (session.payment_status !== "paid") {
+          res.statusCode = 400;
+          return res.end(
+            JSON.stringify({ error: `Stato pagamento non completato: ${session.payment_status}` })
+          );
+        }
+
+        const meta = session.metadata || {};
+        const packId = meta.pack_id;
+        const atletaEmail = meta.atleta_email || session.customer_email;
+        const pacchetto =
+          (db.tariffario_pacchetti || []).find((p: any) => p.id === packId) || {
+            id: packId,
+            nome: meta.pack_nome || "Pacchetto Lab",
+            crediti: Number(meta.pack_crediti) || 10,
+            prezzo_euro: (session.amount_total || 0) / 100,
+            giorni_validita: Number(meta.giorni_validita) || 60,
+          };
+
+        const atleta =
+          (db.profili_utenti || []).find(
+            (p: any) => p.email === atletaEmail || p.id === meta.atleta_id
+          ) || currentUser;
+
+        const currentCrediti = Number(atleta.crediti) || 0;
+        const packCrediti = Number(pacchetto.crediti) || 0;
+        let debitiDecurtati = 0;
+        let creditiEffettivi = packCrediti;
+        if (currentCrediti < 0) {
+          debitiDecurtati = Math.abs(currentCrediti);
+          creditiEffettivi = packCrediti - debitiDecurtati;
+        }
+
+        const nuovaTransazione = {
+          codice_transazione: `TX-ST-${Date.now().toString().slice(-6)}`,
+          stripe_session_id: session.id,
+          stripe_payment_intent: session.payment_intent,
+          atleta_id: atleta.id,
+          email_cliente: atleta.email,
+          nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+          codice_fiscale: meta.codice_fiscale || atleta.codice_fiscale || "",
+          indirizzo: meta.indirizzo || atleta.indirizzo || "",
+          id_pacchetto: pacchetto.id,
+          nome_pacchetto: pacchetto.nome,
+          importo_euro: (session.amount_total || 0) / 100,
+          metodo: "stripe_card",
+          crediti_acquistati: packCrediti,
+          debiti_decurtati: debitiDecurtati,
+          crediti_effettivi_aggiunti: creditiEffettivi,
+          causale_bonifico: null,
+          stato: "completato",
+          stato_fattura: "da_emettere",
+          created_at: new Date().toISOString(),
+        };
+
+        if (currentCrediti < 0) {
+          atleta.crediti = creditiEffettivi;
+        } else {
+          atleta.crediti = currentCrediti + packCrediti;
+        }
+        const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 86400000)
+          .toISOString()
+          .slice(0, 10);
+        if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
+          atleta.data_scadenza_crediti = nuovaScadenza;
+        }
+        atleta.data_ultimo_accesso = new Date().toISOString();
+
+        addMovimentoCrediti(db, {
+          atleta_id: atleta.id,
+          email_cliente: atleta.email,
+          nome_cliente: nuovaTransazione.nome_cliente,
+          tipo: "acquisto_carnet",
+          delta_crediti: creditiEffettivi,
+          saldo_risultante: atleta.crediti,
+          motivazione: `Acquisto Stripe ${pacchetto.nome}${
+            debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""
+          }`,
+          operatore: "stripe",
+        });
+
+        db.transazioni_pagamenti = db.transazioni_pagamenti || [];
+        db.transazioni_pagamenti.unshift(nuovaTransazione);
+        saveData(db);
+
+        return res.end(
+          JSON.stringify({
+            ok: true,
+            verified: true,
+            transazione: nuovaTransazione,
+            crediti_attuali: atleta.crediti,
+            messaggio: "Pagamento Stripe confermato con successo! Crediti accreditati nel wallet.",
+          })
+        );
+      } catch (err: any) {
+        res.statusCode = 500;
+        return res.end(JSON.stringify({ error: err.message || "Errore verifica sessione Stripe" }));
+      }
+    }
+
+    // POST /app-api/transazioni/checkout (Checkout Manuale / Bonifico)
     if (pathname === "/app-api/transazioni/checkout" && method === "POST") {
       const atletaId = parsedBody.atleta_id || currentUser.id;
       const atleta =

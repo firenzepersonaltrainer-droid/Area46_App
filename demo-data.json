@@ -14249,7 +14249,7 @@
       "ruolo": "manager",
       "crediti": 999,
       "data_scadenza_crediti": "2099-12-31",
-      "data_ultimo_accesso": "2026-09-22T04:37:55.972Z",
+      "data_ultimo_accesso": "2026-09-22T15:28:39.449Z",
       "note_coach": "Account Amministratore / Head Coach",
       "tempo_cancellazione_ore": 12
     },
@@ -14262,9 +14262,9 @@
       "codice_fiscale": "RSSMRA85M01D612Z",
       "indirizzo": "Via dei Pini 12, Firenze",
       "ruolo": "atleta",
-      "crediti": 15,
+      "crediti": 35,
       "data_scadenza_crediti": "2026-11-21",
-      "data_ultimo_accesso": "2026-09-22T05:02:04.350Z",
+      "data_ultimo_accesso": "2026-09-22T15:42:12.647Z",
       "note_coach": "Atleta costante, nessun infortunio pregresso.",
       "tempo_cancellazione_ore": 24
     },
@@ -14314,12 +14314,17 @@
       5,
       6
     ],
-    "inattivita_mesi_reset": 6
+    "inattivita_mesi_reset": 6,
+    "stripe_mode": "test",
+    "stripe_publishable_key": "",
+    "stripe_secret_key": "",
+    "stripe_webhook_secret": "",
+    "stripe_collegato": false
   },
   "tariffario_pacchetti": [
     {
       "id": "pack-8",
-      "nome": "Carnet 8 Sedute",
+      "nome": "Pacchetto 8 Sedute",
       "descrizione": "8 Sessioni individuali Landmine Lab (1-2x/settimana)",
       "crediti": 8,
       "giorni_validita": 45,
@@ -14330,7 +14335,7 @@
     },
     {
       "id": "pack-12",
-      "nome": "Carnet 12 Sedute",
+      "nome": "Pacchetto 12 Sedute",
       "descrizione": "12 Sessioni con programmazione continuativa (validità 60gg)",
       "crediti": 12,
       "giorni_validita": 60,
@@ -14341,7 +14346,7 @@
     },
     {
       "id": "pack-24",
-      "nome": "Carnet 24 Sedute",
+      "nome": "Pacchetto 24 Sedute",
       "descrizione": "24 Sessioni intensive per progressione costante (validità 90gg)",
       "crediti": 24,
       "giorni_validita": 90,
@@ -14352,7 +14357,7 @@
     },
     {
       "id": "pack-36",
-      "nome": "Carnet 36 Sedute",
+      "nome": "Pacchetto 36 Sedute",
       "descrizione": "36 Sessioni percorso completo Lab con slot prioritari (validità 120gg)",
       "crediti": 36,
       "giorni_validita": 120,
@@ -14430,6 +14435,45 @@
   ],
   "transazioni_pagamenti": [
     {
+      "codice_transazione": "TX-DEMO-732647",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "codice_fiscale": "RSSMRA85M01D612Z",
+      "indirizzo": "Via dei Pini 12, Firenze",
+      "id_pacchetto": "pack-12",
+      "nome_pacchetto": "Pacchetto 12 Sedute",
+      "importo_euro": 450,
+      "metodo": "carta",
+      "crediti_acquistati": 12,
+      "debiti_decurtati": 0,
+      "crediti_effettivi_aggiunti": 12,
+      "causale_bonifico": null,
+      "stato": "completato",
+      "stato_fattura": "da_emettere",
+      "is_demo": true,
+      "created_at": "2026-09-22T15:42:12.647Z"
+    },
+    {
+      "codice_transazione": "TX-46-129972",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "codice_fiscale": "RSSMRA85M01D612Z",
+      "indirizzo": "Via dei Pini 12, Firenze",
+      "id_pacchetto": "pack-8",
+      "nome_pacchetto": "Carnet 8 Sedute",
+      "importo_euro": 320,
+      "metodo": "carta",
+      "crediti_acquistati": 8,
+      "debiti_decurtati": 0,
+      "crediti_effettivi_aggiunti": 8,
+      "causale_bonifico": null,
+      "stato": "completato",
+      "stato_fattura": "da_emettere",
+      "created_at": "2026-09-22T15:32:09.972Z"
+    },
+    {
       "codice_transazione": "TX-46-720565",
       "atleta_id": "usr-atleta-01",
       "email_cliente": "mario.rossi@example.com",
@@ -14506,6 +14550,30 @@
   ],
   "active_user_id": "usr-atleta-01",
   "movimenti_crediti": [
+    {
+      "id": "mov-1790091732648-448",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T15:42:12.648Z",
+      "tipo": "acquisto_carnet",
+      "delta_crediti": 12,
+      "saldo_risultante": 35,
+      "motivazione": "Acquisto Pacchetto 12 Sedute",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1790091129972-841",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T15:32:09.972Z",
+      "tipo": "acquisto_carnet",
+      "delta_crediti": 8,
+      "saldo_risultante": 23,
+      "motivazione": "Acquisto Carnet 8 Sedute",
+      "operatore": "atleta"
+    },
     {
       "id": "mov-1790051720565-181",
       "atleta_id": "usr-atleta-01",
