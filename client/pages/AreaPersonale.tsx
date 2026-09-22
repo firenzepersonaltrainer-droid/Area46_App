@@ -9,7 +9,7 @@ import {
   useAttivita,
   useRegolePalinsesto,
 } from "../lib/useUser";
-import { calcolaSlotPerGiorno } from "../lib/palinsesto";
+import { calcolaSlotPerGiorno, timeToMinutes } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
 import {
   Calendar as CalendarIcon,
@@ -35,6 +35,12 @@ import {
   ArrowRight,
   Gift,
   History,
+  CheckSquare,
+  Square,
+  Filter,
+  SlidersHorizontal,
+  ListChecks,
+  Check,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -72,8 +78,11 @@ interface Pacchetto {
   badge?: string;
 }
 
-function formatDateISO(date: Date): string {
-  return date.toISOString().slice(0, 10);
+function formatDateISO(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatGiornoItaliano(dateStr: string): string {
@@ -84,6 +93,38 @@ function formatGiornoItaliano(dateStr: string): string {
     month: "short",
   });
 }
+
+function formatGiornoEstesoItaliano(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("it-IT", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+}
+
+const GIORNI_SETTIMANA_LAB = [
+  { id: 1, sigla: "Lun", nome: "Lunedì" },
+  { id: 2, sigla: "Mar", nome: "Martedì" },
+  { id: 3, sigla: "Mer", nome: "Mercoledì" },
+  { id: 4, sigla: "Gio", nome: "Giovedì" },
+  { id: 5, sigla: "Ven", nome: "Venerdì" },
+  { id: 6, sigla: "Sab", nome: "Sabato" },
+  { id: 0, sigla: "Dom", nome: "Domenica" },
+];
+
+const ORARI_DISPONIBILI_BATCH = [
+  "08:00", "08:15", "08:30", "08:45",
+  "09:00", "09:15", "09:30", "09:45",
+  "10:00", "10:15", "10:30", "10:45",
+  "11:00", "11:15", "11:30", "11:45",
+  "12:00", "12:15", "12:30",
+  "16:30", "16:45",
+  "17:00", "17:15", "17:30", "17:45",
+  "18:00", "18:15", "18:30", "18:45",
+  "19:00", "19:15", "19:30", "19:45",
+  "20:00", "20:15", "20:30",
+];
 
 export default function AreaPersonalePage() {
   const navigate = useNavigate();
@@ -109,6 +150,15 @@ export default function AreaPersonalePage() {
   const [prenotazioneDaAnnullare, setPrenotazioneDaAnnullare] = useState<Prenotazione | null>(null);
   const [showBlockModal, setShowBlockModal] = useState(false);
 
+  // ─── STATO PRENOTAZIONE MULTIPLA RAPIDA (A BLOCCHI CON SPUNTA) ────────────
+  const [bookingMode, setBookingMode] = useState<"singola" | "multipla">("singola");
+  const [batchGiorni, setBatchGiorni] = useState<number[]>([3, 5]); // Mercoledì e Venerdì di default
+  const [batchOraInizio, setBatchOraInizio] = useState("17:00");
+  const [batchOraFine, setBatchOraFine] = useState("17:45");
+  const [batchSettimane, setBatchSettimane] = useState(4); // 4 settimane di orizzonte (1 mese)
+  const [selectedBatchSlots, setSelectedBatchSlots] = useState<Array<{ data: string; orario: string }>>([]);
+  const [showBatchConfirmModal, setShowBatchConfirmModal] = useState(false);
+
   // ─── STATO TARIFFARIO / CHECKOUT ───────────────────────────────────────────
   const [selectedPack, setSelectedPack] = useState<Pacchetto | null>(null);
   const [metodo, setMetodo] = useState<"carta" | "apple_pay" | "paypal" | "bonifico">("carta");
@@ -121,8 +171,8 @@ export default function AreaPersonalePage() {
   const [pinInput, setPinInput] = useState("");
   const [pinError, setPinError] = useState(false);
 
-  // Eccezioni calendario (straordinari o chiusure)
-  const { eccezioni } = useEccezioniCalendario(selectedDate);
+  // Eccezioni calendario complessive (ferie, chiusure e aperture per tutto il periodo)
+  const { eccezioni } = useEccezioniCalendario();
 
   // Calcolo giorni della settimana
   const giorniSettimana = useMemo(() => {
@@ -236,6 +286,142 @@ export default function AreaPersonalePage() {
     },
   });
 
+  // Mutation Prenotazione Multipla Rapida
+  const batchPrenotaMutation = useMutation({
+    mutationFn: async (slots: Array<{ data: string; orario: string }>) => {
+      const res = await fetch("/app-api/prenotazioni/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slots }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Impossibile completare le prenotazioni multiple.");
+      return json;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+      toast.success(data.messaggio || `${data.count} sessioni prenotate con successo!`);
+      setSelectedBatchSlots([]);
+      setShowBatchConfirmModal(false);
+      setBookingMode("singola");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore nella prenotazione multipla.");
+    },
+  });
+
+  // Calcolo dinamico degli slot che corrispondono ai filtri scelti
+  const batchSlotResults = useMemo(() => {
+    if (bookingMode !== "multipla") return [];
+    const results: Array<{
+      key: string;
+      data: string;
+      orario: string;
+      nome_attivita: string;
+      isMio: boolean;
+      isOccupato: boolean;
+      isBloccato: boolean;
+      disponibile: boolean;
+    }> = [];
+
+    const now = new Date();
+    const todayISO = formatDateISO(now);
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const totalDays = batchSettimane * 7;
+    const startMin = timeToMinutes(batchOraInizio);
+    const endMin = timeToMinutes(batchOraFine);
+
+    for (let offset = 0; offset <= totalDays; offset++) {
+      const [y, m, d] = todayISO.split("-").map(Number);
+      const targetDate = new Date(y, m - 1, d + offset);
+      const dateStr = formatDateISO(targetDate);
+      const dayOfWeek = targetDate.getDay();
+
+      if (!batchGiorni.includes(dayOfWeek)) continue;
+
+      const { slots, isChiuso } = calcolaSlotPerGiorno(dateStr, regole, eccezioni, attivita);
+      if (isChiuso) continue;
+
+      const dayBookings = prenotazioni.filter(
+        (p) => p.data === dateStr && p.stato === "confermata"
+      );
+      const bloccati = new Set(
+        eccezioni
+          .filter((e) => e.data === dateStr && e.tipo === "slot_bloccato" && e.orario)
+          .map((e) => e.orario!)
+      );
+
+      for (const slot of slots) {
+        const slotMin = timeToMinutes(slot.orario);
+        if (slotMin < startMin || slotMin > endMin) continue;
+
+        if (dateStr === todayISO && slotMin <= currentMinutes) continue;
+
+        const booking = dayBookings.find((p) => p.orario === slot.orario);
+        const isMio = booking?.email_cliente === user?.email;
+        const isOccupato = !!booking && !isMio;
+        const isBloccato = bloccati.has(slot.orario);
+        const disponibile = !isMio && !isOccupato && !isBloccato;
+
+        results.push({
+          key: `${dateStr}|${slot.orario}`,
+          data: dateStr,
+          orario: slot.orario,
+          nome_attivita: slot.nome_attivita || "Landmine Lab",
+          isMio,
+          isOccupato,
+          isBloccato,
+          disponibile,
+        });
+      }
+    }
+
+    return results;
+  }, [
+    bookingMode,
+    batchSettimane,
+    batchGiorni,
+    batchOraInizio,
+    batchOraFine,
+    regole,
+    eccezioni,
+    attivita,
+    prenotazioni,
+    user?.email,
+  ]);
+
+  const handleToggleBatchSlot = (data: string, orario: string) => {
+    setSelectedBatchSlots((prev) => {
+      const exists = prev.some((s) => s.data === data && s.orario === orario);
+      if (exists) {
+        return prev.filter((s) => !(s.data === data && s.orario === orario));
+      } else {
+        return [...prev, { data, orario }];
+      }
+    });
+  };
+
+  const handleSelectAllBatch = () => {
+    const freeSlots = batchSlotResults
+      .filter((s) => s.disponibile)
+      .map((s) => ({ data: s.data, orario: s.orario }));
+    setSelectedBatchSlots(freeSlots);
+  };
+
+  const handleDeselectAllBatch = () => {
+    setSelectedBatchSlots([]);
+  };
+
+  const handleToggleBatchDay = (dayNum: number) => {
+    setBatchGiorni((prev) =>
+      prev.includes(dayNum) ? prev.filter((d) => d !== dayNum) : [...prev, dayNum].sort((a, b) => a - b)
+    );
+    setSelectedBatchSlots([]);
+  };
+
   // Mutation Cancellazione
   const annullaMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -281,7 +467,7 @@ export default function AreaPersonalePage() {
       if (data.transazione.stato === "in_attesa_bonifico") {
         toast.info("Richiesta registrata! Effettua il bonifico con la causale generata.");
       } else {
-        toast.success("Carnet acquistato! Crediti accreditati nel wallet.");
+        toast.success("Pacchetto Lab acquistato! Crediti accreditati nel wallet.");
       }
     },
     onError: (err: any) => {
@@ -354,7 +540,7 @@ export default function AreaPersonalePage() {
           }`}
         >
           <Coins className="size-4" />
-          <span className="text-[11px] truncate">Carnet</span>
+          <span className="text-[11px] truncate">Pacchetti Lab</span>
         </button>
 
         <button
@@ -431,137 +617,637 @@ export default function AreaPersonalePage() {
             </div>
           )}
 
-          {/* CALENDARIO MENSILE & SETTIMANALE NAVIGABILE */}
-          <CalendarioMeseNavigabile
-            selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
-            prenotazioni={prenotazioni}
-            eccezioni={eccezioni}
-            regole={regole}
-            userEmail={user?.email}
-            isManager={false}
-          />
+          {/* SELETTORE MODALITÀ: SINGOLO GIORNO vs MULTIPLA (A BLOCCHI CON SPUNTA) */}
+          <div className="flex bg-zinc-100 p-1 rounded-2xl border border-zinc-200 shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setBookingMode("singola")}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                bookingMode === "singola"
+                  ? "bg-white text-[#1c00ff] shadow-xs"
+                  : "text-zinc-600 hover:text-zinc-900"
+              }`}
+            >
+              <CalendarIcon className="size-3.5" /> Calendario Singolo Giorno
+            </button>
+            <button
+              type="button"
+              onClick={() => setBookingMode("multipla")}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                bookingMode === "multipla"
+                  ? "bg-zinc-900 text-[#e3ff00] shadow-xs"
+                  : "text-zinc-600 hover:text-zinc-900"
+              }`}
+            >
+              <Sparkles className="size-3.5 text-[#e3ff00]" /> Prenotazione Multipla (Filtri)
+            </button>
+          </div>
 
-          {/* GRIGLIA SLOT */}
-          <div>
-            <div className="flex items-center justify-between mb-2 px-1">
-              <span className="text-xs font-black uppercase tracking-wider text-zinc-700 flex items-center gap-1.5">
-                <Clock className="size-3.5 text-[#1c00ff]" />
-                Slot • {formatGiornoItaliano(selectedDate)}
-              </span>
-              <span className="text-[11px] font-bold text-zinc-500">
-                {isInteroGiornoChiuso ? "Lab Chiuso" : `${orariGiorno.length - prenotazioniGiorno.length} slot liberi`}
-              </span>
-            </div>
+          {bookingMode === "singola" ? (
+            <>
+              {/* CALENDARIO MENSILE & SETTIMANALE NAVIGABILE */}
+              <CalendarioMeseNavigabile
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+                prenotazioni={prenotazioni}
+                eccezioni={eccezioni}
+                regole={regole}
+                userEmail={user?.email}
+                isManager={false}
+              />
 
-            {isInteroGiornoChiuso ? (
-              <div className="p-6 rounded-2xl bg-amber-50 border border-amber-200 text-center text-xs text-amber-900 space-y-1">
-                <AlertTriangle className="size-6 mx-auto text-amber-600 mb-1" />
-                <div className="font-black text-sm">Lab Chiuso in questa data</div>
-                <p className="text-[11px] text-amber-800">
-                  {motivoChiusura || "Il Lab è chiuso per ferie o pausa programmata dal Coach. Seleziona un altro giorno."}
-                </p>
-              </div>
-            ) : orariGiorno.length === 0 ? (
-              <div className="p-6 rounded-3xl bg-zinc-50 border border-dashed border-zinc-200 text-center text-xs text-zinc-500 space-y-2">
-                <CalendarIcon className="size-6 mx-auto text-zinc-400" />
-                <div className="font-black text-xs text-zinc-800">
-                  Nessuna sessione di palinsesto ordinario
+              {/* GRIGLIA SLOT */}
+              <div>
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <span className="text-xs font-black uppercase tracking-wider text-zinc-700 flex items-center gap-1.5">
+                    <Clock className="size-3.5 text-[#1c00ff]" />
+                    Slot • {formatGiornoItaliano(selectedDate)}
+                  </span>
+                  <span className="text-[11px] font-bold text-zinc-500">
+                    {isInteroGiornoChiuso ? "Lab Chiuso" : `${orariGiorno.length - prenotazioniGiorno.length} slot liberi`}
+                  </span>
                 </div>
-                <p className="text-[11px] text-zinc-500 max-w-xs mx-auto">
-                  Il palinsesto ordinario del Lab è attivo il Lunedì, Mercoledì e Venerdì (09:00 - 12:30 e 17:00 - 20:30).
-                  Seleziona uno dei giorni attivi sul calendario.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {orariGiorno.map((orario) => {
-                  const slotInfo = slotDinamici.find((s) => s.orario === orario);
-                  const booking = prenotazioniGiorno.find((p) => p.orario === orario);
-                  const isOccupato = !!booking;
-                  const isMio = booking?.email_cliente === user?.email;
 
-                  if (isMio) {
-                    return (
-                      <div
-                        key={orario}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-[#1c00ff]/10 border-2 border-[#1c00ff] shadow-xs"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-sm font-black text-[#1c00ff] tabular-nums">
-                            {orario}
-                          </span>
-                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#1c00ff] text-white">
-                            Tuo Slot
-                          </span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setPrenotazioneDaAnnullare(booking)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs font-bold h-8 px-2.5"
+                {isInteroGiornoChiuso ? (
+                  <div className="p-6 rounded-2xl bg-amber-50 border border-amber-200 text-center text-xs text-amber-900 space-y-1">
+                    <AlertTriangle className="size-6 mx-auto text-amber-600 mb-1" />
+                    <div className="font-black text-sm">Lab Chiuso in questa data</div>
+                    <p className="text-[11px] text-amber-800">
+                      {motivoChiusura || "Il Lab è chiuso per ferie o pausa programmata dal Coach. Seleziona un altro giorno."}
+                    </p>
+                  </div>
+                ) : orariGiorno.length === 0 ? (
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-dashed border-zinc-200 text-center text-xs text-zinc-500 space-y-2">
+                    <CalendarIcon className="size-6 mx-auto text-zinc-400" />
+                    <div className="font-black text-xs text-zinc-800">
+                      Nessuna sessione di palinsesto ordinario
+                    </div>
+                    <p className="text-[11px] text-zinc-500 max-w-xs mx-auto">
+                      Il palinsesto ordinario del Lab è attivo il Lunedì, Mercoledì e Venerdì (09:00 - 12:30 e 17:00 - 20:30).
+                      Seleziona uno dei giorni attivi sul calendario.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {orariGiorno.map((orario) => {
+                      const slotInfo = slotDinamici.find((s) => s.orario === orario);
+                      const booking = prenotazioniGiorno.find((p) => p.orario === orario);
+                      const isOccupato = !!booking;
+                      const isMio = booking?.email_cliente === user?.email;
+
+                      if (isMio) {
+                        return (
+                          <div
+                            key={orario}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-[#1c00ff]/10 border-2 border-[#1c00ff] shadow-xs"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <span className="text-sm font-black text-[#1c00ff] tabular-nums">
+                                {orario}
+                              </span>
+                              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#1c00ff] text-white">
+                                Tuo Slot
+                              </span>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setPrenotazioneDaAnnullare(booking)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs font-bold h-8 px-2.5"
+                            >
+                              Annulla
+                            </Button>
+                          </div>
+                        );
+                      }
+
+                      if (isOccupato) {
+                        return (
+                          <div
+                            key={orario}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-400 select-none"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Clock className="size-4 text-zinc-300" />
+                              <span className="text-sm font-bold tabular-nums line-through decoration-zinc-300">
+                                {orario}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-500 flex items-center gap-1">
+                              <Lock className="size-3" /> Occupato
+                            </span>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <button
+                          key={orario}
+                          type="button"
+                          onClick={() => {
+                            if (crediti <= 0) {
+                              setShowBlockModal(true);
+                              return;
+                            }
+                            setSlotDaPrenotare(orario);
+                          }}
+                          className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-[#1c00ff] transition-all shadow-2xs group cursor-pointer text-left"
                         >
-                          Annulla
-                        </Button>
-                      </div>
-                    );
-                  }
+                          <div className="flex items-center gap-2.5">
+                            <div className="size-8 rounded-xl bg-zinc-100 text-zinc-800 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                              {orario}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-xs font-black text-zinc-900">
+                                {slotInfo?.nome_attivita || "Landmine Lab"}
+                              </span>
+                              <span className="text-[10px] text-zinc-500">
+                                1 Posto • {slotInfo?.costo_crediti ?? 1} Credito
+                              </span>
+                            </div>
+                          </div>
 
-                  if (isOccupato) {
-                    return (
-                      <div
-                        key={orario}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-400 select-none"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Clock className="size-4 text-zinc-300" />
-                          <span className="text-sm font-bold tabular-nums line-through decoration-zinc-300">
-                            {orario}
+                          <span className="text-xs font-black text-[#1c00ff] group-hover:translate-x-0.5 transition-transform">
+                            Prenota &rarr;
                           </span>
-                        </div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-500 flex items-center gap-1">
-                          <Lock className="size-3" /> Occupato
-                        </span>
-                      </div>
-                    );
-                  }
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            /* ══════════════════════════════════════════════════════════════════════
+                MODALITÀ 2: PRENOTAZIONE MULTIPLA A BLOCCHI CON FILTRI
+               ══════════════════════════════════════════════════════════════════════ */
+            <div className="space-y-4">
+              {/* CARD 1: PANNELLO FILTRI RAPIDI */}
+              <div className="p-4 rounded-3xl bg-zinc-50 border border-zinc-200 space-y-4 shadow-2xs">
+                <div className="flex items-center justify-between border-b border-zinc-200 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="size-7 rounded-xl bg-[#1c00ff] text-white flex items-center justify-center font-black">
+                      <SlidersHorizontal className="size-3.5" />
+                    </div>
+                    <div>
+                      <h3 className="text-xs font-black uppercase tracking-wider text-zinc-900">
+                        Filtri di Ricerca Multipla
+                      </h3>
+                      <p className="text-[10px] text-zinc-500">
+                        Trova e spunta contemporaneamente gli slot nei giorni e orari scelti
+                      </p>
+                    </div>
+                  </div>
 
-                  return (
+                  {/* PRESET RAPIDI */}
+                  <div className="hidden sm:flex items-center gap-1.5">
                     <button
-                      key={orario}
                       type="button"
                       onClick={() => {
-                        if (crediti <= 0) {
-                          setShowBlockModal(true);
-                          return;
-                        }
-                        setSlotDaPrenotare(orario);
+                        setBatchGiorni([3, 5]);
+                        setBatchOraInizio("17:00");
+                        setBatchOraFine("17:45");
+                        setSelectedBatchSlots([]);
                       }}
-                      className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-[#1c00ff] transition-all shadow-2xs group cursor-pointer text-left"
+                      className="text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-zinc-300 hover:border-[#1c00ff] text-zinc-700 hover:text-[#1c00ff] transition-all cursor-pointer"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className="size-8 rounded-xl bg-zinc-100 text-zinc-800 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
-                          {orario}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-xs font-black text-zinc-900">
-                            {slotInfo?.nome_attivita || "Landmine Lab"}
-                          </span>
-                          <span className="text-[10px] text-zinc-500">
-                            1 Posto • {slotInfo?.costo_crediti ?? 1} Credito
-                          </span>
-                        </div>
-                      </div>
-
-                      <span className="text-xs font-black text-[#1c00ff] group-hover:translate-x-0.5 transition-transform">
-                        Prenota &rarr;
-                      </span>
+                      ⚡ Mer + Ven (17:00-17:45)
                     </button>
-                  );
-                })}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBatchGiorni([1, 3, 5]);
+                        setBatchOraInizio("09:00");
+                        setBatchOraFine("11:00");
+                        setSelectedBatchSlots([]);
+                      }}
+                      className="text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-zinc-300 hover:border-[#1c00ff] text-zinc-700 hover:text-[#1c00ff] transition-all cursor-pointer"
+                    >
+                      ⚡ Mattine (Lun-Mer-Ven)
+                    </button>
+                  </div>
+                </div>
+
+                {/* FILTRO 1: GIORNI DELLA SETTIMANA */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
+                      1. Giorni della Settimana ({batchGiorni.length} selezionati)
+                    </label>
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBatchGiorni([3, 5]);
+                          setSelectedBatchSlots([]);
+                        }}
+                        className="text-[10px] font-bold text-[#1c00ff] hover:underline cursor-pointer"
+                      >
+                        Mer + Ven
+                      </button>
+                      <span className="text-[10px] text-zinc-300">•</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBatchGiorni([1, 3, 5]);
+                          setSelectedBatchSlots([]);
+                        }}
+                        className="text-[10px] font-bold text-[#1c00ff] hover:underline cursor-pointer"
+                      >
+                        Tutti i giorni Lab (Lun, Mer, Ven)
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
+                    {GIORNI_SETTIMANA_LAB.map((g) => {
+                      const isSelected = batchGiorni.includes(g.id);
+                      const isLabOrdinario = [1, 3, 5].includes(g.id);
+                      return (
+                        <button
+                          key={g.id}
+                          type="button"
+                          onClick={() => handleToggleBatchDay(g.id)}
+                          className={`py-2 px-1 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center cursor-pointer border ${
+                            isSelected
+                              ? "bg-[#1c00ff] text-white border-[#1c00ff] shadow-xs"
+                              : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100"
+                          }`}
+                        >
+                          <span className="text-xs leading-none">{g.sigla}</span>
+                          {isLabOrdinario && (
+                            <span
+                              className={`text-[8px] font-medium leading-tight mt-0.5 ${
+                                isSelected ? "text-[#e3ff00]" : "text-zinc-400"
+                              }`}
+                            >
+                              Lab
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* FILTRO 2: FASCIA ORARIA */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
+                      2. Orario Inizio (Dalle ore)
+                    </label>
+                    <select
+                      value={batchOraInizio}
+                      onChange={(e) => {
+                        setBatchOraInizio(e.target.value);
+                        setSelectedBatchSlots([]);
+                      }}
+                      className="w-full h-9 px-3 rounded-xl border border-zinc-300 bg-white font-bold text-xs text-zinc-900 cursor-pointer shadow-2xs"
+                    >
+                      {ORARI_DISPONIBILI_BATCH.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
+                      3. Orario Fine (Fino alle ore)
+                    </label>
+                    <select
+                      value={batchOraFine}
+                      onChange={(e) => {
+                        setBatchOraFine(e.target.value);
+                        setSelectedBatchSlots([]);
+                      }}
+                      className="w-full h-9 px-3 rounded-xl border border-zinc-300 bg-white font-bold text-xs text-zinc-900 cursor-pointer shadow-2xs"
+                    >
+                      {ORARI_DISPONIBILI_BATCH.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* FILTRO 3: ORIZZONTE TEMPORALE */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
+                    4. Orizzonte Temporale di Prenotazione
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    {[
+                      { weeks: 2, label: "2 Settimane" },
+                      { weeks: 4, label: "4 Settimane (1 Mese)" },
+                      { weeks: 8, label: "8 Settimane (2 Mesi)" },
+                      { weeks: 12, label: "12 Settimane (3 Mesi)" },
+                    ].map((p) => {
+                      const active = batchSettimane === p.weeks;
+                      return (
+                        <button
+                          key={p.weeks}
+                          type="button"
+                          onClick={() => {
+                            setBatchSettimane(p.weeks);
+                            setSelectedBatchSlots([]);
+                          }}
+                          className={`py-1.5 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center ${
+                            active
+                              ? "bg-zinc-900 text-white border-zinc-900 shadow-2xs"
+                              : "bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-100"
+                          }`}
+                        >
+                          {p.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
+
+              {/* CARD 2: BAROMETRICA CREDITI & AZIONI RAPIDE */}
+              <div className="p-3.5 rounded-3xl bg-white border border-zinc-200 shadow-2xs space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-100 pb-3">
+                  <div>
+                    <div className="text-xs font-black text-zinc-900 flex items-center gap-1.5">
+                      <ListChecks className="size-4 text-[#1c00ff]" />
+                      Sessioni Trovate: {batchSlotResults.length}
+                      <span className="text-zinc-400 font-normal">
+                        ({batchSlotResults.filter((s) => s.disponibile).length} prenotabili)
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-zinc-500 font-medium">
+                      Hai spuntato <strong>{selectedBatchSlots.length}</strong> slot su{" "}
+                      {batchSlotResults.filter((s) => s.disponibile).length} liberi
+                    </div>
+                  </div>
+
+                  {/* TASTI SELEZIONA TUTTO / DESELEZIONA */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSelectAllBatch}
+                      disabled={batchSlotResults.filter((s) => s.disponibile).length === 0}
+                      className="text-xs h-8 rounded-xl font-bold bg-zinc-50 hover:bg-zinc-100 border-zinc-200 text-zinc-800 cursor-pointer"
+                    >
+                      <CheckSquare className="size-3.5 mr-1 text-[#1c00ff]" />
+                      Seleziona Tutti ({batchSlotResults.filter((s) => s.disponibile).length})
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleDeselectAllBatch}
+                      disabled={selectedBatchSlots.length === 0}
+                      className="text-xs h-8 rounded-xl font-bold text-zinc-500 hover:text-zinc-800 cursor-pointer"
+                    >
+                      Deseleziona
+                    </Button>
+                  </div>
+                </div>
+
+                {/* STATO CREDITI WALLET */}
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="p-2 rounded-2xl bg-zinc-50 border border-zinc-100">
+                    <div className="text-[10px] font-bold text-zinc-400 uppercase">
+                      Nel Tuo Wallet
+                    </div>
+                    <div className="text-base font-black text-zinc-900">
+                      {crediti} <span className="text-[10px] font-normal text-zinc-500">crediti</span>
+                    </div>
+                  </div>
+
+                  <div className="p-2 rounded-2xl bg-[#1c00ff]/5 border border-[#1c00ff]/20">
+                    <div className="text-[10px] font-bold text-[#1c00ff] uppercase">
+                      Richiesti
+                    </div>
+                    <div className="text-base font-black text-[#1c00ff]">
+                      {selectedBatchSlots.length}{" "}
+                      <span className="text-[10px] font-normal text-[#1c00ff]/70">crediti</span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`p-2 rounded-2xl border ${
+                      crediti - selectedBatchSlots.length < 0
+                        ? "bg-red-50 border-red-200 text-red-700"
+                        : "bg-emerald-50 border-emerald-200 text-emerald-800"
+                    }`}
+                  >
+                    <div className="text-[10px] font-bold uppercase">Saldo Residuo</div>
+                    <div className="text-base font-black">
+                      {crediti - selectedBatchSlots.length}{" "}
+                      <span className="text-[10px] font-normal">crediti</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* AVVISO CREDITI INSUFFICIENTI SE SELEZIONE SUPERA WALLET */}
+                {selectedBatchSlots.length > crediti && (
+                  <div className="p-3 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-xs flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="size-4 text-red-600 shrink-0" />
+                      <span>
+                        Crediti insufficienti: hai selezionato {selectedBatchSlots.length} sessioni ma possiedi{" "}
+                        {crediti} crediti.
+                      </span>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => setActiveTab("tariffario")}
+                      className="bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] h-7 px-2.5 rounded-xl shrink-0"
+                    >
+                      Acquista Pacchetto Lab
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* CARD 3: LISTA SLOT SPUNTABILI */}
+              <div className="space-y-2">
+                {batchSlotResults.length === 0 ? (
+                  <div className="p-8 rounded-3xl bg-zinc-50 border border-dashed border-zinc-300 text-center space-y-2">
+                    <CalendarIcon className="size-8 mx-auto text-zinc-300" />
+                    <div className="font-black text-sm text-zinc-800">
+                      Nessuno slot corrisponde ai filtri selezionati
+                    </div>
+                    <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                      Prova a selezionare altri giorni della settimana (es. Lun, Mer, Ven) oppure ad allargare la fascia oraria.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {batchSlotResults.map((s) => {
+                      const isSelected = selectedBatchSlots.some(
+                        (sel) => sel.data === s.data && sel.orario === s.orario
+                      );
+
+                      if (s.isMio) {
+                        return (
+                          <div
+                            key={s.key}
+                            className="p-3 rounded-2xl bg-[#1c00ff]/10 border-2 border-[#1c00ff] flex items-center justify-between text-xs"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className="size-7 rounded-lg bg-[#1c00ff] text-white flex items-center justify-center">
+                                <Check className="size-4 stroke-[3]" />
+                              </div>
+                              <div>
+                                <div className="font-black text-zinc-900 capitalize">
+                                  {formatGiornoEstesoItaliano(s.data)}
+                                </div>
+                                <div className="text-[11px] text-[#1c00ff] font-bold">
+                                  Ore {s.orario} • {s.nome_attivita}
+                                </div>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-black uppercase bg-[#1c00ff] text-white px-2 py-0.5 rounded-full">
+                              Tuo Slot
+                            </span>
+                          </div>
+                        );
+                      }
+
+                      if (s.isOccupato) {
+                        return (
+                          <div
+                            key={s.key}
+                            className="p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 flex items-center justify-between text-xs text-zinc-400 select-none opacity-60"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className="size-7 rounded-lg bg-zinc-200 text-zinc-400 flex items-center justify-center">
+                                <Lock className="size-3.5" />
+                              </div>
+                              <div>
+                                <div className="font-medium text-zinc-500 capitalize line-through">
+                                  {formatGiornoEstesoItaliano(s.data)}
+                                </div>
+                                <div className="text-[11px] text-zinc-400 font-mono">
+                                  Ore {s.orario}
+                                </div>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold bg-zinc-200 text-zinc-500 px-2 py-0.5 rounded">
+                              Occupato
+                            </span>
+                          </div>
+                        );
+                      }
+
+                      if (s.isBloccato) {
+                        return (
+                          <div
+                            key={s.key}
+                            className="p-3 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-center justify-between text-xs text-amber-700 select-none opacity-60"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className="size-7 rounded-lg bg-amber-200 text-amber-800 flex items-center justify-center">
+                                <AlertTriangle className="size-3.5" />
+                              </div>
+                              <div>
+                                <div className="font-medium text-amber-900 capitalize">
+                                  {formatGiornoEstesoItaliano(s.data)}
+                                </div>
+                                <div className="text-[11px] text-amber-700 font-mono">
+                                  Ore {s.orario} • Chiuso
+                                </div>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded">
+                              Ferie / Blocco
+                            </span>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={s.key}
+                          onClick={() => handleToggleBatchSlot(s.data, s.orario)}
+                          className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between text-xs select-none ${
+                            isSelected
+                              ? "bg-[#1c00ff]/5 border-[#1c00ff] shadow-xs"
+                              : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50/80"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <div
+                              className={`size-6 rounded-lg flex items-center justify-center transition-all ${
+                                isSelected
+                                  ? "bg-[#1c00ff] text-white"
+                                  : "border-2 border-zinc-300 bg-white text-transparent"
+                              }`}
+                            >
+                              <Check className="size-3.5 stroke-[3]" />
+                            </div>
+                            <div>
+                              <div className="font-black text-zinc-900 capitalize leading-tight">
+                                {formatGiornoEstesoItaliano(s.data)}
+                              </div>
+                              <div className="text-[11px] text-zinc-500 font-bold mt-0.5">
+                                Ore <span className="font-mono text-zinc-800">{s.orario}</span> • {s.nome_attivita}
+                              </div>
+                            </div>
+                          </div>
+
+                          <span
+                            className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full transition-all ${
+                              isSelected
+                                ? "bg-[#1c00ff] text-white"
+                                : "bg-zinc-100 text-zinc-600"
+                            }`}
+                          >
+                            {isSelected ? "Selezionato" : "Spunta"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* CARD 4: BARRA DI CONFERMA MASSIVA */}
+              {selectedBatchSlots.length > 0 && (
+                <div className="p-4 rounded-3xl bg-zinc-900 text-white border border-zinc-800 shadow-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-zinc-400">Riepilogo Prenotazione Multipla</div>
+                      <div className="text-base font-black text-white">
+                        {selectedBatchSlots.length} Sessioni Selezionate
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-zinc-400">Costo Totale</div>
+                      <div className="text-base font-black text-[#e3ff00]">
+                        -{selectedBatchSlots.length} Crediti
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={() => {
+                      if (crediti < selectedBatchSlots.length) {
+                        toast.error("Crediti insufficienti. Ricarica un Pacchetto Lab o riduci la selezione.");
+                        return;
+                      }
+                      batchPrenotaMutation.mutate(selectedBatchSlots);
+                    }}
+                    isLoading={batchPrenotaMutation.isPending}
+                    disabled={selectedBatchSlots.length === 0 || crediti < selectedBatchSlots.length}
+                    className="w-full h-12 rounded-2xl bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200] font-black text-sm border border-zinc-900 shadow-lg cursor-pointer"
+                  >
+                    <Sparkles className="size-4 text-[#1c00ff] mr-1.5" />
+                    Conferma e Prenota {selectedBatchSlots.length} Sessioni (-{selectedBatchSlots.length} Crediti)
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* REGOLE DI PRENOTAZIONE AREA46 (SINTETICHE E PULITE) */}
           <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-zinc-700 text-xs space-y-1.5">
@@ -579,12 +1265,12 @@ export default function AreaPersonalePage() {
         </div>
       )}
 
-      {/* ─── TAB 2: TARIFFARIO CARNET (8, 12, 24, 36 SEDUTE) ────────────────── */}
+      {/* ─── TAB 2: TARIFFARIO PACCHETTI LAB (8, 12, 24, 36 SEDUTE) ───────── */}
       {activeTab === "tariffario" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-black uppercase tracking-wider text-zinc-500">
-              Scegli il tuo Carnet
+              Scegli i tuoi Pacchetti Lab
             </h2>
             <span className="text-xs font-bold text-zinc-500">
               Saldo attuale: <strong>{crediti} crediti</strong>
@@ -715,7 +1401,7 @@ export default function AreaPersonalePage() {
                         isPro ? "bg-zinc-800 text-zinc-300" : "bg-zinc-50 text-zinc-600"
                       }`}
                     >
-                      💡 Con questo carnet: {pack.crediti} acquistati - {currentDebtCount} debito ={" "}
+                      💡 Con questo pacchetto: {pack.crediti} acquistati - {currentDebtCount} debito ={" "}
                       <strong className="text-emerald-500">{creditiNetti} crediti netti</strong>.
                     </div>
                   )}
@@ -1232,7 +1918,7 @@ export default function AreaPersonalePage() {
             {hasDebt
               ? "Saldo a Debito"
               : isExpired
-              ? "Carnet Scaduto"
+              ? "Pacchetto Scaduto"
               : "Crediti Esauriti"}
           </DialogTitle>
 
@@ -1249,7 +1935,7 @@ export default function AreaPersonalePage() {
               className="w-full rounded-xl bg-[#e3ff00] text-zinc-950 font-black border border-zinc-900 h-10"
             >
               <Sparkles className="size-4 text-[#1c00ff] mr-1" />
-              Ricarica Carnet
+              Acquista Pacchetto Lab
             </Button>
             <Button
               variant="ghost"

@@ -614,7 +614,7 @@ export default function ManagerAtletiPage() {
               </Button>
             </div>
             <DialogDescription className="text-xs text-zinc-500">
-              Cronologia completa movimenti, carnet, prenotazioni e penali per{" "}
+              Cronologia completa movimenti, pacchetti, prenotazioni e penali per{" "}
               <strong>
                 {historyAtleta?.nome} {historyAtleta?.cognome}
               </strong>

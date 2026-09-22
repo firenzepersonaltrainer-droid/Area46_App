@@ -239,7 +239,7 @@ export default function ManagerFiscoPage() {
             onClick={() => copyInvoiceBuddyData()}
             className="text-[11px] font-bold bg-zinc-900 text-white hover:bg-zinc-800 h-8 px-2.5 rounded-xl flex items-center gap-1"
           >
-            <Copy className="size-3" /> Copia per InvoiceBuddy
+            <Copy className="size-3" /> Copia Dati
           </Button>
         </div>
 

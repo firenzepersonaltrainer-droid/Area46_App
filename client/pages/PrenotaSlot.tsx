@@ -38,8 +38,11 @@ interface Prenotazione {
   created_at: string;
 }
 
-function formatDateISO(date: Date): string {
-  return date.toISOString().slice(0, 10);
+function formatDateISO(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatGiornoItaliano(dateStr: string): string {
@@ -575,7 +578,7 @@ export default function PrenotaSlotPage() {
             {hasDebt
               ? "Saldo a Debito"
               : isExpired
-              ? "Carnet Scaduto"
+              ? "Pacchetto Scaduto"
               : "Crediti Esauriti"}
           </DialogTitle>
 
@@ -583,7 +586,7 @@ export default function PrenotaSlotPage() {
             {hasDebt ? (
               <>
                 Il tuo wallet presenta un saldo negativo di{" "}
-                <strong>{crediti} crediti</strong>. Ricarica un nuovo carnet per sanare il debito e
+                <strong>{crediti} crediti</strong>. Acquista un nuovo pacchetto lab per sanare il debito e
                 sbloccare le prenotazioni al Lab.
               </>
             ) : isExpired ? (
@@ -595,7 +598,7 @@ export default function PrenotaSlotPage() {
             ) : (
               <>
                 Hai <strong>0 crediti disponibili</strong>. Per prenotare uno slot al Lab è
-                necessario acquistare una seduta singola o un carnet.
+                necessario acquistare una seduta singola o un pacchetto lab.
               </>
             )}
           </DialogDescription>

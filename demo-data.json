@@ -14249,7 +14249,7 @@
       "ruolo": "manager",
       "crediti": 999,
       "data_scadenza_crediti": "2099-12-31",
-      "data_ultimo_accesso": "2026-09-21T08:33:13.515Z",
+      "data_ultimo_accesso": "2026-09-22T04:37:55.972Z",
       "note_coach": "Account Amministratore / Head Coach",
       "tempo_cancellazione_ore": 12
     },
@@ -14262,9 +14262,9 @@
       "codice_fiscale": "RSSMRA85M01D612Z",
       "indirizzo": "Via dei Pini 12, Firenze",
       "ruolo": "atleta",
-      "crediti": 3,
-      "data_scadenza_crediti": "2026-10-31",
-      "data_ultimo_accesso": "2026-09-21T08:32:17.527Z",
+      "crediti": 15,
+      "data_scadenza_crediti": "2026-11-21",
+      "data_ultimo_accesso": "2026-09-22T05:02:04.350Z",
       "note_coach": "Atleta costante, nessun infortunio pregresso.",
       "tempo_cancellazione_ore": 24
     },
@@ -14285,7 +14285,7 @@
     }
   ],
   "configurazione_lab": {
-    "tempo_cancellazione_ore": 36,
+    "tempo_cancellazione_ore": 24,
     "iban": "IT46X0306909606100000046460",
     "intestatario_iban": "Area46 Training Lab SSD a r.l.",
     "banca": "Banca Sella - Filiale Firenze",
@@ -14393,13 +14393,61 @@
       "email_cliente": "mario.rossi@example.com",
       "nome_cliente": "Mario Rossi",
       "telefono_cliente": "+39 333 1234567",
-      "stato": "confermata",
+      "stato": "cancellata_tardiva",
       "credito_scalato": true,
       "note": "",
-      "created_at": "2026-09-16T14:38:46.705Z"
+      "created_at": "2026-09-16T14:38:46.705Z",
+      "cancellato_il": "2026-09-22T04:27:04.047Z"
+    },
+    {
+      "id": "bk-1790051270119",
+      "data": "2026-09-28",
+      "orario": "10:15",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "telefono_cliente": "+39 333 1234567",
+      "stato": "cancellata_in_tempo",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-09-22T04:27:50.119Z",
+      "cancellato_il": "2026-09-22T04:33:30.035Z"
+    },
+    {
+      "id": "bk-1790051309196",
+      "data": "2026-09-30",
+      "orario": "09:30",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "telefono_cliente": "+39 333 1234567",
+      "stato": "cancellata_in_tempo",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-09-22T04:28:29.196Z",
+      "cancellato_il": "2026-09-22T04:33:26.066Z"
     }
   ],
   "transazioni_pagamenti": [
+    {
+      "codice_transazione": "TX-46-720565",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "codice_fiscale": "RSSMRA85M01D612Z",
+      "indirizzo": "Via dei Pini 12, Firenze",
+      "id_pacchetto": "pack-12",
+      "nome_pacchetto": "Carnet 12 Sedute",
+      "importo_euro": 450,
+      "metodo": "paypal",
+      "crediti_acquistati": 12,
+      "debiti_decurtati": 0,
+      "crediti_effettivi_aggiunti": 12,
+      "causale_bonifico": null,
+      "stato": "completato",
+      "stato_fattura": "da_emettere",
+      "created_at": "2026-09-22T04:35:20.565Z"
+    },
     {
       "codice_transazione": "TX-46-008299",
       "atleta_id": "usr-atleta-02",
@@ -14456,8 +14504,80 @@
       "created_at": "2026-09-01T12:03:43.440Z"
     }
   ],
-  "active_user_id": "usr-coach-01",
+  "active_user_id": "usr-atleta-01",
   "movimenti_crediti": [
+    {
+      "id": "mov-1790051720565-181",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T04:35:20.565Z",
+      "tipo": "acquisto_carnet",
+      "delta_crediti": 12,
+      "saldo_risultante": 15,
+      "motivazione": "Acquisto Carnet 12 Sedute",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1790051610035-704",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T04:33:30.035Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 3,
+      "motivazione": "Rimborso per cancellazione in tempo slot del 2026-09-28 10:15",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1790051606066-294",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T04:33:26.066Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 2,
+      "motivazione": "Rimborso per cancellazione in tempo slot del 2026-09-30 09:30",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1790051309196-67",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T04:28:29.196Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 1,
+      "motivazione": "Prenotazione slot del 2026-09-30 ore 09:30",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1790051270119-490",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T04:27:50.119Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 2,
+      "motivazione": "Prenotazione slot del 2026-09-28 ore 10:15",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1790051224047-751",
+      "atleta_id": "usr-atleta-01",
+      "email_cliente": "mario.rossi@example.com",
+      "nome_cliente": "Mario Rossi",
+      "data_ora": "2026-09-22T04:27:04.047Z",
+      "tipo": "penalty",
+      "delta_crediti": 0,
+      "saldo_risultante": 3,
+      "motivazione": "Cancellazione tardiva slot del 2026-09-16 20:00 (preavviso < 24h: credito trattenuto)",
+      "operatore": "sistema"
+    },
     {
       "id": "mov-1789569526706-17",
       "atleta_id": "usr-atleta-01",
@@ -14530,6 +14650,17 @@
       "durata_minuti": 60,
       "colore": "#1c00ff",
       "attiva": true
+    },
+    {
+      "id": "act-1790052617731-zufh",
+      "nome": "Personal Training privato",
+      "descrizione": "sessioni di allenamento one to one",
+      "costo_crediti": 3,
+      "max_partecipanti": 1,
+      "durata_minuti": 75,
+      "colore": "#8b5cf6",
+      "attiva": true,
+      "created_at": "2026-09-22T04:50:17.731Z"
     }
   ],
   "regole_palinsesto": [
@@ -14539,7 +14670,11 @@
       "id_attivita": "act-landmine-lab",
       "data_inizio": "2026-09-01",
       "data_fine": "2027-07-31",
-      "giorni_settimana": [1, 3, 5],
+      "giorni_settimana": [
+        1,
+        3,
+        5
+      ],
       "fasce_orarie": [
         {
           "nome": "Mattina",

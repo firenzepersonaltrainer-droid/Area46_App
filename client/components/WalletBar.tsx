@@ -128,7 +128,7 @@ export function WalletBar() {
               <div className="flex items-center gap-1.5">
                 <AlertTriangle className="size-3.5 text-red-600 shrink-0" />
                 <span>
-                  Hai <strong>{Math.abs(crediti)} sedute a debito</strong>. Verranno sanate al prossimo carnet.
+                  Hai <strong>{Math.abs(crediti)} sedute a debito</strong>. Verranno sanate al prossimo pacchetto lab.
                 </span>
               </div>
               <Link

@@ -53,8 +53,11 @@ interface Prenotazione {
   created_at: string;
 }
 
-function formatDateISO(date: Date): string {
-  return date.toISOString().slice(0, 10);
+function formatDateISO(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatGiornoItaliano(dateStr: string): string {
@@ -83,18 +86,13 @@ export default function ManagerCalendarPage() {
   const [selectedAtletaId, setSelectedAtletaId] = useState("");
   const [manualNote, setManualNote] = useState("");
 
-  // Modale Aggiungi Slot Straordinario
-  const [extraSlotModal, setExtraSlotModal] = useState(false);
-  const [extraOrario, setExtraOrario] = useState("12:30");
-  const [extraMotivo, setExtraMotivo] = useState("Apertura straordinaria");
-
   // Modale Blocca Slot / Chiusura Ferie
   const [blockModal, setBlockModal] = useState(false);
   const [blockTipo, setBlockTipo] = useState<"chiusura_giornata" | "slot_bloccato">("slot_bloccato");
   const [blockOrariSelezionati, setBlockOrariSelezionati] = useState<string[]>([]);
   const [blockMotivo, setBlockMotivo] = useState("Chiusura per ferie / imprevisto");
 
-  // Modale Palinsesto & Attività (Stile Bookyway)
+  // Modale Palinsesto & Attività
   const [palinsestoModalOpen, setPalinsestoModalOpen] = useState(false);
 
   // Dati Attività e Palinsesto Ricorrente
@@ -184,24 +182,13 @@ export default function ManagerCalendarPage() {
   });
 
   const handleStepDay = (step: number) => {
-    const d = new Date(selectedDate + "T00:00:00");
-    d.setDate(d.getDate() + step);
-    setSelectedDate(formatDateISO(d));
+    const [y, m, d] = selectedDate.split("-").map(Number);
+    const date = new Date(y, m - 1, d + step);
+    setSelectedDate(formatDateISO(date));
   };
 
   const handleToday = () => {
     setSelectedDate(formatDateISO(new Date()));
-  };
-
-  const handleSaveExtraSlot = async () => {
-    if (!extraOrario) return;
-    await aggiungiEccezione({
-      data: selectedDate,
-      orario: extraOrario,
-      tipo: "slot_straordinario",
-      motivo: extraMotivo,
-    });
-    setExtraSlotModal(false);
   };
 
   const handleSaveBlock = async () => {
@@ -275,34 +262,24 @@ export default function ManagerCalendarPage() {
         isManager={true}
       />
 
-      {/* PULSANTI CONTROLLO COACH (PALINSESTO / + SLOT / BLOCCO / FERIE) */}
+      {/* PULSANTI CONTROLLO COACH (PALINSESTO / BLOCCO / FERIE) */}
       <div className="flex flex-col sm:flex-row items-stretch gap-2">
         <Button
           size="sm"
           onClick={() => setPalinsestoModalOpen(true)}
-          className="bg-zinc-900 text-[#e3ff00] hover:bg-zinc-800 text-xs font-black rounded-xl h-9 border border-zinc-800 shadow-xs flex items-center justify-center gap-1.5"
+          className="flex-1 bg-zinc-900 text-[#e3ff00] hover:bg-zinc-800 text-xs font-black rounded-xl h-9 border border-zinc-800 shadow-xs flex items-center justify-center gap-1.5"
         >
           <CalendarRange className="size-3.5 text-[#e3ff00]" /> Palinsesto & Attività
         </Button>
 
-        <div className="flex items-center gap-2 flex-1">
-          <Button
-            size="sm"
-            onClick={() => setExtraSlotModal(true)}
-            className="flex-1 bg-[#1c00ff] text-white hover:bg-[#1600cc] text-xs font-bold rounded-xl h-9"
-          >
-            <Plus className="size-3.5 mr-1" /> Slot Straordinario
-          </Button>
-
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setBlockModal(true)}
-            className="flex-1 border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 text-xs font-bold rounded-xl h-9"
-          >
-            <Ban className="size-3.5 mr-1 text-amber-700" /> Blocca Slot / Ferie
-          </Button>
-        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setBlockModal(true)}
+          className="flex-1 border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 text-xs font-bold rounded-xl h-9 flex items-center justify-center"
+        >
+          <Ban className="size-3.5 mr-1 text-amber-700" /> Blocca Slot / Ferie
+        </Button>
       </div>
 
       {/* LISTA ECCEZIONI ATTIVE PER QUESTA DATA (SE PRESENTI) */}
@@ -477,57 +454,6 @@ export default function ManagerCalendarPage() {
         )}
       </div>
 
-      {/* MODALE SLOT STRAORDINARIO */}
-      <Dialog open={extraSlotModal} onOpenChange={setExtraSlotModal}>
-        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
-              <Plus className="size-5 text-[#1c00ff]" />
-              Aggiungi Slot Straordinario
-            </DialogTitle>
-            <DialogDescription className="text-xs text-zinc-500">
-              Aggiungi un orario non previsto nella routine per il {formatGiornoItaliano(selectedDate)}.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="my-3 space-y-3 text-xs">
-            <div>
-              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                Orario Slot (es. 12:15 o 16:30)
-              </label>
-              <Input
-                value={extraOrario}
-                onChange={(e) => setExtraOrario(e.target.value)}
-                placeholder="HH:mm"
-                className="font-mono text-base font-bold"
-              />
-            </div>
-            <div>
-              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                Motivazione / Nota
-              </label>
-              <Input
-                value={extraMotivo}
-                onChange={(e) => setExtraMotivo(e.target.value)}
-                placeholder="es. Pausa pranzo, apertura extra"
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="flex gap-2">
-            <Button variant="outline" onClick={() => setExtraSlotModal(false)} className="flex-1 rounded-xl">
-              Annulla
-            </Button>
-            <Button
-              onClick={handleSaveExtraSlot}
-              className="flex-1 rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black"
-            >
-              Crea Slot
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* MODALE BLOCCA / FERIE (SELEZIONE MULTIPLA SLOT) */}
       <Dialog open={blockModal} onOpenChange={setBlockModal}>
         <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
@@ -544,20 +470,20 @@ export default function ManagerCalendarPage() {
           <div className="my-3 space-y-3.5 text-xs">
             {/* SELETTORE DATA DIRETTO DENTRO IL MODALE */}
             <div className="flex items-center justify-between bg-zinc-50 border border-zinc-200 rounded-2xl p-2 px-3">
-              <Button
+              <button
                 type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   handleStepDay(-1);
                   setBlockOrariSelezionati([]);
                 }}
-                className="h-7 w-7 p-0 rounded-lg hover:bg-zinc-200 text-zinc-700"
+                className="h-8 w-8 inline-flex items-center justify-center rounded-lg hover:bg-zinc-200 text-zinc-700 active:scale-95 transition-all cursor-pointer"
                 title="Giorno precedente"
               >
                 <ChevronLeft className="size-4" />
-              </Button>
-              <div className="text-center">
+              </button>
+              <div className="text-center select-none">
                 <div className="text-xs font-black text-zinc-900 capitalize">
                   {formatGiornoItaliano(selectedDate)}
                 </div>
@@ -565,19 +491,19 @@ export default function ManagerCalendarPage() {
                   {selectedDate}
                 </div>
               </div>
-              <Button
+              <button
                 type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   handleStepDay(1);
                   setBlockOrariSelezionati([]);
                 }}
-                className="h-7 w-7 p-0 rounded-lg hover:bg-zinc-200 text-zinc-700"
+                className="h-8 w-8 inline-flex items-center justify-center rounded-lg hover:bg-zinc-200 text-zinc-700 active:scale-95 transition-all cursor-pointer"
                 title="Giorno successivo"
               >
                 <ChevronRight className="size-4" />
-              </Button>
+              </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button

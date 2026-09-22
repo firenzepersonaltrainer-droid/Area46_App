@@ -206,8 +206,8 @@ export function ManagerPalinsestoModal({
                 <DialogTitle className="text-base font-black text-zinc-900 leading-tight">
                   Palinsesto & Attività Lab
                 </DialogTitle>
-                <DialogDescription className="text-xs text-zinc-500 mt-0.5">
-                  Programmazione ricorrente e orari a scaglioni stile Bookyway
+                <DialogDescription className="sr-only">
+                  Palinsesto & Attività Lab
                 </DialogDescription>
               </div>
             </div>
@@ -669,7 +669,15 @@ export function ManagerPalinsestoModal({
                               <option value={15}>15 Minuti</option>
                               <option value={30}>30 Minuti</option>
                               <option value={45}>45 Minuti</option>
-                              <option value={60}>60 Minuti</option>
+                              <option value={60}>60 Minuti (1 ora)</option>
+                              <option value={75}>75 Minuti (1h 15m)</option>
+                              <option value={90}>90 Minuti (1h 30m)</option>
+                              <option value={105}>105 Minuti (1h 45m)</option>
+                              <option value={120}>120 Minuti (2 ore)</option>
+                              <option value={135}>135 Minuti (2h 15m)</option>
+                              <option value={150}>150 Minuti (2h 30m)</option>
+                              <option value={165}>165 Minuti (2h 45m)</option>
+                              <option value={180}>180 Minuti (3 ore)</option>
                             </select>
                           </div>
                         </div>

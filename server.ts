@@ -588,6 +588,49 @@ app.get("/app-api/prenotazioni", async (c) => {
   return c.json(rows);
 });
 
+app.post("/app-api/prenotazioni/batch", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const body = await c.req.json();
+  const user = auth(c).user();
+  const requestedSlots: Array<{ data: string; orario: string; note?: string }> = body.slots || [];
+
+  if (!Array.isArray(requestedSlots) || requestedSlots.length === 0) {
+    return c.json({ error: "Nessuno slot specificato" }, 400);
+  }
+
+  const atletaEmail = body.email_cliente || user?.email;
+  const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${atletaEmail} LIMIT 1`;
+  const isManager = atletaRows[0]?.ruolo === "manager";
+  const totalCost = requestedSlots.length;
+
+  if (!isManager && atletaRows.length > 0) {
+    if ((atletaRows[0].crediti ?? 0) < totalCost) {
+      return c.json({ error: `Crediti insufficienti. Disponibili: ${atletaRows[0].crediti}, richiesti: ${totalCost}` }, 403);
+    }
+    await sql`UPDATE profili_utenti SET crediti = crediti - ${totalCost}, data_ultimo_accesso = NOW() WHERE email = ${atletaEmail}`;
+  }
+
+  const created = [];
+  const now = Date.now();
+  for (let i = 0; i < requestedSlots.length; i++) {
+    const s = requestedSlots[i];
+    const id = `bk-${now}-${i}`;
+    const rows = await sql`
+      INSERT INTO prenotazioni_slot (
+        id, data, orario, atleta_id, email_cliente, nome_cliente, telefono_cliente, stato, credito_scalato, note
+      ) VALUES (
+        ${id}, ${s.data}::date, ${s.orario}, ${atletaRows[0]?.id || null}, ${atletaEmail},
+        ${atletaRows[0] ? `${atletaRows[0].nome} ${atletaRows[0].cognome}` : (user?.name || "Atleta")},
+        ${atletaRows[0]?.telefono || null}, 'confermata', true, ${s.note || "Prenotazione Multipla"}
+      )
+      RETURNING *
+    `;
+    created.push(rows[0]);
+  }
+
+  return c.json({ ok: true, count: created.length, prenotazioni: created, messaggio: `${created.length} sessioni prenotate con successo!` }, 201);
+});
+
 app.post("/app-api/prenotazioni", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const body = await c.req.json();
@@ -600,7 +643,7 @@ app.post("/app-api/prenotazioni", async (c) => {
     LIMIT 1
   `;
   if (existing.length > 0) {
-    return c.json({ error: "Slot già occupato da un altro atleta. Capienza 1:1 raggiunta." }, 409);
+    return c.json({ error: "Slot già occupato da un altro atleta. Capienza massima raggiunta per questa postazione." }, 409);
   }
 
   // Deduci credito

@@ -557,6 +557,137 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify(prenotazioni));
     }
 
+    // POST /app-api/prenotazioni/batch (Prenotazione Multipla Rapida a blocchi)
+    if (pathname === "/app-api/prenotazioni/batch" && method === "POST") {
+      const atletaId = parsedBody.atleta_id || currentUser.id;
+      const atleta =
+        (db.profili_utenti || []).find((p: any) => p.id === atletaId || p.email === atletaId) ||
+        currentUser;
+      const requestedSlots: Array<{ data: string; orario: string; note?: string }> =
+        parsedBody.slots || [];
+
+      if (!Array.isArray(requestedSlots) || requestedSlots.length === 0) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Nessuno slot specificato per la prenotazione multipla." }));
+      }
+
+      const isManager = currentUser.ruolo === "manager";
+      const totalCost = requestedSlots.length;
+
+      if (!isManager) {
+        if ((atleta.crediti ?? 0) < totalCost) {
+          res.statusCode = 403;
+          return res.end(
+            JSON.stringify({
+              error: `Crediti insufficienti. Hai ${atleta.crediti ?? 0} crediti ma hai selezionato ${totalCost} slot. Acquista un nuovo Pacchetto Lab o riduci la selezione.`,
+              motivo: "crediti_insufficienti",
+              crediti: atleta.crediti,
+              richiesti: totalCost,
+            })
+          );
+        }
+
+        if (atleta.data_scadenza_crediti) {
+          const scadenza = new Date(atleta.data_scadenza_crediti);
+          for (const s of requestedSlots) {
+            if (new Date(s.data) > scadenza) {
+              res.statusCode = 403;
+              return res.end(
+                JSON.stringify({
+                  error: `Uno o più slot selezionati (${s.data}) superano la data di scadenza del tuo pacchetto (${atleta.data_scadenza_crediti}). Rinnova il pacchetto per prenotare.`,
+                  motivo: "crediti_scaduti",
+                  scadenza: atleta.data_scadenza_crediti,
+                })
+              );
+            }
+          }
+        }
+      }
+
+      // Controllo disponibilità di tutti gli slot richiesti
+      db.prenotazioni_slot = db.prenotazioni_slot || [];
+      const eccezioni = db.eccezioni_calendario || [];
+
+      for (const s of requestedSlots) {
+        const bloccato = eccezioni.find(
+          (e: any) =>
+            e.data === s.data &&
+            (e.tipo === "chiusura_giornata" || (e.tipo === "slot_bloccato" && e.orario === s.orario))
+        );
+        if (bloccato) {
+          res.statusCode = 400;
+          return res.end(
+            JSON.stringify({
+              error: `Lo slot del ${s.data} alle ${s.orario} non è disponibile: ${bloccato.motivo || "Chiusura o ferie del Lab"}.`,
+            })
+          );
+        }
+
+        const slotGiaOccupato = db.prenotazioni_slot.find(
+          (p: any) => p.data === s.data && p.orario === s.orario && p.stato === "confermata"
+        );
+        if (slotGiaOccupato) {
+          res.statusCode = 409;
+          return res.end(
+            JSON.stringify({
+              error: `Lo slot del ${s.data} alle ${s.orario} è già stato prenotato da un altro atleta. Capienza massima raggiunta per questa postazione.`,
+            })
+          );
+        }
+      }
+
+      // Tutto verificato: applica le prenotazioni
+      atleta.crediti = (atleta.crediti ?? 0) - totalCost;
+      atleta.data_ultimo_accesso = new Date().toISOString();
+
+      const createPrenotazioni: any[] = [];
+      const now = Date.now();
+
+      requestedSlots.forEach((s, idx) => {
+        const bk = {
+          id: `bk-${now}-${idx}`,
+          data: s.data,
+          orario: s.orario,
+          atleta_id: atleta.id,
+          email_cliente: atleta.email,
+          nome_cliente:
+            `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+          telefono_cliente: atleta.telefono || "",
+          stato: "confermata",
+          credito_scalato: true,
+          note: s.note || "Prenotazione Multipla Rapida",
+          created_at: new Date().toISOString(),
+        };
+        db.prenotazioni_slot.push(bk);
+        createPrenotazioni.push(bk);
+      });
+
+      // Tracciamento movimento crediti unico cumulativo
+      addMovimentoCrediti(db, {
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+        tipo: "prenotazione_slot",
+        delta_crediti: -totalCost,
+        saldo_risultante: atleta.crediti,
+        motivazione: `Prenotazione multipla di ${totalCost} sessioni`,
+        operatore: isManager ? "coach" : "atleta",
+      });
+
+      saveData(db);
+
+      res.statusCode = 201;
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          count: createPrenotazioni.length,
+          prenotazioni: createPrenotazioni,
+          crediti_rimanenti: atleta.crediti,
+          messaggio: `${createPrenotazioni.length} sessioni prenotate con successo!`,
+        })
+      );
+    }
+
     // POST /app-api/prenotazioni
     if (pathname === "/app-api/prenotazioni" && method === "POST") {
       const atletaId = parsedBody.atleta_id || currentUser.id;
@@ -599,7 +730,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         res.statusCode = 409;
         return res.end(
           JSON.stringify({
-            error: `Lo slot del ${dataSlot} alle ${orarioSlot} è già stato prenotato da un altro atleta. Capienza massima 1:1 raggiunta.`,
+            error: `Lo slot del ${dataSlot} alle ${orarioSlot} è già stato prenotato da un altro atleta. Capienza massima raggiunta per questa postazione.`,
           })
         );
       }
@@ -612,7 +743,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
           return res.end(
             JSON.stringify({
               error:
-                "Crediti esauriti o saldo a debito. Acquista un nuovo carnet per procedere con la prenotazione.",
+                "Crediti esauriti o saldo a debito. Acquista un nuovo pacchetto lab per procedere con la prenotazione.",
               motivo: "crediti_insufficienti",
               crediti: atleta.crediti,
             })
@@ -626,7 +757,7 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
             res.statusCode = 403;
             return res.end(
               JSON.stringify({
-                error: `Il tuo carnet crediti è scaduto il ${atleta.data_scadenza_crediti}. Rinnova il pacchetto per prenotare questa data.`,
+                error: `Il tuo pacchetto crediti è scaduto il ${atleta.data_scadenza_crediti}. Rinnova il pacchetto per prenotare questa data.`,
                 motivo: "crediti_scaduti",
                 scadenza: atleta.data_scadenza_crediti,
               })
