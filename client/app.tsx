@@ -35,6 +35,7 @@ import ManagerAtletiPage from "./pages/ManagerAtleti";
 import ManagerFiscoPage from "./pages/ManagerFisco";
 import LoginPage from "./pages/Login";
 import FloatingTimer from "./components/FloatingTimer";
+import { InstallPrompt } from "./components/InstallPrompt";
 
 function MobileStatusBar() {
   const [time, setTime] = useState("");
@@ -196,6 +197,7 @@ function AppContent() {
             <Route path="*" element={<LoginPage />} />
           </Routes>
         </main>
+        <InstallPrompt />
         <MobileHomeIndicator />
       </div>
     );
@@ -274,6 +276,9 @@ function AppContent() {
 
       {/* Timer Flottante Sovraimpresso integrato nello smartphone */}
       <FloatingTimer />
+
+      {/* Prompt installazione PWA per Android/Chrome/iOS */}
+      <InstallPrompt />
 
       {/* Home indicator dello smartphone */}
       <MobileHomeIndicator />

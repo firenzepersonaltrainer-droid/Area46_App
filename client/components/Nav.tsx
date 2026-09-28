@@ -39,7 +39,7 @@ export function Nav({ items, className }: NavProps) {
                 "flex flex-col items-center justify-center relative",
                 "rounded-full px-2.5 py-1.5",
                 "min-w-[60px] flex-1 shrink-0",
-                "text-[11px] font-bold tracking-tight",
+                "text-xs font-bold tracking-tight",
                 "transition-all duration-200",
                 "outline-none focus-visible:ring-focus-ring/50 focus-visible:ring-[2px]",
                 "[&_svg]:size-5",

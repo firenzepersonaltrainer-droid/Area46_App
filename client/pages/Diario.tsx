@@ -275,7 +275,7 @@ function VoceDiarioRow({ voce, deleting, onElimina }: { voce: VoceDiario; deleti
               <div className="space-y-2">
                 {editSets.map((s, i) => (
                   <div key={i} className="flex items-center gap-1.5">
-                    <span className="flex shrink-0 size-5 items-center justify-center rounded-full text-[10px] font-bold" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
+                    <span className="flex shrink-0 size-6 items-center justify-center rounded-full text-xs font-bold" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
                     <Input type="number" placeholder="kg" value={s.carico_kg} onChange={(e) => setEditSets((prev) => prev.map((x, idx) => idx === i ? { ...x, carico_kg: e.target.value } : x))} className="flex-1" />
                     <Input type="number" placeholder="reps" value={s.ripetizioni} onChange={(e) => setEditSets((prev) => prev.map((x, idx) => idx === i ? { ...x, ripetizioni: e.target.value } : x))} className="flex-1" />
                     <Input type="text" placeholder="RPE" value={s.rpe} onChange={(e) => setEditSets((prev) => prev.map((x, idx) => idx === i ? { ...x, rpe: e.target.value } : x))} className="w-16" />
@@ -296,7 +296,7 @@ function VoceDiarioRow({ voce, deleting, onElimina }: { voce: VoceDiario; deleti
                 <div className="space-y-1 pb-1">
                   {sets.map((s, i) => (
                     <div key={i} className="flex items-center gap-2 flex-wrap">
-                      <span className="flex shrink-0 size-5 items-center justify-center rounded-full text-[10px] font-bold" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
+                      <span className="flex shrink-0 size-6 items-center justify-center rounded-full text-xs font-bold" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
                       <span className="text-sm text-primary font-bold">{s.carico_kg != null ? `${s.carico_kg} kg` : "—"}</span>
                       <span className="text-sm font-semibold text-zinc-700">&times; {s.ripetizioni} rip.</span>
                       {s.rpe && <span className="text-sm font-bold text-[#1c00ff]">RPE {s.rpe}</span>}
@@ -403,7 +403,7 @@ export default function DiarioPage() {
               </div>
               <div className="flex items-center gap-2 shrink-0 ml-3">
                 <span
-                  className="text-[11px] font-black px-2 py-0.5 rounded-full"
+                  className="text-xs font-black px-2.5 py-0.5 rounded-full"
                   style={{ background: "#09090b", color: "#ffffff" }}
                 >
                   {g.totaleLog} log

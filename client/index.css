@@ -41,6 +41,25 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 17px;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* Guardrail: elimina scritte microscopiche (<13px) su qualsiasi dispositivo */
+[class*="text-[9px]"],
+[class*="text-[10px]"],
+[class*="text-[11px]"] {
+  font-size: 0.78rem !important;
+  line-height: 1.25 !important;
+}
+
 body {
   margin: 0;
   padding: 0;

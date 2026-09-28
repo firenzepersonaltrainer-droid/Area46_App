@@ -40,10 +40,10 @@ export function WalletBar() {
           </div>
 
           <div className="flex flex-col leading-none">
-            <span className="text-[13px] font-black tracking-tight text-zinc-900">
+            <span className="text-sm font-black tracking-tight text-zinc-900">
               {user.name || `${user.nome} ${user.cognome}`}
             </span>
-            <span className="text-[10px] text-zinc-500 font-semibold mt-0.5">
+            <span className="text-xs text-zinc-500 font-semibold mt-0.5">
               {isManager ? "Pannello Gestore Lab" : user.email}
             </span>
           </div>
@@ -66,13 +66,13 @@ export function WalletBar() {
               >
                 <div className="flex items-center gap-1">
                   <Coins className="size-3.5" />
-                  <span className="text-[13px] font-black tabular-nums">
+                  <span className="text-sm font-black tabular-nums">
                     {hasDebt
                       ? `${crediti} DEBITO`
                       : `${crediti} ${crediti === 1 ? "Credito" : "Crediti"}`}
                   </span>
                 </div>
-                <span className="text-[9px] font-bold text-zinc-500">
+                <span className="text-xs font-bold text-zinc-500">
                   {user.data_scadenza_crediti
                     ? `Scad: ${new Date(user.data_scadenza_crediti).toLocaleDateString("it-IT", {
                         day: "numeric",

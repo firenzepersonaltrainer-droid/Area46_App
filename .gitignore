@@ -34,3 +34,6 @@ Thumbs.db
 
 # Vite cache
 .vite/
+
+# Scratch & temporary migration inspection scripts
+scratch/

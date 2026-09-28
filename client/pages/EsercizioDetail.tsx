@@ -662,7 +662,7 @@ export default function EsercizioDetailPage() {
                         <div className="space-y-2">
                           {editSets.map((s, i) => (
                             <div key={i} className="flex items-center gap-2">
-                              <span className="flex shrink-0 size-5 items-center justify-center rounded-full text-[10px] font-bold" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
+                              <span className="flex shrink-0 size-6 items-center justify-center rounded-full text-xs font-black" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
                               <Input type="number" placeholder="kg" value={s.carico_kg} onChange={(e) => updateEditSet(i, "carico_kg", e.target.value)} className="flex-1" />
                               <Input type="number" placeholder="reps" value={s.ripetizioni} onChange={(e) => updateEditSet(i, "ripetizioni", e.target.value)} className="flex-1" />
                               <Input type="text" placeholder="RPE" value={s.rpe} onChange={(e) => updateEditSet(i, "rpe", e.target.value)} className="w-16" />
@@ -703,7 +703,7 @@ export default function EsercizioDetailPage() {
                             <div className="space-y-1.5">
                               {setsArr.map((s: any, i: number) => (
                                 <div key={i} className="flex items-center gap-2 flex-wrap">
-                                  <span className="flex shrink-0 size-5 items-center justify-center rounded-full text-[10px] font-bold" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
+                                  <span className="flex shrink-0 size-6 items-center justify-center rounded-full text-xs font-black" style={{ background: "#1c00ff", color: "#fff" }}>{i + 1}</span>
                                   <span className="text-sm text-primary font-bold">{s.carico_kg != null ? `${s.carico_kg} kg` : "—"}</span>
                                   <span className="text-sm font-semibold text-zinc-700">× {s.ripetizioni} rip.</span>
                                   {s.rpe && <span className="text-sm font-bold text-[#1c00ff]">RPE {s.rpe}</span>}
