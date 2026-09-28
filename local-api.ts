@@ -3,66 +3,64 @@ import path from "node:path";
 import crypto from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { fileURLToPath } from "node:url";
-import defaultData from "./demo-data.json";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const LOCAL_DATA_FILE = path.resolve(__dirname, "demo-data.json");
 const TMP_DATA_FILE = "/tmp/demo-data.json";
 
 function loadData() {
-  if (fs.existsSync(TMP_DATA_FILE)) {
+  const candidates = [
+    TMP_DATA_FILE,
+    path.resolve(process.cwd(), "demo-data.json"),
+    path.resolve(__dirname, "demo-data.json"),
+    path.resolve(__dirname, "../demo-data.json"),
+  ];
+
+  for (const candidate of candidates) {
     try {
-      const raw = fs.readFileSync(TMP_DATA_FILE, "utf-8");
-      return JSON.parse(raw);
+      if (fs.existsSync(candidate)) {
+        const raw = fs.readFileSync(candidate, "utf-8");
+        return JSON.parse(raw);
+      }
     } catch {
-      // fallback
+      // continua al prossimo
     }
   }
-  if (fs.existsSync(LOCAL_DATA_FILE)) {
-    try {
-      const raw = fs.readFileSync(LOCAL_DATA_FILE, "utf-8");
-      return JSON.parse(raw);
-    } catch {
-      // fallback
-    }
-  }
-  try {
-    return JSON.parse(JSON.stringify(defaultData));
-  } catch {
-    return {
-      livelli: [],
-      ordine_livelli: [],
-      database_esercizi: [],
-      allenamenti: [],
-      diario_utente: [],
-      stato_allenamenti: [],
-      preferenze_utente: [],
-      profili_utenti: [],
-      configurazione_lab: {},
-      prenotazioni_slot: [],
-      tariffario_pacchetti: [],
-      transazioni_pagamenti: [],
-      movimenti_crediti: [],
-      eccezioni_calendario: [],
-      attivita_lab: [],
-      regole_palinsesto: [],
-      active_user_id: "usr-atleta-01",
-    };
-  }
+
+  return {
+    livelli: [],
+    ordine_livelli: [],
+    database_esercizi: [],
+    allenamenti: [],
+    diario_utente: [],
+    stato_allenamenti: [],
+    preferenze_utente: [],
+    profili_utenti: [],
+    configurazione_lab: {},
+    prenotazioni_slot: [],
+    tariffario_pacchetti: [],
+    transazioni_pagamenti: [],
+    movimenti_crediti: [],
+    eccezioni_calendario: [],
+    attivita_lab: [],
+    regole_palinsesto: [],
+    active_user_id: "usr-atleta-01",
+  };
 }
 
 function saveData(data: any) {
   db = data;
-  try {
-    fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch {
-    // Ignore in read-only / restricted environments
-  }
-  try {
-    fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch {
-    // Expected on Vercel serverless read-only filesystem
+  const targets = [
+    TMP_DATA_FILE,
+    path.resolve(process.cwd(), "demo-data.json"),
+    path.resolve(__dirname, "demo-data.json"),
+  ];
+  for (const target of targets) {
+    try {
+      fs.writeFileSync(target, JSON.stringify(data, null, 2), "utf-8");
+      break;
+    } catch {
+      // Ignora su filesystem in sola lettura (Vercel)
+    }
   }
 }
 
