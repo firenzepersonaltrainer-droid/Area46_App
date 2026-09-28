@@ -14,7 +14,17 @@ export function useLivelloMemoria() {
 
   const { data, isLoading } = useQuery<{ memoria_livello: string | null }>({
     queryKey: ["preferenze"],
-    queryFn: () => fetch("/app-api/preferenze").then((r) => r.json()),
+    queryFn: async () => {
+      try {
+        const r = await fetch("/app-api/preferenze");
+        if (!r.ok || !r.headers.get("content-type")?.includes("json")) {
+          return { memoria_livello: null };
+        }
+        return await r.json();
+      } catch {
+        return { memoria_livello: null };
+      }
+    },
     staleTime: 5 * 60 * 1000, // 5 min — la preferenza cambia raramente
   });
 

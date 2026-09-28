@@ -3,15 +3,32 @@ import path from "node:path";
 import crypto from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { fileURLToPath } from "node:url";
+import defaultData from "./demo-data.json";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DATA_FILE = path.resolve(__dirname, "demo-data.json");
+const LOCAL_DATA_FILE = path.resolve(__dirname, "demo-data.json");
+const TMP_DATA_FILE = "/tmp/demo-data.json";
 
 function loadData() {
+  if (fs.existsSync(TMP_DATA_FILE)) {
+    try {
+      const raw = fs.readFileSync(TMP_DATA_FILE, "utf-8");
+      return JSON.parse(raw);
+    } catch {
+      // fallback
+    }
+  }
+  if (fs.existsSync(LOCAL_DATA_FILE)) {
+    try {
+      const raw = fs.readFileSync(LOCAL_DATA_FILE, "utf-8");
+      return JSON.parse(raw);
+    } catch {
+      // fallback
+    }
+  }
   try {
-    const raw = fs.readFileSync(DATA_FILE, "utf-8");
-    return JSON.parse(raw);
+    return JSON.parse(JSON.stringify(defaultData));
   } catch {
     return {
       livelli: [],
@@ -36,10 +53,16 @@ function loadData() {
 }
 
 function saveData(data: any) {
+  db = data;
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.error("Errore salvataggio demo-data:", err);
+    fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch {
+    // Ignore in read-only / restricted environments
+  }
+  try {
+    fs.writeFileSync(LOCAL_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch {
+    // Expected on Vercel serverless read-only filesystem
   }
 }
 
@@ -98,34 +121,73 @@ function addMovimentoCrediti(
   return mov;
 }
 
-export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: () => void) {
+export async function handleLocalApi(
+  req: IncomingMessage,
+  res: ServerResponse,
+  next?: () => void
+) {
   db = loadData();
-  const url = new URL(req.url ?? "/", "http://localhost:5173");
-  const pathname = url.pathname;
-  const method = req.method?.toUpperCase() ?? "GET";
+  const host = req.headers?.host || "localhost:5173";
+  const url = new URL(req.url ?? "/", `http://${host}`);
+  let pathname = url.pathname;
 
   if (!pathname.startsWith("/app-api")) {
-    return next();
+    const route = url.searchParams.get("__route");
+    if (route) {
+      pathname = `/app-api/${route.replace(/^\/+/, "")}`;
+      url.searchParams.delete("__route");
+    }
+  }
+
+  if (!pathname.startsWith("/app-api")) {
+    if (next) return next();
+    res.statusCode = 404;
+    return res.end(JSON.stringify({ error: "Endpoint non trovato" }));
   }
 
   res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  let body = "";
-  req.on("data", (chunk) => {
-    body += chunk;
-  });
+  const method = req.method?.toUpperCase() ?? "GET";
 
-  req.on("end", async () => {
-    let parsedBody: any = {};
-    if (body) {
-      try {
-        parsedBody = JSON.parse(body);
-      } catch {
-        parsedBody = {};
+  if (method === "OPTIONS") {
+    res.statusCode = 204;
+    return res.end();
+  }
+
+  const getBody = async (): Promise<{ parsedBody: any; rawBody: string }> => {
+    if ((req as any).body !== undefined && (req as any).body !== null) {
+      if (typeof (req as any).body === "string") {
+        try {
+          return { parsedBody: JSON.parse((req as any).body), rawBody: (req as any).body };
+        } catch {
+          return { parsedBody: {}, rawBody: (req as any).body };
+        }
       }
+      return { parsedBody: (req as any).body, rawBody: JSON.stringify((req as any).body) };
     }
 
-    const currentUser = getCurrentUser(db);
+    return new Promise((resolve) => {
+      let data = "";
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on("end", () => {
+        if (!data) return resolve({ parsedBody: {}, rawBody: "" });
+        try {
+          resolve({ parsedBody: JSON.parse(data), rawBody: data });
+        } catch {
+          resolve({ parsedBody: {}, rawBody: data });
+        }
+      });
+      req.on("error", () => resolve({ parsedBody: {}, rawBody: "" }));
+    });
+  };
+
+  const { parsedBody, rawBody } = await getBody();
+  const currentUser = getCurrentUser(db);
 
     // ─────────────────────────────────────────────────────────────────────────
     // AUTH & PROFILI UTENTI
@@ -1974,7 +2036,7 @@ CALENDARIO E PRENOTAZIONI:
         db.configurazione_lab?.stripe_webhook_secret || process.env.STRIPE_WEBHOOK_SECRET;
 
       // Verifica firma crittografica se il webhook secret è impostato
-      if (webhookSecret && sigHeader && body) {
+      if (webhookSecret && sigHeader && rawBody) {
         try {
           const parts = sigHeader.split(",").reduce((acc: any, part: string) => {
             const [k, v] = part.split("=");
@@ -1984,7 +2046,7 @@ CALENDARIO E PRENOTAZIONI:
           if (parts.t && parts.v1) {
             const expectedSig = crypto
               .createHmac("sha256", webhookSecret.trim())
-              .update(`${parts.t}.${body}`)
+              .update(`${parts.t}.${rawBody}`)
               .digest("hex");
             if (parts.v1 !== expectedSig) {
               console.warn("[Stripe Webhook] Firma HMAC non valida.");
@@ -2632,5 +2694,4 @@ CALENDARIO E PRENOTAZIONI:
 
     res.statusCode = 404;
     res.end(JSON.stringify({ error: "Endpoint demo non trovato" }));
-  });
 }

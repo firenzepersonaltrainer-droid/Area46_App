@@ -88,9 +88,17 @@ export function useCurrentUser() {
   const { data: user, isLoading, refetch } = useQuery<UserProfile>({
     queryKey: ["current-user"],
     queryFn: async () => {
-      const res = await fetch("/app-api/auth/current-user");
-      if (!res.ok) throw new Error("Errore recupero utente");
-      return res.json();
+      try {
+        const res = await fetch("/app-api/auth/current-user");
+        if (!res.ok) return null as any;
+        const ct = res.headers.get("content-type") || "";
+        if (!ct.includes("json")) {
+          return null as any;
+        }
+        return await res.json();
+      } catch {
+        return null as any;
+      }
     },
     staleTime: 1000 * 30, // 30 sec
   });

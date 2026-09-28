@@ -20,5 +20,5 @@
       "@glide/cn": ["client/lib/cn.ts"]
     }
   },
-  "include": ["client", "local-api.ts", "vite.config.ts"]
+  "include": ["client", "local-api.ts", "vite.config.ts", "api"]
 }

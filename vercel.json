@@ -3,7 +3,15 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/app-api/(.*)",
+      "destination": "/api/index?__route=$1"
+    },
+    {
+      "source": "/app-api",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/((?!api|app-api).*)",
       "destination": "/index.html"
     }
   ]
