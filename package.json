@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "demo": "vite",
-    "build": "vite build",
+    "build": "vite build && esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
+    "build:api": "esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
     "preview": "vite preview"
   },
   "dependencies": {
