@@ -28,6 +28,11 @@ export interface UserProfile {
   avviso_scadenza?: boolean;
   mesi_inattivita?: number;
   avviso_inattivita?: boolean;
+  tipo_abbonamento?: "nessuno" | "lab_continuativo_2x" | "lab_continuativo_3x" | "standard";
+  stato_iscrizione?: "attivo" | "dismesso" | "sospeso";
+  data_inizio_abbonamento?: string;
+  stripe_subscription_id?: string;
+  stripe_customer_id?: string;
 }
 
 export interface MovimentoCrediti {
@@ -61,6 +66,7 @@ export interface EccezioneCalendario {
 
 export interface LabConfig {
   tempo_cancellazione_ore: number; // 12, 24, 36, 48
+  tempo_anticipo_prenotazione_ore?: number; // 0, 12, 24, 36, 48
   iban: string;
   intestatario_iban: string;
   banca: string;
@@ -132,6 +138,83 @@ export function useCurrentUser() {
     [switchMutation]
   );
 
+  // Logout
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/app-api/auth/logout", { method: "POST" });
+      if (!res.ok) throw new Error("Errore durante il logout");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["current-user"], null);
+      queryClient.invalidateQueries();
+      toast.info("Sessione terminata. A presto!");
+    },
+    onError: () => {
+      toast.error("Errore durante la disconnessione.");
+    },
+  });
+
+  const logout = useCallback(() => logoutMutation.mutate(), [logoutMutation]);
+
+  // Login Email / OTP
+  const loginEmailMutation = useMutation({
+    mutationFn: async ({
+      email,
+      code,
+      requestOtpOnly,
+    }: {
+      email: string;
+      code?: string;
+      requestOtpOnly?: boolean;
+    }) => {
+      const res = await fetch("/app-api/auth/login-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code, requestOtpOnly }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Errore durante l'accesso");
+      return data;
+    },
+    onSuccess: (data) => {
+      if (data.user) {
+        queryClient.setQueryData(["current-user"], data.user);
+        queryClient.invalidateQueries();
+        toast.success(`Accesso completato: benvenuto ${data.user.nome || data.user.name}!`);
+      }
+    },
+  });
+
+  // Login Social (Google / Apple)
+  const oauthLoginMutation = useMutation({
+    mutationFn: async ({
+      provider,
+      email,
+      name,
+    }: {
+      provider: "google" | "apple";
+      email: string;
+      name?: string;
+    }) => {
+      const res = await fetch("/app-api/auth/oauth-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider, email, name }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Errore accesso social");
+      return data;
+    },
+    onSuccess: (data) => {
+      if (data.user) {
+        queryClient.setQueryData(["current-user"], data.user);
+        queryClient.invalidateQueries();
+        toast.success(`Accesso ${data.user.ruolo === "manager" ? "Coach" : "Atleta"} completato!`);
+      }
+    },
+  });
+
   return {
     user,
     isLoading,
@@ -143,6 +226,10 @@ export function useCurrentUser() {
     isExpired,
     switchUser,
     isSwitching: switchMutation.isPending,
+    logout,
+    isLoggingOut: logoutMutation.isPending,
+    loginEmailMutation,
+    oauthLoginMutation,
     refetch,
   };
 }
@@ -214,12 +301,49 @@ export function useProfili() {
     },
   });
 
+  const dismettiAtleta = useMutation({
+    mutationFn: async ({
+      id,
+      penale_euro,
+      note,
+      tariffa_seduta,
+      sedute_svolte,
+      totale_versato,
+    }: {
+      id: string;
+      penale_euro: number;
+      note?: string;
+      tariffa_seduta?: number;
+      sedute_svolte?: number;
+      totale_versato?: number;
+    }) => {
+      const res = await fetch(`/app-api/atleti/${id}/dismissione-anticipata`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ penale_euro, note, tariffa_seduta, sedute_svolte, totale_versato }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Errore durante la dismissione");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profili"] });
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+      queryClient.invalidateQueries({ queryKey: ["transazioni"] });
+    },
+  });
+
   return {
     profili,
     isLoading,
     refetch,
     modificaCrediti: modificaCrediti.mutateAsync,
     salvaProfilo: salvaProfilo.mutateAsync,
+    dismettiAtleta: dismettiAtleta.mutateAsync,
   };
 }
 
@@ -374,7 +498,7 @@ export function useLabConfig() {
       iban: "IT46X0306909606100000046460",
       intestatario_iban: "Area46 Training Lab SSD a r.l.",
       banca: "Banca Sella",
-      notifica_email: "coach@area46.it",
+      notifica_email: "firenzepersonaltrainer@gmail.com",
       notifica_whatsapp: "+39 340 0000000",
       orari_disponibili: [
         "07:30", "08:30", "09:30", "10:30", "11:30",

@@ -27,6 +27,8 @@ import {
   Ban,
   Sun,
   Sparkles,
+  Mail,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -86,11 +88,23 @@ export default function ManagerCalendarPage() {
   const [selectedAtletaId, setSelectedAtletaId] = useState("");
   const [manualNote, setManualNote] = useState("");
 
+  // Modale Notifica Atleta (Email + WhatsApp)
+  const [notifyModalData, setNotifyModalData] = useState<{
+    tipo: "inserimento" | "cancellazione";
+    nome: string;
+    email: string;
+    telefono?: string;
+    data: string;
+    orario: string;
+  } | null>(null);
+
   // Modale Blocca Slot / Chiusura Ferie
   const [blockModal, setBlockModal] = useState(false);
-  const [blockTipo, setBlockTipo] = useState<"chiusura_giornata" | "slot_bloccato">("slot_bloccato");
+  const [blockTipo, setBlockTipo] = useState<"chiusura_giornata" | "slot_bloccato" | "chiusura_periodo">("slot_bloccato");
   const [blockOrariSelezionati, setBlockOrariSelezionati] = useState<string[]>([]);
   const [blockMotivo, setBlockMotivo] = useState("Chiusura per ferie / imprevisto");
+  const [periodoFine, setPeriodoFine] = useState(selectedDate);
+  const [prorogaScadenze, setProrogaScadenze] = useState(true);
 
   // Modale Palinsesto & Attività
   const [palinsestoModalOpen, setPalinsestoModalOpen] = useState(false);
@@ -152,6 +166,17 @@ export default function ManagerCalendarPage() {
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
       toast.success(data.messaggio || "Slot assegnato!");
+
+      const atletaObj = profili.find((a) => a.id === selectedAtletaId);
+      setNotifyModalData({
+        tipo: "inserimento",
+        nome: atletaObj ? `${atletaObj.nome} ${atletaObj.cognome}`.trim() : (data.notifica?.nome_destinatario || "Atleta"),
+        email: atletaObj?.email || data.notifica?.email_destinatario || "",
+        telefono: atletaObj?.telefono || data.notifica?.telefono_destinatario || "",
+        data: selectedDate,
+        orario: manualSlot || "",
+      });
+
       setManualSlot(null);
       setSelectedAtletaId("");
       setManualNote("");
@@ -169,11 +194,22 @@ export default function ManagerCalendarPage() {
       if (!res.ok) throw new Error(json.error || "Errore cancellazione");
       return json;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
       toast.success("Prenotazione annullata dal Coach. Credito ripristinato.");
+
+      if (selectedBooking) {
+        setNotifyModalData({
+          tipo: "cancellazione",
+          nome: selectedBooking.nome_cliente,
+          email: selectedBooking.email_cliente,
+          telefono: selectedBooking.telefono_cliente || data.notifica?.telefono_destinatario || "",
+          data: selectedBooking.data,
+          orario: selectedBooking.orario,
+        });
+      }
       setSelectedBooking(null);
     },
     onError: (err: any) => {
@@ -193,7 +229,29 @@ export default function ManagerCalendarPage() {
 
   const handleSaveBlock = async () => {
     try {
-      if (blockTipo === "chiusura_giornata") {
+      if (blockTipo === "chiusura_periodo") {
+        if (!periodoFine || periodoFine < selectedDate) {
+          toast.error("La data di fine periodo deve essere uguale o successiva alla data di inizio");
+          return;
+        }
+        const res = await fetch("/app-api/eccezioni-calendario/chiusura-periodo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data_inizio: selectedDate,
+            data_fine: periodoFine,
+            motivo: blockMotivo || "Chiusura studio / Ferie",
+            proroga_scadenze: prorogaScadenze,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Errore chiusura periodo");
+        queryClient.invalidateQueries({ queryKey: ["eccezioni-calendario"] });
+        queryClient.invalidateQueries({ queryKey: ["profili"] });
+        queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+        queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+        toast.success(data.messaggio || "Periodo di chiusura registrato!");
+      } else if (blockTipo === "chiusura_giornata") {
         await aggiungiEccezione({
           data: selectedDate,
           tipo: "chiusura_giornata",
@@ -372,8 +430,8 @@ export default function ManagerCalendarPage() {
                 >
                   <div className="flex items-center gap-2.5">
                     <Ban className="size-4 text-zinc-400" />
-                    <span className="text-xs font-bold">{orario}</span>
-                    <span className="text-[10px] font-bold text-zinc-500">
+                    <span className="text-xs sm:text-sm font-bold">{orario}</span>
+                    <span className="text-xs font-semibold text-zinc-500">
                       Slot Bloccato dal Coach (Non prenotabile)
                     </span>
                   </div>
@@ -395,23 +453,23 @@ export default function ManagerCalendarPage() {
                     </div>
 
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-black text-zinc-900">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm sm:text-base font-black text-zinc-900">
                           {booking.nome_cliente}
                         </span>
-                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                           Prenotazione Confermata
                         </span>
                       </div>
 
-                      <div className="text-xs text-zinc-500 flex items-center gap-2 mt-0.5">
+                      <div className="text-xs sm:text-sm text-zinc-500 flex items-center gap-2 mt-0.5">
                         <span>{booking.email_cliente}</span>
                         {booking.telefono_cliente && <span>• Tel: {booking.telefono_cliente}</span>}
                       </div>
                     </div>
                   </div>
 
-                  <span className="text-xs font-bold text-[#1c00ff] hover:underline">
+                  <span className="text-xs sm:text-sm font-bold text-[#1c00ff] hover:underline">
                     Dettagli &rarr;
                   </span>
                 </div>
@@ -432,21 +490,21 @@ export default function ManagerCalendarPage() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-zinc-200 text-zinc-700 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                  <div className="size-9 rounded-xl bg-zinc-200 text-zinc-700 flex items-center justify-center font-bold text-xs sm:text-sm group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
                     {orario}
                   </div>
-                  <div className="text-xs text-zinc-600 font-semibold flex items-center gap-1.5">
+                  <div className="text-xs sm:text-sm text-zinc-600 font-semibold flex items-center gap-1.5">
                     <span>Slot Libero (1 posto)</span>
                     {isStraordinario && (
-                      <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 font-black">
+                      <span className="text-[11px] uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-black">
                         Straordinario
                       </span>
                     )}
                   </div>
                 </div>
 
-                <span className="text-xs font-bold text-zinc-400 group-hover:text-[#1c00ff] flex items-center gap-1">
-                  <Plus className="size-3.5" /> Assegna ad Atleta
+                <span className="text-xs sm:text-sm font-bold text-zinc-400 group-hover:text-[#1c00ff] flex items-center gap-1">
+                  <Plus className="size-4" /> Assegna ad Atleta
                 </span>
               </div>
             );
@@ -505,11 +563,11 @@ export default function ManagerCalendarPage() {
                 <ChevronRight className="size-4" />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-1.5">
               <button
                 type="button"
                 onClick={() => setBlockTipo("chiusura_giornata")}
-                className={`p-2.5 rounded-2xl border-2 text-left transition-all ${
+                className={`p-2 rounded-2xl border-2 text-left transition-all ${
                   blockTipo === "chiusura_giornata"
                     ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff] shadow-xs"
                     : "border-zinc-200 font-bold text-zinc-700 hover:bg-zinc-50"
@@ -517,16 +575,38 @@ export default function ManagerCalendarPage() {
               >
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <Sun className="size-3.5 text-amber-600" />
-                  <span>Intera Giornata</span>
+                  <span className="text-xs sm:text-sm font-bold">1 Giorno</span>
                 </div>
-                <div className="text-[10px] text-zinc-500 font-normal">
-                  Ferie o chiusura completa
+                <div className="text-[11px] text-zinc-500 font-medium leading-tight">
+                  Chiusura singola
                 </div>
               </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setBlockTipo("chiusura_periodo");
+                  if (!periodoFine || periodoFine < selectedDate) setPeriodoFine(selectedDate);
+                }}
+                className={`p-2 rounded-2xl border-2 text-left transition-all ${
+                  blockTipo === "chiusura_periodo"
+                    ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff] shadow-xs"
+                    : "border-zinc-200 font-bold text-zinc-700 hover:bg-zinc-50"
+                }`}
+              >
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <CalendarRange className="size-3.5 text-purple-600" />
+                  <span className="text-xs sm:text-sm font-bold">Ferie / Periodo</span>
+                </div>
+                <div className="text-[11px] text-zinc-500 font-medium leading-tight">
+                  Agosto, Natale...
+                </div>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setBlockTipo("slot_bloccato")}
-                className={`p-2.5 rounded-2xl border-2 text-left transition-all ${
+                className={`p-2 rounded-2xl border-2 text-left transition-all ${
                   blockTipo === "slot_bloccato"
                     ? "border-[#1c00ff] bg-[#1c00ff]/5 font-black text-[#1c00ff] shadow-xs"
                     : "border-zinc-200 font-bold text-zinc-700 hover:bg-zinc-50"
@@ -534,13 +614,78 @@ export default function ManagerCalendarPage() {
               >
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <Clock className="size-3.5 text-[#1c00ff]" />
-                  <span>Slot Multipli</span>
+                  <span className="text-xs sm:text-sm font-bold">Slot Orari</span>
                 </div>
-                <div className="text-[10px] text-zinc-500 font-normal">
-                  Spunta gli orari a scelta
+                <div className="text-[11px] text-zinc-500 font-medium leading-tight">
+                  Spunta gli orari
                 </div>
               </button>
             </div>
+
+            {blockTipo === "chiusura_periodo" && (
+              <div className="p-3 rounded-2xl bg-purple-50/70 border border-purple-200 space-y-2.5">
+                <div className="flex items-center gap-1.5 text-xs font-black text-purple-900">
+                  <CalendarRange className="size-4 text-purple-700" />
+                  Intervallo Date Chiusura Studio
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                      Data Inizio
+                    </label>
+                    <Input
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      className="text-xs h-8 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                      Data Fine (inclusa)
+                    </label>
+                    <Input
+                      type="date"
+                      value={periodoFine}
+                      min={selectedDate}
+                      onChange={(e) => setPeriodoFine(e.target.value)}
+                      className="text-xs h-8 bg-white"
+                    />
+                  </div>
+                </div>
+
+                {(() => {
+                  const s = new Date(selectedDate);
+                  const e = new Date(periodoFine);
+                  const diff = e.getTime() - s.getTime();
+                  const gg = Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)) + 1);
+                  return (
+                    <div className="text-[11px] text-purple-900 font-bold bg-purple-100/70 p-2 rounded-xl flex items-center justify-between">
+                      <span>Durata Chiusura:</span>
+                      <span className="font-black text-xs text-purple-950">{gg} giorni consecutivi</span>
+                    </div>
+                  );
+                })()}
+
+                <label className="flex items-start gap-2 p-2 rounded-xl bg-white border border-purple-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={prorogaScadenze}
+                    onChange={(e) => setProrogaScadenze(e.target.checked)}
+                    className="mt-0.5 rounded text-[#1c00ff] focus:ring-[#1c00ff]"
+                  />
+                  <div className="text-[11px] leading-tight">
+                    <span className="font-black text-zinc-900 block">
+                      Proroga automatica scadenze atleti (+N giorni)
+                    </span>
+                    <span className="text-zinc-500 text-[10px]">
+                      Slitta automaticamente la scadenza dei crediti di tutti gli atleti attivi del numero di giorni di chiusura dello studio.
+                    </span>
+                  </div>
+                </label>
+              </div>
+            )}
 
             {blockTipo === "slot_bloccato" && (
               <div className="space-y-2">
@@ -795,6 +940,103 @@ export default function ManagerCalendarPage() {
         open={palinsestoModalOpen}
         onOpenChange={setPalinsestoModalOpen}
       />
+
+      {/* MODALE CONFERMA NOTIFICA ATLETA (EMAIL + WHATSAPP) */}
+      <Dialog open={!!notifyModalData} onOpenChange={(open) => !open && setNotifyModalData(null)}>
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-1">
+              <div className="size-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200 shrink-0">
+                <CheckCircle className="size-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-base font-black text-zinc-900">
+                  {notifyModalData?.tipo === "inserimento"
+                    ? "Seduta Assegnata & Notificata"
+                    : "Seduta Annullata & Notificata"}
+                </DialogTitle>
+                <DialogDescription className="text-xs text-zinc-500 font-medium">
+                  Operazione completata con successo
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {notifyModalData && (
+            <div className="my-3 space-y-3">
+              {/* Box Riepilogo Dati */}
+              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500 font-medium">Atleta:</span>
+                  <strong className="text-zinc-900 font-bold text-sm">{notifyModalData.nome}</strong>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500 font-medium">Data e Ora:</span>
+                  <span className="text-zinc-900 font-bold capitalize">
+                    {formatGiornoItaliano(notifyModalData.data)} ore {notifyModalData.orario}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500 font-medium">Recapito Tel:</span>
+                  <span className="text-zinc-800 font-semibold">{notifyModalData.telefono || "Non specificato"}</span>
+                </div>
+              </div>
+
+              {/* Status Notifica Email automatica */}
+              <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center gap-2.5">
+                <Mail className="size-4 text-emerald-600 shrink-0" />
+                <div className="text-xs">
+                  <p className="font-bold text-emerald-900">Notifica Email Inviata</p>
+                  <p className="text-emerald-700 text-[11px] leading-tight">
+                    Inviata a <span className="font-semibold underline">{notifyModalData.email}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Azione Rapida WhatsApp */}
+              <div className="p-3.5 rounded-2xl bg-zinc-900 text-white space-y-2">
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="size-4 text-[#25D366]" />
+                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                    Notifica WhatsApp Diretta
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-300 leading-snug">
+                  Invia o inoltra il messaggio di riepilogo al contatto WhatsApp dell'atleta con 1 tocco:
+                </p>
+                <a
+                  href={(() => {
+                    const { tipo, nome, data, orario, telefono } = notifyModalData;
+                    const msg = tipo === "inserimento"
+                      ? `Ciao ${nome}, ti confermo l'assegnazione della tua seduta di allenamento per ${formatGiornoItaliano(data)} alle ore ${orario} presso Area46 Training Lab. Buona preparazione!`
+                      : `Ciao ${nome}, ti confermo che la seduta del ${formatGiornoItaliano(data)} alle ore ${orario} è stata annullata dal Coach. Il tuo credito è stato ripristinato integralmente sul tuo profilo Area46.`;
+                    const cleanPhone = (telefono || "").replace(/[^0-9]/g, "");
+                    const phoneFormatted = cleanPhone.length === 10 && cleanPhone.startsWith("3") ? `39${cleanPhone}` : cleanPhone;
+                    return phoneFormatted
+                      ? `https://wa.me/${phoneFormatted}?text=${encodeURIComponent(msg)}`
+                      : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+                  })()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-zinc-950 font-black text-xs transition-colors shadow-md cursor-pointer"
+                >
+                  <MessageCircle className="size-4 fill-zinc-950 text-zinc-950" />
+                  Apri Chat WhatsApp con Atleta
+                </a>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              onClick={() => setNotifyModalData(null)}
+              className="w-full rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-bold"
+            >
+              Chiudi
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

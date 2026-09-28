@@ -25,6 +25,9 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   FileText,
+  UserX,
+  Copy,
+  Receipt,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -39,7 +42,7 @@ import {
 import { toast } from "sonner";
 
 export default function ManagerAtletiPage() {
-  const { profili, modificaCrediti, salvaProfilo } = useProfili();
+  const { profili, modificaCrediti, salvaProfilo, dismettiAtleta } = useProfili();
   const { movimenti, registraMovimento } = useMovimentiCrediti();
 
   const [search, setSearch] = useState("");
@@ -69,6 +72,19 @@ export default function ManagerAtletiPage() {
     delta: 1,
     motivazione: "",
   });
+
+  // Modale Dismissione Anticipata
+  const [dismissioneModalOpen, setDismissioneModalOpen] = useState(false);
+  const [dismissioneAtleta, setDismissioneAtleta] = useState<UserProfile | null>(null);
+  const [anteprimaData, setAnteprimaData] = useState<any | null>(null);
+  const [loadingAnteprima, setLoadingAnteprima] = useState(false);
+  const [penaleInput, setPenaleInput] = useState<number>(50);
+  const [noteDismissione, setNoteDismissione] = useState("");
+  const [isDismettendo, setIsDismettendo] = useState(false);
+
+  // Modale Esito Dismissione & Dati Fattura
+  const [esitoModalOpen, setEsitoModalOpen] = useState(false);
+  const [esitoDismissione, setEsitoDismissione] = useState<any | null>(null);
 
   const atleti = profili.filter((p) => p.ruolo === "atleta");
 
@@ -177,6 +193,58 @@ export default function ManagerAtletiPage() {
     }
   };
 
+  const handleOpenDismissione = async (atleta: UserProfile) => {
+    setDismissioneAtleta(atleta);
+    setPenaleInput(50);
+    setNoteDismissione("");
+    setAnteprimaData(null);
+    setLoadingAnteprima(true);
+    setDismissioneModalOpen(true);
+
+    try {
+      const res = await fetch(`/app-api/atleti/${atleta.id}/anteprima-dismissione`);
+      if (!res.ok) throw new Error("Errore recupero anteprima dismissione");
+      const data = await res.json();
+      setAnteprimaData(data);
+      if (data.penale_standard !== undefined) {
+        setPenaleInput(data.penale_standard);
+      }
+    } catch (e: any) {
+      toast.error(e.message || "Errore caricamento dati dismissione");
+    } finally {
+      setLoadingAnteprima(false);
+    }
+  };
+
+  const handleConfirmDismissione = async () => {
+    if (!dismissioneAtleta) return;
+    setIsDismettendo(true);
+    try {
+      const res = await dismettiAtleta({
+        id: dismissioneAtleta.id,
+        penale_euro: Number(penaleInput),
+        note: noteDismissione.trim(),
+        tariffa_seduta: anteprimaData?.tariffa_seduta,
+        sedute_svolte: anteprimaData?.sedute_svolte,
+        totale_versato: anteprimaData?.totale_gia_versato,
+      });
+
+      setDismissioneModalOpen(false);
+      setEsitoDismissione(res);
+      setEsitoModalOpen(true);
+      toast.success(res.messaggio || "Dismissione completata con successo!");
+    } catch (e: any) {
+      toast.error(e.message || "Errore durante la dismissione");
+    } finally {
+      setIsDismettendo(false);
+    }
+  };
+
+  const copyTestoFattura = (testo: string) => {
+    navigator.clipboard.writeText(testo);
+    toast.success("Riepilogo e dati fiscali copiati negli appunti!");
+  };
+
   return (
     <div className="space-y-4 pb-12">
       {/* HEADER GESTIONE ATLETI */}
@@ -231,9 +299,25 @@ export default function ManagerAtletiPage() {
                     {atleta.cognome[0]}
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-zinc-900 leading-tight">
-                      {atleta.nome} {atleta.cognome}
-                    </h3>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-base font-black text-zinc-900 leading-tight">
+                        {atleta.nome} {atleta.cognome}
+                      </h3>
+                      {atleta.stato_iscrizione === "dismesso" && (
+                        <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-300">
+                          Dismesso
+                        </span>
+                      )}
+                      {atleta.tipo_abbonamento && atleta.tipo_abbonamento !== "nessuno" && (
+                        <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-50 text-[#1c00ff] border border-blue-200">
+                          {atleta.tipo_abbonamento === "lab_continuativo_2x"
+                            ? "Continuativo 2X"
+                            : atleta.tipo_abbonamento === "lab_continuativo_3x"
+                            ? "Continuativo 3X"
+                            : atleta.tipo_abbonamento}
+                        </span>
+                      )}
+                    </div>
                     <div className="text-xs text-zinc-500 flex items-center gap-2 mt-0.5">
                       <span className="flex items-center gap-1">
                         <Mail className="size-3" /> {atleta.email}
@@ -345,6 +429,30 @@ export default function ManagerAtletiPage() {
                     aria-label="Modifica anagrafica"
                   >
                     <Edit2 className="size-3.5" />
+                  </Button>
+
+                  {/* TASTO ROSSO ACCESO DISMISSIONE ANTICIPATA */}
+                  <Button
+                    size="sm"
+                    onClick={() => handleOpenDismissione(atleta)}
+                    disabled={atleta.stato_iscrizione === "dismesso"}
+                    className={`text-xs font-black h-8 px-2.5 rounded-xl border flex items-center gap-1 transition-all ${
+                      atleta.stato_iscrizione === "dismesso"
+                        ? "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
+                        : "bg-red-600 hover:bg-red-700 text-white border-red-700 shadow-2xs"
+                    }`}
+                    title="Dismissione anticipata con penale e revoca slot"
+                  >
+                    <UserX className="size-3.5" />
+                    <span>
+                      {atleta.stato_iscrizione === "dismesso" ? (
+                        "Dismesso"
+                      ) : (
+                        <>
+                          Dismissione <span className="hidden sm:inline">Anticipata</span>
+                        </>
+                      )}
+                    </span>
                   </Button>
                 </div>
               </div>
@@ -876,6 +984,261 @@ export default function ManagerAtletiPage() {
               }`}
             >
               Conferma {bonusPenaltyForm.tipo === "penalty" ? "Penalità" : "Bonus"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE DISMISSIONE ANTICIPATA ATLETA */}
+      <Dialog open={dismissioneModalOpen} onOpenChange={setDismissioneModalOpen}>
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl overflow-y-auto max-h-[90vh]">
+          <DialogHeader>
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-red-100 text-red-800 border border-red-200 flex items-center gap-1">
+                <AlertTriangle className="size-3" /> Risoluzione Accordo
+              </span>
+            </div>
+            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
+              <UserX className="size-5 text-red-600" />
+              Dismissione Anticipata Atleta
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500">
+              Calcolo automatico di conguaglio (decadenza sconto + penale), cancellazione slot calendario e avviso per emissione fattura.
+            </DialogDescription>
+          </DialogHeader>
+
+          {loadingAnteprima ? (
+            <div className="py-8 text-center text-xs text-zinc-500 flex flex-col items-center gap-2">
+              <Clock className="size-6 text-red-600 animate-spin" />
+              <span>Calcolo in corso di sedute svolte e conguaglio penale...</span>
+            </div>
+          ) : (
+            <div className="my-3 space-y-3.5 text-xs">
+              {/* SCHEDA DATI ATLETA & PIANO */}
+              <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-zinc-900 text-sm">
+                    {dismissioneAtleta?.nome} {dismissioneAtleta?.cognome}
+                  </span>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200">
+                    {anteprimaData?.tipo_abbonamento === "lab_continuativo_2x"
+                      ? "Continuativo 2X (250€/m)"
+                      : "Continuativo 3X (359€/m)"}
+                  </span>
+                </div>
+                <div className="text-[11px] text-zinc-500 flex flex-col gap-0.5 font-mono">
+                  <span>CF: {dismissioneAtleta?.codice_fiscale || "Non presente"}</span>
+                  <span>Email: {dismissioneAtleta?.email}</span>
+                </div>
+              </div>
+
+              {/* DETTAGLIO CONTEGGIO & DECONTO */}
+              <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-2.5">
+                <div className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                  <Coins className="size-3.5 text-amber-700" />
+                  Ricalcolo Economico a Tariffa Piena
+                </div>
+
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between text-zinc-700">
+                    <span>Sedute svolte (a prezzo pieno):</span>
+                    <span className="font-bold">
+                      {anteprimaData?.sedute_svolte ?? 0} x {anteprimaData?.tariffa_seduta?.toFixed(2) ?? "33.25"} € ={" "}
+                      <strong>{(anteprimaData?.valore_sedute_pieno ?? 0).toFixed(2)} €</strong>
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-zinc-700">
+                    <span>Quota già versata dal cliente:</span>
+                    <span className="font-bold text-emerald-700">
+                      - {(anteprimaData?.totale_gia_versato ?? 0).toFixed(2)} €
+                    </span>
+                  </div>
+
+                  <div className="pt-2 border-t border-amber-200 flex items-center justify-between gap-2">
+                    <div>
+                      <span className="font-black text-zinc-900 block">Penale di Recesso & Svincolo Slot:</span>
+                      <span className="text-[10px] text-zinc-500">Preimpostata a 50 €, modificabile se opportuno</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Input
+                        type="number"
+                        min={0}
+                        step={5}
+                        value={penaleInput}
+                        onChange={(e) => setPenaleInput(Number(e.target.value))}
+                        className="w-20 text-right font-black text-xs h-8 bg-white border-amber-300"
+                      />
+                      <span className="font-black text-zinc-700">€</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* TOTALE NETTO DA ADDEBITARE */}
+                {(() => {
+                  const valPieno = anteprimaData?.valore_sedute_pieno ?? 0;
+                  const versato = anteprimaData?.totale_gia_versato ?? 0;
+                  const pen = Number(penaleInput) || 0;
+                  const netto = Math.max(0, Math.round((valPieno + pen - versato) * 100) / 100);
+
+                  return (
+                    <div className="p-2.5 rounded-xl bg-red-600 text-white flex items-center justify-between mt-2 shadow-xs">
+                      <div>
+                        <div className="text-[10px] font-black uppercase tracking-wider text-red-200">
+                          Totale Netto da Addebitare
+                        </div>
+                        <div className="text-[10px] text-white/80">
+                          Decadenza sconto + penale a saldo
+                        </div>
+                      </div>
+                      <div className="text-xl font-black tabular-nums">{netto.toFixed(2)} €</div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* AZIONI AUTOMATICHE IRREVERSIBILI */}
+              <div className="p-3 rounded-2xl bg-zinc-900 text-white space-y-2">
+                <div className="text-[11px] font-black text-[#e3ff00] uppercase tracking-wider flex items-center gap-1.5">
+                  <CheckCircle2 className="size-3.5" />
+                  Operazioni eseguite in 1 solo clic:
+                </div>
+                <ul className="space-y-1.5 text-[11px] text-zinc-300">
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-red-400 font-bold">•</span>
+                    <span>
+                      <strong>Cancellazione Slot Futuri</strong>: verranno rimossi tutti i{" "}
+                      <strong>{anteprimaData?.prenotazioni_future?.length ?? 0} appuntamenti futuri</strong> dell'atleta e gli slot torneranno liberi nel calendario.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-[#e3ff00] font-bold">•</span>
+                    <span>
+                      <strong>Avviso Email per Fattura</strong>: riceverai subito una mail su{" "}
+                      <strong>{anteprimaData?.email_coach || "firenzepersonaltrainer@gmail.com"}</strong> con i dati fiscali completi (CF, indirizzo, totale e causale consigliata).
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <span className="text-emerald-400 font-bold">•</span>
+                    <span>
+                      <strong>Stripe & Fisco</strong>: addebito automatico su carta salvata (o registrazione transazione) e inserimento nel Registro Fiscale come <strong>'Da emettere'</strong>.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* NOTE OPZIONALI COACH */}
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                  Note interne recesso (opzionale)
+                </label>
+                <Input
+                  value={noteDismissione}
+                  onChange={(e) => setNoteDismissione(e.target.value)}
+                  placeholder="Es. Richiesta anticipata per trasferimento / motivi lavorativi"
+                  className="text-xs"
+                />
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex gap-2 pt-2 border-t border-zinc-100">
+            <Button
+              variant="outline"
+              onClick={() => setDismissioneModalOpen(false)}
+              disabled={isDismettendo}
+              className="flex-1 rounded-xl"
+            >
+              Annulla
+            </Button>
+            <Button
+              onClick={handleConfirmDismissione}
+              disabled={isDismettendo || loadingAnteprima}
+              className="flex-1 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-1.5 shadow-md shadow-red-600/20"
+            >
+              <UserX className="size-4" />
+              {isDismettendo ? "Elaborazione..." : "Conferma ed Esegui"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE ESITO DISMISSIONE & RIEPILOGO FATTURA */}
+      <Dialog open={esitoModalOpen} onOpenChange={setEsitoModalOpen}>
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <DialogHeader>
+            <div className="flex items-center gap-2 text-emerald-600 mb-1">
+              <CheckCircle2 className="size-5" />
+              <span className="text-xs font-black uppercase tracking-wider">
+                Operazione Conclusa con Successo
+              </span>
+            </div>
+            <DialogTitle className="text-lg font-black text-zinc-900">
+              Dismissione Registrata & Slot Liberati
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500">
+              L'atleta è stato dismesso, le prenotazioni future sono state revocate e la notifica con i dati per la fattura è stata inviata alla tua email.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="my-3 space-y-3 text-xs">
+            <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-600">Codice Transazione:</span>
+                <span className="font-mono font-bold text-zinc-900">
+                  {esitoDismissione?.dettagli?.codice_transazione}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-600">Totale Netto Addebitato:</span>
+                <span className="font-black text-red-600 text-sm">
+                  {Number(esitoDismissione?.dettagli?.totale_addebitato || 0).toFixed(2)} €
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-600">Prenotazioni Future Revocate:</span>
+                <span className="font-bold text-zinc-900">
+                  {esitoDismissione?.dettagli?.prenotazioni_cancellate?.length || 0} slot liberati
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-600">Stato Fiscale:</span>
+                <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[10px]">
+                  Da emettere (visibile in Fisco)
+                </span>
+              </div>
+            </div>
+
+            {/* TESTO EMAIL INVIATA */}
+            {esitoDismissione?.dettagli?.email_notifica?.corpo && (
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold uppercase text-zinc-500 flex items-center gap-1">
+                    <Mail className="size-3 text-zinc-400" />
+                    Copia Dati per Fattura Elettronica / SDI
+                  </label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => copyTestoFattura(esitoDismissione.dettagli.email_notifica.corpo)}
+                    className="h-6 text-[10px] font-bold text-[#1c00ff] hover:bg-blue-50 px-2 rounded-lg flex items-center gap-1"
+                  >
+                    <Copy className="size-2.5" /> Copia Riepilogo
+                  </Button>
+                </div>
+                <pre className="p-3 rounded-2xl bg-zinc-900 text-zinc-200 text-[10px] font-mono whitespace-pre-wrap max-h-48 overflow-y-auto border border-zinc-800 leading-relaxed">
+                  {esitoDismissione.dettagli.email_notifica.corpo}
+                </pre>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={() => setEsitoModalOpen(false)}
+              className="w-full rounded-xl bg-zinc-900 text-white hover:bg-zinc-800 font-black"
+            >
+              Ho capito, chiudi
             </Button>
           </DialogFooter>
         </DialogContent>

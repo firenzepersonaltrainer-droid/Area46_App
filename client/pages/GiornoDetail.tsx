@@ -43,10 +43,32 @@ const CIRCUIT_KEYWORDS: { pattern: RegExp; label: string }[] = [
 
 function extractCircuitTitle(esercizi: Esercizio[]): string {
   if (esercizi.length === 0) return "Circuito";
-  const primo = esercizi[0];
-  const haystack = `${primo.note_tecniche ?? ""} ${primo.parametri ?? ""}`;
+  // Combina i testi di tutti gli esercizi del blocco
+  const fullText = esercizi
+    .map((e) => `${e.note_tecniche ?? ""} ${e.parametri ?? ""}`)
+    .join(" ");
+
+  // 1. Rileva durata per AMRAP (es. "AMRAP 12'", "AMRAP - 20 minuti", "AMRAP 5 min")
+  const amrapMatch = fullText.match(/\bamrap\b[^\d\n\r]{0,10}(\d{1,3})\s*(?:'|’|min|minuti)?/i);
+  if (amrapMatch && amrapMatch[1]) {
+    return `AMRAP ${amrapMatch[1]} min`;
+  }
+  if (/\bamrap\b/i.test(fullText)) {
+    return "AMRAP";
+  }
+
+  // 2. Rileva durata per EMOM (es. "6 x EMOM 10'", "EMOM 12 min", "EMOM 8'")
+  const emomMatch = fullText.match(/\bemom\b[^\d\n\r]{0,10}(\d{1,3})\s*(?:'|’|min|minuti)?/i);
+  if (emomMatch && emomMatch[1]) {
+    return `EMOM ${emomMatch[1]} min`;
+  }
+  if (/\bemom\b/i.test(fullText)) {
+    return "EMOM";
+  }
+
+  // 3. Altre tipologie di circuito
   for (const { pattern, label } of CIRCUIT_KEYWORDS) {
-    if (pattern.test(haystack)) return label;
+    if (pattern.test(fullText)) return label;
   }
   return "Circuito";
 }
@@ -95,7 +117,7 @@ function EsercizioRow({ ex, livello, giorno, inWod }: {
     >
       <div className="flex items-center gap-3.5 min-w-0 flex-1">
         <div
-          className="flex min-w-[2.6rem] items-center justify-center rounded-lg px-2 py-1 text-xs font-black shrink-0 shadow-xs"
+          className="flex min-w-[2.8rem] items-center justify-center rounded-xl px-2 py-1.5 text-xs font-black shrink-0 shadow-xs"
           style={{
             background: inWod ? "#e3ff00" : "#09090b",
             color: inWod ? "#09090b" : "#ffffff",
@@ -105,11 +127,11 @@ function EsercizioRow({ ex, livello, giorno, inWod }: {
           {ex.sequenza}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-bold text-zinc-900 truncate leading-snug">{ex.nome_esercizio}</p>
+          <p className="font-bold text-zinc-900 text-[15px] sm:text-base truncate leading-snug">{ex.nome_esercizio}</p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5">
-            {ex.parametri && <span className="text-xs font-bold text-zinc-700">{ex.parametri}</span>}
+            {ex.parametri && <span className="text-xs sm:text-sm font-semibold text-zinc-700">{ex.parametri}</span>}
             {ex.recupero && (
-              <span className="text-[11px] font-bold text-[#1c00ff] bg-[#1c00ff]/10 px-1.5 py-0.5 rounded">
+              <span className="text-xs font-bold text-[#1c00ff] bg-[#1c00ff]/10 px-2 py-0.5 rounded-md">
                 Rec: {ex.recupero}
               </span>
             )}
@@ -119,10 +141,10 @@ function EsercizioRow({ ex, livello, giorno, inWod }: {
       <div className="flex items-center gap-1.5 shrink-0 ml-2">
         {ex.link_video && (
           <span
-            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold shadow-xs"
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold shadow-xs"
             style={{ background: "#1c00ff", color: "#e3ff00" }}
           >
-            <PlayCircle className="size-3 text-[#e3ff00]" />
+            <PlayCircle className="size-3.5 text-[#e3ff00]" />
             Video
           </span>
         )}
@@ -136,8 +158,8 @@ function WodBlocco({ blocco, livello, giorno }: { blocco: Blocco; livello: strin
   return (
     <div className="rounded-2xl overflow-hidden shadow-xs bg-white" style={{ border: "2px solid #1c00ff" }}>
       <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "#1c00ff" }}>
-        <Zap className="size-3.5" style={{ color: "#e3ff00" }} />
-        <span className="text-xs font-black uppercase tracking-wider text-white">
+        <Zap className="size-4" style={{ color: "#e3ff00" }} />
+        <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-white">
           {extractCircuitTitle(blocco.esercizi)} — BLOCCO {blocco.key}
         </span>
       </div>

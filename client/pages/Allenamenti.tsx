@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import {
   ChevronRight,
+  ChevronDown,
   Dumbbell,
   CheckCircle2,
   Clock,
@@ -272,7 +273,7 @@ function GiornoCard({ livello, giornoNum, label, stato, showLivello, onStatoChan
       >
         <div className="flex items-center gap-3.5 min-w-0">
           <div
-            className="flex size-10 shrink-0 items-center justify-center rounded-xl text-sm font-black shadow-xs"
+            className="flex size-11 shrink-0 items-center justify-center rounded-xl text-base font-black shadow-xs"
             style={{
               background: "#09090b",
               color: "#ffffff",
@@ -282,11 +283,11 @@ function GiornoCard({ livello, giornoNum, label, stato, showLivello, onStatoChan
             {giornoNum}
           </div>
           <div className="min-w-0 text-left">
-            <p className="font-bold text-zinc-900 leading-snug">{label}</p>
+            <p className="text-[15px] sm:text-base font-bold text-zinc-900 leading-snug">{label}</p>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               {showLivello && livello && (
                 <span
-                  className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider"
+                  className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-black uppercase tracking-wider"
                   style={{ background: "#1c00ff", color: "#e3ff00" }}
                 >
                   {livello}
@@ -339,6 +340,21 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
   onStatoChange: (livello: string, giornoNum: number, stato: Stato) => void;
 }) {
   const gruppi = raggruppaPerSettimana(giorni);
+  // Gestione stato aperto/chiuso dei cicli (default tutti aperti)
+  const [collapsedSettimane, setCollapsedSettimane] = useState<Set<string>>(new Set());
+
+  const toggleSettimana = (sett: string) => {
+    setCollapsedSettimane((prev) => {
+      const next = new Set(prev);
+      if (next.has(sett)) {
+        next.delete(sett);
+      } else {
+        next.add(sett);
+      }
+      return next;
+    });
+  };
+
   if (giorni.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-20 text-center">
@@ -350,35 +366,70 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
   const mostraHeader = gruppi.length > 1 || (gruppi.length === 1 && gruppi[0][0] !== "Allenamenti");
   return (
     <div className="space-y-6">
-      {gruppi.map(([settimana, items]) => (
-        <div key={settimana}>
-          {mostraHeader && (
-            <div
-              className="rounded-xl px-4 py-2.5 mb-3 flex items-center justify-between shadow-xs"
-              style={{ background: "#1c00ff", borderLeft: "5px solid #e3ff00" }}
-            >
-              <span className="text-sm font-black uppercase tracking-wider text-white">
-                {settimana}
-              </span>
-              <span
-                className="text-[11px] font-black px-2 py-0.5 rounded-full"
-                style={{ background: "#09090b", color: "#e3ff00" }}
+      {gruppi.map(([settimana, items]) => {
+        const isCollapsed = collapsedSettimane.has(settimana);
+        return (
+          <div key={settimana}>
+            {mostraHeader && (
+              <div
+                onClick={() => toggleSettimana(settimana)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleSettimana(settimana);
+                  }
+                }}
+                className="rounded-xl px-4 py-2.5 mb-3 flex items-center justify-between shadow-xs cursor-pointer select-none transition-all hover:brightness-105 active:scale-[0.995]"
+                style={{ background: "#1c00ff", borderLeft: "5px solid #e3ff00" }}
+                title="Clicca per aprire o comprimere questo ciclo"
               >
-                {items.length} {items.length === 1 ? "giorno" : "giorni"}
-              </span>
-            </div>
-          )}
-          <div className="space-y-2">
-            {items.map((item) => {
-              const lv = livelloFiltro || item.livello || "";
-              const stato = (statoMap.get(statoKey(lv, item.giorno_num)) as Stato) || "non_iniziato";
-              return (
-                <GiornoCard key={statoKey(lv, item.giorno_num)} livello={lv} giornoNum={item.giorno_num} label={labelGiornoTesto(item)} stato={stato} showLivello={!livelloFiltro} onStatoChange={onStatoChange} />
-              );
-            })}
+                <div className="flex items-center gap-2.5">
+                  <ChevronDown
+                    className={`size-4 text-[#e3ff00] transition-transform duration-200 ${
+                      isCollapsed ? "-rotate-90" : "rotate-0"
+                    }`}
+                  />
+                  <span className="text-sm font-black uppercase tracking-wider text-white">
+                    {settimana}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-xs font-black px-2.5 py-0.5 rounded-full"
+                    style={{ background: "#09090b", color: "#e3ff00" }}
+                  >
+                    {items.length} {items.length === 1 ? "allenamento" : "allenamenti"}
+                  </span>
+                  <span className="text-xs font-bold text-white/90 uppercase hidden sm:inline">
+                    {isCollapsed ? "Mostra" : "Comprimi"}
+                  </span>
+                </div>
+              </div>
+            )}
+            {!isCollapsed && (
+              <div className="space-y-2">
+                {items.map((item) => {
+                  const lv = livelloFiltro || item.livello || "";
+                  const stato = (statoMap.get(statoKey(lv, item.giorno_num)) as Stato) || "non_iniziato";
+                  return (
+                    <GiornoCard
+                      key={statoKey(lv, item.giorno_num)}
+                      livello={lv}
+                      giornoNum={item.giorno_num}
+                      label={labelGiornoTesto(item)}
+                      stato={stato}
+                      showLivello={!livelloFiltro}
+                      onStatoChange={onStatoChange}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -546,7 +597,7 @@ export default function AllenamentiPage() {
                         </p>
                         {(livello || correnteItem.item.livello) && (
                           <span
-                            className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-black uppercase tracking-wider mt-1"
+                            className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-black uppercase tracking-wider mt-1"
                             style={{ background: "#1c00ff", color: "#e3ff00" }}
                           >
                             {livello || correnteItem.item.livello}
@@ -558,7 +609,7 @@ export default function AllenamentiPage() {
                   </div>
                   {lista.length > 0 && (
                     <div className="mt-4">
-                      <div className="flex justify-between text-xs font-bold text-zinc-500 mb-1.5">
+                      <div className="flex justify-between text-xs font-bold text-zinc-600 mb-1.5">
                         <span>Avanzamento Ciclo</span>
                         <span className="text-zinc-900 font-black">{completati}/{lista.length} completati</span>
                       </div>

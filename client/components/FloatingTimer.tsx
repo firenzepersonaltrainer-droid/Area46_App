@@ -11,16 +11,15 @@ import {
   ChevronUp,
   GripHorizontal,
   Volume2,
+  Plus,
+  Trash2,
+  Clock,
+  Layers,
 } from "lucide-react";
 
 // ==============================================================================
 // SINTETIZZATORE FISCHIETTO ARBITRALE / COACH (Fox 40 Style)
 // ==============================================================================
-// Genera un suono incisivo, penetrante e ad alto volume tarato sulla gamma di
-// massima sensibilità dell'orecchio umano (2.8 kHz - 3.3 kHz) con flutter d'aria
-// a 28 Hz e compressore dinamico per sovrastare rumori di sala, musica e bilancieri.
-// ==============================================================================
-
 function createAudioCtx(): AudioContext | null {
   try {
     const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -41,7 +40,6 @@ function playSportsWhistle(
   const actualKind: WhistleKind =
     typeof kind === "boolean" ? (kind ? "phase" : "tick") : kind;
 
-  // Compressore dinamico per massimizzare il volume e l'impatto senza saturare
   const compressor = ctx.createDynamicsCompressor();
   compressor.threshold.setValueAtTime(-12, now);
   compressor.knee.setValueAtTime(3, now);
@@ -56,11 +54,9 @@ function playSportsWhistle(
     blastVol: number,
     freqShift = 0,
   ) {
-    // Due oscillatori acustici sintonizzati sulle frequenze tipiche del fischietto da arbitro
     const osc1 = ctx.createOscillator();
     const osc2 = ctx.createOscillator();
 
-    // LFO a 28 Hz per simulare la turbolenza d'aria/pallina interna (trillo tagliente)
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.frequency.setValueAtTime(28, startTime);
@@ -74,13 +70,11 @@ function playSportsWhistle(
     osc2.type = "sine";
     osc2.frequency.setValueAtTime(3240 + freqShift, startTime);
 
-    // Filtro passa-banda centrato sui 3000 Hz
     const filter = ctx.createBiquadFilter();
     filter.type = "bandpass";
     filter.frequency.setValueAtTime(3000 + freqShift, startTime);
     filter.Q.setValueAtTime(2.2, startTime);
 
-    // Inviluppo di ampiezza secco e incisivo
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, startTime);
     gain.gain.linearRampToValueAtTime(blastVol, startTime + 0.012);
@@ -102,23 +96,25 @@ function playSportsWhistle(
   }
 
   if (actualKind === "final_cycle") {
-    // TRIPLICE FISCHIO LUNGO (Termine del Ciclo Interval - l'ultimo segnale in assoluto):
-    // Due fischi corti e decisi seguiti da un fischione finale prolungato (~1.15s) ad alta intensità
     singleBlast(now, 0.16, volume * 0.95);
     singleBlast(now + 0.24, 0.16, volume);
     singleBlast(now + 0.48, 1.15, volume * 1.15, 60);
   } else if (actualKind === "phase") {
-    // Doppio fischio normale di cambio fase (lavoro/riposo) o termine countdown
     singleBlast(now, 0.15, volume);
     singleBlast(now + 0.22, 0.42, volume * 1.05);
   } else {
-    // Singolo fischio breve di pre-avviso (3, 2, 1)
     singleBlast(now, 0.13, volume * 0.85);
   }
 }
 
 type Mode = "countdown" | "interval";
-type Phase = "work" | "rest" | "idle";
+
+export interface IntervalStep {
+  id: string;
+  nome: string;
+  durataSecs: number;
+  tipo: "work" | "rest";
+}
 
 interface TimerState {
   mode: Mode;
@@ -127,13 +123,20 @@ interface TimerState {
   open: boolean;
   countdownTotal: number;
   countdownLeft: number;
-  workSecs: number;
-  restSecs: number;
+  // Interval Multi-Fase / Circuito
+  steps: IntervalStep[];
+  currentStepIndex: number;
   rounds: number;
   currentRound: number;
-  phase: Phase;
   phaseLeft: number;
 }
+
+const DEFAULT_STEPS: IntervalStep[] = [
+  { id: "s1", nome: "Esercizio 1", durataSecs: 30, tipo: "work" },
+  { id: "s2", nome: "Esercizio 2", durataSecs: 40, tipo: "work" },
+  { id: "s3", nome: "Esercizio 3", durataSecs: 30, tipo: "work" },
+  { id: "s4", nome: "Recupero", durataSecs: 60, tipo: "rest" },
+];
 
 const DEFAULT: TimerState = {
   mode: "countdown",
@@ -142,12 +145,11 @@ const DEFAULT: TimerState = {
   open: false,
   countdownTotal: 60,
   countdownLeft: 60,
-  workSecs: 40,
-  restSecs: 20,
-  rounds: 8,
+  steps: DEFAULT_STEPS,
+  currentStepIndex: 0,
+  rounds: 4,
   currentRound: 1,
-  phase: "idle",
-  phaseLeft: 40,
+  phaseLeft: DEFAULT_STEPS[0].durataSecs,
 };
 
 function pad(n: number) {
@@ -162,11 +164,16 @@ export default function FloatingTimer() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Coordinate per trascinamento finestra
+  // Posizione per finestra aperta
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isDraggingRef = useRef(false);
   const dragOffsetRef = useRef({ startX: 0, startY: 0, initialX: 0, initialY: 0 });
+
+  // Posizione per icona chiusa (Draggable su mobile!)
+  const [iconPosition, setIconPosition] = useState<{ x: number; y: number } | null>(null);
+  const iconRef = useRef<HTMLButtonElement | null>(null);
+  const iconDragRef = useRef({ isDragging: false, hasMoved: false, startX: 0, startY: 0, initialX: 0, initialY: 0 });
 
   function ensureAudio() {
     if (!audioCtxRef.current) audioCtxRef.current = createAudioCtx();
@@ -185,6 +192,7 @@ export default function FloatingTimer() {
       if (!prev.running) return prev;
       const ctx = audioCtxRef.current;
 
+      // ── MODALITÀ COUNTDOWN ────────────────────────────────────────────────
       if (prev.mode === "countdown") {
         const next = prev.countdownLeft - 1;
         if (ctx) {
@@ -195,8 +203,6 @@ export default function FloatingTimer() {
           }
         }
         if (next <= 0) {
-          // Quando termina il conteggio (arriva a 0): suona il fischietto, mostra 00:00 per 1 secondo
-          // e si riposiziona autonomamente all'inizio del nuovo conteggio (countdownTotal)
           setTimeout(() => {
             setState((s) => {
               if (s.mode === "countdown" && !s.running && s.countdownLeft === 0) {
@@ -210,52 +216,56 @@ export default function FloatingTimer() {
         return { ...prev, countdownLeft: next };
       }
 
-      // Interval mode
+      // ── MODALITÀ INTERVAL MULTI-FASE / CIRCUITO ────────────────────────────
+      const steps = prev.steps.length > 0 ? prev.steps : DEFAULT_STEPS;
+      const curStep = steps[prev.currentStepIndex] || steps[0];
       const nextPhaseLeft = prev.phaseLeft - 1;
+
+      const isLastStep = prev.currentStepIndex >= steps.length - 1;
       const isLastRound = prev.currentRound >= prev.rounds;
-      const isCycleEnd =
-        isLastRound && (prev.phase === "rest" || prev.restSecs === 0);
+      const isCycleEnd = isLastRound && isLastStep;
 
       if (ctx) {
         if (nextPhaseLeft === 3 || nextPhaseLeft === 2 || nextPhaseLeft === 1) {
           playSportsWhistle(ctx, "tick");
         } else if (nextPhaseLeft === 0) {
           if (isCycleEnd) {
-            // SOLO per la modalità interval: fischio di termine ciclo (l'ultimo segnale in assoluto)
             playSportsWhistle(ctx, "final_cycle");
           } else {
-            // Segnale normale di transizione fase (es. fine lavoro -> riposo, fine riposo -> lavoro)
             playSportsWhistle(ctx, "phase");
           }
         }
       }
 
-      if (nextPhaseLeft > 0) return { ...prev, phaseLeft: nextPhaseLeft };
+      if (nextPhaseLeft > 0) {
+        return { ...prev, phaseLeft: nextPhaseLeft };
+      }
 
-      if (prev.phase === "work") {
-        if (prev.restSecs > 0) {
-          return { ...prev, phase: "rest", phaseLeft: prev.restSecs };
-        }
-        if (isLastRound) {
-          return { ...prev, phase: "idle", phaseLeft: 0, running: false };
-        }
+      // Transizione fase successiva
+      if (isCycleEnd) {
         return {
           ...prev,
-          phase: "work",
-          phaseLeft: prev.workSecs,
-          currentRound: prev.currentRound + 1,
+          running: false,
+          currentStepIndex: 0,
+          currentRound: 1,
+          phaseLeft: steps[0].durataSecs,
         };
       }
 
-      const nextRound = prev.currentRound + 1;
-      if (nextRound > prev.rounds) {
-        return { ...prev, phase: "idle", phaseLeft: 0, running: false };
+      let nextStepIndex = prev.currentStepIndex + 1;
+      let nextRound = prev.currentRound;
+
+      if (nextStepIndex >= steps.length) {
+        nextStepIndex = 0;
+        nextRound = prev.currentRound + 1;
       }
+
+      const nextStepData = steps[nextStepIndex];
       return {
         ...prev,
-        phase: "work",
-        phaseLeft: prev.workSecs,
+        currentStepIndex: nextStepIndex,
         currentRound: nextRound,
+        phaseLeft: nextStepData.durataSecs,
       };
     });
   }, []);
@@ -272,11 +282,10 @@ export default function FloatingTimer() {
   }, [state.running, tick]);
 
   // ==============================================================================
-  // GESTIONE TRASCINAMENTO (DRAGGABLE ALL'INTERNO DELLO SMARTPHONE)
+  // GESTIONE TRASCINAMENTO FINESTRA APERTA
   // ==============================================================================
   const onPointerDownDrag = useCallback(
     (e: React.MouseEvent | React.TouchEvent) => {
-      // Ignora se il click proviene da un pulsante (es. X, riduci, test audio)
       const target = e.target as HTMLElement;
       if (target.closest("button") || target.closest("input")) return;
 
@@ -312,7 +321,6 @@ export default function FloatingTimer() {
         const newX = dragOffsetRef.current.initialX + deltaX;
         const newY = dragOffsetRef.current.initialY + deltaY;
 
-        // Limita rigorosamente all'interno dello smartphone (non può uscire dalla sagoma)
         const containerW = phoneContainer.clientWidth;
         const containerH = phoneContainer.clientHeight;
         const width = rect.width || 320;
@@ -339,6 +347,69 @@ export default function FloatingTimer() {
     },
     [],
   );
+
+  // ==============================================================================
+  // GESTIONE TRASCINAMENTO ICONA CHIUSA (DRAGGABLE SULLO SCHERMO)
+  // ==============================================================================
+  const onPointerDownIconDrag = (e: React.MouseEvent | React.TouchEvent) => {
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    if (!iconRef.current) return;
+
+    const phoneContainer =
+      iconRef.current.closest("#phone-frame") ||
+      iconRef.current.parentElement ||
+      document.body;
+    const phoneRect = phoneContainer.getBoundingClientRect();
+    const rect = iconRef.current.getBoundingClientRect();
+
+    iconDragRef.current = {
+      isDragging: true,
+      hasMoved: false,
+      startX: clientX,
+      startY: clientY,
+      initialX: rect.left - phoneRect.left,
+      initialY: rect.top - phoneRect.top,
+    };
+
+    function onPointerMove(moveEvent: MouseEvent | TouchEvent) {
+      if (!iconDragRef.current.isDragging) return;
+      const curX = "touches" in moveEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
+      const curY = "touches" in moveEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
+      const deltaX = curX - iconDragRef.current.startX;
+      const deltaY = curY - iconDragRef.current.startY;
+
+      if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
+        iconDragRef.current.hasMoved = true;
+      }
+
+      const newX = iconDragRef.current.initialX + deltaX;
+      const newY = iconDragRef.current.initialY + deltaY;
+
+      const containerW = phoneContainer.clientWidth;
+      const containerH = phoneContainer.clientHeight;
+      const clampedX = Math.max(8, Math.min(containerW - 56, newX));
+      const clampedY = Math.max(48, Math.min(containerH - 76, newY));
+
+      setIconPosition({ x: clampedX, y: clampedY });
+    }
+
+    function onPointerUp() {
+      if (!iconDragRef.current.hasMoved && iconDragRef.current.isDragging) {
+        handleOpen();
+      }
+      iconDragRef.current.isDragging = false;
+      window.removeEventListener("mousemove", onPointerMove);
+      window.removeEventListener("mouseup", onPointerUp);
+      window.removeEventListener("touchmove", onPointerMove);
+      window.removeEventListener("touchend", onPointerUp);
+    }
+
+    window.addEventListener("mousemove", onPointerMove);
+    window.addEventListener("mouseup", onPointerUp);
+    window.addEventListener("touchmove", onPointerMove, { passive: false });
+    window.addEventListener("touchend", onPointerUp);
+  };
 
   function handleOpen() {
     ensureAudio();
@@ -367,43 +438,52 @@ export default function FloatingTimer() {
   function handlePlayPause() {
     ensureAudio();
     setState((s) => {
-      if (!s.running && s.mode === "interval" && s.phase === "idle")
+      if (!s.running && s.mode === "interval" && s.phaseLeft === 0) {
+        const first = s.steps[0] || DEFAULT_STEPS[0];
         return {
           ...s,
           running: true,
-          phase: "work",
-          phaseLeft: s.workSecs,
+          currentStepIndex: 0,
           currentRound: 1,
+          phaseLeft: first.durataSecs,
         };
-      if (!s.running && s.mode === "countdown" && s.countdownLeft === 0)
+      }
+      if (!s.running && s.mode === "countdown" && s.countdownLeft === 0) {
         return {
           ...s,
           running: true,
           countdownLeft: s.countdownTotal,
         };
+      }
       return { ...s, running: !s.running };
     });
   }
   function handleReset() {
-    setState((s) => ({
-      ...s,
-      running: false,
-      countdownLeft: s.countdownTotal,
-      phase: "idle",
-      phaseLeft: s.workSecs,
-      currentRound: 1,
-    }));
+    setState((s) => {
+      const first = s.steps[0] || DEFAULT_STEPS[0];
+      return {
+        ...s,
+        running: false,
+        countdownLeft: s.countdownTotal,
+        currentStepIndex: 0,
+        currentRound: 1,
+        phaseLeft: first.durataSecs,
+      };
+    });
   }
   function setMode(newMode: Mode) {
-    setState((s) => ({
-      ...s,
-      mode: newMode,
-      running: false,
-      phase: "idle",
-      countdownLeft: s.countdownTotal,
-      phaseLeft: s.workSecs,
-      currentRound: 1,
-    }));
+    setState((s) => {
+      const first = s.steps[0] || DEFAULT_STEPS[0];
+      return {
+        ...s,
+        mode: newMode,
+        running: false,
+        countdownLeft: s.countdownTotal,
+        currentStepIndex: 0,
+        currentRound: 1,
+        phaseLeft: first.durataSecs,
+      };
+    });
   }
 
   const { mode, running, minimized, open } = state;
@@ -412,33 +492,47 @@ export default function FloatingTimer() {
     state.countdownTotal > 0
       ? Math.round((cdLeft / state.countdownTotal) * 100)
       : 0;
-  const totalPhase = state.phase === "work" ? state.workSecs : state.restSecs;
+
+  // Dati step interval corrente
+  const steps = state.steps.length > 0 ? state.steps : DEFAULT_STEPS;
+  const activeStep = steps[state.currentStepIndex] || steps[0];
+  const totalPhaseSecs = activeStep.durataSecs;
   const phasePct =
-    totalPhase > 0 ? Math.round((state.phaseLeft / totalPhase) * 100) : 0;
-  const phaseColor = state.phase === "work" ? "#38bdf8" : "#fb923c";
+    totalPhaseSecs > 0 ? Math.round((state.phaseLeft / totalPhaseSecs) * 100) : 0;
+  const phaseColor = activeStep.tipo === "work" ? "#38bdf8" : "#fb923c";
 
   if (typeof document === "undefined") return null;
 
+  // ==============================================================================
+  // ICONA FLOTTANTE TRASCINABILE (QUANDO CHIUSO)
+  // ==============================================================================
   if (!open) {
+    const iconStyle: React.CSSProperties = iconPosition
+      ? { left: `${iconPosition.x}px`, top: `${iconPosition.y}px` }
+      : { bottom: "84px", right: "16px" };
+
     return (
       <button
-        onClick={handleOpen}
-        className="absolute bottom-20 right-4 flex size-12 cursor-pointer items-center justify-center rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 z-50"
+        ref={iconRef}
+        onMouseDown={onPointerDownIconDrag}
+        onTouchStart={onPointerDownIconDrag}
+        className="absolute flex size-13 cursor-grab active:cursor-grabbing items-center justify-center rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 z-50 select-none"
         style={{
+          ...iconStyle,
           background: "#1c00ff",
-          border: "2px solid #e3ff00",
+          border: "2.5px solid #e3ff00",
           color: "#e3ff00",
-          boxShadow: "0 8px 24px rgba(28,0,255,0.5)",
+          boxShadow: "0 8px 24px rgba(28,0,255,0.55), 0 0 12px rgba(227,255,0,0.3)",
         }}
-        aria-label="Apri timer"
+        aria-label="Apri o trascina timer"
+        title="Tocca per aprire, o trascina per spostare l'icona"
       >
-        <Timer className="size-6" />
+        <Timer className="size-6 text-[#e3ff00]" />
       </button>
     );
   }
 
-  // Stile di posizionamento: se position è stato impostato tramite drag, usa top/left assoluti all'interno dello smartphone,
-  // altrimenti usa il default centrato orizzontalmente in basso allo smartphone.
+  // Posizionamento finestra aperta
   const positionStyle: React.CSSProperties = position
     ? { top: `${position.y}px`, left: `${position.x}px` }
     : { bottom: "84px", left: "12px" };
@@ -454,50 +548,44 @@ export default function FloatingTimer() {
         boxShadow: "0 20px 45px -8px rgba(0,0,0,0.65), 0 0 20px rgba(28,0,255,0.3)",
       }}
     >
-      {/* Header Trascinabile */}
+      {/* Header Trascinabile Finestra Aperta */}
       <div
         onMouseDown={onPointerDownDrag}
         onTouchStart={onPointerDownDrag}
-        className="flex items-center justify-between px-3 py-2.5 cursor-grab active:cursor-grabbing"
+        className="flex items-center justify-between px-3.5 py-2.5 cursor-grab active:cursor-grabbing"
         style={{ borderBottom: "1px solid #232332", background: "#15151e" }}
         title="Trascina per spostare il timer"
       >
-        <div className="flex items-center gap-1.5 pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-none">
           <GripHorizontal className="size-4 text-zinc-500 mr-0.5" />
-          <Timer className="size-4" style={{ color: "#e3ff00" }} />
+          <img src="/logo-area46-transparent.png" alt="Area46" className="h-4 w-auto object-contain brightness-125" />
           <span className="text-xs font-black uppercase tracking-wider text-white">
             Timer Lab
           </span>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {/* Test acustico fischietto */}
           <button
             onClick={() =>
               playAlert(mode === "interval" ? "final_cycle" : "phase")
             }
             className="rounded p-1 cursor-pointer hover:bg-zinc-800 transition-colors"
-            title={
-              mode === "interval"
-                ? "Test fischietto termine ciclo (triplice fischio lungo)"
-                : "Test segnale acustico"
-            }
-            aria-label="Test segnale acustico"
+            title="Ascolta fischietto"
           >
-            <Volume2 className="size-3.5" style={{ color: "#e3ff00" }} />
+            <Volume2 className="size-4 text-zinc-400 hover:text-white" />
           </button>
 
-          {/* Riduci / Ingrandisci */}
+          {/* Riduci a pillola */}
           <button
             onClick={handleMinimize}
             className="rounded p-1 cursor-pointer hover:bg-zinc-800 transition-colors"
-            aria-label={minimized ? "Espandi" : "Riduci"}
             title={minimized ? "Espandi" : "Riduci"}
           >
             {minimized ? (
-              <Maximize2 className="size-3.5 text-zinc-400 hover:text-white" />
+              <Maximize2 className="size-4 text-zinc-400 hover:text-white" />
             ) : (
-              <Minimize2 className="size-3.5 text-zinc-400 hover:text-white" />
+              <Minimize2 className="size-4 text-zinc-400 hover:text-white" />
             )}
           </button>
 
@@ -508,7 +596,7 @@ export default function FloatingTimer() {
             aria-label="Chiudi timer"
             title="Chiudi"
           >
-            <X className="size-3.5" />
+            <X className="size-4" />
           </button>
         </div>
       </div>
@@ -534,31 +622,31 @@ export default function FloatingTimer() {
           </span>
           {mode === "interval" && (
             <span
-              className="text-xs font-bold rounded-full px-2.5 py-0.5"
-              style={{ background: "#1c00ff", color: "#ffffff" }}
+              className="text-xs font-black rounded-full px-2.5 py-0.5"
+              style={{ background: phaseColor, color: "#09090b" }}
             >
-              {state.phase === "work" ? "LAVORO" : "RIPOSO"} {state.currentRound}/
-              {state.rounds}
+              {activeStep.nome.toUpperCase()} ({state.currentRound}/{state.rounds})
             </span>
           )}
         </div>
       ) : (
         <div className="p-4 space-y-4">
+          {/* Selettore Modalità */}
           <div
-            className="flex rounded-lg overflow-hidden p-0.5"
+            className="flex rounded-xl overflow-hidden p-1"
             style={{ background: "#15151e", border: "1px solid #232332" }}
           >
             {(["countdown", "interval"] as Mode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className="flex-1 py-1.5 text-xs font-black cursor-pointer transition-all rounded-md"
+                className="flex-1 py-1.5 text-xs font-black uppercase tracking-wider cursor-pointer transition-all rounded-lg"
                 style={{
                   background: mode === m ? "#1c00ff" : "transparent",
                   color: mode === m ? "#ffffff" : "#a1a1aa",
                 }}
               >
-                {m === "countdown" ? "Countdown" : "Interval"}
+                {m === "countdown" ? "Countdown" : "Circuito / Interval"}
               </button>
             ))}
           </div>
@@ -571,18 +659,20 @@ export default function FloatingTimer() {
               cdPct={cdPct}
             />
           ) : (
-            <IntervalPanel
+            <IntervalMultiPhasePanel
               state={state}
               setState={setState}
+              activeStep={activeStep}
               phaseColor={phaseColor}
               phasePct={phasePct}
             />
           )}
 
-          <div className="flex items-center justify-center gap-5 pt-1">
+          {/* Comandi Principali (Reset & Play/Pause) */}
+          <div className="flex items-center justify-center gap-6 pt-1">
             <button
               onClick={handleReset}
-              className="flex size-10 cursor-pointer items-center justify-center rounded-full border transition-all hover:scale-105 active:scale-95"
+              className="flex size-11 cursor-pointer items-center justify-center rounded-full border transition-all hover:scale-105 active:scale-95"
               style={{
                 background: "#181822",
                 borderColor: "#303042",
@@ -611,7 +701,7 @@ export default function FloatingTimer() {
                 <Play className="size-6 ml-0.5 text-[#e3ff00]" />
               )}
             </button>
-            <div className="size-10" />
+            <div className="size-11" />
           </div>
         </div>
       )}
@@ -619,6 +709,9 @@ export default function FloatingTimer() {
   );
 }
 
+// ==============================================================================
+// PANNELLO COUNTDOWN (Con step da 5" e 60" come richiesto dal Coach)
+// ==============================================================================
 function CountdownPanel({
   state,
   setState,
@@ -631,6 +724,7 @@ function CountdownPanel({
   cdPct: number;
 }) {
   const alertColor = cdLeft <= 5 ? "#ea580c" : "#e3ff00";
+
   function adjustTime(delta: number) {
     if (state.running) return;
     setState((s) => {
@@ -638,39 +732,45 @@ function CountdownPanel({
       return { ...s, countdownTotal: newTotal, countdownLeft: newTotal };
     });
   }
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex flex-col items-center gap-1.5">
         <span
           className="text-5xl font-black tabular-nums transition-colors tracking-tight"
           style={{
             color: alertColor,
-            textShadow: alertColor === "#e3ff00" ? "0 0 20px rgba(227,255,0,0.3)" : "0 0 20px rgba(234,88,12,0.4)",
+            textShadow:
+              alertColor === "#e3ff00"
+                ? "0 0 20px rgba(227,255,0,0.3)"
+                : "0 0 20px rgba(234,88,12,0.4)",
           }}
         >
           {fmt(cdLeft)}
         </span>
-        <div className="w-full h-1.5 rounded-full overflow-hidden bg-zinc-800 mt-1">
+        <div className="w-full h-2 rounded-full overflow-hidden bg-zinc-800 mt-1">
           <div
             className="h-full rounded-full transition-all"
             style={{ width: `${cdPct}%`, background: alertColor }}
           />
         </div>
       </div>
+
+      {/* Regolazione Rapida: -60", -5", +5", +60" (Tassativo richiesta Coach) */}
       {!state.running && (
         <div className="flex items-center justify-center gap-2">
-          {[-60, -10, +10, +60].map((d) => (
+          {[-60, -5, +5, +60].map((d) => (
             <button
               key={d}
               onClick={() => adjustTime(d)}
-              className="rounded-lg px-2.5 py-1 text-xs font-bold cursor-pointer transition-all hover:scale-105 active:scale-95"
+              className="rounded-xl px-3 py-1.5 text-xs font-black cursor-pointer transition-all hover:scale-105 active:scale-95"
               style={{
                 background: d > 0 ? "rgba(28,0,255,0.3)" : "#181822",
                 color: d > 0 ? "#e3ff00" : "#d4d4d8",
                 border: d > 0 ? "1px solid #1c00ff" : "1px solid #2a2a3a",
               }}
             >
-              {d > 0 ? `+${d}s` : `${d}s`}
+              {d > 0 ? `+${d}"` : `${d}"`}
             </button>
           ))}
         </div>
@@ -679,42 +779,117 @@ function CountdownPanel({
   );
 }
 
-function IntervalPanel({
+// ==============================================================================
+// PANNELLO INTERVAL TRAINING MULTI-FASE / CIRCUITO (Fasi e tempi differenti)
+// ==============================================================================
+function IntervalMultiPhasePanel({
   state,
   setState,
+  activeStep,
   phaseColor,
   phasePct,
 }: {
   state: TimerState;
   setState: React.Dispatch<React.SetStateAction<TimerState>>;
+  activeStep: IntervalStep;
   phaseColor: string;
   phasePct: number;
 }) {
-  function adjustSetting(
-    key: "workSecs" | "restSecs" | "rounds",
-    delta: number,
-  ) {
+  const steps = state.steps.length > 0 ? state.steps : DEFAULT_STEPS;
+  const isRunning = state.running;
+
+  // Calcolo durata totale circuito
+  const totalRoundSecs = steps.reduce((sum, s) => sum + s.durataSecs, 0);
+  const totalWorkoutSecs = totalRoundSecs * state.rounds;
+
+  function adjustStepTime(stepId: string, delta: number) {
     if (state.running) return;
     setState((s) => {
-      const min = key === "rounds" ? 1 : 5;
-      const newVal = Math.max(min, (s[key] as number) + delta);
-      const update: Partial<TimerState> = { [key]: newVal };
-      if (key === "workSecs") update.phaseLeft = newVal;
-      return { ...s, ...update };
+      const updatedSteps = s.steps.map((st) => {
+        if (st.id === stepId) {
+          const newDur = Math.max(5, st.durataSecs + delta);
+          return { ...st, durataSecs: newDur };
+        }
+        return st;
+      });
+      const first = updatedSteps[0];
+      return {
+        ...s,
+        steps: updatedSteps,
+        phaseLeft: s.currentStepIndex === 0 ? first.durataSecs : s.phaseLeft,
+      };
     });
   }
-  const isRunning = state.running || state.phase !== "idle";
+
+  function toggleStepType(stepId: string) {
+    if (state.running) return;
+    setState((s) => ({
+      ...s,
+      steps: s.steps.map((st) =>
+        st.id === stepId
+          ? {
+              ...st,
+              tipo: st.tipo === "work" ? "rest" : "work",
+              nome: st.tipo === "work" ? "Recupero" : `Esercizio ${st.id.replace("s", "")}`,
+            }
+          : st
+      ),
+    }));
+  }
+
+  function addStep() {
+    if (state.running) return;
+    setState((s) => {
+      const newIndex = s.steps.length + 1;
+      const newStep: IntervalStep = {
+        id: `s${Date.now()}`,
+        nome: `Esercizio ${newIndex}`,
+        durataSecs: 30,
+        tipo: "work",
+      };
+      return { ...s, steps: [...s.steps, newStep] };
+    });
+  }
+
+  function removeStep(stepId: string) {
+    if (state.running || state.steps.length <= 1) return;
+    setState((s) => {
+      const filtered = s.steps.filter((st) => st.id !== stepId);
+      return {
+        ...s,
+        steps: filtered,
+        currentStepIndex: 0,
+        phaseLeft: filtered[0].durataSecs,
+      };
+    });
+  }
+
+  function adjustRounds(delta: number) {
+    if (state.running) return;
+    setState((s) => ({ ...s, rounds: Math.max(1, s.rounds + delta) }));
+  }
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3.5">
       {isRunning ? (
-        <div className="flex flex-col items-center gap-1">
-          <span
-            className="text-xs font-black uppercase tracking-widest"
-            style={{ color: phaseColor }}
-          >
-            {state.phase === "work" ? "LAVORO" : "RIPOSO"} — Round{" "}
-            {state.currentRound}/{state.rounds}
-          </span>
+        <div className="flex flex-col items-center gap-1.5 py-1">
+          {/* Badge Fase Corrente */}
+          <div className="flex items-center gap-2">
+            <span
+              className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full"
+              style={{
+                background: phaseColor,
+                color: "#09090b",
+              }}
+            >
+              {activeStep.tipo === "work" ? "LAVORO" : "RECUPERO"} • {activeStep.nome}
+            </span>
+            <span className="text-xs font-black text-zinc-400">
+              Round {state.currentRound}/{state.rounds}
+            </span>
+          </div>
+
+          {/* Timer Gigante */}
           <span
             className="text-5xl font-black tabular-nums tracking-tight"
             style={{
@@ -724,97 +899,141 @@ function IntervalPanel({
           >
             {fmt(state.phaseLeft)}
           </span>
-          <div className="w-full h-1.5 rounded-full overflow-hidden bg-zinc-800 mt-1">
+
+          {/* Barra di Progresso */}
+          <div className="w-full h-2 rounded-full overflow-hidden bg-zinc-800 mt-1">
             <div
               className="h-full rounded-full transition-all"
               style={{ width: `${phasePct}%`, background: phaseColor }}
             />
           </div>
+
+          <div className="text-xs text-zinc-400 mt-1">
+            Fase {state.currentStepIndex + 1} di {steps.length}
+          </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center py-1">
-          <span className="text-xs text-zinc-400">
-            {state.rounds} round · {fmt(state.workSecs)} lavoro ·{" "}
-            {fmt(state.restSecs)} riposo
-          </span>
-          <span
-            className="text-2xl font-black tabular-nums mt-0.5"
-            style={{ color: "#e3ff00" }}
-          >
-            {fmt(
-              state.workSecs * state.rounds +
-                state.restSecs * (state.rounds - 1),
-            )}
-          </span>
-          <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
-            Durata Totale
-          </span>
-        </div>
-      )}
-      {!state.running && state.phase === "idle" && (
-        <div className="space-y-2 pt-1">
-          <SettingRow
-            label="Lavoro"
-            value={fmt(state.workSecs)}
-            onMinus={() => adjustSetting("workSecs", -5)}
-            onPlus={() => adjustSetting("workSecs", +5)}
-            color="#38bdf8"
-          />
-          <SettingRow
-            label="Riposo"
-            value={fmt(state.restSecs)}
-            onMinus={() => adjustSetting("restSecs", -5)}
-            onPlus={() => adjustSetting("restSecs", +5)}
-            color="#fb923c"
-          />
-          <SettingRow
-            label="Round"
-            value={String(state.rounds)}
-            onMinus={() => adjustSetting("rounds", -1)}
-            onPlus={() => adjustSetting("rounds", +1)}
-            color="#e3ff00"
-          />
-        </div>
-      )}
-    </div>
-  );
-}
+        <div className="space-y-3">
+          {/* Header durata totale */}
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#15151e] border border-zinc-800">
+            <div>
+              <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                Circuito ({steps.length} Fasi)
+              </div>
+              <div className="text-xs text-zinc-300">
+                1 Round = {fmt(totalRoundSecs)}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-black text-[#e3ff00] tabular-nums leading-none">
+                {fmt(totalWorkoutSecs)}
+              </div>
+              <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider mt-0.5">
+                Durata Totale
+              </div>
+            </div>
+          </div>
 
-function SettingRow({
-  label,
-  value,
-  onMinus,
-  onPlus,
-  color,
-}: {
-  label: string;
-  value: string;
-  onMinus: () => void;
-  onPlus: () => void;
-  color: string;
-}) {
-  return (
-    <div className="flex items-center justify-between py-0.5">
-      <span className="text-xs font-black uppercase tracking-wider" style={{ color, minWidth: 60 }}>
-        {label}
-      </span>
-      <div className="flex items-center gap-2">
-        <button
-          onClick={onMinus}
-          className="flex size-7 cursor-pointer items-center justify-center rounded-lg border border-zinc-700 hover:border-zinc-500 bg-[#181822] text-zinc-200 hover:text-white transition-colors active:scale-95"
-        >
-          <ChevronDown className="size-3.5" />
-        </button>
-        <span className="text-sm font-black tabular-nums w-12 text-center text-white">
-          {value}
-        </span>
-        <button
-          onClick={onPlus}
-          className="flex size-7 cursor-pointer items-center justify-center rounded-lg border border-zinc-700 hover:border-zinc-500 bg-[#181822] text-zinc-200 hover:text-white transition-colors active:scale-95"
-        >
-          <ChevronUp className="size-3.5" />
-        </button>
-      </div>
+          {/* Lista Fasi / Esercizi Differenziati (Scrollabile) */}
+          <div className="max-h-[175px] overflow-y-auto space-y-1.5 pr-1 [scrollbar-width:thin]">
+            {steps.map((step, idx) => (
+              <div
+                key={step.id}
+                className="flex items-center justify-between p-2 rounded-xl border border-zinc-800 bg-[#12121a]"
+              >
+                {/* Nome e Toggle Tipo Lavoro/Riposo */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => toggleStepType(step.id)}
+                    className="text-[10px] font-black uppercase px-2 py-0.5 rounded cursor-pointer transition-all"
+                    style={{
+                      background: step.tipo === "work" ? "#38bdf8" : "#fb923c",
+                      color: "#09090b",
+                    }}
+                    title="Clicca per invertire Lavoro / Riposo"
+                  >
+                    {step.tipo === "work" ? "Lavoro" : "Pausa"}
+                  </button>
+                  <span className="text-xs font-bold text-zinc-200 truncate max-w-[90px]">
+                    {step.nome}
+                  </span>
+                </div>
+
+                {/* Controlli Durata Fase (-5s / +5s) */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => adjustStepTime(step.id, -5)}
+                    className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
+                  >
+                    -
+                  </button>
+                  <span className="text-xs font-black tabular-nums w-10 text-center text-white">
+                    {step.durataSecs}"
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => adjustStepTime(step.id, +5)}
+                    className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
+                  >
+                    +
+                  </button>
+
+                  {steps.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeStep(step.id)}
+                      className="size-6 flex items-center justify-center rounded-lg hover:bg-red-500/20 text-zinc-500 hover:text-red-400 cursor-pointer ml-1"
+                      title="Elimina fase"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Barra Aggiungi Fase e Regola Round */}
+          <div className="flex items-center justify-between gap-2 pt-1 border-t border-zinc-800">
+            <button
+              type="button"
+              onClick={addStep}
+              className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <Plus className="size-3.5 text-[#e3ff00]" />
+              Aggiungi Fase
+            </button>
+
+            {/* Selettore Round */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                Round:
+              </span>
+              <div className="flex items-center gap-1 bg-[#15151e] border border-zinc-800 rounded-lg p-0.5">
+                <button
+                  type="button"
+                  onClick={() => adjustRounds(-1)}
+                  className="size-6 flex items-center justify-center rounded text-xs font-black text-zinc-300 hover:bg-zinc-700 cursor-pointer"
+                >
+                  -
+                </button>
+                <span className="text-xs font-black text-[#e3ff00] tabular-nums w-5 text-center">
+                  {state.rounds}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => adjustRounds(+1)}
+                  className="size-6 flex items-center justify-center rounded text-xs font-black text-zinc-300 hover:bg-zinc-700 cursor-pointer"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

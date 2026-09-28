@@ -197,7 +197,16 @@ export default function ManagerFiscoPage() {
     }
   };
 
+  const handleSelectAnticipoOre = async (ore: number) => {
+    try {
+      await aggiornaConfig({ tempo_anticipo_prenotazione_ore: ore });
+    } catch {
+      // toast gestito da hook
+    }
+  };
+
   const policyAttiva = config?.tempo_cancellazione_ore || 24;
+  const policyAnticipoAttiva = config?.tempo_anticipo_prenotazione_ore ?? 12;
   const isStripeConnected = !!(config?.stripe_collegato || (config?.stripe_secret_key && config.stripe_secret_key.startsWith("sk_")));
 
   return (
@@ -339,15 +348,32 @@ export default function ManagerFiscoPage() {
           </div>
 
           <div>
-            <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-              Stripe Webhook Secret (Opzionale per sincronizzazione asincrona, whsec_...)
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-[10px] font-bold uppercase text-zinc-500">
+                Stripe Webhook Secret (whsec_...)
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  const url = `${window.location.origin}/app-api/pagamenti/stripe-webhook`;
+                  navigator.clipboard.writeText(url);
+                  toast.success("URL Endpoint Webhook copiato negli appunti!");
+                }}
+                className="text-[10px] font-bold text-[#1c00ff] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <Copy className="size-3" />
+                Copia Endpoint Webhook
+              </button>
+            </div>
             <Input
               value={stripeWebhookSecret}
               onChange={(e) => setStripeWebhookSecret(e.target.value)}
               placeholder="whsec_..."
-              className="font-mono text-xs text-zinc-500"
+              className="font-mono text-xs text-zinc-600"
             />
+            <p className="text-[10px] text-zinc-500 mt-1 font-mono break-all">
+              Endpoint per Stripe: <span className="font-bold text-zinc-800">{typeof window !== 'undefined' ? `${window.location.origin}/app-api/pagamenti/stripe-webhook` : "/app-api/pagamenti/stripe-webhook"}</span>
+            </p>
           </div>
         </div>
 
@@ -402,7 +428,7 @@ export default function ManagerFiscoPage() {
           >
             <span className="flex items-center gap-1.5">
               <Sparkles className="size-3.5 text-[#1c00ff]" />
-              Guida Rapida: Dove trovare le tue chiavi su Stripe (2 minuti)
+              Guida Rapida: Dove trovare le tue chiavi e configurare il Webhook su Stripe
             </span>
             {showGuide ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
           </button>
@@ -436,6 +462,20 @@ export default function ManagerFiscoPage() {
                 </li>
                 <li>
                   Clicca sul pulsante <strong>&quot;Verifica Connessione Stripe&quot;</strong> qui sopra: l&apos;app effettuerà un test istantaneo per confermare che tutto funzioni a meraviglia!
+                </li>
+                <li>
+                  <strong>Configurazione Webhook</strong>: nella dashboard Stripe, vai su <strong>Sviluppatori</strong> &gt; <strong>Webhooks</strong> &gt; <strong>Aggiungi endpoint</strong> (Add destination).
+                  <ul className="list-disc list-inside pl-4 mt-1 space-y-1 text-zinc-600 font-normal">
+                    <li>
+                      <strong>URL Endpoint</strong>: incolla <code>{typeof window !== 'undefined' ? `${window.location.origin}/app-api/pagamenti/stripe-webhook` : "https://[tuo-dominio]/app-api/pagamenti/stripe-webhook"}</code> (usa il tasto rapido sopra per copiarlo).
+                    </li>
+                    <li>
+                      <strong>Eventi da selezionare</strong>: seleziona l&apos;evento <code>checkout.session.completed</code>.
+                    </li>
+                    <li>
+                      Clicca su <strong>Aggiungi endpoint</strong>, poi nella schermata successiva clicca su <strong>Rivela segreto di firma</strong> (inizia con <code>whsec_...</code>), copialo e incollalo nel campo Webhook Secret.
+                    </li>
+                  </ul>
                 </li>
               </ol>
             </div>
@@ -489,7 +529,54 @@ export default function ManagerFiscoPage() {
         </div>
       </div>
 
-      {/* SEZIONE 3: COORDINATE BONIFICO & LAB */}
+      {/* SEZIONE 3: POLICY TERMINE ANTICIPO PRENOTAZIONE SLOT */}
+      <div className="p-4 rounded-3xl bg-white border border-zinc-200 shadow-2xs space-y-3">
+        <div className="flex items-center gap-2">
+          <Clock className="size-5 text-[#1c00ff]" />
+          <div>
+            <h2 className="text-sm font-black text-zinc-900">
+              Policy Termine Anticipo Prenotazione Slot
+            </h2>
+            <p className="text-[11px] text-zinc-500">
+              Tempo minimo di preavviso per poter prenotare una sessione (entro e non oltre X ore prima).
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-5 gap-2 pt-1">
+          {[0, 12, 24, 36, 48].map((ore) => {
+            const isSelected = policyAnticipoAttiva === ore;
+            return (
+              <button
+                key={ore}
+                type="button"
+                onClick={() => handleSelectAnticipoOre(ore)}
+                className={`py-2.5 px-1 rounded-2xl border-2 transition-all flex flex-col items-center justify-center cursor-pointer ${
+                  isSelected
+                    ? "border-[#1c00ff] bg-[#1c00ff] text-white shadow-sm font-black"
+                    : "border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-zinc-700 font-bold"
+                }`}
+              >
+                <span className="text-base tabular-nums">{ore === 0 ? "0h" : `${ore}h`}</span>
+                <span
+                  className={`text-[9px] uppercase tracking-wider text-center leading-tight ${
+                    isSelected ? "text-[#e3ff00]" : "text-zinc-400"
+                  }`}
+                >
+                  {ore === 0 ? "Immediata" : ore === 12 ? "Flessibile" : ore === 24 ? "Standard" : "Rigorosa"}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="text-[11px] text-zinc-500 bg-zinc-50 p-2.5 rounded-xl border border-zinc-200 leading-relaxed">
+          💡 <strong>Impostazione attiva: {policyAnticipoAttiva === 0 ? "Nessun limite di anticipo (prenotabile anche all'ultimo minuto)" : `${policyAnticipoAttiva} ore`}</strong>.
+          {policyAnticipoAttiva > 0 && ` Gli atleti possono prenotare le sessioni entro e non oltre ${policyAnticipoAttiva} ore prima dell'inizio dello slot.`}
+        </div>
+      </div>
+
+      {/* SEZIONE 4: COORDINATE BONIFICO & LAB */}
       <div className="p-4 rounded-3xl bg-white border border-zinc-200 shadow-2xs space-y-3">
         <div className="flex items-center gap-2">
           <Building2 className="size-5 text-[#1c00ff]" />

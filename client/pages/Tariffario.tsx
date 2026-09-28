@@ -13,6 +13,11 @@ import {
   Receipt,
   FileCheck,
   Zap,
+  Bot,
+  Gift,
+  BookOpen,
+  Info,
+  Clock,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -24,6 +29,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "../components/Dialog";
+import { InfoContinuativoModal } from "../components/InfoContinuativoModal";
+import { ManualeUtenteModal } from "../components/ManualeUtenteModal";
 import { toast } from "sonner";
 
 interface Pacchetto {
@@ -33,7 +40,7 @@ interface Pacchetto {
   crediti: number;
   giorni_validita: number;
   prezzo_euro: number;
-  tipo: "consumo" | "ricorrente_4mesi";
+  tipo: "consumo" | "abbonamento" | "ricorrente_4mesi" | string;
   attivo: boolean;
   badge?: string;
 }
@@ -49,6 +56,57 @@ export default function TariffarioPage() {
   const [codiceFiscale, setCodiceFiscale] = useState(user?.codice_fiscale || "");
   const [indirizzo, setIndirizzo] = useState(user?.indirizzo || "");
   const [completedTx, setCompletedTx] = useState<any | null>(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showManualModal, setShowManualModal] = useState(false);
+
+  // Gestione postazione congelata da PrenotaSlot (15 minuti)
+  const [frozenSlot, setFrozenSlot] = useState<{ data: string; orario: string; expiresAt: number } | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState<number>(0);
+
+  useEffect(() => {
+    const raw = localStorage.getItem("area46_frozen_slot");
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.expiresAt > Date.now()) {
+          setFrozenSlot(parsed);
+          setSecondsLeft(Math.floor((parsed.expiresAt - Date.now()) / 1000));
+        } else {
+          localStorage.removeItem("area46_frozen_slot");
+        }
+      } catch {
+        localStorage.removeItem("area46_frozen_slot");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!frozenSlot) return;
+    const interval = setInterval(() => {
+      const remaining = Math.floor((frozenSlot.expiresAt - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setFrozenSlot(null);
+        localStorage.removeItem("area46_frozen_slot");
+        clearInterval(interval);
+      } else {
+        setSecondsLeft(remaining);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [frozenSlot]);
+
+  function formatGiornoItaliano(dateStr: string): string {
+    try {
+      const d = new Date(dateStr + "T00:00:00");
+      return d.toLocaleDateString("it-IT", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
+    } catch {
+      return dateStr;
+    }
+  }
 
   // Query Pacchetti
   const { data: pacchetti = [], isLoading } = useQuery<Pacchetto[]>({
@@ -151,6 +209,11 @@ export default function TariffarioPage() {
   });
 
   const handleOpenCheckout = (pack: Pacchetto) => {
+    if (!user) {
+      toast.info("Accedi al tuo account Area46 per completare l'acquisto o ricaricare i crediti.");
+      navigate("/login");
+      return;
+    }
     setSelectedPack(pack);
     setCodiceFiscale(user?.codice_fiscale || "");
     setIndirizzo(user?.indirizzo || "");
@@ -160,17 +223,36 @@ export default function TariffarioPage() {
 
   return (
     <div className="space-y-4 pb-12">
-      {/* HEADER */}
-      <div>
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-[#e3ff00] text-zinc-950 font-black border border-zinc-900 shadow-2xs">
-            <Sparkles className="size-5 text-[#1c00ff]" />
+      {/* BANNER VISITATORE NON LOGGATO */}
+      {!user && (
+        <div className="p-3.5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-black text-zinc-900">Sei in modalità visitatore</p>
+            <p className="text-[11px] text-zinc-500">Accedi o registrati per acquistare e prenotare i tuoi slot.</p>
           </div>
+          <Button
+            size="sm"
+            onClick={() => navigate("/login")}
+            className="h-8 text-xs font-bold shrink-0 bg-[#1c00ff] text-white hover:bg-[#1500cc]"
+          >
+            Accedi
+          </Button>
+        </div>
+      )}
+
+      {/* HEADER */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo-area46-transparent.png"
+            alt="Area46"
+            className="h-10 w-auto object-contain drop-shadow-2xs"
+          />
           <div>
             <h1 className="text-xl font-black tracking-tight text-zinc-900">
               Tariffario & Ricarica Crediti
             </h1>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-zinc-500 font-medium">
               1 Credito = 1 Allenamento con Coach Landmine Lab
             </p>
           </div>
@@ -192,52 +274,135 @@ export default function TariffarioPage() {
         </div>
       )}
 
+      {/* BANNER POSTAZIONE CONGELATA (15 MINUTI) */}
+      {frozenSlot && secondsLeft > 0 && (
+        <div className="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 flex items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <div className="size-8 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center font-bold shrink-0">
+              <Clock className="size-4 text-amber-700" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-amber-950 flex items-center gap-2">
+                <span>Postazione congelata per te</span>
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-amber-200/80 text-amber-900 border border-amber-300/80">
+                  {Math.floor(secondsLeft / 60)}:{(secondsLeft % 60).toString().padStart(2, "0")}
+                </span>
+              </div>
+              <p className="text-[11px] text-amber-800 mt-0.5">
+                {formatGiornoItaliano(frozenSlot.data)} alle {frozenSlot.orario} • Scegli il tuo pacchetto per attivarla in via definitiva.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.removeItem("area46_frozen_slot");
+              setFrozenSlot(null);
+            }}
+            className="text-xs text-amber-700 hover:text-amber-900 underline shrink-0 cursor-pointer"
+          >
+            Rilascia
+          </button>
+        </div>
+      )}
+
+      {/* BANNER INFORMATIVO CONTINUATIVO & GUIDA */}
+      <div className="p-3.5 rounded-2xl bg-zinc-950 text-white border-2 border-[#e3ff00] shadow-[0_0_20px_rgba(227,255,0,0.18)] flex items-center justify-between gap-2.5">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-[#e3ff00] text-zinc-950 font-black shrink-0 border border-zinc-900 shadow-xs">
+            <Sparkles className="size-4 text-[#1c00ff]" />
+          </div>
+          <div>
+            <div className="text-xs font-black text-white flex items-center gap-1.5">
+              <span>Formula Continuativo Lab</span>
+              <span className="text-[9px] font-black uppercase bg-[#1c00ff] text-[#e3ff00] px-1.5 py-0.2 rounded-full">
+                CONSIGLIATO
+              </span>
+            </div>
+            <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
+              Fino a 840€ di risparmio annuo, posto fisso garantito e Assistente AI.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <Button
+            size="sm"
+            onClick={() => setShowInfoModal(true)}
+            className="text-xs font-black h-8 px-2.5 bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200] border border-zinc-900 rounded-xl"
+          >
+            <Info className="size-3 mr-1 text-[#1c00ff]" />
+            Info
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowManualModal(true)}
+            className="text-xs font-bold h-8 px-2 text-zinc-400 hover:text-white rounded-xl"
+            title="Guida & Manuale App"
+          >
+            <BookOpen className="size-3.5" />
+          </Button>
+        </div>
+      </div>
+
       {/* LISTA PACCHETTI */}
       <div className="space-y-3">
         {pacchetti.map((pack) => {
           const creditiEffettivi = Math.max(0, pack.crediti - currentDebtCount);
-          const isPro = pack.badge === "Pro Lab" || pack.tipo === "ricorrente_4mesi";
+          const isContinuativo = pack.tipo === "abbonamento" || pack.id.startsWith("pack-continuativo");
+          const isAnnual = pack.id.includes("annuale");
+          const isSemestral = pack.id.includes("semestrale");
 
           return (
             <div
               key={pack.id}
-              className={`p-4 rounded-3xl border-2 transition-all relative overflow-hidden bg-white ${
-                pack.badge === "Più Scelto"
-                  ? "border-[#1c00ff] shadow-md ring-1 ring-[#1c00ff]/20"
-                  : isPro
-                  ? "border-zinc-900 bg-zinc-900 text-white shadow-md"
-                  : "border-zinc-200 hover:border-zinc-300"
+              className={`p-4 rounded-3xl border-2 transition-all relative overflow-hidden ${
+                isAnnual
+                  ? "border-[#e3ff00] bg-zinc-950 text-white shadow-[0_0_24px_rgba(227,255,0,0.22)] ring-2 ring-[#e3ff00]/40"
+                  : isSemestral
+                  ? "border-[#1c00ff] bg-zinc-900 text-white shadow-md"
+                  : "border-zinc-200 hover:border-zinc-300 bg-white"
               }`}
             >
               {/* BADGE IN ALTO */}
-              {pack.badge && (
-                <div className="flex justify-end mb-1">
-                  <span
-                    className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                      pack.badge === "Più Scelto"
-                        ? "bg-[#e3ff00] text-zinc-950 border border-zinc-950"
-                        : isPro
-                        ? "bg-[#1c00ff] text-[#e3ff00]"
-                        : "bg-zinc-100 text-zinc-700"
-                    }`}
-                  >
-                    {pack.badge}
+              <div className="flex items-center justify-between mb-1.5">
+                {isContinuativo && (
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#e3ff00] flex items-center gap-1">
+                    <Bot className="size-3 text-[#e3ff00]" />
+                    <span>AI Concierge Incluso</span>
                   </span>
+                )}
+                <div className="ml-auto">
+                  {isAnnual ? (
+                    <span className="text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#e3ff00] text-zinc-950 border border-zinc-950 shadow-xs flex items-center gap-1 animate-pulse">
+                      👑 PREMIO 12 MESI • MAX RISPARMIO
+                    </span>
+                  ) : pack.badge ? (
+                    <span
+                      className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                        isSemestral
+                          ? "bg-[#1c00ff] text-[#e3ff00] border border-[#e3ff00]/30"
+                          : "bg-zinc-100 text-zinc-700"
+                      }`}
+                    >
+                      {pack.badge}
+                    </span>
+                  ) : null}
                 </div>
-              )}
+              </div>
 
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h3
                     className={`text-base font-black tracking-tight ${
-                      isPro ? "text-white" : "text-zinc-900"
+                      isContinuativo ? "text-white" : "text-zinc-900"
                     }`}
                   >
                     {pack.nome}
                   </h3>
                   <p
-                    className={`text-xs mt-0.5 ${
-                      isPro ? "text-zinc-400" : "text-zinc-500"
+                    className={`text-xs mt-0.5 leading-relaxed ${
+                      isContinuativo ? "text-zinc-300" : "text-zinc-500"
                     }`}
                   >
                     {pack.descrizione}
@@ -247,31 +412,62 @@ export default function TariffarioPage() {
                 <div className="text-right shrink-0">
                   <div
                     className={`text-xl font-black ${
-                      isPro ? "text-[#e3ff00]" : "text-zinc-900"
+                      isAnnual
+                        ? "text-[#e3ff00]"
+                        : isSemestral
+                        ? "text-[#e3ff00]"
+                        : "text-zinc-900"
                     }`}
                   >
                     {pack.prezzo_euro} €
                   </div>
                   <div
                     className={`text-[10px] font-semibold ${
-                      isPro ? "text-zinc-400" : "text-zinc-500"
+                      isContinuativo ? "text-zinc-400" : "text-zinc-500"
                     }`}
                   >
-                    {(pack.prezzo_euro / pack.crediti).toFixed(1)} € / seduta
+                    {isContinuativo
+                      ? "Quota fissa / mese"
+                      : `${(pack.prezzo_euro / pack.crediti).toFixed(1)} € / seduta`}
                   </div>
                 </div>
               </div>
 
+              {/* BENEFIT ESCLUSIVI PER CONTINUATIVO */}
+              {isContinuativo && (
+                <div className="mt-3 pt-2.5 border-t border-zinc-800 space-y-1 text-[11px] text-zinc-300">
+                  <div className="flex items-center gap-1.5 font-bold text-[#e3ff00]">
+                    <Bot className="size-3.5 shrink-0" />
+                    <span>Assistente AI Booking Concierge Illimitato</span>
+                  </div>
+                  {isAnnual && (
+                    <div className="flex items-center gap-1.5 font-semibold text-emerald-400">
+                      <Sparkles className="size-3.5 shrink-0" />
+                      <span>Posto fisso garantito per 365 giorni (104 o 156 slot)</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setShowInfoModal(true)}
+                      className="text-[10px] text-[#e3ff00] underline font-bold hover:text-white cursor-pointer"
+                    >
+                      ℹ️ Leggi come funziona e le tutele del Continuativo
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* DETTAGLIO CREDITI E VALIDITÀ */}
               <div
                 className={`mt-3 pt-3 border-t flex items-center justify-between text-xs ${
-                  isPro ? "border-zinc-800" : "border-zinc-100"
+                  isContinuativo ? "border-zinc-800" : "border-zinc-100"
                 }`}
               >
                 <div className="flex items-center gap-1.5 font-bold">
                   <span
                     className={`px-2 py-0.5 rounded-md text-[11px] font-black ${
-                      isPro
+                      isContinuativo
                         ? "bg-zinc-800 text-[#e3ff00]"
                         : "bg-[#1c00ff]/10 text-[#1c00ff]"
                     }`}
@@ -280,10 +476,17 @@ export default function TariffarioPage() {
                   </span>
                   <span
                     className={`text-[11px] ${
-                      isPro ? "text-zinc-400" : "text-zinc-500"
+                      isContinuativo ? "text-zinc-400" : "text-zinc-500"
                     }`}
                   >
-                    • Validità {pack.giorni_validita} gg
+                    •{" "}
+                    {isContinuativo
+                      ? isAnnual
+                        ? "Durata 12 Mesi"
+                        : "Durata 6 Mesi"
+                      : pack.giorni_validita && pack.giorni_validita % 7 === 0
+                      ? `Scadenza ${pack.giorni_validita / 7} settimane`
+                      : `Validità ${pack.giorni_validita} gg`}
                   </span>
                 </div>
 
@@ -291,12 +494,14 @@ export default function TariffarioPage() {
                   size="sm"
                   onClick={() => handleOpenCheckout(pack)}
                   className={`rounded-xl text-xs font-black h-8 px-3.5 ${
-                    isPro
+                    isAnnual
+                      ? "bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200] border border-zinc-900"
+                      : isSemestral
                       ? "bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200]"
                       : "bg-[#1c00ff] text-white hover:bg-[#1600cc]"
                   }`}
                 >
-                  Acquista
+                  {isContinuativo ? "Attiva Subito" : "Acquista"}
                 </Button>
               </div>
 
@@ -304,7 +509,7 @@ export default function TariffarioPage() {
               {hasDebt && (
                 <div
                   className={`mt-2 p-2 rounded-xl text-[10px] font-bold ${
-                    isPro
+                    isContinuativo
                       ? "bg-zinc-800/80 text-zinc-300"
                       : "bg-zinc-50 text-zinc-600 border border-zinc-200"
                   }`}
@@ -545,6 +750,43 @@ export default function TariffarioPage() {
                   </div>
                 </div>
               )}
+
+              {/* SE ERA PRESENTE UNA POSTAZIONE CONGELATA */}
+              {frozenSlot && (
+                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between gap-2">
+                  <div className="text-xs">
+                    <span className="font-bold">Postazione congelata:</span>{" "}
+                    {formatGiornoItaliano(frozenSlot.data)} alle {frozenSlot.orario}
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={async () => {
+                      try {
+                        const res = await fetch("/app-api/prenotazioni", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ data: frozenSlot.data, orario: frozenSlot.orario }),
+                        });
+                        const j = await res.json();
+                        if (res.ok) {
+                          toast.success(j.messaggio || "Postazione confermata con successo!");
+                          localStorage.removeItem("area46_frozen_slot");
+                          setFrozenSlot(null);
+                          setCompletedTx(null);
+                          navigate("/prenota");
+                        } else {
+                          toast.error(j.error || "Impossibile confermare la postazione.");
+                        }
+                      } catch {
+                        toast.error("Errore di connessione.");
+                      }
+                    }}
+                    className="text-xs font-bold h-8 px-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl cursor-pointer"
+                  >
+                    Conferma Ora
+                  </Button>
+                </div>
+              )}
             </div>
           )}
 
@@ -561,6 +803,19 @@ export default function TariffarioPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* MODALE INFORMATIVA CONTINUATIVO */}
+      <InfoContinuativoModal
+        open={showInfoModal}
+        onOpenChange={setShowInfoModal}
+        onSelectPack={(packId) => {
+          const pack = pacchetti.find((p) => p.id === packId);
+          if (pack) handleOpenCheckout(pack);
+        }}
+      />
+
+      {/* MODALE MANUALE UTENTE */}
+      <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
     </div>
   );
 }

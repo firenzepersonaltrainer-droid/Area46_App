@@ -22,7 +22,7 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
     nome: "Coach",
     cognome: "Area46",
     ruolo: "manager",
-    email: "coach@area46.it",
+    email: "firenzepersonaltrainer@gmail.com",
   };
 
   const athleteProfiles = profili.filter((p) => p.ruolo === "atleta");
@@ -42,18 +42,25 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md bg-white border border-zinc-200 rounded-3xl p-6 shadow-2xl">
         <DialogHeader className="mb-4">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-[#1c00ff]/10 text-[#1c00ff]">
-              <Users className="size-5" />
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-[#1c00ff]/10 text-[#1c00ff]">
+                <Users className="size-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-lg font-black tracking-tight text-zinc-900">
+                  Selettore Profilo & Ruolo
+                </DialogTitle>
+                <DialogDescription className="text-xs text-zinc-500">
+                  Alterna istantaneamente tra Atleta e Coach/Manager.
+                </DialogDescription>
+              </div>
             </div>
-            <div>
-              <DialogTitle className="text-lg font-black tracking-tight text-zinc-900">
-                Selettore Profilo & Ruolo
-              </DialogTitle>
-              <DialogDescription className="text-xs text-zinc-500">
-                Alterna istantaneamente tra vista Atleta e Pannello Coach/Manager.
-              </DialogDescription>
-            </div>
+            <img
+              src="/logo-area46-transparent.png"
+              alt="Area46"
+              className="h-9 w-auto object-contain shrink-0 drop-shadow-2xs"
+            />
           </div>
         </DialogHeader>
 

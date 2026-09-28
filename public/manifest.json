@@ -1,0 +1,35 @@
+{
+  "short_name": "Area46",
+  "name": "Area46 — Landmine Lab",
+  "description": "App Ufficiale Area46 Landmine Lab per prenotazioni, diario di allenamento e carnet.",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#09090b",
+  "theme_color": "#1c00ff",
+  "display": "standalone",
+  "orientation": "portrait"
+}

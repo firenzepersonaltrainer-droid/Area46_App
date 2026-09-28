@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import {
   Dumbbell,
   PlusCircle,
   Trash2,
+  Copy,
   X,
   Check,
   LayoutList,
@@ -34,6 +35,47 @@ interface SetRow {
 }
 
 const emptySet = (): SetRow => ({ carico_kg: "", ripetizioni: "", rpe: "" });
+
+interface DraftData {
+  sets: SetRow[];
+  feedback: string;
+}
+
+function getDraftsMap(): Record<string, DraftData> {
+  try {
+    const raw = localStorage.getItem("area46_diario_drafts");
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveDraftToStore(key: string, data: DraftData) {
+  try {
+    const map = getDraftsMap();
+    const hasContent =
+      data.sets.some((s) => s.carico_kg.trim() || s.ripetizioni.trim() || s.rpe.trim()) ||
+      data.feedback.trim().length > 0;
+    if (hasContent) {
+      map[key] = data;
+    } else {
+      delete map[key];
+    }
+    localStorage.setItem("area46_diario_drafts", JSON.stringify(map));
+  } catch (e) {
+    console.error("Errore salvataggio bozza diario", e);
+  }
+}
+
+function removeDraftFromStore(key: string) {
+  try {
+    const map = getDraftsMap();
+    delete map[key];
+    localStorage.setItem("area46_diario_drafts", JSON.stringify(map));
+  } catch (e) {
+    console.error("Errore rimozione bozza diario", e);
+  }
+}
 
 function parseRpe(rpe: string): number | null {
   const cleaned = rpe.replace(/[^0-9.]/g, "").trim();
@@ -97,6 +139,34 @@ export default function EsercizioDetailPage() {
   const [editSets, setEditSets] = useState<SetRow[]>([emptySet()]);
   const [editFeedback, setEditFeedback] = useState("");
   const [editSaving, setEditSaving] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState<"16:9" | "9:16">("16:9");
+
+  // Chiave bozza per Jump Set e navigazione tra esercizi diversi
+  const draftKey = `${livello || ""}_${giorno || ""}_${idEsercizio || ""}`;
+  const loadedKeyRef = useRef<string | null>(null);
+
+  // Caricamento bozza in sospeso al cambio di esercizio
+  useEffect(() => {
+    if (!idEsercizio) return;
+    const drafts = getDraftsMap();
+    const existing = drafts[draftKey];
+    if (existing && existing.sets && existing.sets.length > 0) {
+      setSets(existing.sets);
+      setFeedback(existing.feedback || "");
+    } else {
+      setSets([emptySet()]);
+      setFeedback("");
+    }
+    loadedKeyRef.current = draftKey;
+  }, [draftKey, idEsercizio]);
+
+  // Aggiornamento persistente della bozza: non si perde il lavoro uscendo dall'esercizio o cambiando jump set
+  useEffect(() => {
+    if (!idEsercizio) return;
+    if (loadedKeyRef.current === draftKey) {
+      saveDraftToStore(draftKey, { sets, feedback });
+    }
+  }, [sets, feedback, draftKey, idEsercizio]);
 
   useEffect(() => {
     if (dialogOpen) {
@@ -120,6 +190,35 @@ export default function EsercizioDetailPage() {
 
   function removeSet(i: number) {
     setSets((prev) => prev.filter((_, idx) => idx !== i));
+  }
+
+  function duplicateSet(i: number) {
+    setSets((prev) => {
+      const source = prev[i] || emptySet();
+      const cloned = { ...source };
+      const next = [...prev];
+      next.splice(i + 1, 0, cloned);
+      return next;
+    });
+    toast.success(`Serie ${i + 1} duplicata!`);
+  }
+
+  function duplicateEditSet(i: number) {
+    setEditSets((prev) => {
+      const source = prev[i] || emptySet();
+      const cloned = { ...source };
+      const next = [...prev];
+      next.splice(i + 1, 0, cloned);
+      return next;
+    });
+    toast.success(`Serie ${i + 1} duplicata!`);
+  }
+
+  function handleClearDraft() {
+    removeDraftFromStore(draftKey);
+    setSets([emptySet()]);
+    setFeedback("");
+    toast.info("Bozza diario azzerata");
   }
 
   function updateSet(i: number, field: keyof SetRow, value: string) {
@@ -237,6 +336,7 @@ export default function EsercizioDetailPage() {
         }),
       });
       if (!res.ok) throw new Error();
+      removeDraftFromStore(draftKey);
       queryClient.invalidateQueries({ queryKey: ["diario"] });
       queryClient.invalidateQueries({ queryKey: ["diario-esercizio", idEsercizio] });
       toast.success("Carico registrato nel diario!");
@@ -249,6 +349,18 @@ export default function EsercizioDetailPage() {
       setSaving(false);
     }
   }
+
+  useEffect(() => {
+    if (esercizio?.link_video && esercizio.link_video.toLowerCase().includes("/shorts/")) {
+      setAspectRatio("9:16");
+    } else {
+      setAspectRatio("16:9");
+    }
+  }, [esercizio?.link_video]);
+
+  const hasDraftContent =
+    sets.some((s) => s.carico_kg.trim() !== "" || s.ripetizioni.trim() !== "" || s.rpe.trim() !== "") ||
+    feedback.trim().length > 0;
 
   if (!esercizio) {
     return (
@@ -292,11 +404,17 @@ export default function EsercizioDetailPage() {
           </Button>
           <button
             onClick={() => setDialogOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer relative"
             style={{ background: "#1c00ff", color: "#ffffff", border: "1.5px solid #e3ff00" }}
           >
             <ClipboardList className="size-4 text-[#e3ff00]" />
-            Registra Carico
+            <span>Registra Carico</span>
+            {hasDraftContent && (
+              <span
+                className="flex size-2.5 rounded-full bg-[#e3ff00] ring-2 ring-[#1c00ff] animate-pulse"
+                title="Bozza con serie in sospeso presente"
+              />
+            )}
           </button>
         </div>
       </div>
@@ -305,36 +423,69 @@ export default function EsercizioDetailPage() {
       <div className="grid grid-cols-2 gap-2.5">
         {esercizio.parametri && (
           <div className="rounded-xl border border-zinc-200 bg-white p-3.5 shadow-xs relative overflow-hidden flex flex-col justify-center">
-            <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#1c00ff]" />
-            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-wider mb-1">
+            <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-[#1c00ff]" />
+            <p className="text-xs font-black text-zinc-500 uppercase tracking-wider mb-1">
               Parametri
             </p>
-            <p className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-snug break-words">
+            <p className="text-sm sm:text-base font-bold text-zinc-900 leading-snug break-words">
               {esercizio.parametri}
             </p>
           </div>
         )}
         {esercizio.recupero && (
           <div className="rounded-xl border border-zinc-200 bg-white p-3.5 shadow-xs relative overflow-hidden flex flex-col justify-center">
-            <div className="absolute top-0 left-0 bottom-0 w-1 bg-[#e3ff00]" />
-            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-wider mb-1">
+            <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-[#e3ff00]" />
+            <p className="text-xs font-black text-zinc-500 uppercase tracking-wider mb-1">
               Recupero
             </p>
-            <p className="text-[13px] sm:text-sm font-bold text-zinc-900 leading-snug break-words">
+            <p className="text-sm sm:text-base font-bold text-zinc-900 leading-snug break-words">
               {esercizio.recupero}
             </p>
           </div>
         )}
       </div>
 
-      {/* Video YouTube */}
+      {/* Video YouTube (Supporto Orizzontale 16:9 e Verticale 9:16) */}
       {videoId && (
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Play className="size-4 text-[#1c00ff]" />
-            <h2 className="text-sm font-black uppercase tracking-wider text-zinc-800">Video dimostrativo</h2>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Play className="size-4 text-[#1c00ff]" />
+              <h2 className="text-sm font-black uppercase tracking-wider text-zinc-800">Video dimostrativo</h2>
+            </div>
+            {/* Selettore Aspect Ratio 16:9 / 9:16 */}
+            <div className="flex items-center gap-1 bg-zinc-100 p-0.5 rounded-lg border border-zinc-200 text-xs">
+              <button
+                type="button"
+                onClick={() => setAspectRatio("16:9")}
+                className={`px-2.5 py-1 rounded-md font-bold transition-all text-xs cursor-pointer ${
+                  aspectRatio === "16:9"
+                    ? "bg-white text-zinc-900 shadow-2xs"
+                    : "text-zinc-500 hover:text-zinc-800"
+                }`}
+              >
+                16:9 Orizzontale
+              </button>
+              <button
+                type="button"
+                onClick={() => setAspectRatio("9:16")}
+                className={`px-2.5 py-1 rounded-md font-bold transition-all text-xs cursor-pointer ${
+                  aspectRatio === "9:16"
+                    ? "bg-[#1c00ff] text-white shadow-2xs"
+                    : "text-zinc-500 hover:text-zinc-800"
+                }`}
+              >
+                9:16 Verticale
+              </button>
+            </div>
           </div>
-          <div className="aspect-video w-full overflow-hidden rounded-2xl border-2 border-zinc-200 bg-black shadow-sm">
+          <div
+            className={`w-full overflow-hidden rounded-2xl border-2 border-zinc-200 bg-black shadow-sm mx-auto transition-all ${
+              aspectRatio === "9:16"
+                ? "aspect-[9/16] max-w-[340px] max-h-[580px]"
+                : "aspect-video"
+            }`}
+          >
             <iframe
               src={`https://www.youtube.com/embed/${videoId}`}
               title={esercizio.nome_esercizio}
@@ -384,14 +535,14 @@ export default function EsercizioDetailPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                  <span className="text-xs font-black uppercase tracking-wider text-zinc-500">
                     Precedente
                   </span>
-                  <span className="text-[9px] font-black px-1 rounded bg-zinc-100 text-zinc-700">
+                  <span className="text-[11px] font-black px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-700">
                     {prevEsercizio.sequenza}
                   </span>
                 </div>
-                <p className="text-xs font-bold text-zinc-900 truncate leading-tight mt-0.5">
+                <p className="text-sm font-bold text-zinc-900 truncate leading-tight mt-0.5">
                   {prevEsercizio.nome_esercizio}
                 </p>
               </div>
@@ -402,10 +553,10 @@ export default function EsercizioDetailPage() {
                 <ChevronLeft className="size-5" />
               </div>
               <div className="min-w-0 flex-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                <span className="text-xs font-black uppercase tracking-wider text-zinc-400">
                   Inizio
                 </span>
-                <p className="text-xs font-semibold text-zinc-400 truncate leading-tight mt-0.5">
+                <p className="text-sm font-semibold text-zinc-400 truncate leading-tight mt-0.5">
                   1° Esercizio
                 </p>
               </div>
@@ -424,14 +575,14 @@ export default function EsercizioDetailPage() {
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-end gap-1">
-                  <span className="text-[9px] font-black px-1 rounded bg-[#1c00ff]/10 text-[#1c00ff]">
+                  <span className="text-[11px] font-black px-1.5 py-0.5 rounded bg-[#1c00ff]/10 text-[#1c00ff]">
                     {nextEsercizio.sequenza}
                   </span>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-[#1c00ff]">
+                  <span className="text-xs font-black uppercase tracking-wider text-[#1c00ff]">
                     Successivo
                   </span>
                 </div>
-                <p className="text-xs font-bold text-zinc-900 truncate leading-tight mt-0.5">
+                <p className="text-sm font-bold text-zinc-900 truncate leading-tight mt-0.5">
                   {nextEsercizio.nome_esercizio}
                 </p>
               </div>
@@ -449,10 +600,10 @@ export default function EsercizioDetailPage() {
           ) : (
             <div className="flex items-center justify-between gap-2 p-2.5 rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/50 opacity-40 select-none text-right">
               <div className="min-w-0 flex-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                <span className="text-xs font-black uppercase tracking-wider text-zinc-400">
                   Fine
                 </span>
-                <p className="text-xs font-semibold text-zinc-400 truncate leading-tight mt-0.5">
+                <p className="text-sm font-semibold text-zinc-400 truncate leading-tight mt-0.5">
                   Ultimo Esercizio
                 </p>
               </div>
@@ -468,7 +619,7 @@ export default function EsercizioDetailPage() {
           onClick={() =>
             navigate(`/allenamento/${encodeURIComponent(livello!)}/${giorno}`)
           }
-          className="flex w-full items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-800 hover:text-zinc-950 text-xs font-black uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
+          className="flex w-full items-center justify-center gap-2 py-3 px-4 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-800 hover:text-zinc-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
         >
           <LayoutList className="size-4 text-[#1c00ff]" />
           <span>Torna alla Scheda Allenamento</span>
@@ -515,8 +666,17 @@ export default function EsercizioDetailPage() {
                               <Input type="number" placeholder="kg" value={s.carico_kg} onChange={(e) => updateEditSet(i, "carico_kg", e.target.value)} className="flex-1" />
                               <Input type="number" placeholder="reps" value={s.ripetizioni} onChange={(e) => updateEditSet(i, "ripetizioni", e.target.value)} className="flex-1" />
                               <Input type="text" placeholder="RPE" value={s.rpe} onChange={(e) => updateEditSet(i, "rpe", e.target.value)} className="w-16" />
+                              <button
+                                type="button"
+                                onClick={() => duplicateEditSet(i)}
+                                className="shrink-0 p-1 rounded hover:bg-zinc-100 cursor-pointer text-zinc-500 hover:text-[#1c00ff] transition-colors"
+                                aria-label="Duplica set"
+                                title="Duplica set (copia serie)"
+                              >
+                                <Copy className="size-3.5" />
+                              </button>
                               {editSets.length > 1 && (
-                                <button onClick={() => setEditSets((prev) => prev.filter((_, idx) => idx !== i))} className="shrink-0 p-1 rounded hover:bg-inset cursor-pointer text-secondary" aria-label="Rimuovi set">
+                                <button onClick={() => setEditSets((prev) => prev.filter((_, idx) => idx !== i))} className="shrink-0 p-1 rounded hover:bg-inset cursor-pointer text-secondary hover:text-red-600" aria-label="Rimuovi set" title="Rimuovi serie">
                                   <Trash2 className="size-3.5" />
                                 </button>
                               )}
@@ -598,12 +758,12 @@ export default function EsercizioDetailPage() {
                         SEQ. {esercizio.sequenza}
                       </span>
                       {esercizio.parametri && (
-                        <span className="text-[12px] font-bold text-zinc-900 bg-white border border-zinc-200 px-2.5 py-1 rounded-lg shadow-xs">
+                        <span className="text-xs sm:text-sm font-bold text-zinc-900 bg-white border border-zinc-200 px-2.5 py-1 rounded-lg shadow-xs">
                           {esercizio.parametri}
                         </span>
                       )}
                       {esercizio.recupero && (
-                        <span className="text-[12px] font-bold text-[#1c00ff] bg-[#1c00ff]/10 px-2.5 py-1 rounded-lg">
+                        <span className="text-xs sm:text-sm font-bold text-[#1c00ff] bg-[#1c00ff]/10 px-2.5 py-1 rounded-lg">
                           Rec: {esercizio.recupero}
                         </span>
                       )}
@@ -615,7 +775,7 @@ export default function EsercizioDetailPage() {
                       Registra Carico
                     </h2>
                     <p
-                      className="text-base font-bold truncate mt-0.5"
+                      className="text-base sm:text-lg font-bold truncate mt-0.5"
                       style={{ color: "#1c00ff" }}
                     >
                       {esercizio.nome_esercizio}
@@ -632,10 +792,29 @@ export default function EsercizioDetailPage() {
                   </button>
                 </div>
 
+                {/* Banner Bozza in Sospeso */}
+                {hasDraftContent && (
+                  <div className="mt-3 p-3 rounded-2xl bg-[#1c00ff]/10 border border-[#1c00ff]/30 text-xs sm:text-sm flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="flex size-2 rounded-full bg-[#1c00ff] animate-ping shrink-0" />
+                      <span className="font-bold text-zinc-900">
+                        Bozza in sospeso conservata: i dati inseriti non andranno persi navigando tra gli esercizi o jump set.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleClearDraft}
+                      className="text-xs font-black text-red-600 hover:text-red-700 underline cursor-pointer shrink-0"
+                    >
+                      Cancella bozza
+                    </button>
+                  </div>
+                )}
+
                 {/* Card Set */}
-                <div className="mt-6 rounded-2xl bg-white/95 p-5 sm:p-6 shadow-xl border border-black/10 space-y-4">
+                <div className="mt-5 rounded-2xl bg-white/95 p-5 sm:p-6 shadow-xl border border-black/10 space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black uppercase tracking-wider text-zinc-700">
+                    <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-zinc-700">
                       Serie di allenamento
                     </span>
                     <span className="text-xs font-medium text-zinc-500">
@@ -646,12 +825,13 @@ export default function EsercizioDetailPage() {
                   {/* Intestazione Colonne */}
                   <div
                     className="grid gap-2 text-center text-xs font-extrabold uppercase tracking-wider text-zinc-700"
-                    style={{ gridTemplateColumns: "36px 1fr 1fr 80px 32px" }}
+                    style={{ gridTemplateColumns: "36px 1fr 1fr 70px 32px 32px" }}
                   >
                     <span>Set</span>
                     <span>Carico (kg)</span>
                     <span>Ripetizioni</span>
                     <span>RPE</span>
+                    <span title="Duplica serie" className="text-xs text-zinc-500 font-bold">Dup.</span>
                     <span />
                   </div>
 
@@ -662,7 +842,7 @@ export default function EsercizioDetailPage() {
                         key={i}
                         className="grid items-center gap-2"
                         style={{
-                          gridTemplateColumns: "36px 1fr 1fr 80px 32px",
+                          gridTemplateColumns: "36px 1fr 1fr 70px 32px 32px",
                         }}
                       >
                         <span
@@ -679,7 +859,7 @@ export default function EsercizioDetailPage() {
                           onChange={(e) =>
                             updateSet(i, "carico_kg", e.target.value)
                           }
-                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
+                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-2 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
                         />
                         <input
                           type="number"
@@ -688,7 +868,7 @@ export default function EsercizioDetailPage() {
                           onChange={(e) =>
                             updateSet(i, "ripetizioni", e.target.value)
                           }
-                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
+                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-2 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
                         />
                         <input
                           type="text"
@@ -698,8 +878,17 @@ export default function EsercizioDetailPage() {
                             updateSet(i, "rpe", e.target.value)
                           }
                           inputMode="decimal"
-                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-2 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
+                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-1 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
                         />
+                        <button
+                          type="button"
+                          onClick={() => duplicateSet(i)}
+                          className="flex size-8 items-center justify-center rounded-lg text-zinc-500 hover:text-[#1c00ff] hover:bg-[#1c00ff]/10 transition-colors cursor-pointer"
+                          aria-label={`Duplica set ${i + 1}`}
+                          title="Duplica serie (copia valori)"
+                        >
+                          <Copy className="size-4" />
+                        </button>
                         {sets.length > 1 ? (
                           <button
                             onClick={() => removeSet(i)}
@@ -763,6 +952,17 @@ export default function EsercizioDetailPage() {
 
               {/* Footer con Azioni */}
               <div className="mt-6 pt-4 border-t border-black/10 flex items-center justify-end gap-3 flex-wrap">
+                {hasDraftContent && (
+                  <button
+                    type="button"
+                    onClick={handleClearDraft}
+                    disabled={saving}
+                    className="mr-auto flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors shadow-2xs cursor-pointer"
+                  >
+                    <Trash2 className="size-4 text-red-600" />
+                    <span>Cancella bozza</span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setDialogOpen(false)}

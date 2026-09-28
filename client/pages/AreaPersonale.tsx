@@ -41,6 +41,9 @@ import {
   SlidersHorizontal,
   ListChecks,
   Check,
+  Bot,
+  BookOpen,
+  LogOut,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -52,6 +55,9 @@ import {
   DialogDescription,
   DialogFooter,
 } from "../components/Dialog";
+import { AIBookingConcierge } from "../components/AIBookingConcierge";
+import { InfoContinuativoModal } from "../components/InfoContinuativoModal";
+import { ManualeUtenteModal } from "../components/ManualeUtenteModal";
 import { toast } from "sonner";
 
 interface Prenotazione {
@@ -73,7 +79,7 @@ interface Pacchetto {
   crediti: number;
   giorni_validita: number;
   prezzo_euro: number;
-  tipo: "consumo" | "ricorrente_4mesi";
+  tipo: "consumo" | "abbonamento" | "ricorrente_4mesi" | string;
   attivo: boolean;
   badge?: string;
 }
@@ -129,10 +135,12 @@ const ORARI_DISPONIBILI_BATCH = [
 export default function AreaPersonalePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, isManager, crediti, hasDebt, isZeroCredits, isExpired, switchUser } =
+  const { user, isManager, crediti, hasDebt, isZeroCredits, isExpired, switchUser, logout, isLoggingOut } =
     useCurrentUser();
   const { config } = useLabConfig();
   const { movimenti } = useMovimentiCrediti(user?.id, user?.email);
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Tab interna: 'prenota' | 'tariffario' | 'movimenti' | 'profilo'
   const [activeTab, setActiveTab] = useState<"prenota" | "tariffario" | "movimenti" | "profilo">(
@@ -165,6 +173,11 @@ export default function AreaPersonalePage() {
   const [codiceFiscale, setCodiceFiscale] = useState(user?.codice_fiscale || "");
   const [indirizzo, setIndirizzo] = useState(user?.indirizzo || "");
   const [completedTx, setCompletedTx] = useState<any | null>(null);
+
+  // ─── STATO MODALI (AI CONCIERGE, CONTINUATIVO INFO, MANUALE UTENTE) ────────
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [showContinuativoModal, setShowContinuativoModal] = useState(false);
+  const [showManualModal, setShowManualModal] = useState(false);
 
   // ─── STATO ACCESSO COACH CON PIN ──────────────────────────────────────────
   const [coachPinModal, setCoachPinModal] = useState(false);
@@ -261,6 +274,8 @@ export default function AreaPersonalePage() {
 
   // Policy di cancellazione personale dell'atleta (default 24h)
   const policyPersonaleOre = user?.tempo_cancellazione_ore || 24;
+  // Policy di anticipo minimo per prenotare (default dal lab config)
+  const policyAnticipoOre = config?.tempo_anticipo_prenotazione_ore ?? 12;
 
   // Mutation Prenotazione
   const prenotaMutation = useMutation({
@@ -323,6 +338,7 @@ export default function AreaPersonalePage() {
       isMio: boolean;
       isOccupato: boolean;
       isBloccato: boolean;
+      isTroppoVicino: boolean;
       disponibile: boolean;
     }> = [];
 
@@ -364,7 +380,12 @@ export default function AreaPersonalePage() {
         const isMio = booking?.email_cliente === user?.email;
         const isOccupato = !!booking && !isMio;
         const isBloccato = bloccati.has(slot.orario);
-        const disponibile = !isMio && !isOccupato && !isBloccato;
+
+        const slotTs = new Date(`${dateStr}T${slot.orario}:00`).getTime();
+        const oreDiff = (slotTs - now.getTime()) / (1000 * 60 * 60);
+        const isTroppoVicino = policyAnticipoOre > 0 && oreDiff < policyAnticipoOre;
+
+        const disponibile = !isMio && !isOccupato && !isBloccato && !isTroppoVicino;
 
         results.push({
           key: `${dateStr}|${slot.orario}`,
@@ -374,6 +395,7 @@ export default function AreaPersonalePage() {
           isMio,
           isOccupato,
           isBloccato,
+          isTroppoVicino,
           disponibile,
         });
       }
@@ -553,14 +575,20 @@ export default function AreaPersonalePage() {
     <div className="space-y-4 pb-12">
       {/* INTESTAZIONE AREA PERSONALE */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-black tracking-tight text-zinc-900 flex items-center gap-2">
-            <User className="size-5 text-[#1c00ff]" />
-            Area Personale
-          </h1>
-          <p className="text-xs text-zinc-500">
-            {user?.name} • Saldo: <strong>{crediti} crediti</strong>
-          </p>
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo-area46-transparent.png"
+            alt="Area46"
+            className="h-10 w-auto object-contain shrink-0 drop-shadow-2xs"
+          />
+          <div>
+            <h1 className="text-xl font-black tracking-tight text-zinc-900">
+              Area Personale
+            </h1>
+            <p className="text-xs text-zinc-500 font-medium">
+              {user?.name} • Saldo: <strong className="text-[#1c00ff] font-black">{crediti} crediti</strong>
+            </p>
+          </div>
         </div>
 
         {/* POLICY CANCELLAZIONE PERSONALE BADGE */}
@@ -675,6 +703,46 @@ export default function AreaPersonalePage() {
               </div>
             </div>
           )}
+
+          {/* ASSISTENTE AI BOOKING CONCIERGE BANNER */}
+          <div className="p-3.5 rounded-2xl bg-zinc-950 text-white border-2 border-[#e3ff00] shadow-[0_0_20px_rgba(227,255,0,0.18)] flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-[#e3ff00] text-zinc-950 font-black shrink-0 border border-zinc-900 shadow-xs">
+                <Bot className="size-4 text-[#1c00ff]" />
+              </div>
+              <div>
+                <div className="text-xs font-black text-white flex items-center gap-1.5">
+                  <span>Assistente AI Booking Concierge</span>
+                  <span className="text-[9px] font-black uppercase bg-[#1c00ff] text-[#e3ff00] px-1.5 py-0.2 rounded-full">
+                    CONTINUATIVO PRO
+                  </span>
+                </div>
+                <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
+                  Pianifica o modifica intere settimane a voce o con un messaggio.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Button
+                size="sm"
+                onClick={() => setShowAIModal(true)}
+                className="bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200] font-black text-xs px-3 h-8 rounded-xl border border-zinc-900 shadow-xs"
+              >
+                <Sparkles className="size-3.5 mr-1 text-[#1c00ff]" />
+                Usa AI
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setShowManualModal(true)}
+                className="text-xs font-bold h-8 px-2 text-zinc-400 hover:text-white rounded-xl"
+                title="Guida & Manuale App"
+              >
+                <BookOpen className="size-3.5" />
+              </Button>
+            </div>
+          </div>
 
           {/* SELETTORE MODALITÀ: SINGOLO GIORNO vs MULTIPLA (A BLOCCHI CON SPUNTA) */}
           <div className="flex bg-zinc-100 p-1 rounded-2xl border border-zinc-200 shadow-2xs">
@@ -794,6 +862,29 @@ export default function AreaPersonalePage() {
                             </div>
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-500 flex items-center gap-1">
                               <Lock className="size-3" /> Occupato
+                            </span>
+                          </div>
+                        );
+                      }
+
+                      const slotTs = new Date(`${selectedDate}T${orario}:00`).getTime();
+                      const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
+                      const isTroppoVicino = policyAnticipoOre > 0 && oreDiff < policyAnticipoOre;
+
+                      if (isTroppoVicino) {
+                        return (
+                          <div
+                            key={orario}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/60 border border-zinc-200/80 text-zinc-400 select-none"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Clock className="size-4 text-zinc-300" />
+                              <span className="text-sm font-bold tabular-nums text-zinc-500">
+                                {orario}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-600 flex items-center gap-1">
+                              <Lock className="size-3" /> Chiuso (&lt;{policyAnticipoOre}h)
                             </span>
                           </div>
                         );
@@ -1224,6 +1315,32 @@ export default function AreaPersonalePage() {
                         );
                       }
 
+                      if (s.isTroppoVicino) {
+                        return (
+                          <div
+                            key={s.key}
+                            className="p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 flex items-center justify-between text-xs text-zinc-400 select-none opacity-60"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className="size-7 rounded-lg bg-zinc-200 text-zinc-400 flex items-center justify-center">
+                                <Lock className="size-3.5" />
+                              </div>
+                              <div>
+                                <div className="font-medium text-zinc-500 capitalize line-through">
+                                  {formatGiornoEstesoItaliano(s.data)}
+                                </div>
+                                <div className="text-[11px] text-zinc-400 font-mono">
+                                  Ore {s.orario} • Termine prenotazione scaduto
+                                </div>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold bg-zinc-200 text-zinc-500 px-2 py-0.5 rounded">
+                              Chiuso (&lt;{policyAnticipoOre}h)
+                            </span>
+                          </div>
+                        );
+                      }
+
                       return (
                         <div
                           key={s.key}
@@ -1336,6 +1453,45 @@ export default function AreaPersonalePage() {
             </span>
           </div>
 
+          {/* BANNER INFORMATIVO CONTINUATIVO & GUIDA */}
+          <div className="p-3.5 rounded-2xl bg-zinc-950 text-white border-2 border-[#e3ff00] shadow-[0_0_20px_rgba(227,255,0,0.18)] flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-[#e3ff00] text-zinc-950 font-black shrink-0 border border-zinc-900 shadow-xs">
+                <Sparkles className="size-4 text-[#1c00ff]" />
+              </div>
+              <div>
+                <div className="text-xs font-black text-white flex items-center gap-1.5">
+                  <span>Formula Continuativo Lab</span>
+                  <span className="text-[9px] font-black uppercase bg-[#1c00ff] text-[#e3ff00] px-1.5 py-0.2 rounded-full">
+                    CONSIGLIATO
+                  </span>
+                </div>
+                <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
+                  Fino a 840€ di risparmio annuo, posto fisso garantito e Assistente AI.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Button
+                size="sm"
+                onClick={() => setShowContinuativoModal(true)}
+                className="text-xs font-black h-8 px-2.5 bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200] border border-zinc-900 rounded-xl"
+              >
+                <Info className="size-3 mr-1 text-[#1c00ff]" />
+                Info
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setShowManualModal(true)}
+                className="text-xs font-bold h-8 px-2 text-zinc-400 hover:text-white rounded-xl"
+                title="Guida & Manuale App"
+              >
+                <BookOpen className="size-3.5" />
+              </Button>
+            </div>
+          </div>
+
           {hasDebt && (
             <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-xs space-y-1">
               <div className="font-black flex items-center gap-1.5 text-red-700">
@@ -1352,47 +1508,60 @@ export default function AreaPersonalePage() {
           <div className="space-y-3">
             {pacchetti.map((pack) => {
               const creditiNetti = Math.max(0, pack.crediti - currentDebtCount);
-              const isPro = pack.badge === "Pro Lab Continuativo";
+              const isContinuativo = pack.tipo === "abbonamento" || pack.id.startsWith("pack-continuativo");
+              const isAnnual = pack.id.includes("annuale");
+              const isSemestral = pack.id.includes("semestrale");
 
               return (
                 <div
                   key={pack.id}
-                  className={`p-4 rounded-3xl border-2 transition-all bg-white relative ${
-                    pack.badge === "Consigliato"
-                      ? "border-[#1c00ff] shadow-md ring-1 ring-[#1c00ff]/20"
-                      : isPro
-                      ? "border-zinc-900 bg-zinc-900 text-white shadow-md"
-                      : "border-zinc-200 hover:border-zinc-300"
+                  className={`p-4 rounded-3xl border-2 transition-all relative overflow-hidden ${
+                    isAnnual
+                      ? "border-[#e3ff00] bg-zinc-950 text-white shadow-[0_0_24px_rgba(227,255,0,0.22)] ring-2 ring-[#e3ff00]/40"
+                      : isSemestral
+                      ? "border-[#1c00ff] bg-zinc-900 text-white shadow-md"
+                      : "border-zinc-200 hover:border-zinc-300 bg-white"
                   }`}
                 >
-                  {pack.badge && (
-                    <div className="flex justify-end mb-1">
-                      <span
-                        className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
-                          pack.badge === "Consigliato"
-                            ? "bg-[#e3ff00] text-zinc-950 border border-zinc-950"
-                            : isPro
-                            ? "bg-[#1c00ff] text-[#e3ff00]"
-                            : "bg-zinc-100 text-zinc-700"
-                        }`}
-                      >
-                        {pack.badge}
+                  {/* BADGE IN ALTO */}
+                  <div className="flex items-center justify-between mb-1.5">
+                    {isContinuativo && (
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#e3ff00] flex items-center gap-1">
+                        <Bot className="size-3 text-[#e3ff00]" />
+                        <span>AI Concierge Incluso</span>
                       </span>
+                    )}
+                    <div className="ml-auto">
+                      {isAnnual ? (
+                        <span className="text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#e3ff00] text-zinc-950 border border-zinc-950 shadow-xs flex items-center gap-1 animate-pulse">
+                          👑 PREMIO 12 MESI • MAX RISPARMIO
+                        </span>
+                      ) : pack.badge ? (
+                        <span
+                          className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                            isSemestral
+                              ? "bg-[#1c00ff] text-[#e3ff00] border border-[#e3ff00]/30"
+                              : "bg-zinc-100 text-zinc-700"
+                          }`}
+                        >
+                          {pack.badge}
+                        </span>
+                      ) : null}
                     </div>
-                  )}
+                  </div>
 
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h3
                         className={`text-base font-black ${
-                          isPro ? "text-white" : "text-zinc-900"
+                          isContinuativo ? "text-white" : "text-zinc-900"
                         }`}
                       >
                         {pack.nome}
                       </h3>
                       <p
-                        className={`text-xs mt-0.5 ${
-                          isPro ? "text-zinc-400" : "text-zinc-500"
+                        className={`text-xs mt-0.5 leading-relaxed ${
+                          isContinuativo ? "text-zinc-300" : "text-zinc-500"
                         }`}
                       >
                         {pack.descrizione}
@@ -1402,38 +1571,76 @@ export default function AreaPersonalePage() {
                     <div className="text-right shrink-0">
                       <div
                         className={`text-xl font-black ${
-                          isPro ? "text-[#e3ff00]" : "text-zinc-900"
+                          isAnnual
+                            ? "text-[#e3ff00]"
+                            : isSemestral
+                            ? "text-[#e3ff00]"
+                            : "text-zinc-900"
                         }`}
                       >
                         {pack.prezzo_euro} €
                       </div>
                       <div
                         className={`text-[10px] font-semibold ${
-                          isPro ? "text-zinc-400" : "text-zinc-500"
+                          isContinuativo ? "text-zinc-400" : "text-zinc-500"
                         }`}
                       >
-                        {(pack.prezzo_euro / pack.crediti).toFixed(1)} € / seduta
+                        {isContinuativo
+                          ? "Quota fissa / mese"
+                          : `${(pack.prezzo_euro / pack.crediti).toFixed(1)} € / seduta`}
                       </div>
                     </div>
                   </div>
 
+                  {/* BENEFIT ESCLUSIVI PER CONTINUATIVO */}
+                  {isContinuativo && (
+                    <div className="mt-3 pt-2.5 border-t border-zinc-800 space-y-1 text-[11px] text-zinc-300">
+                      <div className="flex items-center gap-1.5 font-bold text-[#e3ff00]">
+                        <Bot className="size-3.5 shrink-0" />
+                        <span>Assistente AI Booking Concierge Illimitato</span>
+                      </div>
+                      {isAnnual && (
+                        <div className="flex items-center gap-1.5 font-semibold text-emerald-400">
+                          <Sparkles className="size-3.5 shrink-0" />
+                          <span>Posto fisso garantito per 365 giorni (104 o 156 slot)</span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowContinuativoModal(true)}
+                          className="text-[10px] text-[#e3ff00] underline font-bold hover:text-white cursor-pointer"
+                        >
+                          ℹ️ Leggi come funziona e le tutele del Continuativo
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   <div
                     className={`mt-3 pt-3 border-t flex items-center justify-between text-xs ${
-                      isPro ? "border-zinc-800" : "border-zinc-100"
+                      isContinuativo ? "border-zinc-800" : "border-zinc-100"
                     }`}
                   >
                     <div className="font-bold flex items-center gap-1.5">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[11px] font-black ${
-                          isPro
+                          isContinuativo
                             ? "bg-zinc-800 text-[#e3ff00]"
                             : "bg-[#1c00ff]/10 text-[#1c00ff]"
                         }`}
                       >
                         {pack.crediti} Allenamenti
                       </span>
-                      <span className={isPro ? "text-zinc-400" : "text-zinc-500"}>
-                        • Validità {pack.giorni_validita} gg
+                      <span className={isContinuativo ? "text-zinc-400" : "text-zinc-500"}>
+                        •{" "}
+                        {isContinuativo
+                          ? isAnnual
+                            ? "Durata 12 Mesi"
+                            : "Durata 6 Mesi"
+                          : pack.giorni_validita && pack.giorni_validita % 7 === 0
+                          ? `Scadenza ${pack.giorni_validita / 7} settimane`
+                          : `Validità ${pack.giorni_validita} gg`}
                       </span>
                     </div>
 
@@ -1445,19 +1652,23 @@ export default function AreaPersonalePage() {
                         setIndirizzo(user?.indirizzo || "");
                       }}
                       className={`rounded-xl text-xs font-black h-8 px-3.5 ${
-                        isPro
+                        isAnnual
+                          ? "bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200] border border-zinc-900"
+                          : isSemestral
                           ? "bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200]"
                           : "bg-[#1c00ff] text-white hover:bg-[#1600cc]"
                       }`}
                     >
-                      Ricarica
+                      {isContinuativo ? "Attiva Subito" : "Ricarica"}
                     </Button>
                   </div>
 
                   {hasDebt && (
                     <div
                       className={`mt-2 p-2 rounded-xl text-[10px] font-bold ${
-                        isPro ? "bg-zinc-800 text-zinc-300" : "bg-zinc-50 text-zinc-600"
+                        isContinuativo
+                          ? "bg-zinc-800/80 text-zinc-300"
+                          : "bg-zinc-50 text-zinc-600 border border-zinc-200"
                       }`}
                     >
                       💡 Con questo pacchetto: {pack.crediti} acquistati - {currentDebtCount} debito ={" "}
@@ -1575,10 +1786,17 @@ export default function AreaPersonalePage() {
         <div className="space-y-4">
           {/* SCHEDA DATI PERSONALI */}
           <div className="p-4 rounded-3xl bg-white border border-zinc-200 shadow-2xs space-y-3">
-            <h2 className="text-sm font-black text-zinc-900 flex items-center gap-2">
-              <User className="size-4 text-[#1c00ff]" />
-              Informazioni Anagrafiche
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-black text-zinc-900 flex items-center gap-2">
+                <User className="size-4 text-[#1c00ff]" />
+                Informazioni Anagrafiche
+              </h2>
+              <img
+                src="/logo-area46-transparent.png"
+                alt="Area46"
+                className="h-8 w-auto object-contain drop-shadow-2xs"
+              />
+            </div>
 
             <div className="space-y-2 text-xs divide-y divide-zinc-100">
               <div className="flex justify-between pt-1">
@@ -1610,6 +1828,60 @@ export default function AreaPersonalePage() {
             </div>
           </div>
 
+          {/* GUIDA, CONTINUATIVO & ASSISTENTE AI */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <button
+              type="button"
+              onClick={() => setShowManualModal(true)}
+              className="p-3.5 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-300 text-left transition-all shadow-2xs flex items-center justify-between cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[#1c00ff]/10 text-[#1c00ff] font-bold">
+                  <BookOpen className="size-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-zinc-900">Manuale Utente</div>
+                  <div className="text-[10px] text-zinc-500">Regole, scadenze e diario</div>
+                </div>
+              </div>
+              <ChevronRight className="size-4 text-zinc-400" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowContinuativoModal(true)}
+              className="p-3.5 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-300 text-left transition-all shadow-2xs flex items-center justify-between cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[#e3ff00] text-zinc-950 font-bold border border-zinc-900">
+                  <Sparkles className="size-4 text-[#1c00ff]" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-zinc-900">Lab Continuativo</div>
+                  <div className="text-[10px] text-zinc-500">Vantaggi e tutele</div>
+                </div>
+              </div>
+              <ChevronRight className="size-4 text-zinc-400" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowAIModal(true)}
+              className="p-3.5 rounded-2xl bg-zinc-950 text-white border-2 border-[#e3ff00] hover:border-[#d9f200] text-left transition-all shadow-xs flex items-center justify-between cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[#e3ff00] text-zinc-950 font-bold">
+                  <Bot className="size-4 text-[#1c00ff]" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-white">Assistente AI</div>
+                  <div className="text-[10px] text-zinc-400">Booking concierge</div>
+                </div>
+              </div>
+              <ChevronRight className="size-4 text-[#e3ff00]" />
+            </button>
+          </div>
+
           {/* ACCESSO RISERVATO COACH / GESTORE (DISCRETO E SICURO) */}
           <div className="p-4 rounded-3xl bg-zinc-900 text-white space-y-2.5">
             <div className="flex items-center justify-between">
@@ -1632,8 +1904,59 @@ export default function AreaPersonalePage() {
               </Button>
             </div>
           </div>
+
+          {/* LOGOUT DALL'ACCOUNT */}
+          <div className="pt-1">
+            <Button
+              variant="outline"
+              onClick={() => setShowLogoutModal(true)}
+              className="w-full h-11 rounded-2xl border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+            >
+              <LogOut className="size-4" />
+              Esci dall&apos;Account (Logout)
+            </Button>
+          </div>
         </div>
       )}
+
+      {/* MODALE CONFERMA LOGOUT */}
+      <Dialog open={showLogoutModal} onOpenChange={setShowLogoutModal}>
+        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl text-center">
+          <div className="mx-auto size-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-2 border border-red-200">
+            <LogOut className="size-6" />
+          </div>
+
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-lg font-black text-zinc-900">
+              Vuoi disconnetterti?
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 mt-1 leading-relaxed">
+              Potrai riaccedere in qualunque momento inserendo la tua email o tramite Google/Apple.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex gap-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowLogoutModal(false)}
+              className="flex-1 rounded-xl text-xs h-10"
+            >
+              Annulla
+            </Button>
+            <Button
+              onClick={() => {
+                setShowLogoutModal(false);
+                logout();
+                navigate("/login");
+              }}
+              disabled={isLoggingOut}
+              className="flex-1 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs h-10 cursor-pointer"
+            >
+              {isLoggingOut ? "Uscita..." : "Conferma Uscita"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* ─── MODALE CHECKOUT PAGAMENTI ─────────────────────────────────────────── */}
       <Dialog open={!!selectedPack} onOpenChange={(open) => !open && setSelectedPack(null)}>
@@ -2066,6 +2389,28 @@ export default function AreaPersonalePage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* ─── MODALI FUNZIONALITÀ CONTINUATIVO, AI & GUIDA ────────────────────── */}
+      <AIBookingConcierge
+        open={showAIModal}
+        onOpenChange={setShowAIModal}
+        onOpenContinuativoInfo={() => setShowContinuativoModal(true)}
+      />
+
+      <InfoContinuativoModal
+        open={showContinuativoModal}
+        onOpenChange={setShowContinuativoModal}
+        onSelectPack={(packId) => {
+          const pack = pacchetti.find((p) => p.id === packId);
+          if (pack) {
+            setSelectedPack(pack);
+            setCodiceFiscale(user?.codice_fiscale || "");
+            setIndirizzo(user?.indirizzo || "");
+          }
+        }}
+      />
+
+      <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
     </div>
   );
 }

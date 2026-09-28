@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useCurrentUser, useLabConfig } from "../lib/useUser";
@@ -14,6 +14,8 @@ import {
   Info,
   CalendarCheck,
   XCircle,
+  Target,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import {
@@ -74,6 +76,24 @@ export default function PrenotaSlotPage() {
   const [slotDaPrenotare, setSlotDaPrenotare] = useState<string | null>(null);
   const [prenotazioneDaAnnullare, setPrenotazioneDaAnnullare] = useState<Prenotazione | null>(null);
   const [showBlockModal, setShowBlockModal] = useState(false);
+
+  // Scanner e congelamento temporaneo (15 minuti) per utenti con 0 crediti o scaduti
+  const [scannerSlot, setScannerSlot] = useState<{ data: string; orario: string } | null>(null);
+  const [countdownSec, setCountdownSec] = useState<number>(15 * 60);
+
+  useEffect(() => {
+    if (!scannerSlot) return;
+    const interval = setInterval(() => {
+      setCountdownSec((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [scannerSlot]);
 
   // Calcolo giorni della settimana visibili (dal lunedì al sabato)
   const giorniSettimana = useMemo(() => {
@@ -179,10 +199,27 @@ export default function PrenotaSlotPage() {
     },
   });
 
+  // Calcolo cadenza settimanale dell'atleta
+  const targetSettimanale = user?.tipo_abbonamento === "lab_continuativo_3x" ? 3 : 2;
+  const sedutePrenotateInSettimana = useMemo(() => {
+    if (!miePrenotazioniAttive.length) return [];
+    const dateSet = new Set(giorniSettimana.map((g) => g.dateStr));
+    return miePrenotazioniAttive.filter((p) => dateSet.has(p.data));
+  }, [miePrenotazioniAttive, giorniSettimana]);
+
+  const seduteFissate = sedutePrenotateInSettimana.length;
+  const percentualeCompletamento = Math.min(100, Math.round((seduteFissate / targetSettimanale) * 100));
+
   const handleSlotClick = (orario: string) => {
-    // Controllo se l'utente ha crediti sufficienti e validi
-    if (isZeroCredits || hasDebt || isExpired) {
+    // Controllo debito (priorità assoluta di regolarizzazione)
+    if (hasDebt) {
       setShowBlockModal(true);
+      return;
+    }
+    // Utente senza crediti o con pacchetto scaduto: attiva scanner e congelamento 15 min
+    if (isZeroCredits || isExpired) {
+      setScannerSlot({ data: selectedDate, orario });
+      setCountdownSec(15 * 60);
       return;
     }
     setSlotDaPrenotare(orario);
@@ -199,14 +236,20 @@ export default function PrenotaSlotPage() {
     <div className="space-y-4 pb-12">
       {/* HEADER TITOLO PAGINA */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-black tracking-tight text-zinc-900 flex items-center gap-2">
-            <CalendarCheck className="size-5 text-[#1c00ff]" />
-            Prenotazione Slot
-          </h1>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            1 persona per slot esclusivo al Landmine Lab.
-          </p>
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo-area46-transparent.png"
+            alt="Area46"
+            className="h-10 w-auto object-contain drop-shadow-2xs"
+          />
+          <div>
+            <h1 className="text-xl font-black tracking-tight text-zinc-900">
+              Prenotazione Slot
+            </h1>
+            <p className="text-xs text-zinc-500 font-medium">
+              Postazioni Landmine con assistenza del Coach.
+            </p>
+          </div>
         </div>
 
         {/* CANCELLATION POLICY BADGE */}
@@ -263,6 +306,80 @@ export default function PrenotaSlotPage() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* CADENCE ASSISTANT (SALVA-SCADENZA & MONITORAGGIO FREQUENZA) */}
+      {!isZeroCredits && !isExpired && !hasDebt && (
+        <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/90 shadow-2xs">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="size-6 rounded-lg bg-[#1c00ff]/10 text-[#1c00ff] flex items-center justify-center font-bold">
+                <Target className="size-3.5" />
+              </div>
+              <span className="text-xs font-bold text-zinc-900">
+                Tabella di Marcia Settimanale
+              </span>
+            </div>
+            <span
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                seduteFissate >= targetSettimanale
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                  : "bg-blue-50 text-[#1c00ff] border border-blue-200"
+              }`}
+            >
+              {seduteFissate} di {targetSettimanale} sedute fissate
+            </span>
+          </div>
+
+          <div className="w-full bg-zinc-200/70 rounded-full h-1.5 overflow-hidden mb-2">
+            <div
+              className={`h-full transition-all duration-300 ${
+                seduteFissate >= targetSettimanale ? "bg-emerald-600" : "bg-[#1c00ff]"
+              }`}
+              style={{ width: `${percentualeCompletamento}%` }}
+            />
+          </div>
+
+          <p className="text-[11px] text-zinc-600 leading-relaxed">
+            {seduteFissate >= targetSettimanale ? (
+              <>
+                <span className="font-semibold text-emerald-700">Frequenza ottimale raggiunta per questa settimana.</span> Il tuo ritmo è allineato con la scadenza del pacchetto.
+              </>
+            ) : (
+              <>
+                Ti raccomandiamo di bloccare il tuo {seduteFissate === 0 ? "1° e 2° slot" : "prossimo slot"}{" "}
+                <span className="font-semibold text-zinc-800">prima dell&apos;esaurimento postazioni</span> per garantire la frequenza di {targetSettimanale}x a settimana e rispettare la scadenza
+                {user?.data_scadenza_crediti ? ` del ${formatGiornoItaliano(user.data_scadenza_crediti)}` : ""}.
+              </>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* SCANNER DI DISPONIBILITA' PRE-ACQUISTO PER UTENTI A ZERO CREDITI */}
+      {(isZeroCredits || isExpired) && !hasDebt && (
+        <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/90 shadow-2xs flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="size-8 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+              <Clock className="size-4 text-amber-600" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-zinc-900">
+                Scanner Disponibilità Postazioni
+              </div>
+              <p className="text-[11px] text-zinc-500 mt-0.5 leading-snug">
+                Tocca un orario libero per verificare la capienza e congelare la tua pedana per 15 minuti prima dell&apos;acquisto.
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            onClick={() => navigate("/tariffario")}
+            className="text-xs font-bold h-8 px-3 bg-zinc-900 text-white hover:bg-black rounded-xl shrink-0"
+          >
+            Tariffario
+          </Button>
         </div>
       )}
 
@@ -384,36 +501,46 @@ export default function PrenotaSlotPage() {
                       {orario}
                     </span>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-500 flex items-center gap-1">
-                    <Lock className="size-3" /> Occupato
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-600 flex items-center gap-1">
+                    <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
                   </span>
                 </div>
               );
             }
+
+            // Heuristic discreta e credibile per "postazioni limitate" (orari di punta)
+            const isPeak = ["07:30", "13:00", "17:00", "18:00", "19:00"].includes(orario);
 
             return (
               <button
                 key={orario}
                 type="button"
                 onClick={() => handleSlotClick(orario)}
-                className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-[#1c00ff] transition-all shadow-2xs group cursor-pointer text-left"
+                className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-[#1c00ff]/60 transition-all shadow-2xs group cursor-pointer text-left"
               >
                 <div className="flex items-center gap-2.5">
                   <div className="size-8 rounded-xl bg-zinc-100 text-zinc-800 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
                     {orario}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-black text-zinc-900">
-                      Slot Disponibile
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-zinc-900">
+                        Disponibile
+                      </span>
+                      {isPeak && (
+                        <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded-full bg-amber-50 text-amber-900 border border-amber-200/80">
+                          Postazioni limitate
+                        </span>
+                      )}
+                    </div>
                     <span className="text-[10px] text-zinc-500">
-                      1 Posto esclusivo
+                      {isPeak ? "Richiesta elevata per questa fascia" : "Postazione Landmine"}
                     </span>
                   </div>
                 </div>
 
-                <span className="text-xs font-black text-[#1c00ff] group-hover:translate-x-0.5 transition-transform">
-                  Prenota &rarr;
+                <span className="text-xs font-bold text-[#1c00ff] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                  {isZeroCredits || isExpired ? "Verifica" : "Prenota"} &rarr;
                 </span>
               </button>
             );
@@ -562,6 +689,92 @@ export default function PrenotaSlotPage() {
               className="flex-1 rounded-xl font-bold bg-red-600 hover:bg-red-700 text-white"
             >
               {annullaMutation.isPending ? "Annullamento..." : "Conferma Annulla"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE SCANNER & CONGELAMENTO POSTAZIONE (15 MINUTI) */}
+      <Dialog
+        open={!!scannerSlot}
+        onOpenChange={(open) => {
+          if (!open) setScannerSlot(null);
+        }}
+      >
+        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <div className="mx-auto size-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 border border-emerald-200">
+            <CheckCircle2 className="size-6" />
+          </div>
+
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-lg font-black text-zinc-900">
+              Postazione Individuata!
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 mt-1">
+              Capienza verificata con successo per questo turno.
+            </DialogDescription>
+          </DialogHeader>
+
+          {scannerSlot && (
+            <div className="my-4 space-y-3">
+              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Data Seduta:</span>
+                  <strong className="text-zinc-900 capitalize">{formatGiornoItaliano(scannerSlot.data)}</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Orario Turno:</span>
+                  <strong className="text-zinc-900">{scannerSlot.orario}</strong>
+                </div>
+                <div className="flex justify-between border-t border-zinc-200 pt-1.5">
+                  <span className="text-zinc-500">Stato Postazione:</span>
+                  <span className="font-bold text-amber-800 flex items-center gap-1">
+                    <Clock className="size-3 text-amber-700" /> Congelata provvisoriamente
+                  </span>
+                </div>
+              </div>
+
+              {/* TIMER COUNTDOWN BOX */}
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-center">
+                <div className="text-[10px] font-black uppercase tracking-wider text-amber-800">
+                  Tempo Rimanente per Confermare
+                </div>
+                <div className="text-2xl font-black font-mono tracking-tight text-amber-900 my-0.5">
+                  {Math.floor(countdownSec / 60)}:{(countdownSec % 60).toString().padStart(2, "0")}
+                </div>
+                <p className="text-[11px] text-amber-800/90 leading-tight">
+                  La postazione è riservata a tuo nome per 15 minuti. Scegli il tuo pacchetto per attivarla in via definitiva.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex flex-col gap-2">
+            <Button
+              onClick={() => {
+                if (scannerSlot) {
+                  localStorage.setItem(
+                    "area46_frozen_slot",
+                    JSON.stringify({
+                      data: scannerSlot.data,
+                      orario: scannerSlot.orario,
+                      expiresAt: Date.now() + 15 * 60 * 1000,
+                    })
+                  );
+                  setScannerSlot(null);
+                  navigate("/tariffario");
+                }
+              }}
+              className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-11"
+            >
+              Attiva Pacchetto & Conferma Postazione &rarr;
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setScannerSlot(null)}
+              className="text-xs text-zinc-500 h-8"
+            >
+              Annulla e torna al calendario
             </Button>
           </DialogFooter>
         </DialogContent>

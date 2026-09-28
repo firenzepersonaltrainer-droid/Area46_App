@@ -24,7 +24,7 @@ export interface SessionClient {
 
 export const DEMO_USER: AppUser = {
   id: "usr-coach-01",
-  email: "coach@area46.it",
+  email: "firenzepersonaltrainer@gmail.com",
   name: "Coach Area46",
   nome: "Coach",
   cognome: "Area46",

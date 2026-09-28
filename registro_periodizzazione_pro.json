@@ -476,7 +476,7 @@
     },
     {
       "id": "223",
-      "nome": "Kettlebell snatch lounge",
+      "nome": "Kettlebell snatch lunge",
       "attrezzo": "kettlebell",
       "pattern": "cerniera d'anca, affondo, trazione verticale dal basso",
       "ruolo": "complementare",
@@ -746,7 +746,7 @@
     },
     {
       "id": "224",
-      "nome": "Kettlebell snatch swing to snatch lounge",
+      "nome": "Kettlebell snatch swing to snatch lunge",
       "attrezzo": "kettlebell",
       "pattern": "cerniera d'anca, affondo, trazione verticale dal basso",
       "ruolo": "fondamentale",
@@ -776,7 +776,7 @@
     },
     {
       "id": "228",
-      "nome": "COMBO Side kick trough + Sprawl",
+      "nome": "COMBO Side kick through + Sprawl",
       "attrezzo": "corpo libero",
       "pattern": "body folw, cerniera d'anca, accosciata",
       "ruolo": "complementare",
@@ -1626,7 +1626,7 @@
     },
     {
       "id": "26",
-      "nome": "Digonal Band Deadlift",
+      "nome": "Diagonal Band Deadlift",
       "attrezzo": "elastico o cavo",
       "pattern": "cerniera d'anca, estensione d'anca, attivazione catena estensoria crociata posteriore",
       "ruolo": "",

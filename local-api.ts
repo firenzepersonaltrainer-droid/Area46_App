@@ -1,7 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { fileURLToPath } from "node:url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const DATA_FILE = path.resolve(__dirname, "demo-data.json");
 
 function loadData() {
@@ -42,6 +46,9 @@ function saveData(data: any) {
 let db = loadData();
 
 export function getCurrentUser(database: any) {
+  if (database.active_user_id === null) {
+    return null;
+  }
   const activeId = database.active_user_id || "usr-atleta-01";
   const user = (database.profili_utenti || []).find((u: any) => u.id === activeId);
   if (user) {
@@ -52,7 +59,7 @@ export function getCurrentUser(database: any) {
   }
   return {
     id: "usr-coach-01",
-    email: "coach@area46.it",
+    email: "firenzepersonaltrainer@gmail.com",
     nome: "Coach",
     cognome: "Area46",
     name: "Coach Area46",
@@ -129,7 +136,107 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       return res.end(JSON.stringify(currentUser));
     }
 
-    // POST /app-api/auth/switch-user (Per switch Coach / Atleta)
+    // POST /app-api/auth/logout (Disconnessione Utente)
+    if (pathname === "/app-api/auth/logout" && method === "POST") {
+      db.active_user_id = null;
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, messaggio: "Disconnessione effettuata." }));
+    }
+
+    // POST /app-api/auth/login-email (Opzione A: Email con codice OTP)
+    if (pathname === "/app-api/auth/login-email" && method === "POST") {
+      const email = (parsedBody.email || "").trim().toLowerCase();
+      const code = (parsedBody.code || "").trim();
+      const requestOtpOnly = !!parsedBody.requestOtpOnly;
+
+      if (!email || !email.includes("@")) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Inserisci un indirizzo email valido." }));
+      }
+
+      const found = (db.profili_utenti || []).find(
+        (u: any) => u.email.toLowerCase() === email
+      );
+
+      if (requestOtpOnly) {
+        return res.end(
+          JSON.stringify({
+            ok: true,
+            messaggio: `Codice OTP generato per ${email}`,
+            demoOtp: "464646",
+          })
+        );
+      }
+
+      // Se code non fornito e non requestOtpOnly, oppure se code valido (in demo accetta 464646 o qualunque codice a 6 cifre)
+      if (found) {
+        db.active_user_id = found.id;
+        found.data_ultimo_accesso = new Date().toISOString();
+        saveData(db);
+        return res.end(JSON.stringify({ ok: true, user: getCurrentUser(db) }));
+      }
+
+      // Nuovo atleta non ancora censito (migrazione o nuovo ingresso)
+      const nuovoAtleta = {
+        id: `usr-${Date.now()}`,
+        email: email,
+        nome: email.split("@")[0],
+        cognome: "",
+        name: email.split("@")[0],
+        ruolo: email === "firenzepersonaltrainer@gmail.com" ? "manager" : "atleta",
+        crediti: 0,
+        tempo_cancellazione_ore: 24,
+        data_scadenza_crediti: null,
+        tipo_abbonamento: "standard",
+        data_ultimo_accesso: new Date().toISOString(),
+      };
+      db.profili_utenti = db.profili_utenti || [];
+      db.profili_utenti.push(nuovoAtleta);
+      db.active_user_id = nuovoAtleta.id;
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, user: getCurrentUser(db), isNew: true }));
+    }
+
+    // POST /app-api/auth/oauth-login (Opzione C: Accedi con Google o Apple)
+    if (pathname === "/app-api/auth/oauth-login" && method === "POST") {
+      const provider = parsedBody.provider || "google";
+      const email = (parsedBody.email || "").trim().toLowerCase();
+      const name = parsedBody.name || "";
+
+      if (!email || !email.includes("@")) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Email account social non valida." }));
+      }
+
+      let found = (db.profili_utenti || []).find(
+        (u: any) => u.email.toLowerCase() === email
+      );
+
+      if (!found) {
+        found = {
+          id: `usr-${provider}-${Date.now()}`,
+          email: email,
+          nome: name.split(" ")[0] || email.split("@")[0],
+          cognome: name.split(" ").slice(1).join(" ") || "",
+          name: name || email.split("@")[0],
+          ruolo: email === "firenzepersonaltrainer@gmail.com" ? "manager" : "atleta",
+          crediti: 0,
+          tempo_cancellazione_ore: 24,
+          data_scadenza_crediti: null,
+          tipo_abbonamento: "standard",
+          data_ultimo_accesso: new Date().toISOString(),
+        };
+        db.profili_utenti = db.profili_utenti || [];
+        db.profili_utenti.push(found);
+      }
+
+      db.active_user_id = found.id;
+      found.data_ultimo_accesso = new Date().toISOString();
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, user: getCurrentUser(db) }));
+    }
+
+    // POST /app-api/auth/switch-user (Per switch rapido Coach / Atleta in test)
     if (pathname === "/app-api/auth/switch-user" && method === "POST") {
       const targetId = parsedBody.userId;
       const found = (db.profili_utenti || []).find(
@@ -143,6 +250,98 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       }
       res.statusCode = 404;
       return res.end(JSON.stringify({ error: "Utente non trovato" }));
+    }
+
+    // POST /app-api/manager/migrazione-glide (Importazione o anteprima dati Glide)
+    if (pathname === "/app-api/manager/migrazione-glide" && method === "POST") {
+      const isApply = parsedBody.mode === "apply";
+      const payload = {
+        utenti: parsedBody.utenti || [],
+        diario: parsedBody.diario || [],
+      };
+
+      const stats = {
+        utenti_aggiornati: 0,
+        utenti_creati: 0,
+        voci_diario_inserite: 0,
+        errori: [] as string[],
+      };
+
+      if (payload.utenti.length > 0) {
+        db.profili_utenti = db.profili_utenti || [];
+        for (const u of payload.utenti) {
+          if (!u.email || !u.email.includes("@")) {
+            stats.errori.push(`Email non valida: ${u.email}`);
+            continue;
+          }
+          const email = u.email.trim().toLowerCase();
+          const existing = db.profili_utenti.find((p: any) => p.email.toLowerCase() === email);
+          if (existing) {
+            if (u.nome) existing.nome = u.nome;
+            if (u.cognome) existing.cognome = u.cognome;
+            existing.name = `${existing.nome} ${existing.cognome || ""}`.trim();
+            if (u.telefono) existing.telefono = u.telefono;
+            if (u.codice_fiscale) existing.codice_fiscale = u.codice_fiscale;
+            if (u.indirizzo) existing.indirizzo = u.indirizzo;
+            if (u.crediti !== undefined) existing.crediti = Number(u.crediti);
+            if (u.data_scadenza_crediti) existing.data_scadenza_crediti = u.data_scadenza_crediti;
+            if (u.tipo_abbonamento) existing.tipo_abbonamento = u.tipo_abbonamento;
+            stats.utenti_aggiornati++;
+          } else {
+            const nuovo = {
+              id: `usr-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+              email,
+              nome: u.nome || email.split("@")[0],
+              cognome: u.cognome || "",
+              name: `${u.nome || email.split("@")[0]} ${u.cognome || ""}`.trim(),
+              telefono: u.telefono || "",
+              codice_fiscale: u.codice_fiscale || "",
+              indirizzo: u.indirizzo || "",
+              ruolo: email === "firenzepersonaltrainer@gmail.com" ? "manager" : "atleta",
+              crediti: Number(u.crediti || 0),
+              tempo_cancellazione_ore: 24,
+              data_scadenza_crediti: u.data_scadenza_crediti || null,
+              tipo_abbonamento: u.tipo_abbonamento || "standard",
+              data_ultimo_accesso: new Date().toISOString(),
+            };
+            db.profili_utenti.push(nuovo);
+            stats.utenti_creati++;
+          }
+        }
+      }
+
+      if (payload.diario.length > 0) {
+        db.diario_utente = db.diario_utente || [];
+        for (const d of payload.diario) {
+          if (!d.email_cliente || !d.nome_esercizio) continue;
+          const email = d.email_cliente.trim().toLowerCase();
+          const dup = db.diario_utente.some(
+            (e: any) => e.email_cliente.toLowerCase() === email && e.nome_esercizio.toLowerCase() === d.nome_esercizio.toLowerCase() && e.data_ora === d.data_ora
+          );
+          if (!dup) {
+            db.diario_utente.push({
+              id: Date.now() + Math.floor(Math.random() * 100000),
+              email_cliente: email,
+              id_esercizio: d.id_esercizio || null,
+              nome_esercizio: d.nome_esercizio,
+              carico_kg: d.carico_kg ?? null,
+              ripetizioni: d.ripetizioni ?? null,
+              serie: d.serie ?? null,
+              sets_json: d.sets_json ?? null,
+              feedback: d.feedback || null,
+              data_ora: d.data_ora || new Date().toISOString(),
+              created_at: new Date().toISOString(),
+            });
+            stats.voci_diario_inserite++;
+          }
+        }
+      }
+
+      if (isApply) {
+        saveData(db);
+      }
+
+      return res.end(JSON.stringify({ ok: true, isApply, stats }));
     }
 
     // GET /app-api/profili (Lista atleti & coach con policy personale)
@@ -301,6 +500,264 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // DISMISSIONE ANTICIPATA ATLETA (Penale automatica, ricalcolo, cancellazione slot)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // GET /app-api/atleti/:id/anteprima-dismissione
+    const dismAnteprimaMatch = pathname.match(
+      /^\/app-api\/atleti\/([a-zA-Z0-9_-]+)\/anteprima-dismissione$/
+    );
+    if (dismAnteprimaMatch && method === "GET") {
+      const atletaId = dismAnteprimaMatch[1];
+      const atleta = (db.profili_utenti || []).find((p: any) => p.id === atletaId);
+      if (!atleta) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Atleta non trovato" }));
+      }
+
+      const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+      const tariffaPiena = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const currentTimeStr = new Date().toLocaleTimeString("it-IT", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      const tuttePrenotazioni = (db.prenotazioni_slot || []).filter(
+        (p: any) => p.atleta_id === atleta.id || p.email_cliente === atleta.email
+      );
+
+      const seduteSvolteList = tuttePrenotazioni.filter(
+        (p: any) =>
+          p.stato === "confermata" &&
+          (p.data < todayStr || (p.data === todayStr && p.orario <= currentTimeStr))
+      );
+      const seduteSvolteCount = seduteSvolteList.length;
+
+      const prenotazioniFuture = tuttePrenotazioni.filter(
+        (p: any) =>
+          p.stato === "confermata" &&
+          (p.data > todayStr || (p.data === todayStr && p.orario > currentTimeStr))
+      );
+
+      const transazioniAtleta = (db.transazioni_pagamenti || []).filter(
+        (t: any) =>
+          (t.atleta_id === atleta.id || t.email_cliente === atleta.email) &&
+          t.stato === "completato"
+      );
+      let totaleGiaVersato = 0;
+      if (transazioniAtleta.length > 0) {
+        totaleGiaVersato = Number(transazioniAtleta[0].importo_euro) || 0;
+      } else {
+        totaleGiaVersato = tipoAbb === "lab_continuativo_2x" ? 250 : 359;
+      }
+
+      const penaleStandard = 50.0;
+      const valoreSedutePieno = Math.round(seduteSvolteCount * tariffaPiena * 100) / 100;
+      const totaleDovuto = Math.round((valoreSedutePieno + penaleStandard) * 100) / 100;
+      const totaleDaAddebitare = Math.max(
+        0,
+        Math.round((totaleDovuto - totaleGiaVersato) * 100) / 100
+      );
+
+      const emailCoach =
+        db.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
+
+      return res.end(
+        JSON.stringify({
+          atleta: {
+            id: atleta.id,
+            nome: atleta.nome,
+            cognome: atleta.cognome,
+            email: atleta.email,
+            telefono: atleta.telefono,
+            codice_fiscale: atleta.codice_fiscale,
+            indirizzo: atleta.indirizzo,
+            crediti: atleta.crediti,
+            tipo_abbonamento: tipoAbb,
+            stato_iscrizione: atleta.stato_iscrizione || "attivo",
+          },
+          tipo_abbonamento: tipoAbb,
+          tariffa_seduta: tariffaPiena,
+          sedute_svolte: seduteSvolteCount,
+          valore_sedute_pieno: valoreSedutePieno,
+          penale_standard: penaleStandard,
+          totale_gia_versato: totaleGiaVersato,
+          totale_dovuto: totaleDovuto,
+          totale_da_addebitare: totaleDaAddebitare,
+          prenotazioni_future: prenotazioniFuture,
+          email_coach: emailCoach,
+        })
+      );
+    }
+
+    // POST /app-api/atleti/:id/dismissione-anticipata
+    const dismExecuteMatch = pathname.match(
+      /^\/app-api\/atleti\/([a-zA-Z0-9_-]+)\/dismissione-anticipata$/
+    );
+    if (dismExecuteMatch && method === "POST") {
+      const atletaId = dismExecuteMatch[1];
+      const atleta = (db.profili_utenti || []).find((p: any) => p.id === atletaId);
+      if (!atleta) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Atleta non trovato" }));
+      }
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const currentTimeStr = new Date().toLocaleTimeString("it-IT", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      // 1. Cancella e libera tutte le prenotazioni future
+      const prenotazioniCancellate: any[] = [];
+      (db.prenotazioni_slot || []).forEach((p: any) => {
+        const isThisAthlete = p.atleta_id === atleta.id || p.email_cliente === atleta.email;
+        const isFuture = p.data > todayStr || (p.data === todayStr && p.orario >= currentTimeStr);
+        if (isThisAthlete && isFuture && p.stato === "confermata") {
+          p.stato = "cancellata_dismissione";
+          p.cancellato_il = new Date().toISOString();
+          p.note = "Cancellata per dismissione anticipata atleta";
+          prenotazioniCancellate.push({ id: p.id, data: p.data, orario: p.orario });
+        }
+      });
+
+      // 2. Calcolo importi
+      const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+      const defaultTariffa = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
+      const tariffa = Number(parsedBody.tariffa_seduta ?? defaultTariffa);
+      const svolte = Number(parsedBody.sedute_svolte ?? 0);
+      const penale = Number(parsedBody.penale_euro ?? 50.0);
+      const versato = Number(
+        parsedBody.totale_versato ?? (tipoAbb === "lab_continuativo_2x" ? 250 : 359)
+      );
+
+      const valoreSedute = Math.round(svolte * tariffa * 100) / 100;
+      const totaleDovuto = Math.round((valoreSedute + penale) * 100) / 100;
+      const totaleDaAddebitare = Math.max(0, Math.round((totaleDovuto - versato) * 100) / 100);
+
+      // 3. Registra transazione incasso / addebito penale
+      const txCode = `TX-DISM-${Date.now().toString().slice(-6)}`;
+      const nuovaTransazione = {
+        codice_transazione: txCode,
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente: `${atleta.nome} ${atleta.cognome}`.trim(),
+        codice_fiscale: atleta.codice_fiscale || "",
+        indirizzo: atleta.indirizzo || "",
+        id_pacchetto: "dismissione-anticipata",
+        nome_pacchetto: `Penale e conguaglio recesso anticipato (${svolte} sedute x ${tariffa}€ + penale ${penale}€)`,
+        importo_euro: totaleDaAddebitare,
+        metodo: "carta",
+        crediti_acquistati: 0,
+        debiti_decurtati: 0,
+        crediti_effettivi_aggiunti: 0,
+        stato: "completato",
+        stato_fattura: "da_emettere",
+        note: parsedBody.note || "Dismissione anticipata richiesta dal coach",
+        created_at: new Date().toISOString(),
+      };
+      db.transazioni_pagamenti = db.transazioni_pagamenti || [];
+      db.transazioni_pagamenti.unshift(nuovaTransazione);
+
+      // 4. Aggiorna stato atleta nel database
+      const creditiPrecedenti = atleta.crediti || 0;
+      atleta.crediti = 0;
+      atleta.stato_iscrizione = "dismesso";
+      atleta.tipo_abbonamento = "nessuno";
+      atleta.data_ultimo_accesso = new Date().toISOString();
+      const notaAggiunta = `[DISMESSO ANTICIPATAMENTE il ${new Date().toLocaleDateString(
+        "it-IT"
+      )}: addebitato saldo € ${totaleDaAddebitare} (penale € ${penale}, sedute ${svolte}x${tariffa}€). Revocati ${
+        prenotazioniCancellate.length
+      } slot.]`;
+      atleta.note_coach = atleta.note_coach
+        ? `${atleta.note_coach} | ${notaAggiunta}`
+        : notaAggiunta;
+
+      // 5. Movimento audit crediti
+      addMovimentoCrediti(db, {
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+        tipo: "penalty",
+        delta_crediti: -creditiPrecedenti,
+        saldo_risultante: 0,
+        motivazione: `Dismissione anticipata: ricalcolo sedute a tariffa piena (${tariffa}€) + penale recesso ${penale}€. Revocate ${prenotazioniCancellate.length} prenotazioni future.`,
+        operatore: "coach",
+      });
+
+      // 6. Genera e invia notifica email al coach
+      const emailCoach =
+        db.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
+      const emailBody = `
+RIEPILOGO DISMISSIONE ANTICIPATA — AREA46 TRAINING LAB
+=============================================================================
+Data Operazione: ${new Date().toLocaleString("it-IT")}
+Codice Transazione: ${txCode}
+Stato Fiscale: DA EMETTERE
+
+DATI FISCALI CLIENTE:
+- Nome e Cognome: ${atleta.nome} ${atleta.cognome}
+- Codice Fiscale: ${atleta.codice_fiscale || "NON SPECIFICATO (Richiedere al cliente)"}
+- Indirizzo Fatturazione: ${atleta.indirizzo || "NON SPECIFICATO"}
+- Email: ${atleta.email}
+- Telefono: ${atleta.telefono || "-"}
+
+CONTEGGIO RECESSO ANTICIPATO:
+1. Sedute Svolte: ${svolte} x € ${tariffa.toFixed(2)} = € ${valoreSedute.toFixed(2)} (Ricalcolo tariffa base piena)
+2. Penale di Recesso / Spese Chiusura: € ${penale.toFixed(2)}
+3. Totale Valore Contrattuale: € ${totaleDovuto.toFixed(2)}
+4. Quota Già Versata dal Cliente: -€ ${versato.toFixed(2)}
+-----------------------------------------------------------------------------
+TOTALE NETTO ADDEBITATO DA FATTURARE: € ${totaleDaAddebitare.toFixed(2)}
+=============================================================================
+
+INDICAZIONI PER EMISSIONE FATTURA (SDI / GESTIONALE):
+- Oggetto / Descrizione: "Saldo per risoluzione anticipata accordo continuativo Lab, conguaglio sedute fruite e penale di svincolo slot riservato."
+- Importo Imponibile: € ${totaleDaAddebitare.toFixed(2)}
+- Regime: Forfettario (esente IVA ex L. 190/2014) o Ordinario.
+- Termine di emissione: Entro 12 giorni dalla data odierna.
+
+CALENDARIO E PRENOTAZIONI:
+- Slot revocati e liberati con successo: ${prenotazioniCancellate.length} prenotazioni rimosse.
+- Posizione atleta: ARCHIVIATA / DISMESSA.
+      `.trim();
+
+      db.notifiche_email = db.notifiche_email || [];
+      const emailRecord = {
+        id: `email-${Date.now()}`,
+        destinatario: emailCoach,
+        oggetto: `[AREA46 FISCO] Dismissione Anticipata ${atleta.nome} ${atleta.cognome} — Dati per Emissione Fattura`,
+        corpo: emailBody,
+        inviato_il: new Date().toISOString(),
+        stato: "inviata",
+      };
+      db.notifiche_email.unshift(emailRecord);
+      saveData(db);
+
+      console.log(`[EMAIL DISMISSIONE] Inviata a ${emailCoach}:`, emailRecord.oggetto);
+
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          messaggio: `Dismissione completata con successo! Revocate ${prenotazioniCancellate.length} prenotazioni future. Addebitato saldo di € ${totaleDaAddebitare.toFixed(2)}.`,
+          dettagli: {
+            atleta_id: atleta.id,
+            nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+            codice_transazione: txCode,
+            totale_addebitato: totaleDaAddebitare,
+            penale_applicata: penale,
+            sedute_svolte: svolte,
+            tariffa_seduta: tariffa,
+            prenotazioni_cancellate: prenotazioniCancellate,
+            email_notifica: emailRecord,
+          },
+        })
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // MOVIMENTI CREDITI (Ledger / Storico contabile per cliente)
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -405,6 +862,119 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       saveData(db);
       res.statusCode = 201;
       return res.end(JSON.stringify(nuova));
+    }
+
+    // POST /app-api/eccezioni-calendario/chiusura-periodo (Chiusura studio con proroga automatica scadenze)
+    if (pathname === "/app-api/eccezioni-calendario/chiusura-periodo" && method === "POST") {
+      const { data_inizio, data_fine, motivo, proroga_scadenze } = parsedBody;
+      if (!data_inizio || !data_fine) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Date di inizio e fine periodo obbligatorie" }));
+      }
+
+      db.eccezioni_calendario = db.eccezioni_calendario || [];
+      const start = new Date(data_inizio);
+      const end = new Date(data_fine);
+      const diffMs = end.getTime() - start.getTime();
+      const giorniChiusura = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1);
+
+      // Crea eccezioni giorno per giorno
+      const dateCreate: string[] = [];
+      const cur = new Date(start);
+      while (cur <= end) {
+        const dStr = cur.toISOString().slice(0, 10);
+        dateCreate.push(dStr);
+        const existing = db.eccezioni_calendario.find(
+          (e: any) => e.data === dStr && e.tipo === "chiusura_giornata"
+        );
+        if (!existing) {
+          db.eccezioni_calendario.push({
+            id: `exc-close-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            data: dStr,
+            orario: null,
+            tipo: "chiusura_giornata",
+            motivo: motivo || "Chiusura programmata dello studio",
+            created_at: new Date().toISOString(),
+          });
+        }
+
+        // Annulla e rimborsa eventuali prenotazioni atleti già presenti in questo giorno
+        (db.prenotazioni_slot || []).forEach((bk: any) => {
+          if (bk.data === dStr && bk.stato === "confermata") {
+            bk.stato = "cancellata_in_tempo";
+            bk.cancellato_il = new Date().toISOString();
+            bk.note = `Annullata per chiusura studio: ${motivo || "Chiusura programmata"}`;
+            const atleta = (db.profili_utenti || []).find(
+              (p: any) => p.id === bk.atleta_id || p.email === bk.email_cliente
+            );
+            if (atleta && bk.credito_scalato) {
+              atleta.crediti = (atleta.crediti ?? 0) + 1;
+              addMovimentoCrediti(db, {
+                atleta_id: atleta.id,
+                email_cliente: atleta.email,
+                nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+                tipo: "rimborso_cancellazione",
+                delta_crediti: 1,
+                saldo_risultante: atleta.crediti,
+                motivazione: `Rimborso slot ${bk.data} ${bk.orario} per chiusura studio (${
+                  motivo || "Chiusura programmata"
+                })`,
+                operatore: "sistema",
+              });
+            }
+          }
+        });
+
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      // Se proroga_scadenze è true: slitta la scadenza di tutti gli atleti attivi
+      let atletiAggiornati = 0;
+      if (proroga_scadenze !== false) {
+        (db.profili_utenti || []).forEach((p: any) => {
+          if (
+            p.ruolo === "atleta" &&
+            p.stato_iscrizione !== "dismesso" &&
+            p.data_scadenza_crediti
+          ) {
+            if (p.data_scadenza_crediti >= data_inizio) {
+              const oldScad = new Date(p.data_scadenza_crediti);
+              oldScad.setDate(oldScad.getDate() + giorniChiusura);
+              p.data_scadenza_crediti = oldScad.toISOString().slice(0, 10);
+              atletiAggiornati++;
+
+              addMovimentoCrediti(db, {
+                atleta_id: p.id,
+                email_cliente: p.email,
+                nome_cliente: `${p.nome} ${p.cognome}`,
+                tipo: "bonus_regalo",
+                delta_crediti: 0,
+                saldo_risultante: p.crediti,
+                motivazione: `Proroga automatica di +${giorniChiusura} giorni alla scadenza per chiusura studio (${
+                  motivo || "Ferie / Festività"
+                }). Nuova scadenza: ${p.data_scadenza_crediti}`,
+                operatore: "sistema",
+              });
+            }
+          }
+        });
+      }
+
+      saveData(db);
+      res.statusCode = 201;
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          giorni_chiusura: giorniChiusura,
+          date_bloccate: dateCreate.length,
+          atleti_prorogati: atletiAggiornati,
+          messaggio: `Chiusura studio registrata per ${giorniChiusura} giorni (${data_inizio} ➔ ${data_fine}). ${
+            proroga_scadenze !== false
+              ? `Scadenze prorogate automaticamente di +${giorniChiusura} giorni per ${atletiAggiornati} atleti attivi.`
+              : ""
+          }`,
+        })
+      );
     }
 
     // DELETE /app-api/eccezioni-calendario/:id
@@ -602,6 +1172,25 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
             }
           }
         }
+
+        const anticipoOre = Number(db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 0);
+        if (anticipoOre > 0) {
+          const nowMs = Date.now();
+          for (const s of requestedSlots) {
+            const slotTs = new Date(`${s.data}T${s.orario}:00`).getTime();
+            const oreDiff = (slotTs - nowMs) / (1000 * 60 * 60);
+            if (oreDiff < anticipoOre) {
+              res.statusCode = 400;
+              return res.end(
+                JSON.stringify({
+                  error: `Lo slot del ${s.data} alle ${s.orario} non può essere prenotato: la policy del Lab richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio della sessione.`,
+                  motivo: "anticipo_insufficiente",
+                  anticipo_ore: anticipoOre,
+                })
+              );
+            }
+          }
+        }
       }
 
       // Controllo disponibilità di tutti gli slot richiesti
@@ -764,6 +1353,22 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
             );
           }
         }
+
+        const anticipoOre = Number(db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 0);
+        if (anticipoOre > 0) {
+          const slotTs = new Date(`${dataSlot}T${orarioSlot}:00`).getTime();
+          const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
+          if (oreDiff < anticipoOre) {
+            res.statusCode = 400;
+            return res.end(
+              JSON.stringify({
+                error: `Prenotazione non consentita: la policy del Lab richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio dello slot.`,
+                motivo: "anticipo_insufficiente",
+                anticipo_ore: anticipoOre,
+              })
+            );
+          }
+        }
       }
 
       // 3. Scalamento del credito (1 credito = 1 sessione)
@@ -801,6 +1406,10 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
 
       saveData(db);
 
+      if (isManager) {
+        console.log(`[NOTIFICA AUTOMATICA EMAIL] A: ${atleta.email} - Conferma Prenotazione Area46: ${dataSlot} ore ${orarioSlot}`);
+      }
+
       res.statusCode = 201;
       return res.end(
         JSON.stringify({
@@ -808,6 +1417,12 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
           prenotazione: nuovaPrenotazione,
           crediti_rimanenti: atleta.crediti,
           messaggio: `Slot confermato per il ${dataSlot} alle ${orarioSlot}. Ti aspettiamo al Lab!`,
+          notifica: {
+            email_inviata: true,
+            email_destinatario: atleta.email,
+            nome_destinatario: nuovaPrenotazione.nome_cliente,
+            telefono_destinatario: atleta.telefono || "",
+          },
         })
       );
     }
@@ -845,6 +1460,43 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         if (bk.credito_scalato && atleta) {
           atleta.crediti = (atleta.crediti ?? 0) + 1;
 
+          // Se l'annullamento è operato dal Coach per imprevisto:
+          // 1. Per gli abbonamenti continuativi: NESSUNA proroga (rinnovo mensile a data fissa), solo restituzione del credito al 100%.
+          // 2. Per i pacchetti a consumo: se la scadenza è imminente (<= 5 giorni), proroga di +7 giorni (1 ciclo settimanale intero)
+          //    per consentire all'atleta di ritrovare i propri giorni abituali senza alterare il ritmo di frequenza (2x o 3x).
+          let prorogaMsg = "";
+          const isContinuativo =
+            atleta.tipo_abbonamento?.startsWith("lab_continuativo") ||
+            atleta.tipo_abbonamento === "abbonamento";
+
+          if (isManager && atleta.data_scadenza_crediti) {
+            if (isContinuativo) {
+              prorogaMsg = " (Abbonamento continuativo: credito rimborsato al 100%, data rinnovo fissa invariata)";
+            } else {
+              const scadenzaDate = new Date(atleta.data_scadenza_crediti + "T00:00:00");
+              const slotDate = new Date(bk.data + "T00:00:00");
+              const diffMs = scadenzaDate.getTime() - slotDate.getTime();
+              const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+              if (diffDays <= 5) {
+                // Scadenza imminente (<= 5 giorni): posticipa di +7 giorni di calendario
+                const baseDate = scadenzaDate > slotDate ? new Date(scadenzaDate) : new Date(slotDate);
+                baseDate.setDate(baseDate.getDate() + 7);
+                const y = baseDate.getFullYear();
+                const m = String(baseDate.getMonth() + 1).padStart(2, "0");
+                const d = String(baseDate.getDate()).padStart(2, "0");
+                atleta.data_scadenza_crediti = `${y}-${m}-${d}`;
+                prorogaMsg = ` (Scadenza prorogata al ${new Date(
+                  atleta.data_scadenza_crediti + "T00:00:00"
+                ).toLocaleDateString("it-IT")} per recupero senza alterare il ritmo di frequenza)`;
+              } else {
+                prorogaMsg = ` (Scadenza invariata al ${new Date(
+                  atleta.data_scadenza_crediti + "T00:00:00"
+                ).toLocaleDateString("it-IT")}: tempo residuo di ${diffDays} gg sufficiente al recupero)`;
+              }
+            }
+          }
+
           addMovimentoCrediti(db, {
             atleta_id: atleta.id,
             email_cliente: atleta.email,
@@ -852,14 +1504,21 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
             tipo: "rimborso_cancellazione",
             delta_crediti: 1,
             saldo_risultante: atleta.crediti,
-            motivazione: `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}`,
+            motivazione: isManager
+              ? `Rimborso slot ${bk.data} ${bk.orario} [Annullato dal Coach per imprevisto${prorogaMsg}]`
+              : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}`,
             operatore: isManager ? "coach" : "atleta",
           });
+
+          messaggio = isManager
+            ? `Sessione annullata dal Coach. 1 credito rimborsato al wallet${prorogaMsg}.`
+            : `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
+                0,
+                Math.round(orePreavviso)
+              )}h rimaste su ${oreLimite}h richieste). 1 credito è stato rimborsato al tuo wallet.`;
+        } else {
+          messaggio = "Prenotazione annullata con successo.";
         }
-        messaggio = `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
-          0,
-          Math.round(orePreavviso)
-        )}h rimaste su ${oreLimite}h richieste). 1 credito è stato rimborsato al tuo wallet.`;
       } else {
         rimborsato = false;
         statoFinale = "cancellata_tardiva";
@@ -885,6 +1544,12 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
       bk.cancellato_il = new Date().toISOString();
       saveData(db);
 
+      if (isManager) {
+        console.log(
+          `[NOTIFICA AUTOMATICA EMAIL] A: ${atleta?.email || bk.email_cliente} - Avviso Annullamento Seduta Area46: ${bk.data} alle ${bk.orario}`
+        );
+      }
+
       return res.end(
         JSON.stringify({
           ok: true,
@@ -894,6 +1559,12 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
           ore_limite: oreLimite,
           crediti_attuali: atleta?.crediti,
           messaggio,
+          notifica: {
+            email_inviata: true,
+            email_destinatario: atleta?.email || bk.email_cliente,
+            nome_destinatario: bk.nome_cliente,
+            telefono_destinatario: atleta?.telefono || bk.telefono_cliente || "",
+          },
         })
       );
     }
@@ -1288,6 +1959,136 @@ export function handleLocalApi(req: IncomingMessage, res: ServerResponse, next: 
         res.statusCode = 500;
         return res.end(JSON.stringify({ error: err.message || "Errore verifica sessione Stripe" }));
       }
+    }
+
+    // POST /app-api/pagamenti/stripe-webhook (Webhook Stripe per eventi asincroni)
+    if (
+      (pathname === "/app-api/pagamenti/stripe-webhook" ||
+        pathname === "/app-api/stripe-webhook" ||
+        pathname === "/api/stripe-webhook") &&
+      method === "POST"
+    ) {
+      const event = parsedBody;
+      const sigHeader = (req.headers["stripe-signature"] as string) || "";
+      const webhookSecret =
+        db.configurazione_lab?.stripe_webhook_secret || process.env.STRIPE_WEBHOOK_SECRET;
+
+      // Verifica firma crittografica se il webhook secret è impostato
+      if (webhookSecret && sigHeader && body) {
+        try {
+          const parts = sigHeader.split(",").reduce((acc: any, part: string) => {
+            const [k, v] = part.split("=");
+            if (k && v) acc[k.trim()] = v.trim();
+            return acc;
+          }, {});
+          if (parts.t && parts.v1) {
+            const expectedSig = crypto
+              .createHmac("sha256", webhookSecret.trim())
+              .update(`${parts.t}.${body}`)
+              .digest("hex");
+            if (parts.v1 !== expectedSig) {
+              console.warn("[Stripe Webhook] Firma HMAC non valida.");
+              res.statusCode = 400;
+              return res.end(JSON.stringify({ error: "Firma webhook non valida" }));
+            }
+          }
+        } catch (sigErr) {
+          console.error("[Stripe Webhook] Errore verifica firma:", sigErr);
+        }
+      }
+
+      // Gestione evento completamento checkout
+      if (event?.type === "checkout.session.completed") {
+        const session = event.data?.object;
+        if (session && session.id) {
+          const existingTx = (db.transazioni_pagamenti || []).find(
+            (t: any) => t.codice_transazione === session.id || t.stripe_session_id === session.id
+          );
+
+          if (!existingTx && session.payment_status === "paid") {
+            const meta = session.metadata || {};
+            const packId = meta.pack_id;
+            const atletaEmail = meta.atleta_email || session.customer_email;
+            const pacchetto =
+              (db.tariffario_pacchetti || []).find((p: any) => p.id === packId) || {
+                id: packId,
+                nome: meta.pack_nome || "Pacchetto Lab",
+                crediti: Number(meta.pack_crediti) || 10,
+                prezzo_euro: (session.amount_total || 0) / 100,
+                giorni_validita: Number(meta.giorni_validita) || 60,
+              };
+
+            const atleta =
+              (db.profili_utenti || []).find(
+                (p: any) => p.email === atletaEmail || p.id === meta.atleta_id
+              ) || currentUser;
+
+            const currentCrediti = Number(atleta.crediti) || 0;
+            const packCrediti = Number(pacchetto.crediti) || 0;
+            let debitiDecurtati = 0;
+            let creditiEffettivi = packCrediti;
+            if (currentCrediti < 0) {
+              debitiDecurtati = Math.abs(currentCrediti);
+              creditiEffettivi = packCrediti - debitiDecurtati;
+            }
+
+            const nuovaTransazione = {
+              codice_transazione: `TX-ST-${Date.now().toString().slice(-6)}`,
+              stripe_session_id: session.id,
+              stripe_payment_intent: session.payment_intent,
+              atleta_id: atleta.id,
+              email_cliente: atleta.email,
+              nome_cliente:
+                `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+              codice_fiscale: meta.codice_fiscale || atleta.codice_fiscale || "",
+              indirizzo: meta.indirizzo || atleta.indirizzo || "",
+              id_pacchetto: pacchetto.id,
+              nome_pacchetto: pacchetto.nome,
+              importo_euro: (session.amount_total || 0) / 100,
+              metodo: "stripe_card",
+              crediti_acquistati: packCrediti,
+              debiti_decurtati: debitiDecurtati,
+              crediti_effettivi_aggiunti: creditiEffettivi,
+              causale_bonifico: null,
+              stato: "completato",
+              stato_fattura: "da_emettere",
+              created_at: new Date().toISOString(),
+            };
+
+            if (currentCrediti < 0) {
+              atleta.crediti = creditiEffettivi;
+            } else {
+              atleta.crediti = currentCrediti + packCrediti;
+            }
+            const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 86400000)
+              .toISOString()
+              .slice(0, 10);
+            if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
+              atleta.data_scadenza_crediti = nuovaScadenza;
+            }
+            atleta.data_ultimo_accesso = new Date().toISOString();
+
+            addMovimentoCrediti(db, {
+              atleta_id: atleta.id,
+              email_cliente: atleta.email,
+              nome_cliente: nuovaTransazione.nome_cliente,
+              tipo: "acquisto_carnet",
+              delta_crediti: creditiEffettivi,
+              saldo_risultante: atleta.crediti,
+              motivazione: `Webhook Stripe ${pacchetto.nome}${
+                debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""
+              }`,
+              operatore: "stripe_webhook",
+            });
+
+            db.transazioni_pagamenti = db.transazioni_pagamenti || [];
+            db.transazioni_pagamenti.unshift(nuovaTransazione);
+            saveData(db);
+          }
+        }
+      }
+
+      return res.end(JSON.stringify({ received: true }));
     }
 
     // POST /app-api/transazioni/checkout (Checkout Manuale / Bonifico)

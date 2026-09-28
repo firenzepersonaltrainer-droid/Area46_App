@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import {
   Dumbbell,
   BookOpen,
@@ -18,6 +18,7 @@ import { Nav } from "./components/Nav";
 import { Toaster } from "./components/Toast";
 import { WalletBar } from "./components/WalletBar";
 import { useCurrentUser } from "./lib/useUser";
+import { useLivelloMemoria } from "./lib/useLivelloMemoria";
 
 import AllenamentiPage from "./pages/Allenamenti";
 import GiornoDetailPage from "./pages/GiornoDetail";
@@ -32,6 +33,7 @@ import TariffarioPage from "./pages/Tariffario";
 import ManagerCalendarPage from "./pages/ManagerCalendar";
 import ManagerAtletiPage from "./pages/ManagerAtleti";
 import ManagerFiscoPage from "./pages/ManagerFisco";
+import LoginPage from "./pages/Login";
 import FloatingTimer from "./components/FloatingTimer";
 
 function MobileStatusBar() {
@@ -75,53 +77,68 @@ function MobileHomeIndicator() {
   );
 }
 
-function AppHeader() {
-  const { isManager } = useCurrentUser();
+import { ManualeUtenteModal } from "./components/ManualeUtenteModal";
+
+function AppHeader({ onOpenManual }: { onOpenManual?: () => void }) {
+  const { user, isManager } = useCurrentUser();
+  const { livello: livelloMemoria } = useLivelloMemoria();
+  const location = useLocation();
+
+  // Rileva dinamicamente il livello visualizzato o memorizzato
+  const matchAllenamento = location.pathname.match(/^\/allenamento\/([^/]+)/);
+  const matchEsercizio = location.pathname.match(/^\/esercizio\/([^/]+)/);
+  const activeLevelRaw = matchAllenamento
+    ? decodeURIComponent(matchAllenamento[1])
+    : matchEsercizio
+    ? decodeURIComponent(matchEsercizio[1])
+    : (livelloMemoria && livelloMemoria.trim() ? livelloMemoria : "Livello Pro");
+
+  const displayLevel = activeLevelRaw.trim().toUpperCase();
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between px-4 py-2.5 bg-white border-b shadow-xs shrink-0 relative">
-      <div className="flex items-center gap-2">
-        <div className="flex flex-col leading-tight">
-          <div className="text-lg font-black tracking-tight leading-none flex items-center">
-            <span style={{ color: "#1c00ff" }}>Area</span>
-            <span
-              className="inline-block px-1.5 py-0.5 ml-1 rounded text-xs font-black"
-              style={{
-                background: "#e3ff00",
-                color: "#09090b",
-                border: "1.5px solid #09090b",
-              }}
-            >
-              46
-            </span>
-          </div>
-          <div
-            className="text-[10px] font-black uppercase tracking-wider leading-none mt-1"
-            style={{ color: "#09090b" }}
-          >
-            Landmine Lab
-          </div>
-        </div>
-      </div>
+      <Link to="/" className="flex items-center gap-2 group cursor-pointer" title="Home Area46">
+        <img
+          src="/logo-area46-transparent.png"
+          alt="Area46 Landmine Lab"
+          className="h-10 w-auto max-w-[140px] object-contain transition-transform group-hover:scale-105 drop-shadow-2xs"
+        />
+      </Link>
 
       <div className="flex items-center gap-1.5">
-        {isManager ? (
-          <span
-            className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50"
+        {onOpenManual && (
+          <button
+            type="button"
+            onClick={onOpenManual}
+            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-200 transition-colors cursor-pointer"
+            title="Guida & Manuale Istruzioni App"
           >
-            <ShieldCheck className="size-3 text-[#e3ff00]" />
+            <BookOpen className="size-3.5 text-[#1c00ff]" />
+            <span className="hidden xs:inline">Guida</span>
+          </button>
+        )}
+
+        {!user ? (
+          <span className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs bg-zinc-100 text-zinc-700 border border-zinc-200">
+            ACCESSO LAB
+          </span>
+        ) : isManager ? (
+          <span
+            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50"
+          >
+            <ShieldCheck className="size-3.5 text-[#e3ff00]" />
             GESTIONE COACH
           </span>
         ) : (
           <span
-            className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs"
+            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs"
             style={{
               background: "#1c00ff",
               color: "#e3ff00",
             }}
           >
-            <span className="size-1.5 rounded-full bg-[#e3ff00] animate-pulse" />
-            LIVELLO PRO
+            <span className="size-2 rounded-full bg-[#e3ff00] animate-pulse" />
+            {displayLevel}
           </span>
         )}
       </div>
@@ -136,8 +153,55 @@ function AppHeader() {
 }
 
 function AppContent() {
-  const { isManager } = useCurrentUser();
+  const { user, isManager, isLoading } = useCurrentUser();
+  const [showManualModal, setShowManualModal] = useState(false);
 
+  // 1. Schermata di caricamento iniziale
+  if (isLoading) {
+    return (
+      <div
+        id="phone-frame"
+        className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col items-center justify-center relative overflow-hidden"
+      >
+        <div className="flex flex-col items-center gap-3">
+          <div className="size-8 rounded-full border-2 border-[#1c00ff] border-t-transparent animate-spin" />
+          <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+            Caricamento Area46...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Se l'utente NON è autenticato (logout effettuato o visitatore)
+  if (!user) {
+    return (
+      <div
+        id="phone-frame"
+        className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col relative overflow-hidden"
+      >
+        <Toaster
+          position="top-center"
+          offset="45vh"
+          style={{ pointerEvents: "none" } as React.CSSProperties}
+          toastOptions={{ style: { pointerEvents: "auto" } }}
+        />
+        <MobileStatusBar />
+        <AppHeader onOpenManual={() => setShowManualModal(true)} />
+        <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
+
+        <main className="w-full flex-1 overflow-y-auto px-4 pb-8 pt-2 select-text [scrollbar-width:thin]">
+          <Routes>
+            <Route path="/tariffario" element={<TariffarioPage />} />
+            <Route path="*" element={<LoginPage />} />
+          </Routes>
+        </main>
+        <MobileHomeIndicator />
+      </div>
+    );
+  }
+
+  // 3. Utente autenticato
   const navItems = isManager
     ? [
         { href: "/manager/calendario", label: "Calendario", icon: <CalendarCheck /> },
@@ -169,7 +233,10 @@ function AppContent() {
       <MobileStatusBar />
 
       {/* Intestazione Area46 */}
-      <AppHeader />
+      <AppHeader onOpenManual={() => setShowManualModal(true)} />
+
+      {/* Modale Manuale Utente Globale */}
+      <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
 
       {/* Wallet Bar con Saldo Crediti / Debito & Role Switcher */}
       <WalletBar />
@@ -193,6 +260,7 @@ function AppContent() {
           <Route path="/libreria" element={<LibreriaPage />} />
           <Route path="/tonnellaggio" element={<TonnellaggioPage />} />
           <Route path="/archivio" element={<ArchivioPage />} />
+          <Route path="/login" element={<LoginPage />} />
 
           {/* Rotte Manager Coach */}
           <Route path="/manager/calendario" element={<ManagerCalendarPage />} />

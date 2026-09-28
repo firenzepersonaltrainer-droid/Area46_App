@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { neon, types } from "@neondatabase/serverless";
+import crypto from "node:crypto";
 import { auth } from "./auth";
 
 types.setTypeParser(types.builtins.NUMERIC, (value) => Number(value));
@@ -404,21 +405,15 @@ app.get("/app-api/tonnellaggio", async (c) => {
     ORDER BY data_ora ASC
   `;
   return c.json(rows);
+});
+
 // ─── Profili & Auth ─────────────────────────────────────────────────────────
 
 app.get("/app-api/auth/current-user", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const user = auth(c).user();
   if (!user) {
-    return c.json({
-      id: "usr-coach-01",
-      email: "coach@area46.it",
-      nome: "Coach",
-      cognome: "Area46",
-      name: "Coach Area46",
-      ruolo: "manager",
-      crediti: 999,
-    });
+    return c.json(null);
   }
   const rows = await sql`SELECT * FROM profili_utenti WHERE email = ${user.email} LIMIT 1`;
   if (rows.length > 0) {
@@ -426,6 +421,85 @@ app.get("/app-api/auth/current-user", async (c) => {
     return c.json({ ...p, name: `${p.nome} ${p.cognome}`.trim() });
   }
   return c.json(user);
+});
+
+app.post("/app-api/auth/logout", async (c) => {
+  return c.json({ ok: true, messaggio: "Disconnessione effettuata." });
+});
+
+app.post("/app-api/auth/login-email", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const body = await c.req.json<{ email: string; code?: string; requestOtpOnly?: boolean }>();
+  const email = (body.email || "").trim().toLowerCase();
+  const requestOtpOnly = !!body.requestOtpOnly;
+
+  if (!email || !email.includes("@")) {
+    return c.json({ error: "Inserisci un indirizzo email valido." }, 400);
+  }
+
+  if (requestOtpOnly) {
+    return c.json({
+      ok: true,
+      messaggio: `Codice OTP generato per ${email}`,
+      demoOtp: "464646",
+    });
+  }
+
+  const rows = await sql`SELECT * FROM profili_utenti WHERE LOWER(email) = ${email} LIMIT 1`;
+  if (rows.length > 0) {
+    const user = rows[0];
+    await sql`UPDATE profili_utenti SET data_ultimo_accesso = NOW() WHERE id = ${user.id}`;
+    return c.json({ ok: true, user: { ...user, name: `${user.nome} ${user.cognome}`.trim() } });
+  }
+
+  const id = `usr-${Date.now()}`;
+  const nome = email.split("@")[0];
+  const ruolo = email === "firenzepersonaltrainer@gmail.com" ? "manager" : "atleta";
+  const inserted = await sql`
+    INSERT INTO profili_utenti (
+      id, email, nome, cognome, ruolo, crediti, tempo_cancellazione_ore, tipo_abbonamento, data_ultimo_accesso
+    ) VALUES (
+      ${id}, ${email}, ${nome}, '', ${ruolo}, 0, 24, 'standard', NOW()
+    )
+    RETURNING *
+  `;
+  const newUser = inserted[0];
+  return c.json({ ok: true, user: { ...newUser, name: newUser.nome }, isNew: true });
+});
+
+app.post("/app-api/auth/oauth-login", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const body = await c.req.json<{ provider: string; email: string; name?: string }>();
+  const provider = body.provider || "google";
+  const email = (body.email || "").trim().toLowerCase();
+  const name = body.name || "";
+
+  if (!email || !email.includes("@")) {
+    return c.json({ error: "Email account social non valida." }, 400);
+  }
+
+  const rows = await sql`SELECT * FROM profili_utenti WHERE LOWER(email) = ${email} LIMIT 1`;
+  if (rows.length > 0) {
+    const user = rows[0];
+    await sql`UPDATE profili_utenti SET data_ultimo_accesso = NOW() WHERE id = ${user.id}`;
+    return c.json({ ok: true, user: { ...user, name: `${user.nome} ${user.cognome}`.trim() } });
+  }
+
+  const id = `usr-${provider}-${Date.now()}`;
+  const parts = name.trim().split(" ");
+  const nome = parts[0] || email.split("@")[0];
+  const cognome = parts.slice(1).join(" ") || "";
+  const ruolo = email === "firenzepersonaltrainer@gmail.com" ? "manager" : "atleta";
+  const inserted = await sql`
+    INSERT INTO profili_utenti (
+      id, email, nome, cognome, ruolo, crediti, tempo_cancellazione_ore, tipo_abbonamento, data_ultimo_accesso
+    ) VALUES (
+      ${id}, ${email}, ${nome}, ${cognome}, ${ruolo}, 0, 24, 'standard', NOW()
+    )
+    RETURNING *
+  `;
+  const newUser = inserted[0];
+  return c.json({ ok: true, user: { ...newUser, name: `${newUser.nome} ${newUser.cognome}`.trim() }, isNew: true });
 });
 
 app.post("/app-api/auth/switch-user", async (c) => {
@@ -532,6 +606,137 @@ app.post("/app-api/profili/:id/modifica-crediti", async (c) => {
   return c.json(rows[0]);
 });
 
+app.get("/app-api/atleti/:id/anteprima-dismissione", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const atletaId = c.req.param("id");
+  const atleti = await sql`SELECT * FROM profili_utenti WHERE id = ${atletaId} LIMIT 1`;
+  if (atleti.length === 0) return c.json({ error: "Atleta non trovato" }, 404);
+  const atleta = atleti[0];
+
+  const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+  const tariffaPiena = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
+
+  const seduteSvolte = await sql`
+    SELECT COUNT(*)::int as count FROM prenotazioni_slot 
+    WHERE (atleta_id = ${atleta.id} OR email_cliente = ${atleta.email})
+      AND stato = 'confermata'
+      AND (data < CURRENT_DATE OR (data = CURRENT_DATE AND orario <= TO_CHAR(NOW(), 'HH24:MI')))
+  `;
+  const seduteSvolteCount = Number(seduteSvolte[0]?.count || 0);
+
+  const prenotazioniFuture = await sql`
+    SELECT * FROM prenotazioni_slot 
+    WHERE (atleta_id = ${atleta.id} OR email_cliente = ${atleta.email})
+      AND stato = 'confermata'
+      AND (data > CURRENT_DATE OR (data = CURRENT_DATE AND orario > TO_CHAR(NOW(), 'HH24:MI')))
+    ORDER BY data ASC, orario ASC
+  `;
+
+  const txRows = await sql`
+    SELECT * FROM transazioni_pagamenti 
+    WHERE (atleta_id = ${atleta.id} OR email_cliente = ${atleta.email})
+      AND stato = 'completato'
+    ORDER BY created_at DESC LIMIT 1
+  `;
+  const totaleGiaVersato = txRows.length > 0 ? Number(txRows[0].importo_euro) : (tipoAbb === "lab_continuativo_2x" ? 250 : 359);
+  const penaleStandard = 50.0;
+  const valoreSedutePieno = Math.round(seduteSvolteCount * tariffaPiena * 100) / 100;
+  const totaleDovuto = Math.round((valoreSedutePieno + penaleStandard) * 100) / 100;
+  const totaleDaAddebitare = Math.max(0, Math.round((totaleDovuto - totaleGiaVersato) * 100) / 100);
+
+  const cfgRows = await sql`SELECT notifica_email FROM configurazione_lab WHERE id = 1 LIMIT 1`;
+  const emailCoach = cfgRows[0]?.notifica_email || "firenzepersonaltrainer@gmail.com";
+
+  return c.json({
+    atleta: {
+      id: atleta.id,
+      nome: atleta.nome,
+      cognome: atleta.cognome,
+      email: atleta.email,
+      telefono: atleta.telefono,
+      codice_fiscale: atleta.codice_fiscale,
+      indirizzo: atleta.indirizzo,
+      crediti: atleta.crediti,
+      tipo_abbonamento: tipoAbb,
+      stato_iscrizione: atleta.stato_iscrizione || "attivo",
+    },
+    tipo_abbonamento: tipoAbb,
+    tariffa_seduta: tariffaPiena,
+    sedute_svolte: seduteSvolteCount,
+    valore_sedute_pieno: valoreSedutePieno,
+    penale_standard: penaleStandard,
+    totale_gia_versato: totaleGiaVersato,
+    totale_dovuto: totaleDovuto,
+    totale_da_addebitare: totaleDaAddebitare,
+    prenotazioni_future: prenotazioniFuture,
+    email_coach: emailCoach,
+  });
+});
+
+app.post("/app-api/atleti/:id/dismissione-anticipata", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const atletaId = c.req.param("id");
+  const body = await c.req.json();
+  const atleti = await sql`SELECT * FROM profili_utenti WHERE id = ${atletaId} LIMIT 1`;
+  if (atleti.length === 0) return c.json({ error: "Atleta non trovato" }, 404);
+  const atleta = atleti[0];
+
+  const cancelledRows = await sql`
+    UPDATE prenotazioni_slot
+    SET stato = 'cancellata_dismissione', cancellato_il = NOW(), note = 'Cancellata per dismissione anticipata atleta'
+    WHERE (atleta_id = ${atleta.id} OR email_cliente = ${atleta.email})
+      AND stato = 'confermata'
+      AND (data > CURRENT_DATE OR (data = CURRENT_DATE AND orario >= TO_CHAR(NOW(), 'HH24:MI')))
+    RETURNING id, data, orario
+  `;
+
+  const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+  const defaultTariffa = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
+  const tariffa = Number(body.tariffa_seduta ?? defaultTariffa);
+  const svolte = Number(body.sedute_svolte ?? 0);
+  const penale = Number(body.penale_euro ?? 50.0);
+  const versato = Number(body.totale_versato ?? (tipoAbb === "lab_continuativo_2x" ? 250 : 359));
+
+  const valoreSedute = Math.round(svolte * tariffa * 100) / 100;
+  const totaleDovuto = Math.round((valoreSedute + penale) * 100) / 100;
+  const totaleDaAddebitare = Math.max(0, Math.round((totaleDovuto - versato) * 100) / 100);
+  const txCode = `TX-DISM-${Date.now().toString().slice(-6)}`;
+
+  await sql`
+    INSERT INTO transazioni_pagamenti (
+      codice_transazione, atleta_id, email_cliente, nome_cliente, codice_fiscale, indirizzo,
+      id_pacchetto, nome_pacchetto, importo_euro, metodo, crediti_acquistati, debiti_decurtati,
+      crediti_effettivi_aggiunti, stato, stato_fattura, created_at
+    ) VALUES (
+      ${txCode}, ${atleta.id}, ${atleta.email}, ${`${atleta.nome} ${atleta.cognome}`.trim()},
+      ${atleta.codice_fiscale || null}, ${atleta.indirizzo || null}, 'dismissione-anticipata',
+      ${'Penale e conguaglio recesso anticipato (' + svolte + ' sedute x ' + tariffa + '€ + penale ' + penale + '€)'},
+      ${totaleDaAddebitare}, 'carta', 0, 0, 0, 'completato', 'da_emettere', NOW()
+    )
+  `;
+
+  await sql`
+    UPDATE profili_utenti
+    SET crediti = 0, stato_iscrizione = 'dismesso', tipo_abbonamento = 'nessuno', updated_at = NOW()
+    WHERE id = ${atleta.id}
+  `;
+
+  return c.json({
+    ok: true,
+    messaggio: `Dismissione completata con successo! Revocate ${cancelledRows.length} prenotazioni future. Addebitato saldo di € ${totaleDaAddebitare.toFixed(2)}.`,
+    dettagli: {
+      atleta_id: atleta.id,
+      nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+      codice_transazione: txCode,
+      totale_addebitato: totaleDaAddebitare,
+      penale_applicata: penale,
+      sedute_svolte: svolte,
+      tariffa_seduta: tariffa,
+      prenotazioni_cancellate: cancelledRows,
+    },
+  });
+});
+
 app.get("/app-api/lab-config", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const rows = await sql`SELECT * FROM configurazione_lab WHERE id = 1 LIMIT 1`;
@@ -541,7 +746,7 @@ app.get("/app-api/lab-config", async (c) => {
       iban: "IT46X0306909606100000046460",
       intestatario_iban: "Area46 Training Lab SSD a r.l.",
       banca: "Banca Sella",
-      notifica_email: "coach@area46.it",
+      notifica_email: "firenzepersonaltrainer@gmail.com",
       notifica_whatsapp: "+39 340 0000000",
       orari_disponibili: ["07:30", "08:30", "09:30", "10:30", "11:30", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"],
       giorni_aperti: [1, 2, 3, 4, 5, 6],
@@ -557,16 +762,17 @@ app.put("/app-api/lab-config", async (c) => {
   try {
     const rows = await sql`
       INSERT INTO configurazione_lab (
-        id, tempo_cancellazione_ore, iban, intestatario_iban, banca, notifica_email, notifica_whatsapp,
+        id, tempo_cancellazione_ore, tempo_anticipo_prenotazione_ore, iban, intestatario_iban, banca, notifica_email, notifica_whatsapp,
         stripe_mode, stripe_publishable_key, stripe_secret_key, stripe_webhook_secret, stripe_collegato, updated_at
       ) VALUES (
-        1, ${body.tempo_cancellazione_ore || 24}, ${body.iban || null}, ${body.intestatario_iban || null},
+        1, ${body.tempo_cancellazione_ore || 24}, ${body.tempo_anticipo_prenotazione_ore ?? 12}, ${body.iban || null}, ${body.intestatario_iban || null},
         ${body.banca || null}, ${body.notifica_email || null}, ${body.notifica_whatsapp || null},
         ${body.stripe_mode || "test"}, ${body.stripe_publishable_key || null}, ${body.stripe_secret_key || null},
         ${body.stripe_webhook_secret || null}, ${body.stripe_collegato || false}, NOW()
       )
       ON CONFLICT (id) DO UPDATE SET
         tempo_cancellazione_ore = EXCLUDED.tempo_cancellazione_ore,
+        tempo_anticipo_prenotazione_ore = COALESCE(EXCLUDED.tempo_anticipo_prenotazione_ore, configurazione_lab.tempo_anticipo_prenotazione_ore),
         iban = COALESCE(EXCLUDED.iban, configurazione_lab.iban),
         intestatario_iban = COALESCE(EXCLUDED.intestatario_iban, configurazione_lab.intestatario_iban),
         banca = COALESCE(EXCLUDED.banca, configurazione_lab.banca),
@@ -632,6 +838,19 @@ app.post("/app-api/prenotazioni/batch", async (c) => {
   const isManager = atletaRows[0]?.ruolo === "manager";
   const totalCost = requestedSlots.length;
 
+  // Controllo anticipo prenotazione
+  const configRows = await sql`SELECT tempo_anticipo_prenotazione_ore FROM configurazione_lab WHERE id = 1 LIMIT 1`;
+  const anticipoOre = Number(configRows[0]?.tempo_anticipo_prenotazione_ore || 0);
+  if (anticipoOre > 0 && !isManager) {
+    for (const s of requestedSlots) {
+      const slotTs = new Date(`${s.data}T${s.orario}:00`).getTime();
+      const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
+      if (oreDiff < anticipoOre) {
+        return c.json({ error: `Uno o più slot selezionati (${s.data} ${s.orario}) non possono essere prenotati: termine di prenotazione inferiore alle ${anticipoOre} ore di anticipo previste.` }, 400);
+      }
+    }
+  }
+
   if (!isManager && atletaRows.length > 0) {
     if ((atletaRows[0].crediti ?? 0) < totalCost) {
       return c.json({ error: `Crediti insufficienti. Disponibili: ${atletaRows[0].crediti}, richiesti: ${totalCost}` }, 403);
@@ -678,7 +897,20 @@ app.post("/app-api/prenotazioni", async (c) => {
   // Deduci credito
   const atletaEmail = body.email_cliente || user?.email;
   const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${atletaEmail} LIMIT 1`;
-  if (atletaRows.length > 0 && atletaRows[0].ruolo !== "manager") {
+  const isManager = atletaRows[0]?.ruolo === "manager";
+
+  // Controllo anticipo prenotazione
+  const configRows = await sql`SELECT tempo_anticipo_prenotazione_ore FROM configurazione_lab WHERE id = 1 LIMIT 1`;
+  const anticipoOre = Number(configRows[0]?.tempo_anticipo_prenotazione_ore || 0);
+  if (anticipoOre > 0 && !isManager) {
+    const slotTs = new Date(`${body.data}T${body.orario}:00`).getTime();
+    const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
+    if (oreDiff < anticipoOre) {
+      return c.json({ error: `Termine di prenotazione scaduto. Le sessioni devono essere prenotate con almeno ${anticipoOre} ore di anticipo.` }, 400);
+    }
+  }
+
+  if (atletaRows.length > 0 && !isManager) {
     if (atletaRows[0].crediti <= 0) {
       return c.json({ error: "Crediti esauriti. Ricarica per prenotare." }, 403);
     }
@@ -714,14 +946,58 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
   const slotTs = new Date(`${bk.data.toISOString().slice(0, 10)}T${bk.orario}:00`).getTime();
   const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
 
+  const user = auth(c).user();
+  const isManager = user?.ruolo === "manager";
+
   let rimborsato = false;
   let statoFinale = "cancellata_tardiva";
-  if (oreDiff >= policyOre) {
+  let messaggio = "";
+
+  if (oreDiff >= policyOre || isManager) {
     rimborsato = true;
     statoFinale = "cancellata_in_tempo";
     if (bk.credito_scalato) {
-      await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+      if (isManager) {
+        const userRows = await sql`SELECT data_scadenza_crediti, tipo_abbonamento FROM profili_utenti WHERE email = ${bk.email_cliente} LIMIT 1`;
+        const currentExp = userRows[0]?.data_scadenza_crediti;
+        const tipoAbb = userRows[0]?.tipo_abbonamento || "";
+        const isContinuativo = tipoAbb.startsWith("lab_continuativo") || tipoAbb === "abbonamento";
+        let prorogaApplicata = false;
+
+        if (isContinuativo) {
+          await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+          messaggio = "Sessione annullata dal Coach. 1 credito rimborsato al wallet (abbonamento continuativo: scadenza fissa invariata).";
+        } else {
+          if (currentExp) {
+            const slotDate = new Date(bk.data.toISOString().slice(0, 10) + "T00:00:00");
+            const expDate = new Date(new Date(currentExp).toISOString().slice(0, 10) + "T00:00:00");
+            const diffDays = Math.ceil((expDate.getTime() - slotDate.getTime()) / (1000 * 60 * 60 * 24));
+
+            if (diffDays <= 5) {
+              // Posticipa la scadenza di +7 giorni (1 ciclo settimanale intero) per consentire il recupero senza alterare il ritmo di frequenza (2x o 3x)
+              await sql`
+                UPDATE profili_utenti 
+                SET crediti = crediti + 1,
+                    data_scadenza_crediti = data_scadenza_crediti + INTERVAL '7 days'
+                WHERE email = ${bk.email_cliente}
+              `;
+              prorogaApplicata = true;
+              messaggio = "Sessione annullata dal Coach. 1 credito rimborsato e scadenza prorogata di 7 giorni per consentire il recupero senza alterare il ritmo di frequenza.";
+            }
+          }
+
+          if (!prorogaApplicata) {
+            await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+            messaggio = "Sessione annullata dal Coach. 1 credito rimborsato al wallet (scadenza invariata: tempo residuo sufficiente al recupero).";
+          }
+        }
+      } else {
+        await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+        messaggio = `Cancellazione effettuata in tempo. 1 credito riaccreditato.`;
+      }
     }
+  } else {
+    messaggio = `Cancellazione tardiva (meno di ${policyOre}h). Credito trattenuto come da tua policy.`;
   }
 
   await sql`
@@ -734,9 +1010,7 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
     ok: true,
     rimborsato,
     stato: statoFinale,
-    messaggio: rimborsato
-      ? `Cancellazione effettuata in tempo (oltre ${policyOre}h di preavviso). 1 credito riaccreditato.`
-      : `Cancellazione tardiva (meno di ${policyOre}h). Credito trattenuto come da tua policy.`,
+    messaggio,
   });
 });
 
@@ -745,10 +1019,14 @@ app.get("/app-api/tariffario", async (c) => {
   const rows = await sql`SELECT * FROM tariffario_pacchetti WHERE attivo = true ORDER BY prezzo_euro ASC`;
   if (rows.length === 0) {
     return c.json([
-      { id: "pack-8", nome: "Carnet 8 Sedute", descrizione: "8 Sessioni individuali Landmine Lab (validità 45 giorni)", crediti: 8, giorni_validita: 45, prezzo_euro: 320, tipo: "consumo", attivo: true, badge: "Base" },
-      { id: "pack-12", nome: "Carnet 12 Sedute", descrizione: "12 Sessioni individuali Landmine Lab (validità 60 giorni)", crediti: 12, giorni_validita: 60, prezzo_euro: 450, tipo: "consumo", attivo: true, badge: "Più Scelto" },
-      { id: "pack-24", nome: "Carnet 24 Sedute", descrizione: "24 Sessioni individuali Landmine Lab (validità 120 giorni)", crediti: 24, giorni_validita: 120, prezzo_euro: 840, tipo: "consumo", attivo: true, badge: "Avanzato" },
-      { id: "pack-36", nome: "Carnet 36 Sedute", descrizione: "36 Sessioni individuali Landmine Lab (validità 180 giorni)", crediti: 36, giorni_validita: 180, prezzo_euro: 1190, tipo: "consumo", attivo: true, badge: "Pro Season" },
+      { id: "pack-8", nome: "Pacchetto Lab 8", descrizione: "8 allenamenti Landmine Lab • Scadenza 4 settimane", crediti: 8, giorni_validita: 28, prezzo_euro: 280, tipo: "consumo", attivo: true, badge: "2x / settimana" },
+      { id: "pack-12", nome: "Pacchetto Lab 12", descrizione: "12 allenamenti Landmine Lab • Scadenza 4 settimane", crediti: 12, giorni_validita: 28, prezzo_euro: 399, tipo: "consumo", attivo: true, badge: "3x / settimana" },
+      { id: "pack-24", nome: "Pacchetto Lab 24", descrizione: "24 allenamenti Landmine Lab • Scadenza 12 settimane", crediti: 24, giorni_validita: 84, prezzo_euro: 690, tipo: "consumo", attivo: true, badge: "Trimestrale 2x" },
+      { id: "pack-36", nome: "Pacchetto Lab 36", descrizione: "36 allenamenti Landmine Lab • Scadenza 12 settimane", crediti: 36, giorni_validita: 84, prezzo_euro: 890, tipo: "consumo", attivo: true, badge: "Miglior Risparmio (3x)" },
+      { id: "pack-continuativo-2x-semestrale", nome: "Abbonamento Lab Continuativo 2X (Semestrale)", descrizione: "48 allenamenti prenotabili subito (24 sett x 2/sett) • Quota €250/mese • Risparmio 30€/mese • Assistente AI Booking", crediti: 48, giorni_validita: 180, prezzo_euro: 250, tipo: "abbonamento", attivo: true, badge: "Semestrale 2x (48 slot)" },
+      { id: "pack-continuativo-3x-semestrale", nome: "Abbonamento Lab Continuativo 3X (Semestrale)", descrizione: "72 allenamenti prenotabili subito (24 sett x 3/sett) • Quota €359/mese • Risparmio 40€/mese • Assistente AI Booking", crediti: 72, giorni_validita: 180, prezzo_euro: 359, tipo: "abbonamento", attivo: true, badge: "Semestrale 3x (72 slot)" },
+      { id: "pack-continuativo-2x-annuale", nome: "Abbonamento Lab Continuativo 2X (Annuale)", descrizione: "104 allenamenti prenotabili subito (52 sett x 2/sett) • Quota €230/mese • Risparmio 50€/m (600€/anno!) • AI Concierge Incluso", crediti: 104, giorni_validita: 365, prezzo_euro: 230, tipo: "abbonamento", attivo: true, badge: "👑 PREMIO 12 MESI (104 slot)" },
+      { id: "pack-continuativo-3x-annuale", nome: "Abbonamento Lab Continuativo 3X (Annuale)", descrizione: "156 allenamenti prenotabili subito (52 sett x 3/sett) • Quota €329/mese • Risparmio 70€/m (840€/anno!) • AI Concierge Incluso", crediti: 156, giorni_validita: 365, prezzo_euro: 329, tipo: "abbonamento", attivo: true, badge: "👑 PREMIO 12 MESI (156 slot)" },
     ]);
   }
   return c.json(rows);
@@ -766,7 +1044,7 @@ app.post("/app-api/transazioni/checkout", async (c) => {
   const user = auth(c).user();
 
   const packRows = await sql`SELECT * FROM tariffario_pacchetti WHERE id = ${body.id_pacchetto} LIMIT 1`;
-  const pack = packRows[0] || { id: body.id_pacchetto, nome: "Carnet Sedute", crediti: 10, prezzo_euro: 380, giorni_validita: 60 };
+  const pack = packRows[0] || { id: body.id_pacchetto, nome: "Pacchetto Lab", crediti: 10, prezzo_euro: 380, giorni_validita: 60 };
 
   const atletaEmail = body.email || user?.email;
   const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${atletaEmail} LIMIT 1`;
@@ -1174,6 +1452,110 @@ app.post("/app-api/pagamenti/stripe-verify", async (c) => {
   }
 });
 
+// Webhook Stripe per ricezione asincrona eventi (es. checkout.session.completed)
+app.post("/app-api/pagamenti/stripe-webhook", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const rawBody = await c.req.text();
+  let event: any;
+  try {
+    event = JSON.parse(rawBody);
+  } catch {
+    return c.json({ error: "Invalid JSON" }, 400);
+  }
+
+  // Verifica della firma se il webhook secret è salvato
+  const confRows = await sql`SELECT stripe_webhook_secret FROM configurazione_lab WHERE id = 1 LIMIT 1`;
+  const webhookSecret = confRows[0]?.stripe_webhook_secret;
+  const sigHeader = c.req.header("stripe-signature");
+
+  if (webhookSecret && sigHeader) {
+    try {
+      const parts = sigHeader.split(",").reduce((acc: any, part: string) => {
+        const [k, v] = part.split("=");
+        if (k && v) acc[k.trim()] = v.trim();
+        return acc;
+      }, {});
+      if (parts.t && parts.v1) {
+        const expectedSig = crypto
+          .createHmac("sha256", webhookSecret.trim())
+          .update(`${parts.t}.${rawBody}`)
+          .digest("hex");
+        if (parts.v1 !== expectedSig) {
+          console.warn("[Stripe Webhook] Firma HMAC non valida");
+          return c.json({ error: "Firma webhook non valida" }, 400);
+        }
+      }
+    } catch (e) {
+      console.error("[Stripe Webhook] Errore verifica firma", e);
+    }
+  }
+
+  if (event.type === "checkout.session.completed") {
+    const session = event.data?.object;
+    if (session && session.id && session.payment_status === "paid") {
+      const existing = await sql`SELECT id FROM transazioni_pagamenti WHERE stripe_session_id = ${session.id} LIMIT 1`;
+      if (existing.length === 0) {
+        const meta = session.metadata || {};
+        const packId = meta.pack_id;
+        const atletaEmail = meta.atleta_email || session.customer_email;
+
+        const packRows = await sql`SELECT * FROM tariffario_pacchetti WHERE id = ${packId} LIMIT 1`;
+        const pacchetto = packRows[0] || {
+          id: packId,
+          nome: meta.pack_nome || "Pacchetto Lab",
+          crediti: Number(meta.pack_crediti) || 10,
+          prezzo_euro: (session.amount_total || 0) / 100,
+          giorni_validita: Number(meta.giorni_validita) || 60,
+        };
+
+        const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${atletaEmail} OR id = ${meta.atleta_id} LIMIT 1`;
+        const atleta = atletaRows[0];
+
+        const currentCrediti = Number(atleta?.crediti || 0);
+        const packCrediti = Number(pacchetto.crediti || 0);
+        let debitiDecurtati = 0;
+        let creditiEffettivi = packCrediti;
+        if (currentCrediti < 0) {
+          debitiDecurtati = Math.abs(currentCrediti);
+          creditiEffettivi = packCrediti - debitiDecurtati;
+        }
+        const finalCrediti = currentCrediti < 0 ? creditiEffettivi : currentCrediti + packCrediti;
+
+        if (atleta) {
+          await sql`
+            UPDATE profili_utenti
+            SET crediti = ${finalCrediti},
+                data_scadenza_crediti = (CURRENT_DATE + (${pacchetto.giorni_validita || 60} || ' days')::interval)::date,
+                data_ultimo_accesso = NOW()
+            WHERE id = ${atleta.id}
+          `;
+        }
+
+        const txCode = `TX-ST-${Date.now().toString().slice(-6)}`;
+        await sql`
+          INSERT INTO transazioni_pagamenti (
+            codice_transazione, stripe_session_id, stripe_payment_intent, atleta_id, email_cliente, nome_cliente,
+            codice_fiscale, indirizzo, id_pacchetto, nome_pacchetto, importo_euro, metodo,
+            crediti_acquistati, debiti_decurtati, crediti_effettivi_aggiunti, causale_bonifico, stato, stato_fattura
+          ) VALUES (
+            ${txCode}, ${session.id}, ${session.payment_intent || null}, ${atleta?.id || null}, ${atleta?.email || atletaEmail},
+            ${atleta ? `${atleta.nome} ${atleta.cognome}` : "Atleta"}, ${meta.codice_fiscale || atleta?.codice_fiscale || null},
+            ${meta.indirizzo || atleta?.indirizzo || null}, ${pacchetto.id}, ${pacchetto.nome}, ${(session.amount_total || 0) / 100},
+            'stripe_card', ${packCrediti}, ${debitiDecurtati}, ${creditiEffettivi}, null, 'completato', 'da_emettere'
+          )
+        `;
+      }
+    }
+  }
+
+  return c.json({ received: true });
+});
+
+// Alias comune
+app.post("/api/stripe-webhook", async (c) => {
+  return app.fetch(new Request(new URL("/app-api/pagamenti/stripe-webhook", c.req.url).toString(), c.req.raw));
+});
+
 // ─── Movimenti Crediti (Audit Ledger) ───────────────────────────────────────
 app.get("/app-api/movimenti-crediti", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
@@ -1265,6 +1647,63 @@ app.post("/app-api/eccezioni-calendario", async (c) => {
     RETURNING *
   `;
   return c.json(rows[0], 201);
+});
+
+app.post("/app-api/eccezioni-calendario/chiusura-periodo", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const body = await c.req.json();
+  const { data_inizio, data_fine, motivo, proroga_scadenze } = body;
+
+  if (!data_inizio || !data_fine) {
+    return c.json({ error: "Date di inizio e fine periodo obbligatorie" }, 400);
+  }
+
+  const start = new Date(data_inizio);
+  const end = new Date(data_fine);
+  const diffMs = end.getTime() - start.getTime();
+  const giorniChiusura = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1);
+
+  // Inserisci le eccezioni giorno per giorno
+  const cur = new Date(start);
+  while (cur <= end) {
+    const dStr = cur.toISOString().slice(0, 10);
+    const id = `ecc-close-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    await sql`
+      INSERT INTO eccezioni_calendario (id, data, orario, tipo, motivo)
+      VALUES (${id}, ${dStr}::date, null, 'chiusura_giornata', ${motivo || 'Chiusura programmata dello studio'})
+      ON CONFLICT DO NOTHING
+    `;
+
+    // Cancella e rimborsa prenotazioni già presenti
+    const cancelled = await sql`
+      UPDATE prenotazioni_slot
+      SET stato = 'cancellata_in_tempo', cancellato_il = NOW(), note = ${'Annullata per chiusura studio: ' + (motivo || 'Chiusura programmata')}
+      WHERE data = ${dStr}::date AND stato = 'confermata'
+      RETURNING atleta_id, email_cliente, credito_scalato
+    `;
+    for (const bk of cancelled) {
+      if (bk.credito_scalato) {
+        await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+      }
+    }
+
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  // Slitta le scadenze se richiesto
+  if (proroga_scadenze !== false) {
+    await sql`
+      UPDATE profili_utenti
+      SET data_scadenza_crediti = data_scadenza_crediti + (${giorniChiusura} || ' days')::interval
+      WHERE ruolo = 'atleta' AND stato_iscrizione != 'dismesso' AND data_scadenza_crediti >= ${data_inizio}::date
+    `;
+  }
+
+  return c.json({
+    ok: true,
+    giorni_chiusura: giorniChiusura,
+    messaggio: `Chiusura studio registrata per ${giorniChiusura} giorni (${data_inizio} ➔ ${data_fine}). Scadenze atleti prorogate automaticamente.`,
+  });
 });
 
 app.delete("/app-api/eccezioni-calendario/:id", async (c) => {
