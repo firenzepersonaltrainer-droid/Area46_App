@@ -17343,9 +17343,6 @@ async function handleLocalApi(req, res, next) {
     db.profili_utenti = (db.profili_utenti || []).filter(
       (p) => p.id !== targetId && p.email?.toLowerCase() !== targetEmail
     );
-    db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
-      (t) => t.atleta_id !== targetId && t.email_cliente?.toLowerCase() !== targetEmail
-    );
     db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
       (p) => p.atleta_id !== targetId && p.email_cliente?.toLowerCase() !== targetEmail
     );
@@ -18778,6 +18775,22 @@ CALENDARIO E PRENOTAZIONI:
     tx.approvato_il = (/* @__PURE__ */ new Date()).toISOString();
     saveData(db);
     return res.end(JSON.stringify({ ok: true, tx, crediti_atleta: atleta?.crediti }));
+  }
+  const txDeleteMatch = pathname.match(/^\/app-api\/transazioni\/([a-zA-Z0-9_@.-]+)$/);
+  if (txDeleteMatch && method === "DELETE") {
+    const targetParam = decodeURIComponent(txDeleteMatch[1]);
+    const initialCount = (db.transazioni_pagamenti || []).length;
+    db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter((t) => {
+      return t.id !== targetParam && t.codice_transazione !== targetParam;
+    });
+    saveData(db);
+    return res.end(
+      JSON.stringify({
+        success: true,
+        deletedCount: initialCount - (db.transazioni_pagamenti || []).length,
+        message: "Movimento fiscale eliminato con successo. Registro incassi ricalcolato."
+      })
+    );
   }
   if (pathname === "/app-api/transazioni/export-invoicebuddy" && method === "GET") {
     const transazioni = (db.transazioni_pagamenti || []).map((t) => ({

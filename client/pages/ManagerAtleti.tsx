@@ -518,7 +518,7 @@ export default function ManagerAtletiPage() {
                     variant="destructive"
                     onClick={() => handleOpenDeleteAthlete(atleta)}
                     className="text-xs font-black h-8 px-2.5 rounded-xl bg-red-800 hover:bg-red-900 text-white border border-red-900 shadow-2xs flex items-center gap-1 cursor-pointer"
-                    title="Elimina definitivamente persona e tutti i dati dal database e dal fisco"
+                    title="Elimina atleta dall'anagrafica, diario e prenotazioni (preserva i dati contabili nel fisco)"
                   >
                     <Trash2 className="size-3.5" />
                     <span>Cancella</span>
@@ -1402,28 +1402,30 @@ export default function ManagerAtletiPage() {
 
           <DialogHeader className="text-center">
             <DialogTitle className="text-lg font-black text-zinc-900">
-              Conferma Eliminazione Definitiva
+              Conferma Eliminazione dall&apos;Anagrafica
             </DialogTitle>
             <DialogDescription className="text-xs text-zinc-500 mt-1">
-              Questa azione è irreversibile e cancellerà la persona da tutte le sezioni dell&apos;app.
+              Rimuove l&apos;atleta dall&apos;elenco, dalle prenotazioni e dal diario. I dati fiscali rimarranno preservati nel Fisco.
             </DialogDescription>
           </DialogHeader>
 
           {atletaDaCancellare && (
             <div className="my-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-950 space-y-2">
               <p className="font-bold text-sm text-red-900">
-                Stai per eliminare: {atletaDaCancellare.nome} {atletaDaCancellare.cognome}
+                Stai per eliminare dall&apos;anagrafica: {atletaDaCancellare.nome} {atletaDaCancellare.cognome}
               </p>
               <p className="text-[11px] text-red-800/90 leading-relaxed">
-                Verranno eliminati definitivamente dal database e dalla sezione fisco:
+                Verranno eliminati dall&apos;applicazione:
               </p>
               <ul className="list-disc list-inside text-[11px] text-red-800/90 space-y-0.5">
                 <li>Scheda anagrafica e profilo atleta</li>
-                <li>Tutte le transazioni e versamenti nel registro <strong>Fisco</strong></li>
                 <li>Tutte le prenotazioni slot passate e future</li>
-                <li>Storico crediti, movimenti e debiti</li>
+                <li>Storico crediti interni e debiti di presenza</li>
                 <li>Diario allenamenti e tonnellaggio registrato</li>
               </ul>
+              <div className="p-2.5 rounded-xl bg-amber-100/80 border border-amber-300 text-amber-950 text-[11px] font-semibold mt-2">
+                🛡️ <strong>Nota Fiscale:</strong> I movimenti e le ricevute registrate nella sezione <strong>Fisco</strong> rimarranno conservati a norma contabile.
+              </div>
             </div>
           )}
 
@@ -1442,7 +1444,7 @@ export default function ManagerAtletiPage() {
               disabled={isDeleting}
               className="flex-1 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white"
             >
-              {isDeleting ? "Eliminazione..." : "Sì, Cancella Definitivamente"}
+              {isDeleting ? "Eliminazione..." : "Sì, Elimina dall'Anagrafica"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -706,18 +706,15 @@ export default function AreaPersonalePage() {
 
           {/* ASSISTENTE AI BOOKING CONCIERGE BANNER */}
           <div className="p-3.5 rounded-2xl bg-zinc-950 text-white border-2 border-[#e3ff00] shadow-[0_0_20px_rgba(227,255,0,0.18)] flex items-center justify-between gap-2.5">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
               <div className="p-2 rounded-xl bg-[#e3ff00] text-zinc-950 font-black shrink-0 border border-zinc-900 shadow-xs">
-                <Bot className="size-4 text-[#1c00ff]" />
+                <Bot className="size-4.5 text-[#1c00ff]" />
               </div>
-              <div>
-                <div className="text-xs font-black text-white flex items-center gap-1.5">
-                  <span>Assistente AI Booking Concierge</span>
-                  <span className="text-[9px] font-black uppercase bg-[#1c00ff] text-[#e3ff00] px-1.5 py-0.2 rounded-full">
-                    CONTINUATIVO PRO
-                  </span>
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm font-black text-white truncate">
+                  Assistente AI Booking Concierge
                 </div>
-                <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
+                <p className="text-[10px] sm:text-[11px] text-zinc-400 leading-tight mt-0.5">
                   Pianifica o modifica intere settimane a voce o con un messaggio.
                 </p>
               </div>
@@ -727,16 +724,16 @@ export default function AreaPersonalePage() {
               <Button
                 size="sm"
                 onClick={() => setShowAIModal(true)}
-                className="bg-[#e3ff00] text-zinc-950 hover:bg-[#d9f200] font-black text-xs px-3 h-8 rounded-xl border border-zinc-900 shadow-xs"
+                className="bg-[#1c00ff] hover:bg-[#1500cc] text-white font-black text-xs sm:text-sm px-3.5 h-9 rounded-xl border border-blue-400/50 shadow-md flex items-center gap-1.5 cursor-pointer transition-all"
               >
-                <Sparkles className="size-3.5 mr-1 text-[#1c00ff]" />
-                Usa AI
+                <Sparkles className="size-3.5 sm:size-4 text-white shrink-0" />
+                <span>Usa A.I.</span>
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => setShowManualModal(true)}
-                className="text-xs font-bold h-8 px-2 text-zinc-400 hover:text-white rounded-xl"
+                className="text-xs font-bold h-9 px-2 text-zinc-400 hover:text-white rounded-xl"
                 title="Guida & Manuale App"
               >
                 <BookOpen className="size-3.5" />

@@ -365,7 +365,7 @@ export function useProfili() {
       queryClient.invalidateQueries({ queryKey: ["transazioni"] });
       queryClient.invalidateQueries({ queryKey: ["diario"] });
       queryClient.invalidateQueries({ queryKey: ["stati"] });
-      toast.success("Atleta e tutti i dati associati eliminati con successo.");
+      toast.success("Atleta eliminato dall'anagrafica. I movimenti fiscali rimangono preservati.");
     },
     onError: (err: any) => {
       toast.error(err.message || "Errore durante l'eliminazione");

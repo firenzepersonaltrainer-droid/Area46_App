@@ -574,12 +574,10 @@ export async function handleLocalApi(
         (p: any) => p.id !== targetId && p.email?.toLowerCase() !== targetEmail
       );
 
-      // 2. Rimuovi da transazioni_pagamenti (Fisco)
-      db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
-        (t: any) => t.atleta_id !== targetId && t.email_cliente?.toLowerCase() !== targetEmail
-      );
+      // NOTA FISCALE: le transazioni in db.transazioni_pagamenti NON vengono cancellate:
+      // i movimenti fiscali e gli incassi storici devono restare a norma contabile.
 
-      // 3. Rimuovi da prenotazioni_slot
+      // 2. Rimuovi da prenotazioni_slot
       db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
         (p: any) => p.atleta_id !== targetId && p.email_cliente?.toLowerCase() !== targetEmail
       );
@@ -2370,6 +2368,24 @@ CALENDARIO E PRENOTAZIONI:
       saveData(db);
 
       return res.end(JSON.stringify({ ok: true, tx, crediti_atleta: atleta?.crediti }));
+    }
+
+    // DELETE /app-api/transazioni/:id (Elimina solo il movimento fiscale, ricalcola registro incassi)
+    const txDeleteMatch = pathname.match(/^\/app-api\/transazioni\/([a-zA-Z0-9_@.-]+)$/);
+    if (txDeleteMatch && method === "DELETE") {
+      const targetParam = decodeURIComponent(txDeleteMatch[1]);
+      const initialCount = (db.transazioni_pagamenti || []).length;
+      db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter((t: any) => {
+        return t.id !== targetParam && t.codice_transazione !== targetParam;
+      });
+      saveData(db);
+      return res.end(
+        JSON.stringify({
+          success: true,
+          deletedCount: initialCount - (db.transazioni_pagamenti || []).length,
+          message: "Movimento fiscale eliminato con successo. Registro incassi ricalcolato.",
+        })
+      );
     }
 
     // GET /app-api/transazioni/export-invoicebuddy
