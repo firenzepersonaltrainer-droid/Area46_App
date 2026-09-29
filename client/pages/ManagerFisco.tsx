@@ -26,9 +26,19 @@ import {
   Download,
   Users,
   Clock,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "../components/Dialog";
 import { toast } from "sonner";
 
 interface Transazione {
@@ -52,7 +62,7 @@ interface Transazione {
 export default function ManagerFiscoPage() {
   const queryClient = useQueryClient();
   const { config, aggiornaConfig } = useLabConfig();
-  const { profili } = useProfili();
+  const { profili, eliminaAtleta, isDeleting } = useProfili();
 
   // Stripe local state
   const [stripeMode, setStripeMode] = useState<"test" | "live">(config?.stripe_mode || "live");
@@ -78,6 +88,31 @@ export default function ManagerFiscoPage() {
   const [filtroMetodo, setFiltroMetodo] = useState<"tutti" | "stripe" | "bonifico">("tutti");
   const [filtroStato, setFiltroStato] = useState<"tutti" | "completato" | "in_attesa_bonifico">("tutti");
   const [searchTx, setSearchTx] = useState("");
+
+  // Modale Eliminazione Persona da Fisco & Database
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [personaDaCancellare, setPersonaDaCancellare] = useState<{ id?: string; email: string; nome: string } | null>(null);
+
+  const handleOpenDeletePersona = (tx: Transazione) => {
+    setPersonaDaCancellare({
+      id: tx.atleta_id,
+      email: tx.email_cliente,
+      nome: tx.nome_cliente,
+    });
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDeletePersona = async () => {
+    if (!personaDaCancellare) return;
+    try {
+      await eliminaAtleta(personaDaCancellare.id || personaDaCancellare.email);
+      setDeleteModalOpen(false);
+      setPersonaDaCancellare(null);
+      queryClient.invalidateQueries({ queryKey: ["transazioni"] });
+    } catch {
+      // toast gestito da hook
+    }
+  };
 
   // Sync with config on load
   useEffect(() => {
@@ -844,6 +879,18 @@ export default function ManagerFiscoPage() {
                           <Copy className="size-2.5 mr-1" /> Copia Riga InvoiceBuddy
                         </Button>
                       )}
+
+                      {/* TASTO CANCELLA PERSONA DAL FISCO E DAL DATABASE */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleOpenDeletePersona(tx)}
+                        className="h-6 text-[10px] font-bold text-red-600 hover:text-red-700 hover:bg-red-50 px-2 rounded-lg flex items-center gap-1 cursor-pointer"
+                        title="Elimina definitivamente persona e tutti i suoi dati dal database e dal fisco"
+                      >
+                        <Trash2 className="size-2.5" />
+                        <span>Cancella</span>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -863,6 +910,61 @@ export default function ManagerFiscoPage() {
           </p>
         </div>
       </div>
+
+      {/* MODALE DI CONFERMA CANCELLAZIONE DEFINITIVA DA FISCO */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <div className="mx-auto size-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mb-2 border border-red-200">
+            <AlertTriangle className="size-6 text-red-600" />
+          </div>
+
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-lg font-black text-zinc-900">
+              Conferma Eliminazione Persona
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 mt-1">
+              Questa operazione cancellerà la persona sia dal Fisco che dall&apos;elenco generale atleti.
+            </DialogDescription>
+          </DialogHeader>
+
+          {personaDaCancellare && (
+            <div className="my-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-950 space-y-2">
+              <p className="font-bold text-sm text-red-900">
+                Stai per eliminare: {personaDaCancellare.nome}
+              </p>
+              <p className="text-[11px] text-red-800/90 leading-relaxed">
+                Verranno eliminati definitivamente dal database e da tutte le sezioni:
+              </p>
+              <ul className="list-disc list-inside text-[11px] text-red-800/90 space-y-0.5">
+                <li>Tutte le transazioni e versamenti nel registro <strong>Fisco</strong></li>
+                <li>Scheda anagrafica e profilo atleta</li>
+                <li>Tutte le prenotazioni slot passate e future</li>
+                <li>Storico crediti, movimenti e debiti</li>
+                <li>Diario allenamenti e progressi</li>
+              </ul>
+            </div>
+          )}
+
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteModalOpen(false)}
+              className="flex-1 rounded-xl"
+              disabled={isDeleting}
+            >
+              Annulla
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDeletePersona}
+              disabled={isDeleting}
+              className="flex-1 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeleting ? "Eliminazione..." : "Sì, Cancella Definitivamente"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

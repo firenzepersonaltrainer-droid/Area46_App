@@ -577,6 +577,44 @@ app.put("/app-api/profili/:id", async (c) => {
   return c.json(rows[0]);
 });
 
+app.delete("/app-api/atleti/:id", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const id = c.req.param("id");
+  try {
+    const prof = await sql`SELECT email FROM profili_utenti WHERE id = ${id}`;
+    const email = prof[0]?.email || "";
+    await sql`DELETE FROM transazioni_pagamenti WHERE atleta_id = ${id} OR email_cliente = ${email}`;
+    await sql`DELETE FROM prenotazioni_slot WHERE atleta_id = ${id} OR email_cliente = ${email}`;
+    await sql`DELETE FROM movimenti_crediti WHERE atleta_id = ${id} OR email_cliente = ${email}`;
+    await sql`DELETE FROM diario_utente WHERE email_cliente = ${email}`;
+    await sql`DELETE FROM stato_allenamenti WHERE email_cliente = ${email}`;
+    await sql`DELETE FROM preferenze_utente WHERE email = ${email}`;
+    await sql`DELETE FROM profili_utenti WHERE id = ${id} OR email = ${email}`;
+    return c.json({ success: true, message: "Atleta eliminato definitivamente" });
+  } catch (err: any) {
+    return c.json({ error: err.message || "Errore durante eliminazione" }, 500);
+  }
+});
+
+app.delete("/app-api/profili/:id", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const id = c.req.param("id");
+  try {
+    const prof = await sql`SELECT email FROM profili_utenti WHERE id = ${id}`;
+    const email = prof[0]?.email || "";
+    await sql`DELETE FROM transazioni_pagamenti WHERE atleta_id = ${id} OR email_cliente = ${email}`;
+    await sql`DELETE FROM prenotazioni_slot WHERE atleta_id = ${id} OR email_cliente = ${email}`;
+    await sql`DELETE FROM movimenti_crediti WHERE atleta_id = ${id} OR email_cliente = ${email}`;
+    await sql`DELETE FROM diario_utente WHERE email_cliente = ${email}`;
+    await sql`DELETE FROM stato_allenamenti WHERE email_cliente = ${email}`;
+    await sql`DELETE FROM preferenze_utente WHERE email = ${email}`;
+    await sql`DELETE FROM profili_utenti WHERE id = ${id} OR email = ${email}`;
+    return c.json({ success: true, message: "Profilo eliminato definitivamente" });
+  } catch (err: any) {
+    return c.json({ error: err.message || "Errore durante eliminazione" }, 500);
+  }
+});
+
 app.post("/app-api/profili/:id/modifica-crediti", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const id = c.req.param("id");

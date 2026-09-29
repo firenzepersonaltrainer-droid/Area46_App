@@ -85,7 +85,7 @@ export function WalletBar() {
 
               {/* PULSANTE AREA PERSONALE / RICARICA */}
               <Link
-                to="/account"
+                to="/tariffario"
                 className="px-2.5 py-1.5 rounded-xl text-xs font-black bg-[#e3ff00] text-zinc-950 border border-zinc-900 shadow-xs hover:bg-[#d9f200] transition-colors flex items-center gap-1 shrink-0"
               >
                 <Sparkles className="size-3 text-[#1c00ff]" />
@@ -137,7 +137,7 @@ export function WalletBar() {
                 </span>
               </div>
               <Link
-                to="/account"
+                to="/tariffario"
                 className="text-red-900 font-bold underline shrink-0 flex items-center gap-0.5"
               >
                 Sana debito <ArrowRight className="size-3" />
@@ -152,7 +152,7 @@ export function WalletBar() {
                 <span>Crediti esauriti. Le prenotazioni degli slot sono temporaneamente bloccate.</span>
               </div>
               <Link
-                to="/account"
+                to="/tariffario"
                 className="text-amber-950 font-bold underline shrink-0 flex items-center gap-0.5"
               >
                 Ricarica <ArrowRight className="size-3" />

@@ -14292,8 +14292,8 @@ var demo_data_default = {
     {
       id: "usr-coach-01",
       email: "firenzepersonaltrainer@gmail.com",
-      nome: "Coach",
-      cognome: "Area46",
+      nome: "Stefano",
+      cognome: "Tronconi",
       telefono: "+39 340 0000000",
       codice_fiscale: "ARECST80A01D612Y",
       indirizzo: "Via del Landmine 46, Firenze",
@@ -14303,7 +14303,7 @@ var demo_data_default = {
       data_ultimo_accesso: "2026-09-28T19:38:28.350Z",
       note_coach: "Head Coach & Amministratore Lab",
       tempo_cancellazione_ore: 12,
-      name: "Coach Area46",
+      name: "Stefano Tronconi",
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       tempo_anticipo_prenotazione_ore: 24
@@ -15347,26 +15347,8 @@ var demo_data_default = {
   ],
   transazioni_pagamenti: [
     {
-      codice_transazione: "TX-46-2026-001",
-      atleta_id: "usr-bw-1953983",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Giacomo Tesi",
-      codice_fiscale: "TSEGCM88H15D612U",
-      indirizzo: "Via Pistoiese 45, Firenze",
-      id_pacchetto: "pack-10",
-      nome_pacchetto: "Pacchetto Lab 10",
-      importo_euro: 380,
-      metodo: "carta",
-      crediti_acquistati: 10,
-      debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: 10,
-      stato: "completato",
-      stato_fattura: "emessa",
-      created_at: "2026-09-02T10:15:30.000Z"
-    },
-    {
       codice_transazione: "TX-46-2026-002",
-      atleta_id: "usr-bw-1953982",
+      atleta_id: "usr-bw-1953976",
       email_cliente: "daniele.casci@gmail.com",
       nome_cliente: "Daniele Casci",
       codice_fiscale: "CSCDNL85T12D612K",
@@ -15384,7 +15366,7 @@ var demo_data_default = {
     },
     {
       codice_transazione: "TX-46-2026-003",
-      atleta_id: "usr-bw-1953981",
+      atleta_id: "usr-bw-1953992",
       email_cliente: "matteo.calosci@gmail.com",
       nome_cliente: "Matteo Calosci",
       codice_fiscale: "CLSMTT91C22D612P",
@@ -15402,10 +15384,10 @@ var demo_data_default = {
     },
     {
       codice_transazione: "TX-46-2026-004",
-      atleta_id: "usr-bw-1953980",
+      atleta_id: "usr-bw-1953985",
       email_cliente: "pantanella@gmail.com",
-      nome_cliente: "Niccol\xF2 Pantanella",
-      codice_fiscale: "PNTNCL87A04D612A",
+      nome_cliente: "Alessandro Pantanella",
+      codice_fiscale: "PNTLSN87A04D612A",
       indirizzo: "Via Cavour 18, Firenze",
       id_pacchetto: "pack-12",
       nome_pacchetto: "Pacchetto Lab 12",
@@ -15435,43 +15417,6 @@ var demo_data_default = {
       stato: "completato",
       stato_fattura: "emessa",
       created_at: "2026-09-19T17:50:00.000Z"
-    },
-    {
-      codice_transazione: "TX-46-2026-006",
-      atleta_id: "usr-bw-1953985",
-      email_cliente: "elena.bonini1981@gmail.com",
-      nome_cliente: "Elena Bonini",
-      codice_fiscale: "BNNLNE81R45D612L",
-      indirizzo: "Viale dei Mille 33, Firenze",
-      id_pacchetto: "pack-10",
-      nome_pacchetto: "Pacchetto Lab 10",
-      importo_euro: 380,
-      metodo: "carta",
-      crediti_acquistati: 10,
-      debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: 10,
-      stato: "completato",
-      stato_fattura: "emessa",
-      created_at: "2026-09-24T09:15:00.000Z"
-    },
-    {
-      codice_transazione: "TX-46-2026-007",
-      atleta_id: "usr-bw-1953984",
-      email_cliente: "f.fioravanti84@gmail.com",
-      nome_cliente: "Francesco Fioravanti",
-      codice_fiscale: "FRNFNC84H12D612W",
-      indirizzo: "Via Ghibellina 52, Firenze",
-      id_pacchetto: "pack-8",
-      nome_pacchetto: "Pacchetto Lab 8",
-      importo_euro: 320,
-      metodo: "bonifico",
-      crediti_acquistati: 8,
-      debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: 8,
-      stato: "in_attesa_bonifico",
-      causale_bonifico: "Acquisto Pacchetto Lab 8 Sedute Francesco Fioravanti",
-      stato_fattura: "da_emettere",
-      created_at: "2026-09-27T18:00:00.000Z"
     }
   ],
   active_user_id: "usr-coach-01",
@@ -17386,6 +17331,43 @@ async function handleLocalApi(req, res, next) {
     profilo.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     saveData(db);
     return res.end(JSON.stringify(profilo));
+  }
+  const atletaDeleteMatch = pathname.match(/^\/app-api\/(?:atleti|profili)\/([a-zA-Z0-9_@.-]+)$/);
+  if (atletaDeleteMatch && method === "DELETE") {
+    const targetIdentifier = decodeURIComponent(atletaDeleteMatch[1]);
+    const atleta = (db.profili_utenti || []).find(
+      (p) => p.id === targetIdentifier || p.email?.toLowerCase() === targetIdentifier.toLowerCase()
+    );
+    const targetId = atleta ? atleta.id : targetIdentifier;
+    const targetEmail = atleta ? atleta.email?.toLowerCase() : targetIdentifier.toLowerCase();
+    db.profili_utenti = (db.profili_utenti || []).filter(
+      (p) => p.id !== targetId && p.email?.toLowerCase() !== targetEmail
+    );
+    db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
+      (t) => t.atleta_id !== targetId && t.email_cliente?.toLowerCase() !== targetEmail
+    );
+    db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
+      (p) => p.atleta_id !== targetId && p.email_cliente?.toLowerCase() !== targetEmail
+    );
+    db.movimenti_crediti = (db.movimenti_crediti || []).filter(
+      (m) => m.atleta_id !== targetId && m.email_cliente?.toLowerCase() !== targetEmail
+    );
+    db.diario_utente = (db.diario_utente || []).filter(
+      (d) => d.email_cliente?.toLowerCase() !== targetEmail
+    );
+    db.stato_allenamenti = (db.stato_allenamenti || []).filter(
+      (s) => s.email_cliente?.toLowerCase() !== targetEmail
+    );
+    db.preferenze_utente = (db.preferenze_utente || []).filter(
+      (pref) => pref.email?.toLowerCase() !== targetEmail
+    );
+    saveData(db);
+    return res.end(
+      JSON.stringify({
+        success: true,
+        message: "Atleta e tutti i dati associati eliminati definitivamente con successo"
+      })
+    );
   }
   const dismAnteprimaMatch = pathname.match(
     /^\/app-api\/atleti\/([a-zA-Z0-9_-]+)\/anteprima-dismissione$/

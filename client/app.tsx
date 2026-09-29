@@ -137,25 +137,15 @@ function AppHeader({
             ACCESSO LAB
           </button>
         ) : isManager ? (
-          <div className="flex items-center gap-1.5">
-            <Link
-              to="/desktop"
-              className="hidden sm:inline-flex text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/40 hover:bg-zinc-800 transition-all cursor-pointer"
-              title="Apri Control Panel Desktop Panoramico"
-            >
-              <Monitor className="size-3.5 text-[#e3ff00]" />
-              <span>DESKTOP</span>
-            </Link>
-            <button
-              type="button"
-              onClick={onOpenSwitcher}
-              className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50 hover:bg-zinc-800 transition-all cursor-pointer"
-              title="Tocca per cambiare modalità o passare a vista Atleta"
-            >
-              <ShieldCheck className="size-3.5 text-[#e3ff00]" />
-              COACH • SWITCH
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onOpenSwitcher}
+            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50 hover:bg-zinc-800 transition-all cursor-pointer"
+            title="Tocca per cambiare modalità o passare a vista Atleta"
+          >
+            <ShieldCheck className="size-3.5 text-[#e3ff00]" />
+            MODE SWITCH
+          </button>
         ) : (
           <button
             type="button"
@@ -168,7 +158,7 @@ function AppHeader({
             title="Tocca per cambiare profilo o accedere come Coach"
           >
             <span className="size-2 rounded-full bg-[#e3ff00] animate-pulse" />
-            {displayLevel} • SWITCH
+            MODE SWITCH
           </button>
         )}
       </div>
@@ -318,8 +308,8 @@ function AppContent() {
             element={<EsercizioDetailPage />}
           />
           <Route path="/account" element={<AreaPersonalePage />} />
-          <Route path="/prenota" element={<AreaPersonalePage />} />
-          <Route path="/tariffario" element={<AreaPersonalePage />} />
+          <Route path="/prenota" element={<PrenotaSlotPage />} />
+          <Route path="/tariffario" element={<TariffarioPage />} />
           <Route path="/diario" element={<DiarioPage />} />
           <Route path="/libreria" element={<LibreriaPage />} />
           <Route path="/tonnellaggio" element={<TonnellaggioPage />} />

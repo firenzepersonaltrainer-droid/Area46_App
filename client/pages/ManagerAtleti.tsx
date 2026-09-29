@@ -30,6 +30,7 @@ import {
   Copy,
   Receipt,
   TrendingUp,
+  Trash2,
 } from "lucide-react";
 import { PerformanceModal } from "../components/PerformanceModal";
 import { Button } from "../components/Button";
@@ -45,7 +46,7 @@ import {
 import { toast } from "sonner";
 
 export default function ManagerAtletiPage() {
-  const { profili, modificaCrediti, salvaProfilo, dismettiAtleta } = useProfili();
+  const { profili, modificaCrediti, salvaProfilo, dismettiAtleta, eliminaAtleta, isDeleting } = useProfili();
   const { movimenti, registraMovimento } = useMovimentiCrediti();
 
   const [search, setSearch] = useState("");
@@ -92,6 +93,26 @@ export default function ManagerAtletiPage() {
   // Modale Performance & I.A. Coach Assistant
   const [performanceModalOpen, setPerformanceModalOpen] = useState(false);
   const [performanceAtleta, setPerformanceAtleta] = useState<UserProfile | null>(null);
+
+  // Modale Eliminazione Definitiva Atleta
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [atletaDaCancellare, setAtletaDaCancellare] = useState<UserProfile | null>(null);
+
+  const handleOpenDeleteAthlete = (atleta: UserProfile) => {
+    setAtletaDaCancellare(atleta);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDeleteAthlete = async () => {
+    if (!atletaDaCancellare) return;
+    try {
+      await eliminaAtleta(atletaDaCancellare.id);
+      setDeleteModalOpen(false);
+      setAtletaDaCancellare(null);
+    } catch {
+      // toast già gestito da hook
+    }
+  };
 
   // Query Transazioni per calcolo totale versamenti
   const { data: transazioni = [] } = useQuery<any[]>({
@@ -489,6 +510,18 @@ export default function ManagerAtletiPage() {
                         </>
                       )}
                     </span>
+                  </Button>
+
+                  {/* TASTO CANCELLA DEFINITIVO */}
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleOpenDeleteAthlete(atleta)}
+                    className="text-xs font-black h-8 px-2.5 rounded-xl bg-red-800 hover:bg-red-900 text-white border border-red-900 shadow-2xs flex items-center gap-1 cursor-pointer"
+                    title="Elimina definitivamente persona e tutti i dati dal database e dal fisco"
+                  >
+                    <Trash2 className="size-3.5" />
+                    <span>Cancella</span>
                   </Button>
                 </div>
               </div>
@@ -1359,6 +1392,61 @@ export default function ManagerAtletiPage() {
         onClose={() => setPerformanceModalOpen(false)}
         atleta={performanceAtleta}
       />
+
+      {/* MODALE DI CONFERMA CANCELLAZIONE DEFINITIVA ATLETA */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <div className="mx-auto size-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mb-2 border border-red-200">
+            <AlertTriangle className="size-6 text-red-600" />
+          </div>
+
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-lg font-black text-zinc-900">
+              Conferma Eliminazione Definitiva
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 mt-1">
+              Questa azione è irreversibile e cancellerà la persona da tutte le sezioni dell&apos;app.
+            </DialogDescription>
+          </DialogHeader>
+
+          {atletaDaCancellare && (
+            <div className="my-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-950 space-y-2">
+              <p className="font-bold text-sm text-red-900">
+                Stai per eliminare: {atletaDaCancellare.nome} {atletaDaCancellare.cognome}
+              </p>
+              <p className="text-[11px] text-red-800/90 leading-relaxed">
+                Verranno eliminati definitivamente dal database e dalla sezione fisco:
+              </p>
+              <ul className="list-disc list-inside text-[11px] text-red-800/90 space-y-0.5">
+                <li>Scheda anagrafica e profilo atleta</li>
+                <li>Tutte le transazioni e versamenti nel registro <strong>Fisco</strong></li>
+                <li>Tutte le prenotazioni slot passate e future</li>
+                <li>Storico crediti, movimenti e debiti</li>
+                <li>Diario allenamenti e tonnellaggio registrato</li>
+              </ul>
+            </div>
+          )}
+
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteModalOpen(false)}
+              className="flex-1 rounded-xl"
+              disabled={isDeleting}
+            >
+              Annulla
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDeleteAthlete}
+              disabled={isDeleting}
+              className="flex-1 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeleting ? "Eliminazione..." : "Sì, Cancella Definitivamente"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

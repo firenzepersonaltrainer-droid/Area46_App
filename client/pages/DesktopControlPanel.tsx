@@ -117,7 +117,7 @@ export default function DesktopControlPanel() {
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-zinc-400">Coach Titolare:</span>
-              <span className="text-emerald-400 font-bold">Stefano Casagrande</span>
+              <span className="text-emerald-400 font-bold">Stefano Tronconi</span>
             </div>
             <div className="flex items-center justify-between text-xs border-t border-zinc-700/50 pt-2">
               <span className="text-zinc-400">Ambiente:</span>
@@ -128,11 +128,11 @@ export default function DesktopControlPanel() {
           <div className="space-y-3 pt-2">
             <Button
               onClick={() => {
-                switchUser("usr-coach-001");
+                switchUser("usr-coach-01");
               }}
               className="w-full h-12 rounded-2xl bg-[#1c00ff] hover:bg-[#1600cc] text-white font-black text-sm shadow-lg shadow-[#1c00ff]/20 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <ShieldCheck className="size-4" /> Entra come Coach Stefano Casagrande
+              <ShieldCheck className="size-4" /> Entra come Coach Stefano Tronconi
             </Button>
 
             <Link
@@ -169,11 +169,11 @@ export default function DesktopControlPanel() {
           {/* BADGE COACH ATTIVO */}
           <div className="p-3.5 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center gap-3">
             <div className="size-10 rounded-xl bg-[#1c00ff] flex items-center justify-center text-[#e3ff00] font-black text-base shadow-inner shrink-0">
-              SC
+              ST
             </div>
             <div className="overflow-hidden">
               <div className="text-xs font-black truncate text-white">
-                Stefano Casagrande
+                Stefano Tronconi
               </div>
               <div className="text-[11px] text-zinc-400 flex items-center gap-1.5 mt-0.5">
                 <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />

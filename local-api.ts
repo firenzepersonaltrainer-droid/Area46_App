@@ -557,6 +557,62 @@ export async function handleLocalApi(
       return res.end(JSON.stringify(profilo));
     }
 
+    // DELETE /app-api/atleti/:id oppure /app-api/profili/:id (Cancellazione definitiva completa di atleta, fisco e storico)
+    const atletaDeleteMatch = pathname.match(/^\/app-api\/(?:atleti|profili)\/([a-zA-Z0-9_@.-]+)$/);
+    if (atletaDeleteMatch && method === "DELETE") {
+      const targetIdentifier = decodeURIComponent(atletaDeleteMatch[1]);
+
+      const atleta = (db.profili_utenti || []).find(
+        (p: any) => p.id === targetIdentifier || p.email?.toLowerCase() === targetIdentifier.toLowerCase()
+      );
+
+      const targetId = atleta ? atleta.id : targetIdentifier;
+      const targetEmail = atleta ? atleta.email?.toLowerCase() : targetIdentifier.toLowerCase();
+
+      // 1. Rimuovi da profili_utenti
+      db.profili_utenti = (db.profili_utenti || []).filter(
+        (p: any) => p.id !== targetId && p.email?.toLowerCase() !== targetEmail
+      );
+
+      // 2. Rimuovi da transazioni_pagamenti (Fisco)
+      db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
+        (t: any) => t.atleta_id !== targetId && t.email_cliente?.toLowerCase() !== targetEmail
+      );
+
+      // 3. Rimuovi da prenotazioni_slot
+      db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
+        (p: any) => p.atleta_id !== targetId && p.email_cliente?.toLowerCase() !== targetEmail
+      );
+
+      // 4. Rimuovi da movimenti_crediti
+      db.movimenti_crediti = (db.movimenti_crediti || []).filter(
+        (m: any) => m.atleta_id !== targetId && m.email_cliente?.toLowerCase() !== targetEmail
+      );
+
+      // 5. Rimuovi da diario_utente
+      db.diario_utente = (db.diario_utente || []).filter(
+        (d: any) => d.email_cliente?.toLowerCase() !== targetEmail
+      );
+
+      // 6. Rimuovi da stato_allenamenti
+      db.stato_allenamenti = (db.stato_allenamenti || []).filter(
+        (s: any) => s.email_cliente?.toLowerCase() !== targetEmail
+      );
+
+      // 7. Rimuovi da preferenze_utente
+      db.preferenze_utente = (db.preferenze_utente || []).filter(
+        (pref: any) => pref.email?.toLowerCase() !== targetEmail
+      );
+
+      saveData(db);
+      return res.end(
+        JSON.stringify({
+          success: true,
+          message: "Atleta e tutti i dati associati eliminati definitivamente con successo",
+        })
+      );
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // DISMISSIONE ANTICIPATA ATLETA (Penale automatica, ricalcolo, cancellazione slot)
     // ─────────────────────────────────────────────────────────────────────────

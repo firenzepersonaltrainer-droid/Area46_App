@@ -346,6 +346,32 @@ export function useProfili() {
     },
   });
 
+  const eliminaAtleta = useMutation({
+    mutationFn: async (idOrEmail: string) => {
+      const res = await fetch(`/app-api/atleti/${encodeURIComponent(idOrEmail)}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Errore durante l'eliminazione dell'atleta");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profili"] });
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+      queryClient.invalidateQueries({ queryKey: ["transazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
+      queryClient.invalidateQueries({ queryKey: ["stati"] });
+      toast.success("Atleta e tutti i dati associati eliminati con successo.");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore durante l'eliminazione");
+    },
+  });
+
   return {
     profili,
     isLoading,
@@ -353,6 +379,8 @@ export function useProfili() {
     modificaCrediti: modificaCrediti.mutateAsync,
     salvaProfilo: salvaProfilo.mutateAsync,
     dismettiAtleta: dismettiAtleta.mutateAsync,
+    eliminaAtleta: eliminaAtleta.mutateAsync,
+    isDeleting: eliminaAtleta.isPending,
   };
 }
 

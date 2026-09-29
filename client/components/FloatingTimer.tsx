@@ -500,7 +500,7 @@ export default function FloatingTimer() {
   const totalPhaseSecs = activeStep.durataSecs;
   const phasePct =
     totalPhaseSecs > 0 ? Math.round((state.phaseLeft / totalPhaseSecs) * 100) : 0;
-  const phaseColor = activeStep.tipo === "work" ? "#38bdf8" : "#fb923c";
+  const phaseColor = activeStep.tipo === "work" ? "#38bdf8" : "#10b981";
 
   if (typeof document === "undefined") return null;
 
@@ -838,15 +838,16 @@ function IntervalMultiPhasePanel({
     }));
   }
 
-  function addStep() {
+  function addStep(tipo: "work" | "rest" = "work") {
     if (state.running) return;
     setState((s) => {
-      const newIndex = s.steps.length + 1;
+      const workCount = s.steps.filter((st) => st.tipo === "work").length;
+      const restCount = s.steps.filter((st) => st.tipo === "rest").length;
       const newStep: IntervalStep = {
-        id: `s${Date.now()}`,
-        nome: `Esercizio ${newIndex}`,
-        durataSecs: 30,
-        tipo: "work",
+        id: `s${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        nome: tipo === "work" ? `Lavoro ${workCount + 1}` : `Recupero ${restCount + 1}`,
+        durataSecs: tipo === "work" ? 30 : 60,
+        tipo,
       };
       return { ...s, steps: [...s.steps, newStep] };
     });
@@ -877,13 +878,13 @@ function IntervalMultiPhasePanel({
           {/* Badge Fase Corrente */}
           <div className="flex items-center gap-2">
             <span
-              className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full"
+              className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs"
               style={{
                 background: phaseColor,
                 color: "#09090b",
               }}
             >
-              {activeStep.tipo === "work" ? "LAVORO" : "RECUPERO"} • {activeStep.nome}
+              {activeStep.tipo === "work" ? "🔥 LAVORO" : "⏸️ RECUPERO"} • {activeStep.nome}
             </span>
             <span className="text-xs font-black text-zinc-400">
               Round {state.currentRound}/{state.rounds}
@@ -937,79 +938,99 @@ function IntervalMultiPhasePanel({
 
           {/* Lista Fasi / Esercizi Differenziati (Scrollabile) */}
           <div className="max-h-[175px] overflow-y-auto space-y-1.5 pr-1 [scrollbar-width:thin]">
-            {steps.map((step, idx) => (
-              <div
-                key={step.id}
-                className="flex items-center justify-between p-2 rounded-xl border border-zinc-800 bg-[#12121a]"
-              >
-                {/* Nome e Toggle Tipo Lavoro/Riposo */}
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => toggleStepType(step.id)}
-                    className="text-[10px] font-black uppercase px-2 py-0.5 rounded cursor-pointer transition-all"
-                    style={{
-                      background: step.tipo === "work" ? "#38bdf8" : "#fb923c",
-                      color: "#09090b",
-                    }}
-                    title="Clicca per invertire Lavoro / Riposo"
-                  >
-                    {step.tipo === "work" ? "Lavoro" : "Pausa"}
-                  </button>
-                  <span className="text-xs font-bold text-zinc-200 truncate max-w-[90px]">
-                    {step.nome}
-                  </span>
-                </div>
-
-                {/* Controlli Durata Fase (-5s / +5s) */}
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => adjustStepTime(step.id, -5)}
-                    className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
-                  >
-                    -
-                  </button>
-                  <span className="text-xs font-black tabular-nums w-10 text-center text-white">
-                    {step.durataSecs}"
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => adjustStepTime(step.id, +5)}
-                    className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
-                  >
-                    +
-                  </button>
-
-                  {steps.length > 1 && (
+            {steps.map((step, idx) => {
+              const isWork = step.tipo === "work";
+              return (
+                <div
+                  key={step.id}
+                  className={`flex items-center justify-between p-2 rounded-xl border transition-all ${
+                    isWork
+                      ? "border-sky-500/30 bg-[#0f172a]/70 hover:border-sky-400/50"
+                      : "border-emerald-500/30 bg-[#064e3b]/30 hover:border-emerald-400/50"
+                  }`}
+                >
+                  {/* Nome e Toggle Tipo Lavoro/Riposo */}
+                  <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => removeStep(step.id)}
-                      className="size-6 flex items-center justify-center rounded-lg hover:bg-red-500/20 text-zinc-500 hover:text-red-400 cursor-pointer ml-1"
-                      title="Elimina fase"
+                      onClick={() => toggleStepType(step.id)}
+                      className="text-[10px] font-black uppercase px-2 py-0.5 rounded cursor-pointer transition-all shadow-xs"
+                      style={{
+                        background: isWork ? "#38bdf8" : "#10b981",
+                        color: "#09090b",
+                      }}
+                      title="Clicca per invertire Lavoro / Recupero"
                     >
-                      <Trash2 className="size-3.5" />
+                      {isWork ? "Lavoro" : "Rec"}
                     </button>
-                  )}
+                    <span className="text-xs font-bold text-zinc-200 truncate max-w-[100px]">
+                      {step.nome}
+                    </span>
+                  </div>
+
+                  {/* Controlli Durata Fase (-5s / +5s) */}
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => adjustStepTime(step.id, -5)}
+                      className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
+                    >
+                      -
+                    </button>
+                    <span className="text-xs font-black tabular-nums w-10 text-center text-white">
+                      {step.durataSecs}"
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => adjustStepTime(step.id, +5)}
+                      className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
+                    >
+                      +
+                    </button>
+
+                    {steps.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeStep(step.id)}
+                        className="size-6 flex items-center justify-center rounded-lg hover:bg-red-500/20 text-zinc-500 hover:text-red-400 cursor-pointer ml-1"
+                        title="Elimina fase"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Barra Aggiungi Fase e Regola Round */}
-          <div className="flex items-center justify-between gap-2 pt-1 border-t border-zinc-800">
-            <button
-              type="button"
-              onClick={addStep}
-              className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 flex items-center gap-1 cursor-pointer transition-colors"
-            >
-              <Plus className="size-3.5 text-[#e3ff00]" />
-              Aggiungi Fase
-            </button>
+          {/* Barra Aggiungi Lavoro, Aggiungi Rec e Regola Round */}
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-zinc-800">
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => addStep("work")}
+                className="text-[11px] font-black px-2.5 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 flex items-center gap-1 cursor-pointer transition-colors"
+                title="Aggiungi fase di lavoro"
+              >
+                <Plus className="size-3 text-sky-400" />
+                Aggiungi lavoro
+              </button>
+
+              <button
+                type="button"
+                onClick={() => addStep("rest")}
+                className="text-[11px] font-black px-2.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 cursor-pointer transition-colors"
+                title="Aggiungi fase di recupero"
+              >
+                <Plus className="size-3 text-emerald-400" />
+                Aggiungi rec
+              </button>
+            </div>
 
             {/* Selettore Round */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
                 Round:
               </span>
               <div className="flex items-center gap-1 bg-[#15151e] border border-zinc-800 rounded-lg p-0.5">

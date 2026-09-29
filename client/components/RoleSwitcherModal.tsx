@@ -17,8 +17,8 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
 
   const coachProfile = profili.find((p) => p.ruolo === "manager") || {
     id: "usr-coach-01",
-    nome: "Coach",
-    cognome: "Area46",
+    nome: "Stefano",
+    cognome: "Tronconi",
     ruolo: "manager",
     email: "firenzepersonaltrainer@gmail.com",
   };
@@ -101,19 +101,6 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
                 </div>
               )}
             </button>
-
-            {currentUser?.ruolo === "manager" && (
-              <div className="mt-2">
-                <Link
-                  to="/desktop"
-                  onClick={() => onOpenChange(false)}
-                  className="w-full inline-flex items-center justify-center gap-2 p-2.5 rounded-2xl bg-[#09090b] text-[#e3ff00] hover:bg-zinc-800 text-xs font-black border border-[#e3ff00]/40 transition-colors cursor-pointer shadow-xs"
-                >
-                  <Monitor className="size-4 text-[#e3ff00]" />
-                  <span>Apri Control Panel Desktop Panoramico &rarr;</span>
-                </Link>
-              </div>
-            )}
           </div>
 
           {/* SEZIONE ATLETI DEMO */}
