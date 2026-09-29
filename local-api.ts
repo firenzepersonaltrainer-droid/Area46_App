@@ -424,6 +424,7 @@ export async function handleLocalApi(
         return {
           ...p,
           tempo_cancellazione_ore: p.tempo_cancellazione_ore || 24,
+          tempo_anticipo_prenotazione_ore: p.tempo_anticipo_prenotazione_ore || 24,
           giorni_a_scadenza,
           avviso_scadenza,
           mesi_inattivita,
@@ -433,7 +434,7 @@ export async function handleLocalApi(
       return res.end(JSON.stringify(profili));
     }
 
-    // POST /app-api/profili (Nuovo atleta con policy cancellazione personalizzata)
+    // POST /app-api/profili (Nuovo atleta con policy cancellazione & anticipo personalizzate)
     if (pathname === "/app-api/profili" && method === "POST") {
       const creditiIniziali = Number(parsedBody.crediti ?? 0);
       const nuovo = {
@@ -447,6 +448,7 @@ export async function handleLocalApi(
         ruolo: "atleta",
         crediti: creditiIniziali,
         tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
+        tempo_anticipo_prenotazione_ore: Number(parsedBody.tempo_anticipo_prenotazione_ore || 24),
         data_scadenza_crediti:
           parsedBody.data_scadenza_crediti ||
           new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10),
@@ -542,6 +544,9 @@ export async function handleLocalApi(
       if (parsedBody.crediti !== undefined) profilo.crediti = Number(parsedBody.crediti);
       if (parsedBody.tempo_cancellazione_ore !== undefined) {
         profilo.tempo_cancellazione_ore = Number(parsedBody.tempo_cancellazione_ore);
+      }
+      if (parsedBody.tempo_anticipo_prenotazione_ore !== undefined) {
+        profilo.tempo_anticipo_prenotazione_ore = Number(parsedBody.tempo_anticipo_prenotazione_ore);
       }
       if (parsedBody.data_scadenza_crediti !== undefined) {
         profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
@@ -1226,7 +1231,11 @@ CALENDARIO E PRENOTAZIONI:
           }
         }
 
-        const anticipoOre = Number(db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 0);
+        const anticipoOre = Number(
+          atleta?.tempo_anticipo_prenotazione_ore ??
+          db.configurazione_lab?.tempo_anticipo_prenotazione_ore ??
+          24
+        );
         if (anticipoOre > 0) {
           const nowMs = Date.now();
           for (const s of requestedSlots) {
@@ -1236,7 +1245,7 @@ CALENDARIO E PRENOTAZIONI:
               res.statusCode = 400;
               return res.end(
                 JSON.stringify({
-                  error: `Lo slot del ${s.data} alle ${s.orario} non può essere prenotato: la policy del Lab richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio della sessione.`,
+                  error: `Lo slot del ${s.data} alle ${s.orario} non può essere prenotato: la policy richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio della sessione.`,
                   motivo: "anticipo_insufficiente",
                   anticipo_ore: anticipoOre,
                 })
@@ -1407,7 +1416,11 @@ CALENDARIO E PRENOTAZIONI:
           }
         }
 
-        const anticipoOre = Number(db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 0);
+        const anticipoOre = Number(
+          atleta?.tempo_anticipo_prenotazione_ore ??
+          db.configurazione_lab?.tempo_anticipo_prenotazione_ore ??
+          24
+        );
         if (anticipoOre > 0) {
           const slotTs = new Date(`${dataSlot}T${orarioSlot}:00`).getTime();
           const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
@@ -1415,7 +1428,7 @@ CALENDARIO E PRENOTAZIONI:
             res.statusCode = 400;
             return res.end(
               JSON.stringify({
-                error: `Prenotazione non consentita: la policy del Lab richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio dello slot.`,
+                error: `Prenotazione non consentita: la policy richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio dello slot.`,
                 motivo: "anticipo_insufficiente",
                 anticipo_ore: anticipoOre,
               })

@@ -103,7 +103,8 @@ for (const m of rawMembers) {
     data_ultimo_accesso: m["Ultima login"] ? excelDateToJS(m["Ultima login"])?.toISOString() : null,
     data_creazione: m["Data Creazione"] ? excelDateToJS(m["Data Creazione"])?.toISOString() : null,
     tempo_cancellazione_ore: 24,
-    tipo_abbonamento: crediti > 15 ? "lab_continuativo_2x" : "standard",
+    tempo_anticipo_prenotazione_ore: 24,
+    tipo_abbonamento: "standard",
     stato_iscrizione: "attivo",
     name: `${(m.Nome || "").trim()} ${(m.Cognome || "").trim()}`.trim(),
   };

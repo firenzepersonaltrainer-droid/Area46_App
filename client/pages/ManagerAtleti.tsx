@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   useProfili,
   UserProfile,
@@ -28,7 +29,9 @@ import {
   UserX,
   Copy,
   Receipt,
+  TrendingUp,
 } from "lucide-react";
+import { PerformanceModal } from "../components/PerformanceModal";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import {
@@ -86,6 +89,20 @@ export default function ManagerAtletiPage() {
   const [esitoModalOpen, setEsitoModalOpen] = useState(false);
   const [esitoDismissione, setEsitoDismissione] = useState<any | null>(null);
 
+  // Modale Performance & I.A. Coach Assistant
+  const [performanceModalOpen, setPerformanceModalOpen] = useState(false);
+  const [performanceAtleta, setPerformanceAtleta] = useState<UserProfile | null>(null);
+
+  // Query Transazioni per calcolo totale versamenti
+  const { data: transazioni = [] } = useQuery<any[]>({
+    queryKey: ["transazioni"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/transazioni");
+      if (!res.ok) return [];
+      return res.json();
+    },
+  });
+
   const atleti = profili.filter((p) => p.ruolo === "atleta");
 
   const filteredAtleti = atleti.filter((a) => {
@@ -124,6 +141,7 @@ export default function ManagerAtletiPage() {
       setEditForm({
         ...atleta,
         tempo_cancellazione_ore: atleta.tempo_cancellazione_ore || 24,
+        tempo_anticipo_prenotazione_ore: atleta.tempo_anticipo_prenotazione_ore ?? 24,
       });
     } else {
       setEditForm({
@@ -135,6 +153,7 @@ export default function ManagerAtletiPage() {
         indirizzo: "",
         crediti: 10,
         tempo_cancellazione_ore: 24,
+        tempo_anticipo_prenotazione_ore: 24,
         data_scadenza_crediti: new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10),
       });
     }
@@ -384,15 +403,32 @@ export default function ManagerAtletiPage() {
                   ) : (
                     <span>Nessun recapito telefonico</span>
                   )}
-                  <div className="text-[10px] font-bold text-zinc-500 flex items-center gap-1">
-                    <Clock className="size-3 text-zinc-400" />
+                  <div className="text-[10px] font-bold text-zinc-500 flex items-center gap-1.5 flex-wrap">
+                    <span className="flex items-center gap-1">
+                      <Clock className="size-3 text-zinc-400" />
+                      Disdetta: <strong>{atleta.tempo_cancellazione_ore || 24}h</strong>
+                    </span>
+                    <span>•</span>
                     <span>
-                      Disdetta min: <strong>{atleta.tempo_cancellazione_ore || 24} ore</strong>
+                      Anticipo: <strong>{atleta.tempo_anticipo_prenotazione_ore ?? 24}h</strong>
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1.5 flex-wrap">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setPerformanceAtleta(atleta);
+                      setPerformanceModalOpen(true);
+                    }}
+                    className="text-xs font-black h-8 px-2.5 rounded-xl border-[#1c00ff]/30 text-[#1c00ff] bg-[#1c00ff]/5 hover:bg-[#1c00ff]/10 flex items-center gap-1 shadow-2xs cursor-pointer"
+                    title="Performance, Diario & Assistente I.A."
+                  >
+                    <TrendingUp className="size-3.5 text-[#1c00ff]" />
+                    <span>Performance</span>
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
@@ -679,6 +715,34 @@ export default function ManagerAtletiPage() {
                 Disdetta prima di <strong>{editForm.tempo_cancellazione_ore || 24} ore</strong>: credito restituito. Entro le {editForm.tempo_cancellazione_ore || 24}h: cancellazione tardiva (credito perso).
               </p>
             </div>
+
+            {/* SELEZIONE POLICY ANTICIPO PRENOTAZIONE PERSONALIZZATA */}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                Policy Anticipo Minimo Prenotazione Slot
+              </label>
+              <div className="grid grid-cols-5 gap-1.5">
+                {[0, 12, 24, 36, 48].map((ore) => (
+                  <button
+                    key={ore}
+                    type="button"
+                    onClick={() =>
+                      setEditForm({ ...editForm, tempo_anticipo_prenotazione_ore: ore })
+                    }
+                    className={`py-2 text-xs font-black rounded-xl border transition-all ${
+                      (editForm.tempo_anticipo_prenotazione_ore ?? 24) === ore
+                        ? "bg-[#1c00ff] text-white border-[#1c00ff] shadow-xs"
+                        : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50"
+                    }`}
+                  >
+                    {ore === 0 ? "0h" : `${ore}h`}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-zinc-400 mt-1">
+                L&apos;atleta può prenotare con almeno <strong>{editForm.tempo_anticipo_prenotazione_ore ?? 24} ore</strong> di anticipo rispetto all&apos;orario dello slot.
+              </p>
+            </div>
           </div>
 
           <DialogFooter className="flex gap-2">
@@ -732,6 +796,51 @@ export default function ManagerAtletiPage() {
               </span>
             </DialogDescription>
           </DialogHeader>
+
+          {/* BOX TOTALE VERSAMENTI EFFETTUATI */}
+          {(() => {
+            const atletaTransazioni = transazioni.filter(
+              (t) =>
+                t.email_cliente &&
+                historyAtleta?.email &&
+                t.email_cliente.toLowerCase() === historyAtleta.email.toLowerCase() &&
+                t.stato === "completato"
+            );
+            const totaleVersamenti = atletaTransazioni.reduce(
+              (acc, t) => acc + (t.importo_euro || 0),
+              0
+            );
+
+            return (
+              <div className="my-2 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/30 flex items-center justify-between shadow-2xs">
+                <div className="flex items-center gap-2.5">
+                  <div className="size-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black shadow-xs text-base">
+                    💶
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black uppercase tracking-wider text-emerald-800">
+                      Totale Versamenti Effettuati
+                    </div>
+                    <div className="text-xs text-zinc-600">
+                      {atletaTransazioni.length}{" "}
+                      {atletaTransazioni.length === 1
+                        ? "pagamento registrato"
+                        : "pagamenti registrati"}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-black text-emerald-950 tabular-nums">
+                    {totaleVersamenti.toLocaleString("it-IT", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    €
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Lista movimenti */}
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 my-3 text-xs">
@@ -1243,6 +1352,13 @@ export default function ManagerAtletiPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* MODALE PERFORMANCE, DIARIO & ASSISTENTE I.A. */}
+      <PerformanceModal
+        isOpen={performanceModalOpen}
+        onClose={() => setPerformanceModalOpen(false)}
+        atleta={performanceAtleta}
+      />
     </div>
   );
 }

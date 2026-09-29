@@ -14303,7 +14303,8 @@
       "tempo_cancellazione_ore": 12,
       "name": "Coach Area46",
       "tipo_abbonamento": "standard",
-      "stato_iscrizione": "attivo"
+      "stato_iscrizione": "attivo",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953985",
@@ -14323,7 +14324,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Alessandro Pantanella"
+      "name": "Alessandro Pantanella",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-2078480",
@@ -14343,7 +14345,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Anna Paola Maddalena"
+      "name": "Anna Paola Maddalena",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-2056285",
@@ -14363,7 +14366,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Claudia Bogazzi"
+      "name": "Claudia Bogazzi",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953976",
@@ -14383,7 +14387,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Daniele Casci"
+      "name": "Daniele Casci",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953989",
@@ -14403,7 +14408,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Domenico Andretta"
+      "name": "Domenico Andretta",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953992",
@@ -14421,9 +14427,10 @@
       "data_ultimo_accesso": "2026-02-10T23:21:27.000Z",
       "data_creazione": "2026-02-10T14:01:18.000Z",
       "tempo_cancellazione_ore": 24,
-      "tipo_abbonamento": "lab_continuativo_2x",
+      "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Matteo Calosci"
+      "name": "Matteo Calosci",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-2080725",
@@ -14443,7 +14450,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Matteo Tesse"
+      "name": "Matteo Tesse",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953987",
@@ -14463,7 +14471,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Pierpaola Ciancia"
+      "name": "Pierpaola Ciancia",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-2084583",
@@ -14483,7 +14492,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Roberto Ilario Sestito"
+      "name": "Roberto Ilario Sestito",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-2067105",
@@ -14503,7 +14513,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Silvia Usai"
+      "name": "Silvia Usai",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953938",
@@ -14521,9 +14532,10 @@
       "data_ultimo_accesso": "2026-02-10T14:35:28.000Z",
       "data_creazione": "2026-02-10T13:32:52.000Z",
       "tempo_cancellazione_ore": 24,
-      "tipo_abbonamento": "lab_continuativo_2x",
+      "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Stefania Vitale"
+      "name": "Stefania Vitale",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953791",
@@ -14543,7 +14555,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Stefano Coach"
+      "name": "Stefano Coach",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953606",
@@ -14563,7 +14576,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Stefano Tronconi"
+      "name": "Stefano Tronconi",
+      "tempo_anticipo_prenotazione_ore": 24
     },
     {
       "id": "usr-bw-1953979",
@@ -14583,7 +14597,8 @@
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "name": "Valeria Camera"
+      "name": "Valeria Camera",
+      "tempo_anticipo_prenotazione_ore": 24
     }
   ],
   "configurazione_lab": {

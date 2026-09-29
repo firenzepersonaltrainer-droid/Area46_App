@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCurrentUser } from "../lib/useUser";
+import { useCurrentUser, useProfili } from "../lib/useUser";
 import {
   Coins,
   AlertTriangle,
@@ -16,6 +16,7 @@ export function WalletBar() {
   const navigate = useNavigate();
   const { user, isManager, isAtleta, crediti, hasDebt, isZeroCredits, isExpired, switchUser } =
     useCurrentUser();
+  const { profili } = useProfili();
 
   if (!user) return null;
 
@@ -107,13 +108,17 @@ export function WalletBar() {
               <button
                 type="button"
                 onClick={() => {
-                  switchUser("usr-atleta-01");
+                  const firstAthlete = profili.find((p) => p.ruolo === "atleta");
+                  if (firstAthlete) {
+                    switchUser(firstAthlete.id);
+                  }
                   navigate("/");
                 }}
-                className="p-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 transition-colors cursor-pointer"
-                title="Torna a vista Atleta"
+                className="px-2 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-bold text-xs transition-colors cursor-pointer flex items-center gap-1"
+                title="Passa a vista Atleta"
               >
-                <LogOut className="size-3.5" />
+                <LogOut className="size-3.5 text-[#1c00ff]" />
+                <span className="hidden xs:inline">Vista Atleta</span>
               </button>
             </div>
           )}

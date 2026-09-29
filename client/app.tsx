@@ -79,8 +79,15 @@ function MobileHomeIndicator() {
 }
 
 import { ManualeUtenteModal } from "./components/ManualeUtenteModal";
+import { RoleSwitcherModal } from "./components/RoleSwitcherModal";
 
-function AppHeader({ onOpenManual }: { onOpenManual?: () => void }) {
+function AppHeader({
+  onOpenManual,
+  onOpenSwitcher,
+}: {
+  onOpenManual?: () => void;
+  onOpenSwitcher?: () => void;
+}) {
   const { user, isManager } = useCurrentUser();
   const { livello: livelloMemoria } = useLivelloMemoria();
   const location = useLocation();
@@ -120,27 +127,37 @@ function AppHeader({ onOpenManual }: { onOpenManual?: () => void }) {
         )}
 
         {!user ? (
-          <span className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs bg-zinc-100 text-zinc-700 border border-zinc-200">
+          <button
+            type="button"
+            onClick={onOpenSwitcher}
+            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs bg-zinc-100 text-zinc-700 border border-zinc-200 hover:bg-zinc-200 cursor-pointer"
+          >
             ACCESSO LAB
-          </span>
+          </button>
         ) : isManager ? (
-          <span
-            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50"
+          <button
+            type="button"
+            onClick={onOpenSwitcher}
+            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50 hover:bg-zinc-800 transition-all cursor-pointer"
+            title="Tocca per cambiare modalità o passare a vista Atleta"
           >
             <ShieldCheck className="size-3.5 text-[#e3ff00]" />
-            GESTIONE COACH
-          </span>
+            COACH • SWITCH
+          </button>
         ) : (
-          <span
-            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs"
+          <button
+            type="button"
+            onClick={onOpenSwitcher}
+            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs hover:opacity-90 transition-all cursor-pointer"
             style={{
               background: "#1c00ff",
               color: "#e3ff00",
             }}
+            title="Tocca per cambiare profilo o accedere come Coach"
           >
             <span className="size-2 rounded-full bg-[#e3ff00] animate-pulse" />
-            {displayLevel}
-          </span>
+            {displayLevel} • SWITCH
+          </button>
         )}
       </div>
 
@@ -156,6 +173,7 @@ function AppHeader({ onOpenManual }: { onOpenManual?: () => void }) {
 function AppContent() {
   const { user, isManager, isLoading } = useCurrentUser();
   const [showManualModal, setShowManualModal] = useState(false);
+  const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
 
   // 1. Schermata di caricamento iniziale
   if (isLoading) {
@@ -188,8 +206,12 @@ function AppContent() {
           toastOptions={{ style: { pointerEvents: "auto" } }}
         />
         <MobileStatusBar />
-        <AppHeader onOpenManual={() => setShowManualModal(true)} />
+        <AppHeader
+          onOpenManual={() => setShowManualModal(true)}
+          onOpenSwitcher={() => setShowRoleSwitcher(true)}
+        />
         <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
+        <RoleSwitcherModal open={showRoleSwitcher} onOpenChange={setShowRoleSwitcher} />
 
         <main className="w-full flex-1 overflow-y-auto px-4 pb-8 pt-2 select-text [scrollbar-width:thin]">
           <Routes>
@@ -235,10 +257,16 @@ function AppContent() {
       <MobileStatusBar />
 
       {/* Intestazione Area46 */}
-      <AppHeader onOpenManual={() => setShowManualModal(true)} />
+      <AppHeader
+        onOpenManual={() => setShowManualModal(true)}
+        onOpenSwitcher={() => setShowRoleSwitcher(true)}
+      />
 
       {/* Modale Manuale Utente Globale */}
       <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
+
+      {/* Modale Switch Ruolo & Profilo */}
+      <RoleSwitcherModal open={showRoleSwitcher} onOpenChange={setShowRoleSwitcher} />
 
       {/* Wallet Bar con Saldo Crediti / Debito & Role Switcher */}
       <WalletBar />

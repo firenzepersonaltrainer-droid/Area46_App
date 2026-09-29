@@ -216,6 +216,13 @@ export default function PrenotaSlotPage() {
       setShowBlockModal(true);
       return;
     }
+    // Controllo anticipo minimo di prenotazione
+    const slotTs = new Date(`${selectedDate}T${orario}:00`).getTime();
+    const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
+    if (anticipoOre > 0 && oreDiff < anticipoOre) {
+      toast.error(`Prenotazione non consentita: la policy richiede almeno ${anticipoOre} ore di preavviso prima dello slot.`);
+      return;
+    }
     // Utente senza crediti o con pacchetto scaduto: attiva scanner e congelamento 15 min
     if (isZeroCredits || isExpired) {
       setScannerSlot({ data: selectedDate, orario });
@@ -230,7 +237,8 @@ export default function PrenotaSlotPage() {
     "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
   ];
 
-  const policyOre = config?.tempo_cancellazione_ore || 24;
+  const policyOre = user?.tempo_cancellazione_ore || config?.tempo_cancellazione_ore || 24;
+  const anticipoOre = user?.tempo_anticipo_prenotazione_ore ?? config?.tempo_anticipo_prenotazione_ore ?? 24;
 
   return (
     <div className="space-y-4 pb-12">
@@ -252,14 +260,20 @@ export default function PrenotaSlotPage() {
           </div>
         </div>
 
-        {/* CANCELLATION POLICY BADGE */}
-        <div className="flex flex-col items-end">
-          <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
-            Policy Annullamento
-          </span>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200">
-            Fino a {policyOre}h prima
-          </span>
+        {/* POLICIES BADGE */}
+        <div className="flex flex-col items-end gap-1">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] font-bold text-zinc-400">Disdetta:</span>
+            <span className="text-[11px] font-black px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200">
+              {policyOre}h prima
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] font-bold text-zinc-400">Anticipo:</span>
+            <span className="text-[11px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-[#1c00ff] border border-blue-200">
+              {anticipoOre}h prima
+            </span>
+          </div>
         </div>
       </div>
 
@@ -503,6 +517,31 @@ export default function PrenotaSlotPage() {
                   </div>
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-600 flex items-center gap-1">
                     <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
+                  </span>
+                </div>
+              );
+            }
+
+            const slotTs = new Date(`${selectedDate}T${orario}:00`).getTime();
+            const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
+            const isTroppoVicino = anticipoOre > 0 && oreDiff < anticipoOre;
+
+            if (isTroppoVicino) {
+              return (
+                <div
+                  key={orario}
+                  className="flex items-center justify-between p-3 rounded-2xl bg-zinc-50 border border-zinc-200 text-zinc-400 select-none opacity-80"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-xl bg-zinc-100 text-zinc-400 flex items-center justify-center font-bold text-xs">
+                      {orario}
+                    </div>
+                    <span className="text-xs font-semibold text-zinc-500">
+                      Termine anticipo superato
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-500 border border-zinc-200 flex items-center gap-1">
+                    <Clock className="size-3 text-zinc-400" /> Preavviso min {anticipoOre}h
                   </span>
                 </div>
               );

@@ -292,12 +292,11 @@ export default function FloatingTimer() {
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
 
-      if (!containerRef.current) return;
-      const phoneContainer =
-        containerRef.current.closest("#phone-frame") ||
-        containerRef.current.parentElement ||
-        document.body;
-      const phoneRect = phoneContainer.getBoundingClientRect();
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+      const phoneContainer = isMobile ? null : containerRef.current.closest("#phone-frame");
+      const phoneRect = phoneContainer
+        ? phoneContainer.getBoundingClientRect()
+        : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
       const rect = containerRef.current.getBoundingClientRect();
 
       isDraggingRef.current = true;
@@ -321,8 +320,8 @@ export default function FloatingTimer() {
         const newX = dragOffsetRef.current.initialX + deltaX;
         const newY = dragOffsetRef.current.initialY + deltaY;
 
-        const containerW = phoneContainer.clientWidth;
-        const containerH = phoneContainer.clientHeight;
+        const containerW = phoneContainer ? phoneContainer.clientWidth : window.innerWidth;
+        const containerH = phoneContainer ? phoneContainer.clientHeight : window.innerHeight;
         const width = rect.width || 320;
         const height = containerRef.current?.offsetHeight || rect.height || 340;
 
@@ -356,11 +355,11 @@ export default function FloatingTimer() {
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
     if (!iconRef.current) return;
 
-    const phoneContainer =
-      iconRef.current.closest("#phone-frame") ||
-      iconRef.current.parentElement ||
-      document.body;
-    const phoneRect = phoneContainer.getBoundingClientRect();
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+    const phoneContainer = isMobile ? null : iconRef.current.closest("#phone-frame");
+    const phoneRect = phoneContainer
+      ? phoneContainer.getBoundingClientRect()
+      : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
     const rect = iconRef.current.getBoundingClientRect();
 
     iconDragRef.current = {
@@ -386,8 +385,8 @@ export default function FloatingTimer() {
       const newX = iconDragRef.current.initialX + deltaX;
       const newY = iconDragRef.current.initialY + deltaY;
 
-      const containerW = phoneContainer.clientWidth;
-      const containerH = phoneContainer.clientHeight;
+      const containerW = phoneContainer ? phoneContainer.clientWidth : window.innerWidth;
+      const containerH = phoneContainer ? phoneContainer.clientHeight : window.innerHeight;
       const clampedX = Math.max(8, Math.min(containerW - 56, newX));
       const clampedY = Math.max(48, Math.min(containerH - 76, newY));
 
@@ -417,6 +416,8 @@ export default function FloatingTimer() {
   }
   function handleClose() {
     setState((s) => ({ ...s, open: false, running: false }));
+    setIconPosition(null);
+    setPosition(null);
   }
   function handleMinimize() {
     setState((s) => {
@@ -516,7 +517,7 @@ export default function FloatingTimer() {
         ref={iconRef}
         onMouseDown={onPointerDownIconDrag}
         onTouchStart={onPointerDownIconDrag}
-        className="absolute flex size-13 cursor-grab active:cursor-grabbing items-center justify-center rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 z-50 select-none"
+        className="fixed sm:absolute flex size-13 cursor-grab active:cursor-grabbing items-center justify-center rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 z-50 select-none"
         style={{
           ...iconStyle,
           background: "#1c00ff",
@@ -540,7 +541,7 @@ export default function FloatingTimer() {
   return (
     <div
       ref={containerRef}
-      className="absolute w-[calc(100%-24px)] rounded-2xl shadow-2xl overflow-hidden select-none transition-shadow z-50 text-white"
+      className="fixed sm:absolute w-[calc(100%-24px)] max-w-[416px] rounded-2xl shadow-2xl overflow-hidden select-none transition-shadow z-50 text-white"
       style={{
         ...positionStyle,
         border: "2px solid #1c00ff",

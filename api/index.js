@@ -14310,7 +14310,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 12,
       name: "Coach Area46",
       tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
+      stato_iscrizione: "attivo",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953985",
@@ -14330,7 +14331,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Alessandro Pantanella"
+      name: "Alessandro Pantanella",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-2078480",
@@ -14350,7 +14352,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Anna Paola Maddalena"
+      name: "Anna Paola Maddalena",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-2056285",
@@ -14370,7 +14373,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Claudia Bogazzi"
+      name: "Claudia Bogazzi",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953976",
@@ -14390,7 +14394,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Daniele Casci"
+      name: "Daniele Casci",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953989",
@@ -14410,7 +14415,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Domenico Andretta"
+      name: "Domenico Andretta",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953992",
@@ -14428,9 +14434,10 @@ var demo_data_default = {
       data_ultimo_accesso: "2026-02-10T23:21:27.000Z",
       data_creazione: "2026-02-10T14:01:18.000Z",
       tempo_cancellazione_ore: 24,
-      tipo_abbonamento: "lab_continuativo_2x",
+      tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Matteo Calosci"
+      name: "Matteo Calosci",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-2080725",
@@ -14450,7 +14457,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Matteo Tesse"
+      name: "Matteo Tesse",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953987",
@@ -14470,7 +14478,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Pierpaola Ciancia"
+      name: "Pierpaola Ciancia",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-2084583",
@@ -14490,7 +14499,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Roberto Ilario Sestito"
+      name: "Roberto Ilario Sestito",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-2067105",
@@ -14510,7 +14520,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Silvia Usai"
+      name: "Silvia Usai",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953938",
@@ -14528,9 +14539,10 @@ var demo_data_default = {
       data_ultimo_accesso: "2026-02-10T14:35:28.000Z",
       data_creazione: "2026-02-10T13:32:52.000Z",
       tempo_cancellazione_ore: 24,
-      tipo_abbonamento: "lab_continuativo_2x",
+      tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Stefania Vitale"
+      name: "Stefania Vitale",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953791",
@@ -14550,7 +14562,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Stefano Coach"
+      name: "Stefano Coach",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953606",
@@ -14570,7 +14583,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Stefano Tronconi"
+      name: "Stefano Tronconi",
+      tempo_anticipo_prenotazione_ore: 24
     },
     {
       id: "usr-bw-1953979",
@@ -14590,7 +14604,8 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      name: "Valeria Camera"
+      name: "Valeria Camera",
+      tempo_anticipo_prenotazione_ore: 24
     }
   ],
   configurazione_lab: {
@@ -17271,6 +17286,7 @@ async function handleLocalApi(req, res, next) {
       return {
         ...p,
         tempo_cancellazione_ore: p.tempo_cancellazione_ore || 24,
+        tempo_anticipo_prenotazione_ore: p.tempo_anticipo_prenotazione_ore || 24,
         giorni_a_scadenza,
         avviso_scadenza,
         mesi_inattivita,
@@ -17292,6 +17308,7 @@ async function handleLocalApi(req, res, next) {
       ruolo: "atleta",
       crediti: creditiIniziali,
       tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
+      tempo_anticipo_prenotazione_ore: Number(parsedBody.tempo_anticipo_prenotazione_ore || 24),
       data_scadenza_crediti: parsedBody.data_scadenza_crediti || new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10),
       data_ultimo_accesso: (/* @__PURE__ */ new Date()).toISOString(),
       note_coach: parsedBody.note_coach || "",
@@ -17369,6 +17386,9 @@ async function handleLocalApi(req, res, next) {
     if (parsedBody.crediti !== void 0) profilo.crediti = Number(parsedBody.crediti);
     if (parsedBody.tempo_cancellazione_ore !== void 0) {
       profilo.tempo_cancellazione_ore = Number(parsedBody.tempo_cancellazione_ore);
+    }
+    if (parsedBody.tempo_anticipo_prenotazione_ore !== void 0) {
+      profilo.tempo_anticipo_prenotazione_ore = Number(parsedBody.tempo_anticipo_prenotazione_ore);
     }
     if (parsedBody.data_scadenza_crediti !== void 0) {
       profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
@@ -17913,7 +17933,9 @@ CALENDARIO E PRENOTAZIONI:
           }
         }
       }
-      const anticipoOre = Number(db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 0);
+      const anticipoOre = Number(
+        atleta?.tempo_anticipo_prenotazione_ore ?? db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 24
+      );
       if (anticipoOre > 0) {
         const nowMs = Date.now();
         for (const s of requestedSlots) {
@@ -17923,7 +17945,7 @@ CALENDARIO E PRENOTAZIONI:
             res.statusCode = 400;
             return res.end(
               JSON.stringify({
-                error: `Lo slot del ${s.data} alle ${s.orario} non pu\xF2 essere prenotato: la policy del Lab richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio della sessione.`,
+                error: `Lo slot del ${s.data} alle ${s.orario} non pu\xF2 essere prenotato: la policy richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio della sessione.`,
                 motivo: "anticipo_insufficiente",
                 anticipo_ore: anticipoOre
               })
@@ -18060,7 +18082,9 @@ CALENDARIO E PRENOTAZIONI:
           );
         }
       }
-      const anticipoOre = Number(db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 0);
+      const anticipoOre = Number(
+        atleta?.tempo_anticipo_prenotazione_ore ?? db.configurazione_lab?.tempo_anticipo_prenotazione_ore ?? 24
+      );
       if (anticipoOre > 0) {
         const slotTs = (/* @__PURE__ */ new Date(`${dataSlot}T${orarioSlot}:00`)).getTime();
         const oreDiff = (slotTs - Date.now()) / (1e3 * 60 * 60);
@@ -18068,7 +18092,7 @@ CALENDARIO E PRENOTAZIONI:
           res.statusCode = 400;
           return res.end(
             JSON.stringify({
-              error: `Prenotazione non consentita: la policy del Lab richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio dello slot.`,
+              error: `Prenotazione non consentita: la policy richiede almeno ${anticipoOre} ore di preavviso prima dell'inizio dello slot.`,
               motivo: "anticipo_insufficiente",
               anticipo_ore: anticipoOre
             })

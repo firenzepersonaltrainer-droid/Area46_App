@@ -11,11 +11,8 @@ interface RoleSwitcherModalProps {
 }
 
 export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps) {
-  const { user: currentUser, switchUser, isSwitching } = useCurrentUser();
+  const { user: currentUser, switchUser, logout, isSwitching } = useCurrentUser();
   const { profili } = useProfili();
-  const [pin, setPin] = useState("");
-  const [pinError, setPinError] = useState(false);
-  const [showPinInput, setShowPinInput] = useState(false);
 
   const coachProfile = profili.find((p) => p.ruolo === "manager") || {
     id: "usr-coach-01",
@@ -28,7 +25,6 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
   const athleteProfiles = profili.filter((p) => p.ruolo === "atleta");
 
   const handleSelectCoach = () => {
-    // Se c'è un PIN impostato, verifichiamo (default demo PIN: 4646 oppure click diretto)
     switchUser(coachProfile.id);
     onOpenChange(false);
   };
@@ -164,13 +160,24 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
-          <span>Area46 Lab Engine v2.0</span>
+        <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => {
+              logout();
+              onOpenChange(false);
+            }}
+            className="flex items-center gap-1.5 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 cursor-pointer text-xs font-bold"
+          >
+            <LogOut className="size-3.5" />
+            <span>Esci / Logout</span>
+          </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onOpenChange(false)}
-            className="text-zinc-600 hover:text-zinc-900"
+            className="text-zinc-600 hover:text-zinc-900 cursor-pointer font-bold"
           >
             Chiudi
           </Button>

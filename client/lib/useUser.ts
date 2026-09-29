@@ -21,6 +21,7 @@ export interface UserProfile {
   ruolo: "manager" | "atleta";
   crediti: number;
   tempo_cancellazione_ore?: number; // 12, 24, 36, 48
+  tempo_anticipo_prenotazione_ore?: number; // 0, 12, 24, 36, 48
   data_scadenza_crediti?: string;
   data_ultimo_accesso?: string;
   note_coach?: string;
