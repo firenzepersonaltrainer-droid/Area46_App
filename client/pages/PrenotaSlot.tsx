@@ -79,6 +79,7 @@ export default function PrenotaSlotPage() {
 
   // Scanner e congelamento temporaneo (15 minuti) per utenti con 0 crediti o scaduti
   const [scannerSlot, setScannerSlot] = useState<{ data: string; orario: string } | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
   const [countdownSec, setCountdownSec] = useState<number>(15 * 60);
 
   useEffect(() => {
@@ -226,7 +227,11 @@ export default function PrenotaSlotPage() {
     // Utente senza crediti o con pacchetto scaduto: attiva scanner e congelamento 15 min
     if (isZeroCredits || isExpired) {
       setScannerSlot({ data: selectedDate, orario });
+      setIsScanning(true);
       setCountdownSec(15 * 60);
+      setTimeout(() => {
+        setIsScanning(false);
+      }, 1200);
       return;
     }
     setSlotDaPrenotare(orario);
@@ -459,6 +464,26 @@ export default function PrenotaSlotPage() {
         </div>
       </div>
 
+      {/* BARRA SCARSITA' & CAPIENZA GIORNALIERA LAB */}
+      <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent border border-amber-500/30 flex items-center justify-between gap-2 shadow-2xs">
+        <div className="flex items-center gap-2.5">
+          <div className="size-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-sm shadow-xs shrink-0">
+            🔥
+          </div>
+          <div>
+            <div className="text-xs font-black text-amber-950 flex items-center gap-2 flex-wrap">
+              <span>Affluenza Lab Elevata</span>
+              <span className="text-[10px] font-black px-2 py-0.2 rounded-full bg-amber-200/90 text-amber-900 border border-amber-300">
+                80% capienza impegnata
+              </span>
+            </div>
+            <p className="text-[11px] text-amber-900/80 leading-tight mt-0.5">
+              Postazioni Landmine contate: blocca il tuo turno prima dell&apos;esaurimento pedane.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* GRIGLIA ORARI SLOT */}
       <div>
         <div className="flex items-center justify-between mb-2 px-1">
@@ -555,25 +580,35 @@ export default function PrenotaSlotPage() {
                 key={orario}
                 type="button"
                 onClick={() => handleSlotClick(orario)}
-                className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-[#1c00ff]/60 transition-all shadow-2xs group cursor-pointer text-left"
+                className={`flex items-center justify-between p-3 rounded-2xl border transition-all shadow-2xs group cursor-pointer text-left ${
+                  isPeak
+                    ? "bg-amber-50/40 hover:bg-amber-50/70 border-amber-200/90 hover:border-amber-400"
+                    : "bg-white hover:bg-zinc-50 border-zinc-200 hover:border-[#1c00ff]/60"
+                }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-xl bg-zinc-100 text-zinc-800 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                  <div
+                    className={`size-8 rounded-xl flex items-center justify-center font-bold text-xs transition-colors ${
+                      isPeak
+                        ? "bg-amber-200/80 text-amber-950 font-black group-hover:bg-[#1c00ff] group-hover:text-white"
+                        : "bg-zinc-100 text-zinc-800 group-hover:bg-[#1c00ff] group-hover:text-white"
+                    }`}
+                  >
                     {orario}
                   </div>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-zinc-900">
-                        Disponibile
+                        {isPeak ? "Postazioni Limitate" : "Disponibile"}
                       </span>
                       {isPeak && (
-                        <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded-full bg-amber-50 text-amber-900 border border-amber-200/80">
-                          Postazioni limitate
+                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                          ⚡ 1 sola pedana rimasta
                         </span>
                       )}
                     </div>
                     <span className="text-[10px] text-zinc-500">
-                      {isPeak ? "Richiesta elevata per questa fascia" : "Postazione Landmine"}
+                      {isPeak ? "Capienza quasi esaurita per questo turno" : "Postazione Landmine • 2 rimaste"}
                     </span>
                   </div>
                 </div>
@@ -741,81 +776,105 @@ export default function PrenotaSlotPage() {
         }}
       >
         <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
-          <div className="mx-auto size-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 border border-emerald-200">
-            <CheckCircle2 className="size-6" />
-          </div>
-
-          <DialogHeader className="text-center">
-            <DialogTitle className="text-lg font-black text-zinc-900">
-              Postazione Individuata!
-            </DialogTitle>
-            <DialogDescription className="text-xs text-zinc-500 mt-1">
-              Capienza verificata con successo per questo turno.
-            </DialogDescription>
-          </DialogHeader>
-
-          {scannerSlot && (
-            <div className="my-4 space-y-3">
-              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-1.5">
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Data Seduta:</span>
-                  <strong className="text-zinc-900 capitalize">{formatGiornoItaliano(scannerSlot.data)}</strong>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Orario Turno:</span>
-                  <strong className="text-zinc-900">{scannerSlot.orario}</strong>
-                </div>
-                <div className="flex justify-between border-t border-zinc-200 pt-1.5">
-                  <span className="text-zinc-500">Stato Postazione:</span>
-                  <span className="font-bold text-amber-800 flex items-center gap-1">
-                    <Clock className="size-3 text-amber-700" /> Congelata provvisoriamente
-                  </span>
+          {isScanning ? (
+            <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+              <div className="relative size-20 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-4 border-amber-500/20 animate-ping" />
+                <div className="absolute inset-1 rounded-full border-2 border-dashed border-amber-500 animate-spin" />
+                <div className="size-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 font-bold border border-amber-200">
+                  <Sparkles className="size-6 animate-pulse" />
                 </div>
               </div>
-
-              {/* TIMER COUNTDOWN BOX */}
-              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-center">
-                <div className="text-[10px] font-black uppercase tracking-wider text-amber-800">
-                  Tempo Rimanente per Confermare
-                </div>
-                <div className="text-2xl font-black font-mono tracking-tight text-amber-900 my-0.5">
-                  {Math.floor(countdownSec / 60)}:{(countdownSec % 60).toString().padStart(2, "0")}
-                </div>
-                <p className="text-[11px] text-amber-800/90 leading-tight">
-                  La postazione è riservata a tuo nome per 15 minuti. Scegli il tuo pacchetto per attivarla in via definitiva.
+              <div className="space-y-1">
+                <p className="text-base font-black text-zinc-900">Verifica Pedana in corso...</p>
+                <p className="text-xs text-zinc-500">
+                  Interrogazione registro capienza turno <strong className="text-zinc-800">{scannerSlot?.orario}</strong>
                 </p>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 rounded-full text-[11px] font-medium text-zinc-600 mt-2">
+                  <span className="size-2 rounded-full bg-amber-500 animate-ping" />
+                  Scansione disponibilità Landmine...
+                </div>
               </div>
             </div>
-          )}
+          ) : (
+            <>
+              <div className="mx-auto size-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 border border-emerald-200">
+                <CheckCircle2 className="size-6" />
+              </div>
 
-          <DialogFooter className="flex flex-col gap-2">
-            <Button
-              onClick={() => {
-                if (scannerSlot) {
-                  localStorage.setItem(
-                    "area46_frozen_slot",
-                    JSON.stringify({
-                      data: scannerSlot.data,
-                      orario: scannerSlot.orario,
-                      expiresAt: Date.now() + 15 * 60 * 1000,
-                    })
-                  );
-                  setScannerSlot(null);
-                  navigate("/tariffario");
-                }
-              }}
-              className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-11"
-            >
-              Attiva Pacchetto & Conferma Postazione &rarr;
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => setScannerSlot(null)}
-              className="text-xs text-zinc-500 h-8"
-            >
-              Annulla e torna al calendario
-            </Button>
-          </DialogFooter>
+              <DialogHeader className="text-center">
+                <DialogTitle className="text-lg font-black text-zinc-900">
+                  Postazione Individuata!
+                </DialogTitle>
+                <DialogDescription className="text-xs text-zinc-500 mt-1">
+                  Capienza verificata con successo per questo turno.
+                </DialogDescription>
+              </DialogHeader>
+
+              {scannerSlot && (
+                <div className="my-4 space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-1.5">
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">Data Seduta:</span>
+                      <strong className="text-zinc-900 capitalize">{formatGiornoItaliano(scannerSlot.data)}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">Orario Turno:</span>
+                      <strong className="text-zinc-900">{scannerSlot.orario}</strong>
+                    </div>
+                    <div className="flex justify-between border-t border-zinc-200 pt-1.5">
+                      <span className="text-zinc-500">Stato Postazione:</span>
+                      <span className="font-bold text-amber-800 flex items-center gap-1">
+                        <Clock className="size-3 text-amber-700" /> Congelata provvisoriamente
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* TIMER COUNTDOWN BOX */}
+                  <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-center">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-amber-800">
+                      Tempo Rimanente per Confermare
+                    </div>
+                    <div className="text-2xl font-black font-mono tracking-tight text-amber-900 my-0.5">
+                      {Math.floor(countdownSec / 60)}:{(countdownSec % 60).toString().padStart(2, "0")}
+                    </div>
+                    <p className="text-[11px] text-amber-800/90 leading-tight">
+                      La postazione è riservata a tuo nome per 15 minuti. Scegli il tuo pacchetto per attivarla in via definitiva.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <DialogFooter className="flex flex-col gap-2">
+                <Button
+                  onClick={() => {
+                    if (scannerSlot) {
+                      localStorage.setItem(
+                        "area46_frozen_slot",
+                        JSON.stringify({
+                          data: scannerSlot.data,
+                          orario: scannerSlot.orario,
+                          expiresAt: Date.now() + 15 * 60 * 1000,
+                        })
+                      );
+                      setScannerSlot(null);
+                      navigate("/tariffario");
+                    }
+                  }}
+                  className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-11"
+                >
+                  Attiva Pacchetto & Conferma Postazione &rarr;
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => setScannerSlot(null)}
+                  className="text-xs text-zinc-500 h-8"
+                >
+                  Annulla e torna al calendario
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 

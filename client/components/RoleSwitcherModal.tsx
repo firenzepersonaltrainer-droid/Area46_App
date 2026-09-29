@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useCurrentUser, useProfili } from "../lib/useUser";
-import { ShieldCheck, User, Users, Check, Key, LogOut } from "lucide-react";
+import { ShieldCheck, User, Users, Check, Key, LogOut, Monitor } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./Dialog";
 import { Button } from "./Button";
 import { Input } from "./Input";
@@ -100,6 +101,19 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
                 </div>
               )}
             </button>
+
+            {currentUser?.ruolo === "manager" && (
+              <div className="mt-2">
+                <Link
+                  to="/desktop"
+                  onClick={() => onOpenChange(false)}
+                  className="w-full inline-flex items-center justify-center gap-2 p-2.5 rounded-2xl bg-[#09090b] text-[#e3ff00] hover:bg-zinc-800 text-xs font-black border border-[#e3ff00]/40 transition-colors cursor-pointer shadow-xs"
+                >
+                  <Monitor className="size-4 text-[#e3ff00]" />
+                  <span>Apri Control Panel Desktop Panoramico &rarr;</span>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* SEZIONE ATLETI DEMO */}

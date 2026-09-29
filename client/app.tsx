@@ -13,6 +13,7 @@ import {
   Settings,
   ShieldCheck,
   User,
+  Monitor,
 } from "lucide-react";
 import { Nav } from "./components/Nav";
 import { Toaster } from "./components/Toast";
@@ -33,6 +34,7 @@ import TariffarioPage from "./pages/Tariffario";
 import ManagerCalendarPage from "./pages/ManagerCalendar";
 import ManagerAtletiPage from "./pages/ManagerAtleti";
 import ManagerFiscoPage from "./pages/ManagerFisco";
+import DesktopControlPanel from "./pages/DesktopControlPanel";
 import LoginPage from "./pages/Login";
 import FloatingTimer from "./components/FloatingTimer";
 import { InstallPrompt } from "./components/InstallPrompt";
@@ -135,15 +137,25 @@ function AppHeader({
             ACCESSO LAB
           </button>
         ) : isManager ? (
-          <button
-            type="button"
-            onClick={onOpenSwitcher}
-            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50 hover:bg-zinc-800 transition-all cursor-pointer"
-            title="Tocca per cambiare modalità o passare a vista Atleta"
-          >
-            <ShieldCheck className="size-3.5 text-[#e3ff00]" />
-            COACH • SWITCH
-          </button>
+          <div className="flex items-center gap-1.5">
+            <Link
+              to="/desktop"
+              className="hidden sm:inline-flex text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/40 hover:bg-zinc-800 transition-all cursor-pointer"
+              title="Apri Control Panel Desktop Panoramico"
+            >
+              <Monitor className="size-3.5 text-[#e3ff00]" />
+              <span>DESKTOP</span>
+            </Link>
+            <button
+              type="button"
+              onClick={onOpenSwitcher}
+              className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-xs bg-[#09090b] text-[#e3ff00] border border-[#e3ff00]/50 hover:bg-zinc-800 transition-all cursor-pointer"
+              title="Tocca per cambiare modalità o passare a vista Atleta"
+            >
+              <ShieldCheck className="size-3.5 text-[#e3ff00]" />
+              COACH • SWITCH
+            </button>
+          </div>
         ) : (
           <button
             type="button"
@@ -174,6 +186,28 @@ function AppContent() {
   const { user, isManager, isLoading } = useCurrentUser();
   const [showManualModal, setShowManualModal] = useState(false);
   const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
+  const location = useLocation();
+
+  const isDesktopRoute =
+    location.pathname === "/desktop" ||
+    location.pathname === "/control-panel" ||
+    location.pathname.startsWith("/desktop") ||
+    location.pathname.startsWith("/control-panel") ||
+    location.pathname === "/manager/desktop";
+
+  // Se siamo in modalità Control Panel Desktop, renderizziamo a schermo intero senza vincoli di frame smartphone
+  if (isDesktopRoute) {
+    return (
+      <div className="w-full min-h-screen">
+        <Toaster
+          position="top-right"
+          style={{ pointerEvents: "none" } as React.CSSProperties}
+          toastOptions={{ style: { pointerEvents: "auto" } }}
+        />
+        <DesktopControlPanel />
+      </div>
+    );
+  }
 
   // 1. Schermata di caricamento iniziale
   if (isLoading) {
@@ -292,7 +326,10 @@ function AppContent() {
           <Route path="/archivio" element={<ArchivioPage />} />
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Rotte Manager Coach */}
+          {/* Rotte Desktop & Manager Coach */}
+          <Route path="/desktop" element={<DesktopControlPanel />} />
+          <Route path="/control-panel" element={<DesktopControlPanel />} />
+          <Route path="/manager/desktop" element={<DesktopControlPanel />} />
           <Route path="/manager/calendario" element={<ManagerCalendarPage />} />
           <Route path="/manager/atleti" element={<ManagerAtletiPage />} />
           <Route path="/manager/fisco" element={<ManagerFiscoPage />} />
@@ -314,13 +351,36 @@ function AppContent() {
   );
 }
 
+function LayoutWrapper({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const isDesktopRoute =
+    location.pathname === "/desktop" ||
+    location.pathname === "/control-panel" ||
+    location.pathname.startsWith("/desktop") ||
+    location.pathname.startsWith("/control-panel") ||
+    location.pathname === "/manager/desktop";
+
+  if (isDesktopRoute) {
+    return (
+      <div className="min-h-screen w-full bg-[#f1f3f7] text-primary selection:bg-[#1c00ff] selection:text-white">
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen w-full bg-[#eaedf2] flex flex-col items-center justify-start sm:py-6 sm:px-4 text-primary selection:bg-[#1c00ff] selection:text-white">
+      {children}
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
-      {/* Sfondo studio chiaro su computer per massima leggibilità ed eleganza */}
-      <div className="min-h-screen w-full bg-[#eaedf2] flex flex-col items-center justify-start sm:py-6 sm:px-4 text-primary selection:bg-[#1c00ff] selection:text-white">
+      <LayoutWrapper>
         <AppContent />
-      </div>
+      </LayoutWrapper>
     </BrowserRouter>
   );
 }

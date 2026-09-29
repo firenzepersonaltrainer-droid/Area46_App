@@ -711,7 +711,7 @@ export default function ManagerFiscoPage() {
                   type="text"
                   value={searchTx}
                   onChange={(e) => setSearchTx(e.target.value)}
-                  placeholder="Es. Mario Rossi o RSSMRA..."
+                  placeholder="Es. Matteo Calosci o CF..."
                   className="w-full text-xs bg-white border border-zinc-200 rounded-xl pl-8 pr-2.5 py-1.5 text-zinc-800 focus:outline-[#1c00ff]"
                 />
               </div>

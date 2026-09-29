@@ -83,8 +83,8 @@ export default function LoginPage() {
   // 3. Social Login (Opzione C: Google / Apple)
   const handleSocialLogin = async (provider: "google" | "apple", demoEmail?: string, demoName?: string) => {
     try {
-      const emailToUse = demoEmail || (provider === "google" ? "mario.rossi@gmail.com" : "laura.bianchi@gmail.com");
-      const nameToUse = demoName || (provider === "google" ? "Mario Rossi" : "Laura Bianchi");
+      const emailToUse = demoEmail || (provider === "google" ? "tebog1887@gmail.com" : "daniele.casci@gmail.com");
+      const nameToUse = demoName || (provider === "google" ? "Giacomo Tesi" : "Daniele Casci");
       const res = await oauthLoginMutation.mutateAsync({
         provider,
         email: emailToUse,
@@ -279,32 +279,32 @@ export default function LoginPage() {
             <span className="text-[10px] font-bold text-[#1c00ff]">&rarr;</span>
           </button>
 
-          {/* Mario Rossi (Continuativo) */}
+          {/* Giacomo Tesi (Atleta) */}
           <button
             type="button"
-            onClick={() => handleSocialLogin("google", "mario.rossi@gmail.com", "Mario Rossi")}
+            onClick={() => handleSocialLogin("google", "tebog1887@gmail.com", "Giacomo Tesi")}
             className="w-full p-2.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-left transition-all flex items-center justify-between cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <div className="size-6 rounded-lg bg-[#e3ff00] text-zinc-950 flex items-center justify-center font-black text-xs border border-zinc-900">
-                <Crown className="size-3.5 text-[#1c00ff]" />
+              <div className="size-6 rounded-lg bg-[#1c00ff]/10 text-[#1c00ff] flex items-center justify-center font-black text-xs border border-[#1c00ff]/20">
+                <User className="size-3.5 text-[#1c00ff]" />
               </div>
               <div>
                 <div className="text-xs font-bold text-zinc-900 leading-none">
-                  Mario Rossi (Continuativo)
+                  Giacomo Tesi (Atleta)
                 </div>
                 <div className="text-[10px] text-zinc-500 mt-0.5">
-                  mario.rossi@gmail.com
+                  tebog1887@gmail.com
                 </div>
               </div>
             </div>
             <span className="text-[10px] font-bold text-[#1c00ff]">&rarr;</span>
           </button>
 
-          {/* Laura Bianchi (A consumo) */}
+          {/* Daniele Casci (Atleta) */}
           <button
             type="button"
-            onClick={() => handleSocialLogin("apple", "laura.bianchi@gmail.com", "Laura Bianchi")}
+            onClick={() => handleSocialLogin("apple", "daniele.casci@gmail.com", "Daniele Casci")}
             className="w-full p-2.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-left transition-all flex items-center justify-between cursor-pointer"
           >
             <div className="flex items-center gap-2">
@@ -313,10 +313,10 @@ export default function LoginPage() {
               </div>
               <div>
                 <div className="text-xs font-bold text-zinc-900 leading-none">
-                  Laura Bianchi (A consumo)
+                  Daniele Casci (Atleta)
                 </div>
                 <div className="text-[10px] text-zinc-500 mt-0.5">
-                  laura.bianchi@gmail.com
+                  daniele.casci@gmail.com
                 </div>
               </div>
             </div>
