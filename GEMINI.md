@@ -9,3 +9,4 @@ Regole Tassative:
 4. Rotazione lenta per fondamentali di forza (onde RPE), veloce per accessori/metcon/skill (copertura 160 esercizi).
 5. Mai sovraccarico anca; garantire stimolo per braccia/spalle.
 6. Notazione asimmetrica obbligatoria con `+` (es. `8+8`). Nessuna speed ladder nei circuiti/AMRAP.
+7. Sincronizzazione Glide: Ad ogni apertura della conversazione eseguire `npm run sync-glide` per sincronizzare SOLO anagrafica e diario atleti da Glide fino a sua dismissione. Preservare crediti, scadenze e fisco.

@@ -55,3 +55,12 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
   3. Scheda Google Fogli `REGISTRO E LINEE GUIDA PRO`.
 * Presentare sempre una proposta di controllo al coach in chat prima di scrivere sul foglio.
 * Applicare sempre l'alternanza colori (A grigio chiaro `#F2F2F2`, B bianco `#FFFFFF`) e il bordo inferiore marcato sull'ultima riga del ciclo.
+
+---
+
+## 5. SINCRONIZZAZIONE AUTOMATICA GLIDE (ATTIVA AD OGNI APERTURA FINO A DISMISSIONE DEFINITIVA)
+* **Regola Tassativa**: Ad ogni avvio o apertura della conversazione, l'agente DEVE eseguire la sincronizzazione da Glide (`npm run sync-glide` o `node scripts/sync_glide.mjs`).
+* **Perimetro di sincronizzazione**: Sincronizzare **esclusivamente i dati anagrafici** (nuovi atleti o aggiornamenti di contatto) e il **diario di allenamento** (nuovi carichi, serie, rep e feedback).
+* **Integrità Dati**: MAI toccare, azzerare o sovrascrivere crediti, scadenze carnet, prenotazioni calendario e registrazioni contabili/fisco già governate dal nuovo gestionale Area46.
+* **Segnalazione Problematiche**: Se sorgono problematiche di connessione o assenza dati sorgente da Glide, informare tempestivamente il coach con istruzioni chiare per risolverle.
+* Questa regola resta vincolante e attiva fino a quando Glide non verrà dismessa definitivamente da Stefano Tronconi.

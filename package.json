@@ -7,6 +7,7 @@
     "demo": "vite",
     "build": "vite build && esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
     "build:api": "esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
+    "sync-glide": "node scripts/sync_glide.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
