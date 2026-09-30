@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useProfili,
@@ -66,6 +66,7 @@ function formatGiornoEsteso(iso: string): string {
 }
 
 export default function ManagerAtletiPage() {
+  const navigate = useNavigate();
   const { profili, modificaCrediti, salvaProfilo, dismettiAtleta, eliminaAtleta, isDeleting } = useProfili();
   const { movimenti, registraMovimento } = useMovimentiCrediti();
 
@@ -646,6 +647,20 @@ export default function ManagerAtletiPage() {
                     className="text-xs font-bold h-8 px-2.5 rounded-xl border-zinc-300"
                   >
                     Saldo
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      navigate(
+                        `/manager/fisco?action=versamento&email=${encodeURIComponent(atleta.email)}`
+                      )
+                    }
+                    className="text-xs font-bold h-8 px-2 rounded-xl border-indigo-200 text-indigo-800 bg-indigo-50/50 hover:bg-indigo-100/60 flex items-center gap-1 cursor-pointer"
+                    title="Registra versamento manuale nel Fisco per questo atleta"
+                  >
+                    <Receipt className="size-3.5 text-[#1c00ff]" />
+                    <span className="hidden sm:inline">Versamento</span>
                   </Button>
                   <Button
                     variant="ghost"

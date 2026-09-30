@@ -13997,14 +13997,15 @@ var demo_data_default = {
       codice_fiscale: "",
       indirizzo: "",
       ruolo: "atleta",
-      crediti: 10,
+      crediti: 36,
       shared_wallet_with: null,
       tempo_cancellazione_ore: 24,
       tempo_anticipo_prenotazione_ore: 24,
       data_scadenza_crediti: "2026-11-29",
       data_ultimo_accesso: "2026-09-30T14:04:45.213Z",
       note_coach: "",
-      created_at: "2026-09-30T14:04:33.341Z"
+      created_at: "2026-09-30T14:04:33.341Z",
+      updated_at: "2026-09-30T14:15:32.478Z"
     },
     {
       id: "usr-atleta-1790777073444",
@@ -14023,6 +14024,25 @@ var demo_data_default = {
       data_ultimo_accesso: "2026-09-30T14:04:45.307Z",
       note_coach: "",
       created_at: "2026-09-30T14:04:33.444Z"
+    },
+    {
+      id: "usr-atleta-1790778020747",
+      nome: "Daniele",
+      cognome: "Casci",
+      email: "daniele.casci@gmail.com",
+      telefono: "+39 335 629 9341",
+      codice_fiscale: "",
+      indirizzo: "",
+      ruolo: "atleta",
+      crediti: 0,
+      shared_wallet_with: null,
+      tempo_cancellazione_ore: 24,
+      tempo_anticipo_prenotazione_ore: 24,
+      data_scadenza_crediti: "2026-11-29",
+      data_ultimo_accesso: "2026-09-30T14:20:20.748Z",
+      note_coach: "",
+      created_at: "2026-09-30T14:20:20.748Z",
+      updated_at: "2026-09-30T14:21:01.220Z"
     }
   ],
   configurazione_lab: {
@@ -14154,7 +14174,30 @@ var demo_data_default = {
     }
   ],
   prenotazioni_slot: [],
-  transazioni_pagamenti: [],
+  transazioni_pagamenti: [
+    {
+      id: "tx-man-1790778290078",
+      codice_transazione: "TX-MAN-46-290075",
+      atleta_id: "usr-atleta-1790777073318",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-36",
+      nome_pacchetto: "Pacchetto Lab 36",
+      importo_euro: 890,
+      metodo: "bonifico",
+      crediti_acquistati: 0,
+      debiti_decurtati: 0,
+      crediti_effettivi_aggiunti: 0,
+      causale_bonifico: "AREA46-PANTANELLA-0075",
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-09-30T10:00:00.000Z",
+      note: "Bonifico bancario saldato anticipatamente dall'atleta (\u20AC 890,00)",
+      inserito_da: "coach_manuale"
+    }
+  ],
   transazioni_cancellate: [
     "TX-46-2026-002",
     "TX-46-2026-003",
@@ -14162,10 +14205,24 @@ var demo_data_default = {
     "TX-46-2026-005",
     "TX-46-412954",
     "TX-46-454580",
-    "TX-46-641672"
+    "TX-46-641672",
+    "TX-46-2026-001",
+    "TX-MAN-46-264429"
   ],
   active_user_id: null,
   movimenti_crediti: [
+    {
+      id: "mov-1790778020748-876",
+      atleta_id: "usr-atleta-1790778020747",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-09-30T14:20:20.748Z",
+      tipo: "bonus_regalo",
+      delta_crediti: 1,
+      saldo_risultante: 1,
+      motivazione: "Crediti configurati in anagrafica",
+      operatore: "coach"
+    },
     {
       id: "mov-1790777085214-34",
       atleta_id: "usr-atleta-1790777073318",
@@ -14249,6 +14306,52 @@ var demo_data_default = {
   prenotazioni_cancellate: [],
   utenti_cancellati: [],
   notifiche_email: [
+    {
+      id: "email-1790778020748-915",
+      destinatario: "daniele.casci@gmail.com",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Daniele!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: daniele.casci@gmail.com
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `Ciao Daniele!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: daniele.casci@gmail.com<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com`,
+      inviato_il: "2026-09-30T14:20:20.748Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
     {
       id: "email-1790777073444-918",
       destinatario: "pierpaolaciancia@gmail.com",
@@ -16726,6 +16829,102 @@ CALENDARIO E PRENOTAZIONI:
       }
     }
     return res.end(JSON.stringify({ received: true }));
+  }
+  if (pathname === "/app-api/transazioni/manuale" && method === "POST") {
+    const atletaId = parsedBody.atleta_id || parsedBody.email_cliente;
+    if (!atletaId) {
+      res.statusCode = 400;
+      return res.end(JSON.stringify({ error: "Atleta obbligatorio" }));
+    }
+    const atleta = (db.profili_utenti || []).find(
+      (p) => p.id === atletaId || p.email?.toLowerCase() === String(atletaId).toLowerCase()
+    );
+    if (!atleta) {
+      res.statusCode = 404;
+      return res.end(JSON.stringify({ error: "Atleta non trovato in anagrafica" }));
+    }
+    const importoEuro = Number(parsedBody.importo_euro);
+    if (isNaN(importoEuro) || importoEuro <= 0) {
+      res.statusCode = 400;
+      return res.end(
+        JSON.stringify({ error: "Importo non valido (deve essere un valore numerico maggiore di zero)" })
+      );
+    }
+    const metodo = (parsedBody.metodo || "bonifico").toLowerCase();
+    const packId = parsedBody.id_pacchetto || "manuale";
+    const pacchettoTrovato = (db.tariffario_pacchetti || []).find((p) => p.id === packId);
+    const nomePacchetto = parsedBody.nome_pacchetto || parsedBody.descrizione || pacchettoTrovato?.nome || (metodo === "bonifico" ? "Bonifico Bancario" : "Versamento Manuale");
+    const creditiDaAccreditare = Number(parsedBody.crediti_da_accreditare) || 0;
+    const dataPagamento = parsedBody.data_pagamento ? new Date(parsedBody.data_pagamento).toISOString() : (/* @__PURE__ */ new Date()).toISOString();
+    const txCode = `TX-MAN-46-${Date.now().toString().slice(-6)}`;
+    const causaleBonifico = parsedBody.causale_bonifico || (metodo === "bonifico" ? `AREA46-${(atleta.cognome || "ATLETA").toUpperCase()}-${txCode.slice(-4)}` : null);
+    const walletOwner = getWalletOwner(atleta, db) || atleta;
+    const nuovaTransazione = {
+      id: `tx-man-${Date.now()}`,
+      codice_transazione: txCode,
+      atleta_id: atleta.id,
+      email_cliente: atleta.email,
+      nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+      codice_fiscale: parsedBody.codice_fiscale || atleta.codice_fiscale || "",
+      indirizzo: parsedBody.indirizzo || atleta.indirizzo || "",
+      id_pacchetto: packId,
+      nome_pacchetto: nomePacchetto,
+      importo_euro: importoEuro,
+      metodo,
+      crediti_acquistati: creditiDaAccreditare,
+      debiti_decurtati: 0,
+      crediti_effettivi_aggiunti: creditiDaAccreditare,
+      causale_bonifico: causaleBonifico,
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: dataPagamento,
+      note: parsedBody.note || "",
+      inserito_da: "coach_manuale"
+    };
+    if (creditiDaAccreditare > 0) {
+      const currentCrediti = Number(walletOwner.crediti) || 0;
+      walletOwner.crediti = currentCrediti + creditiDaAccreditare;
+      if (parsedBody.data_scadenza_crediti) {
+        walletOwner.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
+      } else if (parsedBody.giorni_validita || pacchettoTrovato?.giorni_validita) {
+        const days = Number(parsedBody.giorni_validita || pacchettoTrovato?.giorni_validita);
+        const nuovaScadenza = new Date(Date.now() + days * 864e5).toISOString().slice(0, 10);
+        if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+          walletOwner.data_scadenza_crediti = nuovaScadenza;
+        }
+      }
+      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      addMovimentoCrediti(db, {
+        atleta_id: walletOwner.id,
+        email_cliente: walletOwner.email,
+        nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
+        tipo: "versamento_manuale",
+        delta_crediti: creditiDaAccreditare,
+        saldo_risultante: walletOwner.crediti,
+        motivazione: `Versamento manuale ${nomePacchetto} (\u20AC ${importoEuro.toFixed(2)}) registrato dal Coach`,
+        operatore: "coach"
+      });
+    }
+    db.transazioni_pagamenti = db.transazioni_pagamenti || [];
+    if (db.transazioni_cancellate && Array.isArray(db.transazioni_cancellate)) {
+      db.transazioni_cancellate = db.transazioni_cancellate.filter(
+        (c) => c !== nuovaTransazione.id && c !== nuovaTransazione.codice_transazione
+      );
+    }
+    db.transazioni_pagamenti.unshift(nuovaTransazione);
+    saveData(db);
+    syncDataToGoogleDrive(db).catch(() => {
+    });
+    res.statusCode = 201;
+    return res.end(
+      JSON.stringify({
+        ok: true,
+        transazione: nuovaTransazione,
+        crediti_attuali: walletOwner.crediti,
+        data_scadenza_crediti: walletOwner.data_scadenza_crediti,
+        messaggio: `Versamento di \u20AC ${importoEuro.toFixed(2)} per ${nuovaTransazione.nome_cliente} registrato con successo nel Registro Fisco.`
+      })
+    );
   }
   if (pathname === "/app-api/transazioni/checkout" && method === "POST") {
     const atletaId = parsedBody.atleta_id || currentUser.id;

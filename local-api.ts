@@ -2927,6 +2927,132 @@ CALENDARIO E PRENOTAZIONI:
       return res.end(JSON.stringify({ received: true }));
     }
 
+    // POST /app-api/transazioni/manuale (Registrazione Versamento Manuale dal Coach nel Fisco)
+    if (pathname === "/app-api/transazioni/manuale" && method === "POST") {
+      const atletaId = parsedBody.atleta_id || parsedBody.email_cliente;
+      if (!atletaId) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Atleta obbligatorio" }));
+      }
+      const atleta = (db.profili_utenti || []).find(
+        (p: any) =>
+          p.id === atletaId ||
+          p.email?.toLowerCase() === String(atletaId).toLowerCase()
+      );
+      if (!atleta) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Atleta non trovato in anagrafica" }));
+      }
+
+      const importoEuro = Number(parsedBody.importo_euro);
+      if (isNaN(importoEuro) || importoEuro <= 0) {
+        res.statusCode = 400;
+        return res.end(
+          JSON.stringify({ error: "Importo non valido (deve essere un valore numerico maggiore di zero)" })
+        );
+      }
+
+      const metodo = (parsedBody.metodo || "bonifico").toLowerCase();
+      const packId = parsedBody.id_pacchetto || "manuale";
+      const pacchettoTrovato = (db.tariffario_pacchetti || []).find((p: any) => p.id === packId);
+      const nomePacchetto =
+        parsedBody.nome_pacchetto ||
+        parsedBody.descrizione ||
+        pacchettoTrovato?.nome ||
+        (metodo === "bonifico" ? "Bonifico Bancario" : "Versamento Manuale");
+
+      const creditiDaAccreditare = Number(parsedBody.crediti_da_accreditare) || 0;
+      const dataPagamento = parsedBody.data_pagamento
+        ? new Date(parsedBody.data_pagamento).toISOString()
+        : new Date().toISOString();
+
+      const txCode = `TX-MAN-46-${Date.now().toString().slice(-6)}`;
+      const causaleBonifico =
+        parsedBody.causale_bonifico ||
+        (metodo === "bonifico"
+          ? `AREA46-${(atleta.cognome || "ATLETA").toUpperCase()}-${txCode.slice(-4)}`
+          : null);
+
+      const walletOwner = getWalletOwner(atleta, db) || atleta;
+
+      const nuovaTransazione = {
+        id: `tx-man-${Date.now()}`,
+        codice_transazione: txCode,
+        atleta_id: atleta.id,
+        email_cliente: atleta.email,
+        nome_cliente:
+          `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+        codice_fiscale: parsedBody.codice_fiscale || atleta.codice_fiscale || "",
+        indirizzo: parsedBody.indirizzo || atleta.indirizzo || "",
+        id_pacchetto: packId,
+        nome_pacchetto: nomePacchetto,
+        importo_euro: importoEuro,
+        metodo: metodo,
+        crediti_acquistati: creditiDaAccreditare,
+        debiti_decurtati: 0,
+        crediti_effettivi_aggiunti: creditiDaAccreditare,
+        causale_bonifico: causaleBonifico,
+        stato: "completato",
+        stato_fattura: "da_emettere",
+        created_at: dataPagamento,
+        note: parsedBody.note || "",
+        inserito_da: "coach_manuale",
+      };
+
+      if (creditiDaAccreditare > 0) {
+        const currentCrediti = Number(walletOwner.crediti) || 0;
+        walletOwner.crediti = currentCrediti + creditiDaAccreditare;
+
+        if (parsedBody.data_scadenza_crediti) {
+          walletOwner.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
+        } else if (parsedBody.giorni_validita || pacchettoTrovato?.giorni_validita) {
+          const days = Number(parsedBody.giorni_validita || pacchettoTrovato?.giorni_validita);
+          const nuovaScadenza = new Date(Date.now() + days * 86400000)
+            .toISOString()
+            .slice(0, 10);
+          if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+            walletOwner.data_scadenza_crediti = nuovaScadenza;
+          }
+        }
+        walletOwner.data_ultimo_accesso = new Date().toISOString();
+
+        addMovimentoCrediti(db, {
+          atleta_id: walletOwner.id,
+          email_cliente: walletOwner.email,
+          nome_cliente:
+            `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() ||
+            walletOwner.name ||
+            "Atleta",
+          tipo: "versamento_manuale",
+          delta_crediti: creditiDaAccreditare,
+          saldo_risultante: walletOwner.crediti,
+          motivazione: `Versamento manuale ${nomePacchetto} (€ ${importoEuro.toFixed(2)}) registrato dal Coach`,
+          operatore: "coach",
+        });
+      }
+
+      db.transazioni_pagamenti = db.transazioni_pagamenti || [];
+      if (db.transazioni_cancellate && Array.isArray(db.transazioni_cancellate)) {
+        db.transazioni_cancellate = db.transazioni_cancellate.filter(
+          (c: string) => c !== nuovaTransazione.id && c !== nuovaTransazione.codice_transazione
+        );
+      }
+      db.transazioni_pagamenti.unshift(nuovaTransazione);
+      saveData(db);
+      syncDataToGoogleDrive(db).catch(() => {});
+
+      res.statusCode = 201;
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          transazione: nuovaTransazione,
+          crediti_attuali: walletOwner.crediti,
+          data_scadenza_crediti: walletOwner.data_scadenza_crediti,
+          messaggio: `Versamento di € ${importoEuro.toFixed(2)} per ${nuovaTransazione.nome_cliente} registrato con successo nel Registro Fisco.`,
+        })
+      );
+    }
+
     // POST /app-api/transazioni/checkout (Checkout Manuale / Bonifico)
     if (pathname === "/app-api/transazioni/checkout" && method === "POST") {
       const atletaId = parsedBody.atleta_id || currentUser.id;

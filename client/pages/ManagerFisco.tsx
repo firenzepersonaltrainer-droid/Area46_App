@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useLabConfig,
@@ -36,6 +37,9 @@ import {
   Clock,
   Trash2,
   AlertTriangle,
+  PlusCircle,
+  Coins,
+  Banknote,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -99,6 +103,31 @@ export default function ManagerFiscoPage() {
   const [backupModalOpen, setBackupModalOpen] = useState(false);
   const [backupInput, setBackupInput] = useState("");
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Modale Registrazione Versamento Manuale
+  const [manualModalOpen, setManualModalOpen] = useState(false);
+  const [manualAtletaId, setManualAtletaId] = useState("");
+  const [manualImporto, setManualImporto] = useState<string>("890");
+  const [manualMetodo, setManualMetodo] = useState<"bonifico" | "contanti" | "pos" | "altro">("bonifico");
+  const [manualData, setManualData] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [manualPackId, setManualPackId] = useState<string>("pack-36");
+  const [manualDescrizione, setManualDescrizione] = useState<string>("Pacchetto Lab 36");
+  const [manualAccreditaCrediti, setManualAccreditaCrediti] = useState<boolean>(false);
+  const [manualCrediti, setManualCrediti] = useState<number>(0);
+  const [manualGiorniValidita, setManualGiorniValidita] = useState<number>(84);
+  const [manualNote, setManualNote] = useState<string>("");
+
+  // Tariffario pacchetti
+  const { data: pacchetti = [] } = useQuery<any[]>({
+    queryKey: ["tariffario"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/tariffario");
+      if (!res.ok) return [];
+      return res.json();
+    },
+  });
+
   // Filtri Registro Incassi
   const [filtroPeriodo, setFiltroPeriodo] = useState<
     "tutti" | "questo_mese" | "mese_scorso" | "quest_anno" | "custom"
@@ -106,7 +135,7 @@ export default function ManagerFiscoPage() {
   const [filtroDataDa, setFiltroDataDa] = useState("");
   const [filtroDataA, setFiltroDataA] = useState("");
   const [filtroAtleta, setFiltroAtleta] = useState("tutti");
-  const [filtroMetodo, setFiltroMetodo] = useState<"tutti" | "stripe" | "bonifico">("tutti");
+  const [filtroMetodo, setFiltroMetodo] = useState<"tutti" | "stripe" | "bonifico" | "contanti" | "pos">("tutti");
   const [filtroStato, setFiltroStato] = useState<"tutti" | "completato" | "in_attesa_bonifico">("tutti");
   const [searchTx, setSearchTx] = useState("");
 
@@ -221,6 +250,124 @@ export default function ManagerFiscoPage() {
   const atleti = useMemo(() => {
     return profili.filter((p) => p.ruolo === "atleta");
   }, [profili]);
+
+  // Mutation Registrazione Versamento Manuale
+  const registraVersamentoMutation = useMutation({
+    mutationFn: async (payload: {
+      atleta_id: string;
+      importo_euro: number;
+      metodo: string;
+      id_pacchetto?: string;
+      nome_pacchetto?: string;
+      data_pagamento?: string;
+      crediti_da_accreditare?: number;
+      giorni_validita?: number;
+      note?: string;
+    }) => {
+      const res = await fetch("/app-api/transazioni/manuale", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Errore durante la registrazione del versamento");
+      }
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["transazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["profili"] });
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      setManualModalOpen(false);
+      toast.success(data.messaggio || "Versamento registrato con successo nel Registro Fisco!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore durante la registrazione del versamento");
+    },
+  });
+
+  const handleOpenManualModal = (preselectedAthleteIdOrEmail?: string) => {
+    let target = preselectedAthleteIdOrEmail;
+    if (!target && atleti.length > 0) {
+      target = atleti[0].id;
+    }
+    setManualAtletaId(target || "");
+    setManualImporto("890");
+    setManualMetodo("bonifico");
+    setManualData(new Date().toISOString().slice(0, 10));
+    setManualPackId("pack-36");
+    setManualDescrizione("Pacchetto Lab 36");
+    setManualAccreditaCrediti(false);
+    setManualCrediti(0);
+    setManualGiorniValidita(84);
+    setManualNote("");
+    setManualModalOpen(true);
+  };
+
+  const handlePackChange = (packId: string) => {
+    setManualPackId(packId);
+    if (packId === "manuale") {
+      setManualDescrizione("Versamento Manuale / Bonifico");
+    } else {
+      const p = pacchetti.find((item) => item.id === packId);
+      if (p) {
+        setManualDescrizione(p.nome);
+        setManualImporto(String(p.prezzo_euro));
+        if (manualAccreditaCrediti) {
+          setManualCrediti(p.crediti);
+        }
+        setManualGiorniValidita(p.giorni_validita || 60);
+      }
+    }
+  };
+
+  const handleToggleAccredita = (enable: boolean) => {
+    setManualAccreditaCrediti(enable);
+    if (enable) {
+      const p = pacchetti.find((item) => item.id === manualPackId);
+      setManualCrediti(p ? p.crediti : 10);
+    } else {
+      setManualCrediti(0);
+    }
+  };
+
+  const handleSubmitManual = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const imp = parseFloat(manualImporto.replace(",", "."));
+    if (isNaN(imp) || imp <= 0) {
+      toast.error("Inserisci un importo valido in Euro maggiore di zero");
+      return;
+    }
+    if (!manualAtletaId) {
+      toast.error("Seleziona l'atleta destinatario del versamento");
+      return;
+    }
+
+    await registraVersamentoMutation.mutateAsync({
+      atleta_id: manualAtletaId,
+      importo_euro: imp,
+      metodo: manualMetodo,
+      id_pacchetto: manualPackId,
+      nome_pacchetto: manualDescrizione.trim() || "Versamento Manuale",
+      data_pagamento: manualData,
+      crediti_da_accreditare: manualAccreditaCrediti ? Number(manualCrediti) || 0 : 0,
+      giorni_validita: manualAccreditaCrediti ? Number(manualGiorniValidita) || 60 : undefined,
+      note: manualNote.trim(),
+    });
+  };
+
+  useEffect(() => {
+    const action = searchParams.get("action");
+    const emailParam = searchParams.get("email");
+    if (action === "versamento" && emailParam) {
+      const found = profili.find(
+        (p) => p.email?.toLowerCase() === emailParam.toLowerCase() || p.id === emailParam
+      );
+      handleOpenManualModal(found?.id || emailParam);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, profili]);
 
   // Test Stripe Connection
   const handleTestStripe = async () => {
@@ -386,6 +533,12 @@ export default function ManagerFiscoPage() {
           return false;
         }
         if (filtroMetodo === "bonifico" && !metodoLower.includes("bonifico")) {
+          return false;
+        }
+        if (filtroMetodo === "contanti" && !metodoLower.includes("contant")) {
+          return false;
+        }
+        if (filtroMetodo === "pos" && !metodoLower.includes("pos")) {
           return false;
         }
       }
@@ -777,14 +930,25 @@ export default function ManagerFiscoPage() {
             </div>
           </div>
 
-          <Button
-            size="sm"
-            onClick={() => copyInvoiceBuddyData()}
-            className="text-xs font-black bg-zinc-900 text-white hover:bg-zinc-800 h-8 px-3 rounded-xl flex items-center gap-1.5 shadow-xs shrink-0"
-          >
-            <Copy className="size-3.5 text-[#e3ff00]" />
-            <span>Copia Filtrati ({filteredTransazioni.filter((t) => t.stato === "completato").length})</span>
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              size="sm"
+              onClick={() => handleOpenManualModal()}
+              className="text-xs font-black bg-[#1c00ff] text-white hover:bg-[#1600cc] h-8 px-3 rounded-xl flex items-center gap-1.5 shadow-xs shrink-0 cursor-pointer"
+            >
+              <PlusCircle className="size-3.5" />
+              <span>Registra Versamento</span>
+            </Button>
+
+            <Button
+              size="sm"
+              onClick={() => copyInvoiceBuddyData()}
+              className="text-xs font-black bg-zinc-900 text-white hover:bg-zinc-800 h-8 px-3 rounded-xl flex items-center gap-1.5 shadow-xs shrink-0 cursor-pointer"
+            >
+              <Copy className="size-3.5 text-[#e3ff00]" />
+              <span>Copia Filtrati ({filteredTransazioni.filter((t) => t.stato === "completato").length})</span>
+            </Button>
+          </div>
         </div>
 
         {/* KPI CARDS INCASSI (DINAMICHE SUI FILTRI) */}
@@ -908,6 +1072,8 @@ export default function ManagerFiscoPage() {
                 <option value="tutti">Tutti i metodi</option>
                 <option value="stripe">Stripe / Carta / Apple Pay</option>
                 <option value="bonifico">Bonifico Bancario</option>
+                <option value="contanti">Contanti</option>
+                <option value="pos">POS Fisico / Carta</option>
               </select>
             </div>
 
@@ -1204,6 +1370,236 @@ export default function ManagerFiscoPage() {
               Ripristina e Salva
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE REGISTRAZIONE VERSAMENTO MANUALE FISCO */}
+      <Dialog open={manualModalOpen} onOpenChange={setManualModalOpen}>
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <DialogHeader>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="p-2 rounded-2xl bg-indigo-50 text-[#1c00ff] border border-indigo-200">
+                <PlusCircle className="size-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-base font-black text-zinc-900">
+                  Registra Versamento Manuale
+                </DialogTitle>
+                <DialogDescription className="text-xs text-zinc-500">
+                  Assegna un pagamento ricevuto (bonifico, contanti o POS) al registro fiscale.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmitManual} className="space-y-3.5 text-xs pt-1">
+            {/* Selettore Atleta */}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-600 block mb-1">
+                Atleta Intestatario *
+              </label>
+              <select
+                value={manualAtletaId}
+                onChange={(e) => setManualAtletaId(e.target.value)}
+                required
+                className="w-full text-xs font-bold bg-white border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 focus:outline-[#1c00ff] focus:ring-1 focus:ring-[#1c00ff]"
+              >
+                <option value="">-- Seleziona Atleta --</option>
+                {atleti.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.nome} {a.cognome} ({a.crediti} crediti attivi) — {a.email}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Importo e Metodo */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-600 block mb-1">
+                  Importo (€) *
+                </label>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    required
+                    value={manualImporto}
+                    onChange={(e) => setManualImporto(e.target.value)}
+                    placeholder="890"
+                    className="text-sm font-black tabular-nums pr-6"
+                  />
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-xs">
+                    €
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-600 block mb-1">
+                  Metodo di Pagamento *
+                </label>
+                <select
+                  value={manualMetodo}
+                  onChange={(e) => setManualMetodo(e.target.value as any)}
+                  className="w-full text-xs font-bold bg-white border border-zinc-300 rounded-xl px-2.5 py-2 text-zinc-900 focus:outline-[#1c00ff]"
+                >
+                  <option value="bonifico">🏦 Bonifico Bancario</option>
+                  <option value="contanti">💵 Contanti</option>
+                  <option value="pos">💳 POS Fisico / Carta</option>
+                  <option value="altro">📋 Altro / Assegno</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Data e Pacchetto di Riferimento */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-600 block mb-1">
+                  Data del Pagamento *
+                </label>
+                <Input
+                  type="date"
+                  required
+                  value={manualData}
+                  onChange={(e) => setManualData(e.target.value)}
+                  className="text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-600 block mb-1">
+                  Tariffa / Pacchetto
+                </label>
+                <select
+                  value={manualPackId}
+                  onChange={(e) => handlePackChange(e.target.value)}
+                  className="w-full text-xs font-bold bg-white border border-zinc-300 rounded-xl px-2.5 py-2 text-zinc-900 focus:outline-[#1c00ff]"
+                >
+                  {pacchetti.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.nome} (€ {p.prezzo_euro})
+                    </option>
+                  ))}
+                  <option value="manuale">Altro / Personalizzato</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Descrizione / Causale */}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-600 block mb-1">
+                Descrizione / Causale Fiscale
+              </label>
+              <Input
+                type="text"
+                value={manualDescrizione}
+                onChange={(e) => setManualDescrizione(e.target.value)}
+                placeholder="Es. Bonifico Bancario / Pacchetto Lab 36"
+                className="text-xs"
+              />
+            </div>
+
+            {/* Blocco Gestione Crediti */}
+            <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200/90 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-zinc-900 flex items-center gap-1.5">
+                  <Coins className="size-3.5 text-amber-600" />
+                  Accreditare crediti al borsellino?
+                </span>
+                <div className="flex items-center gap-2">
+                  <label className="inline-flex items-center gap-1 text-[11px] font-medium cursor-pointer">
+                    <input
+                      type="radio"
+                      name="accreditaCreditiRadio"
+                      checked={!manualAccreditaCrediti}
+                      onChange={() => handleToggleAccredita(false)}
+                      className="accent-[#1c00ff]"
+                    />
+                    <span>No (0 crediti)</span>
+                  </label>
+                  <label className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1c00ff] cursor-pointer">
+                    <input
+                      type="radio"
+                      name="accreditaCreditiRadio"
+                      checked={manualAccreditaCrediti}
+                      onChange={() => handleToggleAccredita(true)}
+                      className="accent-[#1c00ff]"
+                    />
+                    <span>Sì, accredita</span>
+                  </label>
+                </div>
+              </div>
+
+              {!manualAccreditaCrediti ? (
+                <p className="text-[10px] text-zinc-500 leading-relaxed">
+                  💡 <strong>Consigliato per versamenti già assegnati</strong>: il saldo crediti dell&apos;atleta non verrà toccato (utile per atleti come Alessandro Pantanella a cui i crediti sono già stati impostati all&apos;inserimento o per versamenti contabili separati).
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-zinc-200">
+                  <div>
+                    <label className="text-[9px] font-bold uppercase text-zinc-600 block mb-0.5">
+                      Crediti da Aggiungere
+                    </label>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={manualCrediti}
+                      onChange={(e) => setManualCrediti(Number(e.target.value))}
+                      className="text-xs font-black tabular-nums"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-bold uppercase text-zinc-600 block mb-0.5">
+                      Giorni Validità Carnet
+                    </label>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={manualGiorniValidita}
+                      onChange={(e) => setManualGiorniValidita(Number(e.target.value))}
+                      className="text-xs tabular-nums"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Note opzionali */}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-600 block mb-1">
+                Note Interne (Opzionali)
+              </label>
+              <Input
+                type="text"
+                value={manualNote}
+                onChange={(e) => setManualNote(e.target.value)}
+                placeholder="Es. Bonifico saldato il 28/09, rif. contabile #104"
+                className="text-xs"
+              />
+            </div>
+
+            <DialogFooter className="flex gap-2 pt-2 border-t border-zinc-100">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setManualModalOpen(false)}
+                className="flex-1 rounded-xl text-xs font-semibold"
+              >
+                Annulla
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={registraVersamentoMutation.isPending}
+                className="flex-1 rounded-xl text-xs font-black bg-[#1c00ff] text-white hover:bg-[#1600cc] shadow-xs cursor-pointer"
+              >
+                {registraVersamentoMutation.isPending ? "Salvataggio..." : "Salva nel Registro Fisco"}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
