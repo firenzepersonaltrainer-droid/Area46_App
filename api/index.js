@@ -16914,10 +16914,99 @@ function saveData(data) {
   } catch {
   }
   try {
-    fs.writeFileSync(path.resolve(__dirname, "demo-data.json"), JSON.stringify(data, null, 2), "utf-8");
+    const directPath = path.resolve(__dirname, "demo-data.json");
+    const parentPath = path.resolve(__dirname, "..", "demo-data.json");
+    if (fs.existsSync(directPath)) {
+      fs.writeFileSync(directPath, JSON.stringify(data, null, 2), "utf-8");
+    } else if (fs.existsSync(parentPath)) {
+      fs.writeFileSync(parentPath, JSON.stringify(data, null, 2), "utf-8");
+    }
   } catch {
   }
 }
+var CREDENZIALI_PATH = fs.existsSync(path.resolve(__dirname, "credenziali.json")) ? path.resolve(__dirname, "credenziali.json") : path.resolve(__dirname, "..", "credenziali.json");
+var GDRIVE_DEMO_DATA_ID = "129ts4wdwsypvWCB2cBHXWw3WTIKmtktA";
+function base64url(str) {
+  return Buffer.from(str).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+}
+async function getGoogleDriveAccessToken() {
+  if (!fs.existsSync(CREDENZIALI_PATH)) return null;
+  try {
+    const creds = JSON.parse(fs.readFileSync(CREDENZIALI_PATH, "utf-8"));
+    const now = Math.floor(Date.now() / 1e3);
+    const header = { alg: "RS256", typ: "JWT" };
+    const claim = {
+      iss: creds.client_email,
+      scope: "https://www.googleapis.com/auth/drive",
+      aud: creds.token_uri,
+      exp: now + 3600,
+      iat: now
+    };
+    const signInput = `${base64url(JSON.stringify(header))}.${base64url(JSON.stringify(claim))}`;
+    const signer = crypto.createSign("RSA-SHA256");
+    signer.update(signInput);
+    const jwt = `${signInput}.${signer.sign(creds.private_key, "base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_")}`;
+    const res = await fetch(creds.token_uri, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        assertion: jwt
+      })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.access_token;
+  } catch {
+    return null;
+  }
+}
+async function syncConfigToGoogleDrive(config) {
+  try {
+    const token = await getGoogleDriveAccessToken();
+    if (!token) return;
+    const resGet = await fetch(`https://www.googleapis.com/drive/v3/files/${GDRIVE_DEMO_DATA_ID}?alt=media`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!resGet.ok) return;
+    const driveDb = await resGet.json();
+    driveDb.configurazione_lab = {
+      ...driveDb.configurazione_lab || {},
+      ...config,
+      last_cloud_sync: (/* @__PURE__ */ new Date()).toISOString()
+    };
+    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${GDRIVE_DEMO_DATA_ID}?uploadType=media`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(driveDb, null, 2)
+    });
+  } catch {
+  }
+}
+async function tryLoadConfigFromGoogleDrive() {
+  try {
+    const token = await getGoogleDriveAccessToken();
+    if (!token) return;
+    const resGet = await fetch(`https://www.googleapis.com/drive/v3/files/${GDRIVE_DEMO_DATA_ID}?alt=media`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!resGet.ok) return;
+    const driveDb = await resGet.json();
+    if (driveDb.configurazione_lab && driveDb.configurazione_lab.stripe_secret_key) {
+      db.configurazione_lab = {
+        ...db.configurazione_lab || {},
+        ...driveDb.configurazione_lab
+      };
+      saveData(db);
+    }
+  } catch {
+  }
+}
+tryLoadConfigFromGoogleDrive().catch(() => {
+});
 var db = loadData();
 function getCurrentUser(database) {
   if (database.active_user_id === null) {
@@ -17842,6 +17931,26 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify({ ok: true }));
   }
   if (pathname === "/app-api/lab-config" && method === "GET") {
+    const reqSecret = req.headers["x-stripe-secret-key"]?.trim();
+    const reqPub = req.headers["x-stripe-publishable-key"]?.trim();
+    if (reqSecret && (!db.configurazione_lab?.stripe_secret_key || !db.configurazione_lab.stripe_secret_key.startsWith("sk_"))) {
+      db.configurazione_lab = db.configurazione_lab || {};
+      db.configurazione_lab.stripe_secret_key = reqSecret;
+      if (reqPub) db.configurazione_lab.stripe_publishable_key = reqPub;
+      db.configurazione_lab.stripe_collegato = true;
+      saveData(db);
+    } else if (process.env.STRIPE_SECRET_KEY && (!db.configurazione_lab?.stripe_secret_key || !db.configurazione_lab.stripe_secret_key.startsWith("sk_"))) {
+      db.configurazione_lab = db.configurazione_lab || {};
+      db.configurazione_lab.stripe_secret_key = process.env.STRIPE_SECRET_KEY.trim();
+      if (process.env.STRIPE_PUBLISHABLE_KEY) {
+        db.configurazione_lab.stripe_publishable_key = process.env.STRIPE_PUBLISHABLE_KEY.trim();
+      }
+      if (process.env.STRIPE_WEBHOOK_SECRET) {
+        db.configurazione_lab.stripe_webhook_secret = process.env.STRIPE_WEBHOOK_SECRET.trim();
+      }
+      db.configurazione_lab.stripe_collegato = true;
+      saveData(db);
+    }
     return res.end(JSON.stringify(db.configurazione_lab || {}));
   }
   if (pathname === "/app-api/lab-config" && method === "PUT") {
@@ -17850,6 +17959,8 @@ CALENDARIO E PRENOTAZIONI:
       ...parsedBody
     };
     saveData(db);
+    syncConfigToGoogleDrive(db.configurazione_lab).catch(() => {
+    });
     return res.end(JSON.stringify(db.configurazione_lab));
   }
   if (pathname === "/app-api/prenotazioni" && method === "GET") {
@@ -18247,7 +18358,7 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify(db.transazioni_pagamenti || []));
   }
   if (pathname === "/app-api/config/stripe/test-connection" && method === "POST") {
-    const secretKey = parsedBody.stripe_secret_key || db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
+    const secretKey = parsedBody.stripe_secret_key || req.headers["x-stripe-secret-key"] || db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
     if (!secretKey) {
       res.statusCode = 400;
       return res.end(
@@ -18274,6 +18385,8 @@ CALENDARIO E PRENOTAZIONI:
       db.configurazione_lab.stripe_collegato = true;
       if (parsedBody.stripe_secret_key) {
         db.configurazione_lab.stripe_secret_key = parsedBody.stripe_secret_key.trim();
+      } else if (secretKey) {
+        db.configurazione_lab.stripe_secret_key = secretKey.trim();
       }
       if (parsedBody.stripe_publishable_key) {
         db.configurazione_lab.stripe_publishable_key = parsedBody.stripe_publishable_key.trim();
@@ -18282,6 +18395,8 @@ CALENDARIO E PRENOTAZIONI:
         db.configurazione_lab.stripe_mode = parsedBody.stripe_mode;
       }
       saveData(db);
+      syncConfigToGoogleDrive(db.configurazione_lab).catch(() => {
+      });
       return res.end(
         JSON.stringify({
           ok: true,
@@ -18308,9 +18423,15 @@ CALENDARIO E PRENOTAZIONI:
       res.statusCode = 404;
       return res.end(JSON.stringify({ error: "Pacchetto selezionato non valido" }));
     }
-    const secretKey = db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
+    const secretKey = parsedBody.stripe_secret_key || req.headers["x-stripe-secret-key"] || db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
     const origin = req.headers.origin || "http://localhost:5173";
     if (secretKey && secretKey.startsWith("sk_")) {
+      if (!db.configurazione_lab?.stripe_secret_key) {
+        db.configurazione_lab = db.configurazione_lab || {};
+        db.configurazione_lab.stripe_secret_key = secretKey.trim();
+        db.configurazione_lab.stripe_collegato = true;
+        saveData(db);
+      }
       try {
         const params = new URLSearchParams();
         params.append("mode", "payment");
@@ -18444,10 +18565,16 @@ CALENDARIO E PRENOTAZIONI:
         })
       );
     }
-    const secretKey = db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
+    const secretKey = parsedBody.stripe_secret_key || req.headers["x-stripe-secret-key"] || db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
     if (!secretKey) {
       res.statusCode = 400;
       return res.end(JSON.stringify({ error: "Stripe non configurato" }));
+    }
+    if (secretKey && secretKey.startsWith("sk_") && !db.configurazione_lab?.stripe_secret_key) {
+      db.configurazione_lab = db.configurazione_lab || {};
+      db.configurazione_lab.stripe_secret_key = secretKey.trim();
+      db.configurazione_lab.stripe_collegato = true;
+      saveData(db);
     }
     try {
       const stripeRes = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {

@@ -8,6 +8,7 @@ import {
   useLabConfig,
   useAttivita,
   useRegolePalinsesto,
+  getStripeHeaders,
 } from "../lib/useUser";
 import { calcolaSlotPerGiorno, timeToMinutes } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
@@ -484,7 +485,7 @@ export default function AreaPersonalePage() {
     if (sessionId && isSuccess) {
       fetch("/app-api/pagamenti/stripe-verify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getStripeHeaders() },
         body: JSON.stringify({ session_id: sessionId }),
       })
         .then((res) => res.json())
@@ -515,7 +516,7 @@ export default function AreaPersonalePage() {
       if (payload.metodo !== "bonifico") {
         const res = await fetch("/app-api/pagamenti/stripe-checkout", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...getStripeHeaders() },
           body: JSON.stringify(payload),
         });
         const data = await res.json();

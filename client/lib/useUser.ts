@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import {
   AttivitaLab,
@@ -498,13 +498,69 @@ export function useEccezioniCalendario(data?: string) {
   };
 }
 
+export const STRIPE_STORAGE_KEY = "area46_stripe_credentials_v1";
+
+export interface StoredStripeCredentials {
+  stripe_mode?: "test" | "live";
+  stripe_publishable_key?: string;
+  stripe_secret_key?: string;
+  stripe_webhook_secret?: string;
+  saved_at?: string;
+}
+
+export function getStoredStripeCredentials(): StoredStripeCredentials | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(STRIPE_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+export function saveStoredStripeCredentials(creds: Partial<StoredStripeCredentials>) {
+  if (typeof window === "undefined") return;
+  try {
+    const current = getStoredStripeCredentials() || {};
+    const updated: StoredStripeCredentials = {
+      ...current,
+      ...creds,
+      saved_at: new Date().toISOString(),
+    };
+    localStorage.setItem(STRIPE_STORAGE_KEY, JSON.stringify(updated));
+  } catch {
+    // Silently ignore storage quota or private mode errors
+  }
+}
+
+export function getStripeHeaders(): Record<string, string> {
+  const creds = getStoredStripeCredentials();
+  const headers: Record<string, string> = {};
+  if (creds?.stripe_secret_key) {
+    headers["x-stripe-secret-key"] = creds.stripe_secret_key;
+  }
+  if (creds?.stripe_publishable_key) {
+    headers["x-stripe-publishable-key"] = creds.stripe_publishable_key;
+  }
+  return headers;
+}
+
 export function useLabConfig() {
   const queryClient = useQueryClient();
 
-  const { data: config, isLoading } = useQuery<LabConfig>({
+  const { data: serverConfig, isLoading } = useQuery<LabConfig>({
     queryKey: ["lab-config"],
     queryFn: async () => {
-      const res = await fetch("/app-api/lab-config");
+      const stored = getStoredStripeCredentials();
+      const headers: Record<string, string> = {};
+      if (stored?.stripe_secret_key) {
+        headers["x-stripe-secret-key"] = stored.stripe_secret_key;
+      }
+      if (stored?.stripe_publishable_key) {
+        headers["x-stripe-publishable-key"] = stored.stripe_publishable_key;
+      }
+      const res = await fetch("/app-api/lab-config", { headers });
       if (!res.ok) throw new Error("Errore recupero configurazione lab");
       return res.json();
     },
@@ -512,6 +568,21 @@ export function useLabConfig() {
 
   const aggiornaConfig = useMutation({
     mutationFn: async (nuovaConfig: Partial<LabConfig>) => {
+      // Se vengono passate chiavi stripe, memorizzale subito nel vault locale del dispositivo
+      if (
+        nuovaConfig.stripe_secret_key !== undefined ||
+        nuovaConfig.stripe_publishable_key !== undefined ||
+        nuovaConfig.stripe_mode !== undefined ||
+        nuovaConfig.stripe_webhook_secret !== undefined
+      ) {
+        saveStoredStripeCredentials({
+          stripe_mode: nuovaConfig.stripe_mode,
+          stripe_publishable_key: nuovaConfig.stripe_publishable_key,
+          stripe_secret_key: nuovaConfig.stripe_secret_key,
+          stripe_webhook_secret: nuovaConfig.stripe_webhook_secret,
+        });
+      }
+
       const res = await fetch("/app-api/lab-config", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -529,8 +600,36 @@ export function useLabConfig() {
     },
   });
 
-  return {
-    config: config || {
+  // Re-idratazione automatica del backend: se il server (es. dopo cold start Vercel) non ha la chiave
+  // ma il vault locale la possiede, inviala in background per riarmare il container
+  useEffect(() => {
+    if (serverConfig) {
+      const stored = getStoredStripeCredentials();
+      if (stored && stored.stripe_secret_key && stored.stripe_secret_key.startsWith("sk_")) {
+        if (!serverConfig.stripe_secret_key) {
+          fetch("/app-api/lab-config", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              stripe_mode: stored.stripe_mode || serverConfig.stripe_mode || "live",
+              stripe_publishable_key: stored.stripe_publishable_key || serverConfig.stripe_publishable_key || "",
+              stripe_secret_key: stored.stripe_secret_key,
+              stripe_webhook_secret: stored.stripe_webhook_secret || serverConfig.stripe_webhook_secret || "",
+              stripe_collegato: true,
+            }),
+          })
+            .then(() => {
+              queryClient.invalidateQueries({ queryKey: ["lab-config"] });
+            })
+            .catch(() => {});
+        }
+      }
+    }
+  }, [serverConfig, queryClient]);
+
+  // Unione garantita: la configurazione salvata nel vault locale sovrascrive i campi vuoti del server
+  const mergedConfig = useMemo<LabConfig>(() => {
+    const base: LabConfig = serverConfig || {
       tempo_cancellazione_ore: 24,
       iban: "IT46X0306909606100000046460",
       intestatario_iban: "Area46 Training Lab SSD a r.l.",
@@ -543,7 +642,29 @@ export function useLabConfig() {
       ],
       giorni_aperti: [1, 2, 3, 4, 5, 6],
       inattivita_mesi_reset: 6,
-    },
+    };
+    const stored = getStoredStripeCredentials();
+    if (!stored) return base;
+
+    const hasStoredSecret = !!(stored.stripe_secret_key && stored.stripe_secret_key.trim().length > 0);
+    const hasServerSecret = !!(base.stripe_secret_key && base.stripe_secret_key.trim().length > 0);
+
+    return {
+      ...base,
+      stripe_mode: stored.stripe_mode || base.stripe_mode || "live",
+      stripe_publishable_key: stored.stripe_publishable_key || base.stripe_publishable_key || "",
+      stripe_secret_key: stored.stripe_secret_key || base.stripe_secret_key || "",
+      stripe_webhook_secret: stored.stripe_webhook_secret || base.stripe_webhook_secret || "",
+      stripe_collegato: Boolean(
+        base.stripe_collegato ||
+        (hasStoredSecret && stored.stripe_secret_key!.startsWith("sk_")) ||
+        (hasServerSecret && base.stripe_secret_key!.startsWith("sk_"))
+      ),
+    };
+  }, [serverConfig]);
+
+  return {
+    config: mergedConfig,
     isLoading,
     aggiornaConfig: aggiornaConfig.mutateAsync,
   };

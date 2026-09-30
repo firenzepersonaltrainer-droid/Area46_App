@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useCurrentUser, useLabConfig } from "../lib/useUser";
+import { useCurrentUser, useLabConfig, getStripeHeaders } from "../lib/useUser";
 import {
   Sparkles,
   Check,
@@ -169,7 +169,7 @@ export default function TariffarioPage() {
       if (payload.metodo !== "bonifico") {
         const res = await fetch("/app-api/pagamenti/stripe-checkout", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...getStripeHeaders() },
           body: JSON.stringify(payload),
         });
         const data = await res.json();

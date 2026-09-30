@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLabConfig, useProfili } from "../lib/useUser";
+import {
+  useLabConfig,
+  useProfili,
+  getStoredStripeCredentials,
+  saveStoredStripeCredentials,
+} from "../lib/useUser";
 import {
   Settings,
   Building2,
   Receipt,
   CheckCircle2,
+  ShieldCheck,
   Copy,
   ExternalLink,
   ShieldAlert,
@@ -64,11 +70,20 @@ export default function ManagerFiscoPage() {
   const { config, aggiornaConfig } = useLabConfig();
   const { profili } = useProfili();
 
-  // Stripe local state
-  const [stripeMode, setStripeMode] = useState<"test" | "live">(config?.stripe_mode || "live");
-  const [stripePublishableKey, setStripePublishableKey] = useState(config?.stripe_publishable_key || "");
-  const [stripeSecretKey, setStripeSecretKey] = useState(config?.stripe_secret_key || "");
-  const [stripeWebhookSecret, setStripeWebhookSecret] = useState(config?.stripe_webhook_secret || "");
+  // Stripe local state - precaricato immediatamente dal vault locale del browser
+  const initialStored = useMemo(() => getStoredStripeCredentials(), []);
+  const [stripeMode, setStripeMode] = useState<"test" | "live">(
+    initialStored?.stripe_mode || config?.stripe_mode || "live"
+  );
+  const [stripePublishableKey, setStripePublishableKey] = useState(
+    initialStored?.stripe_publishable_key || config?.stripe_publishable_key || ""
+  );
+  const [stripeSecretKey, setStripeSecretKey] = useState(
+    initialStored?.stripe_secret_key || config?.stripe_secret_key || ""
+  );
+  const [stripeWebhookSecret, setStripeWebhookSecret] = useState(
+    initialStored?.stripe_webhook_secret || config?.stripe_webhook_secret || ""
+  );
   const [showSecretKey, setShowSecretKey] = useState(false);
   const [isTestingStripe, setIsTestingStripe] = useState(false);
   const [isSavingStripe, setIsSavingStripe] = useState(false);
@@ -77,6 +92,10 @@ export default function ManagerFiscoPage() {
     message: string;
   } | null>(null);
   const [showGuide, setShowGuide] = useState(false);
+
+  // Modale Backup / Ripristino Rapido Credenziali
+  const [backupModalOpen, setBackupModalOpen] = useState(false);
+  const [backupInput, setBackupInput] = useState("");
 
   // Filtri Registro Incassi
   const [filtroPeriodo, setFiltroPeriodo] = useState<
@@ -125,13 +144,43 @@ export default function ManagerFiscoPage() {
     await eliminaTxMutation.mutateAsync(txDaCancellare.codice_transazione || txDaCancellare.id);
   };
 
-  // Sync with config on load
+  // Sync with config on load - non sovrascrive mai dati locali validi con stringhe vuote
   useEffect(() => {
+    const stored = getStoredStripeCredentials();
     if (config) {
-      if (config.stripe_mode) setStripeMode(config.stripe_mode);
-      if (config.stripe_publishable_key !== undefined) setStripePublishableKey(config.stripe_publishable_key || "");
-      if (config.stripe_secret_key !== undefined) setStripeSecretKey(config.stripe_secret_key || "");
-      if (config.stripe_webhook_secret !== undefined) setStripeWebhookSecret(config.stripe_webhook_secret || "");
+      if (config.stripe_mode) {
+        setStripeMode(config.stripe_mode);
+      } else if (stored?.stripe_mode) {
+        setStripeMode(stored.stripe_mode);
+      }
+
+      if (config.stripe_publishable_key) {
+        setStripePublishableKey(config.stripe_publishable_key);
+      } else if (stored?.stripe_publishable_key) {
+        setStripePublishableKey(stored.stripe_publishable_key);
+      }
+
+      if (config.stripe_secret_key) {
+        setStripeSecretKey(config.stripe_secret_key);
+      } else if (stored?.stripe_secret_key) {
+        setStripeSecretKey(stored.stripe_secret_key);
+      }
+
+      if (config.stripe_webhook_secret) {
+        setStripeWebhookSecret(config.stripe_webhook_secret);
+      } else if (stored?.stripe_webhook_secret) {
+        setStripeWebhookSecret(stored.stripe_webhook_secret);
+      }
+
+      // Se il server ha la chiave ma il local storage no, memorizzala localmente
+      if (config.stripe_secret_key && !stored?.stripe_secret_key) {
+        saveStoredStripeCredentials({
+          stripe_mode: config.stripe_mode,
+          stripe_publishable_key: config.stripe_publishable_key,
+          stripe_secret_key: config.stripe_secret_key,
+          stripe_webhook_secret: config.stripe_webhook_secret,
+        });
+      }
     }
   }, [config]);
 
@@ -191,18 +240,61 @@ export default function ManagerFiscoPage() {
   const handleSaveStripeConfig = async () => {
     setIsSavingStripe(true);
     try {
-      await aggiornaConfig({
+      const credsToSave = {
         stripe_mode: stripeMode,
         stripe_publishable_key: stripePublishableKey.trim(),
         stripe_secret_key: stripeSecretKey.trim(),
         stripe_webhook_secret: stripeWebhookSecret.trim(),
+      };
+      // 1. Memorizza istantaneamente nel vault sicuro locale del dispositivo
+      saveStoredStripeCredentials(credsToSave);
+
+      // 2. Invia al backend
+      await aggiornaConfig({
+        ...credsToSave,
         stripe_collegato: !!(stripeSecretKey.trim() && stripeSecretKey.trim().startsWith("sk_")),
       });
-      toast.success("Credenziali Stripe salvate con successo!");
+      toast.success("Credenziali Stripe salvate e memorizzate in modo permanente!");
     } catch (err: any) {
       toast.error(err.message || "Errore durante il salvataggio");
     } finally {
       setIsSavingStripe(false);
+    }
+  };
+
+  const handleCopyBackup = () => {
+    const creds = {
+      stripe_mode: stripeMode,
+      stripe_publishable_key: stripePublishableKey.trim(),
+      stripe_secret_key: stripeSecretKey.trim(),
+      stripe_webhook_secret: stripeWebhookSecret.trim(),
+    };
+    navigator.clipboard.writeText(JSON.stringify(creds, null, 2));
+    toast.success("Credenziali Stripe copiate negli appunti per il trasferimento!");
+  };
+
+  const handleApplyBackup = async () => {
+    try {
+      const parsed = JSON.parse(backupInput.trim());
+      if (!parsed.stripe_secret_key && !parsed.stripe_publishable_key) {
+        toast.error("Formato backup non valido. Chiavi Stripe mancanti.");
+        return;
+      }
+      if (parsed.stripe_mode) setStripeMode(parsed.stripe_mode);
+      if (parsed.stripe_publishable_key) setStripePublishableKey(parsed.stripe_publishable_key.trim());
+      if (parsed.stripe_secret_key) setStripeSecretKey(parsed.stripe_secret_key.trim());
+      if (parsed.stripe_webhook_secret) setStripeWebhookSecret(parsed.stripe_webhook_secret.trim());
+
+      saveStoredStripeCredentials(parsed);
+      await aggiornaConfig({
+        ...parsed,
+        stripe_collegato: !!(parsed.stripe_secret_key && parsed.stripe_secret_key.startsWith("sk_")),
+      });
+      setBackupModalOpen(false);
+      setBackupInput("");
+      toast.success("Backup Stripe ripristinato con successo!");
+    } catch {
+      toast.error("Errore nella lettura del backup. Incolla un formato JSON valido.");
     }
   };
 
@@ -352,7 +444,8 @@ export default function ManagerFiscoPage() {
 
   const isStripeConnected = !!(
     config?.stripe_collegato ||
-    (config?.stripe_secret_key && config.stripe_secret_key.startsWith("sk_"))
+    (config?.stripe_secret_key && config.stripe_secret_key.startsWith("sk_")) ||
+    (stripeSecretKey && stripeSecretKey.trim().startsWith("sk_"))
   );
 
   return (
@@ -509,6 +602,56 @@ export default function ManagerFiscoPage() {
             </div>
           </div>
         )}
+
+        {/* Banner Persistenza Permanente & Backup/Ripristino */}
+        <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2">
+            <div className={`size-2.5 rounded-full shrink-0 ${isStripeConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-400"}`} />
+            <div>
+              <p className="font-bold text-[11px] text-zinc-900 flex items-center gap-1.5">
+                <ShieldCheck className="size-3.5 text-emerald-600" />
+                {isStripeConnected
+                  ? "Memorizzazione Permanente Attiva nel Vault del Dispositivo"
+                  : "Nessuna chiave Stripe salvata in memoria"}
+              </p>
+              <p className="text-[10px] text-zinc-500">
+                {isStripeConnected
+                  ? "Le chiavi rimangono memorizzate su questo dispositivo e non andranno perse ad ogni riavvio o nuovo accesso."
+                  : "Inserisci le chiavi del tuo account Stripe e premi Salva per memorizzarle in modo permanente."}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 self-end sm:self-center shrink-0">
+            {isStripeConnected && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleCopyBackup}
+                title="Copia chiavi per esportarle o fare backup"
+                className="h-7 px-2.5 text-[10px] font-bold rounded-lg border-zinc-200 text-zinc-700 hover:bg-zinc-100 flex items-center gap-1 cursor-pointer"
+              >
+                <Copy className="size-3 text-zinc-500" />
+                <span>Copia Backup</span>
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setBackupInput("");
+                setBackupModalOpen(true);
+              }}
+              title="Incolla e ripristina credenziali da un altro dispositivo"
+              className="h-7 px-2.5 text-[10px] font-bold rounded-lg border-zinc-200 text-zinc-700 hover:bg-zinc-100 flex items-center gap-1 cursor-pointer"
+            >
+              <Download className="size-3 text-zinc-500" />
+              <span>Ripristina</span>
+            </Button>
+          </div>
+        </div>
 
         {/* Pulsanti Azione Stripe */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-zinc-100">
@@ -990,6 +1133,53 @@ export default function ManagerFiscoPage() {
               className="flex-1 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white"
             >
               {eliminaTxMutation.isPending ? "Eliminazione..." : "Sì, Elimina Movimento"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog Ripristino Rapido Backup Credenziali */}
+      <Dialog open={backupModalOpen} onOpenChange={setBackupModalOpen}>
+        <DialogContent className="max-w-md rounded-3xl p-6 bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black flex items-center gap-2 text-zinc-900">
+              <KeyRound className="size-5 text-[#1c00ff]" />
+              Ripristina Credenziali Stripe da Backup
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 leading-relaxed">
+              Incolla qui il codice JSON delle credenziali Stripe (ottenuto premendo <strong>&quot;Copia Backup&quot;</strong> da un altro computer o dispositivo) per salvarle e attivarle all&apos;istante.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-2">
+            <textarea
+              rows={6}
+              value={backupInput}
+              onChange={(e) => setBackupInput(e.target.value)}
+              placeholder='{ "stripe_publishable_key": "pk_live_...", "stripe_secret_key": "sk_live_...", ... }'
+              className="w-full text-xs font-mono p-3 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1c00ff] text-zinc-800"
+            />
+          </div>
+
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setBackupModalOpen(false);
+                setBackupInput("");
+              }}
+              className="flex-1 rounded-xl text-xs font-semibold"
+            >
+              Annulla
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleApplyBackup}
+              disabled={!backupInput.trim()}
+              className="flex-1 rounded-xl text-xs font-black bg-[#1c00ff] text-white hover:bg-[#1600cc] shadow-xs"
+            >
+              Ripristina e Salva
             </Button>
           </DialogFooter>
         </DialogContent>
