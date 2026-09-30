@@ -16,6 +16,7 @@ import {
   REGOLA_DEFAULT_LANDMINE,
   RegolaPalinsesto,
 } from "../lib/palinsesto";
+import { isBookingDeleted } from "../lib/useUser";
 
 export interface CalendarioPrenotazioneInfo {
   id: string;
@@ -218,7 +219,13 @@ export function CalendarioMeseNavigabile({
 
   // Indicatore per ciascuna data:
   const getDateStatus = (dateStr: string) => {
-    const bookings = prenotazioni.filter((p) => p.data === dateStr && p.stato === "confermata");
+    const bookings = prenotazioni.filter(
+      (p) =>
+        !isBookingDeleted(p.id) &&
+        p.data === dateStr &&
+        (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
+        !p.stato?.startsWith("cancellata")
+    );
     const exceptions = eccezioni.filter((e) => e.data === dateStr);
     const isChiuso = exceptions.some((e) => e.tipo === "chiusura_giornata");
     const hasBlocchi = exceptions.some((e) => e.tipo === "slot_bloccato");

@@ -251,7 +251,8 @@ export function useProfili() {
     queryFn: async () => {
       const res = await fetch("/app-api/profili");
       if (!res.ok) throw new Error("Errore recupero profili");
-      return res.json();
+      const list: UserProfile[] = await res.json();
+      return list.filter((p) => !isAthleteDeleted(p.id) && !isAthleteDeleted(p.email));
     },
   });
 
@@ -348,6 +349,12 @@ export function useProfili() {
 
   const eliminaAtleta = useMutation({
     mutationFn: async (idOrEmail: string) => {
+      saveDeletedAthleteId(idOrEmail);
+      queryClient.setQueryData<UserProfile[]>(["profili"], (old) =>
+        (old || []).filter(
+          (p) => p.id !== idOrEmail && p.email?.toLowerCase() !== idOrEmail.toLowerCase()
+        )
+      );
       const res = await fetch(`/app-api/atleti/${encodeURIComponent(idOrEmail)}`, {
         method: "DELETE",
       });
@@ -357,7 +364,13 @@ export function useProfili() {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, idOrEmail) => {
+      saveDeletedAthleteId(idOrEmail);
+      queryClient.setQueryData<UserProfile[]>(["profili"], (old) =>
+        (old || []).filter(
+          (p) => p.id !== idOrEmail && p.email?.toLowerCase() !== idOrEmail.toLowerCase()
+        )
+      );
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
@@ -571,6 +584,72 @@ export function isTxDeleted(idOrCode?: string): boolean {
     idOrCode === "TX-46-2026-005"
   );
 }
+
+export const DELETED_ATHLETES_STORAGE_KEY = "area46_deleted_athletes_v1";
+
+export function getDeletedAthleteIds(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(DELETED_ATHLETES_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveDeletedAthleteId(idOrEmail: string) {
+  if (typeof window === "undefined" || !idOrEmail) return;
+  try {
+    const current = getDeletedAthleteIds();
+    const val = idOrEmail.toLowerCase().trim();
+    if (!current.includes(val)) {
+      current.push(val);
+      localStorage.setItem(DELETED_ATHLETES_STORAGE_KEY, JSON.stringify(current));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+export function isAthleteDeleted(idOrEmail?: string): boolean {
+  if (!idOrEmail) return false;
+  const deleted = getDeletedAthleteIds();
+  const val = idOrEmail.toLowerCase().trim();
+  return deleted.includes(val);
+}
+
+export const DELETED_BOOKINGS_STORAGE_KEY = "area46_deleted_bookings_v1";
+
+export function getDeletedBookingIds(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(DELETED_BOOKINGS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveDeletedBookingId(id: string) {
+  if (typeof window === "undefined" || !id) return;
+  try {
+    const current = getDeletedBookingIds();
+    const val = id.trim();
+    if (!current.includes(val)) {
+      current.push(val);
+      localStorage.setItem(DELETED_BOOKINGS_STORAGE_KEY, JSON.stringify(current));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+export function isBookingDeleted(id?: string): boolean {
+  if (!id) return false;
+  const deleted = getDeletedBookingIds();
+  return deleted.includes(id.trim());
+}
+
 
 export function getStripeHeaders(): Record<string, string> {
   const creds = getStoredStripeCredentials();

@@ -9,6 +9,8 @@ import {
   useAttivita,
   useRegolePalinsesto,
   getStripeHeaders,
+  saveDeletedBookingId,
+  isBookingDeleted,
 } from "../lib/useUser";
 import { calcolaSlotPerGiorno, timeToMinutes } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
@@ -218,7 +220,13 @@ export default function AreaPersonalePage() {
     queryFn: async () => {
       const res = await fetch("/app-api/prenotazioni");
       if (!res.ok) throw new Error("Errore recupero prenotazioni");
-      return res.json();
+      const list: Prenotazione[] = await res.json();
+      return list.filter(
+        (p) =>
+          !isBookingDeleted(p.id) &&
+          (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
+          !p.stato?.startsWith("cancellata")
+      );
     },
     refetchInterval: 15000,
   });
@@ -262,14 +270,14 @@ export default function AreaPersonalePage() {
 
   // Prenotazioni del giorno selezionato
   const prenotazioniGiorno = useMemo(() => {
-    return prenotazioni.filter((p) => p.data === selectedDate && p.stato === "confermata");
+    return prenotazioni.filter((p) => !isBookingDeleted(p.id) && p.data === selectedDate && (p.stato === "confermata" || !p.stato || p.stato === "attiva"));
   }, [prenotazioni, selectedDate]);
 
   // Le mie prenotazioni attive
   const miePrenotazioniAttive = useMemo(() => {
     if (!user) return [];
     return prenotazioni
-      .filter((p) => p.email_cliente === user.email && p.stato === "confermata")
+      .filter((p) => !isBookingDeleted(p.id) && p.email_cliente === user.email && (p.stato === "confermata" || !p.stato || p.stato === "attiva"))
       .sort((a, b) => (a.data + a.orario).localeCompare(b.data + b.orario));
   }, [prenotazioni, user]);
 
@@ -448,12 +456,20 @@ export default function AreaPersonalePage() {
   // Mutation Cancellazione
   const annullaMutation = useMutation({
     mutationFn: async (id: string) => {
+      saveDeletedBookingId(id);
+      queryClient.setQueryData<Prenotazione[]>(["prenotazioni"], (old) =>
+        (old || []).filter((p) => p.id !== id)
+      );
       const res = await fetch(`/app-api/prenotazioni/${id}`, { method: "DELETE" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Errore cancellazione.");
       return json;
     },
-    onSuccess: (data) => {
+    onSuccess: (data, id) => {
+      saveDeletedBookingId(id);
+      queryClient.setQueryData<Prenotazione[]>(["prenotazioni"], (old) =>
+        (old || []).filter((p) => p.id !== id)
+      );
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
       queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });

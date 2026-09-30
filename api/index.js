@@ -14435,27 +14435,6 @@ var demo_data_default = {
       tempo_anticipo_prenotazione_ore: 24
     },
     {
-      id: "usr-bw-2080725",
-      bookyway_id: 2080725,
-      email: "tebog1887@gmail.com",
-      nome: "Matteo",
-      cognome: "Tesse",
-      nickname: "Matte",
-      telefono: "",
-      codice_fiscale: "",
-      indirizzo: "",
-      ruolo: "atleta",
-      crediti: 0,
-      data_scadenza_crediti: null,
-      data_ultimo_accesso: "2026-09-15T12:27:35.000Z",
-      data_creazione: "2026-09-14T08:41:14.000Z",
-      tempo_cancellazione_ore: 24,
-      tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo",
-      name: "Matteo Tesse",
-      tempo_anticipo_prenotazione_ore: 24
-    },
-    {
       id: "usr-bw-1953987",
       bookyway_id: 1953987,
       email: "pierpaolaciancia@gmail.com",
@@ -14733,42 +14712,6 @@ var demo_data_default = {
   ],
   prenotazioni_slot: [
     {
-      id: "bk-bw-2080725-2026-10-12-1800-4",
-      data: "2026-10-12",
-      orario: "18:00",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      attivita: "Landmine Lab",
-      created_at: "2026-09-22T14:40:42.000Z"
-    },
-    {
-      id: "bk-bw-2080725-2026-10-07-1800-5",
-      data: "2026-10-07",
-      orario: "18:00",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      attivita: "Landmine Lab",
-      created_at: "2026-09-22T14:40:34.000Z"
-    },
-    {
-      id: "bk-bw-2080725-2026-10-05-1800-6",
-      data: "2026-10-05",
-      orario: "18:00",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      attivita: "Landmine Lab",
-      created_at: "2026-09-22T14:40:27.000Z"
-    },
-    {
       id: "bk-bw-1953976-2026-10-05-1700-0",
       data: "2026-10-05",
       orario: "17:00",
@@ -14793,18 +14736,6 @@ var demo_data_default = {
       created_at: "2026-09-28T18:54:27.000Z"
     },
     {
-      id: "bk-bw-2080725-2026-09-30-1800-2",
-      data: "2026-09-30",
-      orario: "18:00",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      attivita: "Landmine Lab",
-      created_at: "2026-09-28T00:57:17.000Z"
-    },
-    {
       id: "bk-bw-1953985-2026-09-28-1815-14",
       data: "2026-09-28",
       orario: "18:15",
@@ -14815,18 +14746,6 @@ var demo_data_default = {
       credito_scalato: true,
       attivita: "Landmine Lab",
       created_at: "2026-09-20T18:19:49.000Z"
-    },
-    {
-      id: "bk-bw-2080725-2026-09-28-1800-7",
-      data: "2026-09-28",
-      orario: "18:00",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      attivita: "Landmine Lab",
-      created_at: "2026-09-22T14:40:08.000Z"
     },
     {
       id: "bk-bw-1953976-2026-09-28-1715-17",
@@ -14889,18 +14808,6 @@ var demo_data_default = {
       created_at: "2026-09-21T19:50:55.000Z"
     },
     {
-      id: "bk-bw-2080725-2026-09-23-1800-8",
-      data: "2026-09-23",
-      orario: "18:00",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "completata",
-      credito_scalato: true,
-      attivita: "Landmine Lab",
-      created_at: "2026-09-22T14:39:38.000Z"
-    },
-    {
       id: "bk-bw-1953976-2026-09-23-1715-42",
       data: "2026-09-23",
       orario: "17:15",
@@ -14949,18 +14856,6 @@ var demo_data_default = {
       created_at: "2026-09-18T00:15:34.000Z"
     },
     {
-      id: "bk-bw-2080725-2026-09-21-1845-10",
-      data: "2026-09-21",
-      orario: "18:45",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "completata",
-      credito_scalato: true,
-      attivita: "Landmine Lab",
-      created_at: "2026-09-21T07:25:25.000Z"
-    },
-    {
       id: "bk-bw-1953985-2026-09-21-1830-16",
       data: "2026-09-21",
       orario: "18:30",
@@ -15007,18 +14902,6 @@ var demo_data_default = {
       credito_scalato: true,
       attivita: "Landmine Lab",
       created_at: "2026-09-20T20:02:23.000Z"
-    },
-    {
-      id: "bk-bw-2080725-2026-09-18-1800-23",
-      data: "2026-09-18",
-      orario: "18:00",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      telefono_cliente: "",
-      stato: "completata",
-      credito_scalato: true,
-      attivita: "Landmine LAb",
-      created_at: "2026-09-16T09:12:21.000Z"
     },
     {
       id: "bk-bw-1953976-2026-09-18-1715-43",
@@ -15415,30 +15298,6 @@ var demo_data_default = {
       operatore: "coach"
     },
     {
-      id: "mov-bw-6",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-28T00:57:17.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 30/09/26 18:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-7",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-28T00:56:30.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 30/09/26 18:00",
-      operatore: "atleta"
-    },
-    {
       id: "mov-bw-8",
       atleta_id: "usr-bw-1953992",
       email_cliente: "matteo.calosci@gmail.com",
@@ -15475,138 +15334,6 @@ var demo_data_default = {
       operatore: "coach"
     },
     {
-      id: "mov-bw-11",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:42.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 12/10/26 18:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-12",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:40.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 12/10/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-13",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:34.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 07/10/26 18:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-14",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:32.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 07/10/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-15",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:27.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 05/10/26 18:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-16",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:25.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 05/10/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-17",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:17.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 30/09/26 18:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-18",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:14.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 30/09/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-19",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:08.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 28/09/26 18:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-20",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:40:04.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 28/09/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-21",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:39:38.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 23/09/26 18:00",
-      operatore: "atleta"
-    },
-    {
       id: "mov-bw-22",
       atleta_id: "usr-bw-1953992",
       email_cliente: "matteo.calosci@gmail.com",
@@ -15617,186 +15344,6 @@ var demo_data_default = {
       saldo_risultante: 20,
       motivazione: "iscrizione a Landmine Lab di 23/09/26 19:00",
       operatore: "coach"
-    },
-    {
-      id: "mov-bw-23",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-22T14:39:33.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 23/09/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-24",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-21T07:25:25.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 21/09/2026 18:45",
-      operatore: "coach"
-    },
-    {
-      id: "mov-bw-25",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-21T07:25:09.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 21/09/2026 11:00",
-      operatore: "coach"
-    },
-    {
-      id: "mov-bw-26",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:43.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 12/10/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-27",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:40.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 12/10/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-28",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:35.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 07/10/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-29",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:31.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 07/10/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-30",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:27.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 05/10/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-31",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:23.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 05/10/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-32",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:15.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 30/09/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-33",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:11.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 30/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-34",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:07.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 28/09/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-35",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:36:03.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 28/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-36",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:35:56.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 23/09/26 19:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-37",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-20T23:35:47.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 23/09/26 11:00",
-      operatore: "atleta"
     },
     {
       id: "mov-bw-38",
@@ -16063,126 +15610,6 @@ var demo_data_default = {
       operatore: "atleta"
     },
     {
-      id: "mov-bw-60",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-16T09:12:21.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine LAb delle 18/09/26 18:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-61",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-16T09:11:52.000Z",
-      tipo: "rimborso_cancellazione",
-      delta_crediti: 1,
-      saldo_risultante: 1,
-      motivazione: "disiscrizione da Landmine Lab delle 18/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-62",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:46:30.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 0,
-      motivazione: "iscrizione a Landmine Lab delle 12/10/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-63",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:46:23.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 1,
-      motivazione: "iscrizione a Landmine Lab delle 07/10/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-64",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:35:41.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 2,
-      motivazione: "iscrizione a Landmine Lab delle 05/10/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-65",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:35:31.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 3,
-      motivazione: "iscrizione a Landmine Lab delle 30/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-66",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:35:19.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 4,
-      motivazione: "iscrizione a Landmine Lab delle 28/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-67",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:33:23.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 5,
-      motivazione: "iscrizione a Landmine Lab delle 23/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-68",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:33:05.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 6,
-      motivazione: "iscrizione a Landmine Lab delle 21/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-bw-69",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-15T12:32:47.000Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 7,
-      motivazione: "iscrizione a Landmine Lab delle 18/09/26 11:00",
-      operatore: "atleta"
-    },
-    {
       id: "mov-bw-70",
       atleta_id: "usr-bw-1953979",
       email_cliente: "vallycamera@hotmail.it",
@@ -16205,30 +15632,6 @@ var demo_data_default = {
       saldo_risultante: 22,
       motivazione: "iscrizione a Landmine Lab delle 16/09/26 19:00",
       operatore: "atleta"
-    },
-    {
-      id: "mov-bw-72",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-14T10:42:31.000Z",
-      tipo: "modifica_manuale",
-      delta_crediti: 0,
-      saldo_risultante: 8,
-      motivazione: "Trasferimento/Cambio scadenza",
-      operatore: "coach"
-    },
-    {
-      id: "mov-bw-73",
-      atleta_id: "usr-bw-2080725",
-      email_cliente: "tebog1887@gmail.com",
-      nome_cliente: "Matteo Tesse",
-      data_ora: "2026-09-14T10:42:08.000Z",
-      tipo: "modifica_manuale",
-      delta_crediti: 8,
-      saldo_risultante: 8,
-      motivazione: "Crediti aggiunti",
-      operatore: "coach"
     },
     {
       id: "mov-bw-74",
@@ -16801,6 +16204,20 @@ var demo_data_default = {
       ],
       attiva: true
     }
+  ],
+  prenotazioni_cancellate: [
+    "bk-bw-2080725-2026-10-12-1800-4",
+    "bk-bw-2080725-2026-10-07-1800-5",
+    "bk-bw-2080725-2026-10-05-1800-6",
+    "bk-bw-2080725-2026-09-30-1800-2",
+    "bk-bw-2080725-2026-09-28-1800-7",
+    "bk-bw-2080725-2026-09-23-1800-8",
+    "bk-bw-2080725-2026-09-21-1845-10",
+    "bk-bw-2080725-2026-09-18-1800-23"
+  ],
+  utenti_cancellati: [
+    "usr-bw-2080725",
+    "tebog1887@gmail.com"
   ]
 };
 
@@ -16809,36 +16226,52 @@ var __filename = fileURLToPath(import.meta.url);
 var __dirname = path.dirname(__filename);
 var TMP_DATA_FILE = "/tmp/demo-data.json";
 function loadData() {
+  let loaded = null;
   if (fs.existsSync(TMP_DATA_FILE)) {
     try {
       const raw = fs.readFileSync(TMP_DATA_FILE, "utf-8");
-      return JSON.parse(raw);
+      loaded = JSON.parse(raw);
     } catch {
     }
   }
-  try {
-    return JSON.parse(JSON.stringify(demo_data_default));
-  } catch {
-    return {
-      livelli: [],
-      ordine_livelli: [],
-      database_esercizi: [],
-      allenamenti: [],
-      diario_utente: [],
-      stato_allenamenti: [],
-      preferenze_utente: [],
-      profili_utenti: [],
-      configurazione_lab: {},
-      prenotazioni_slot: [],
-      tariffario_pacchetti: [],
-      transazioni_pagamenti: [],
-      movimenti_crediti: [],
-      eccezioni_calendario: [],
-      attivita_lab: [],
-      regole_palinsesto: [],
-      active_user_id: "usr-atleta-01"
-    };
+  if (!loaded) {
+    try {
+      loaded = JSON.parse(JSON.stringify(demo_data_default));
+    } catch {
+      loaded = {
+        livelli: [],
+        ordine_livelli: [],
+        database_esercizi: [],
+        allenamenti: [],
+        diario_utente: [],
+        stato_allenamenti: [],
+        preferenze_utente: [],
+        profili_utenti: [],
+        configurazione_lab: {},
+        prenotazioni_slot: [],
+        tariffario_pacchetti: [],
+        transazioni_pagamenti: [],
+        movimenti_crediti: [],
+        eccezioni_calendario: [],
+        attivita_lab: [],
+        regole_palinsesto: [],
+        active_user_id: "usr-atleta-01"
+      };
+    }
   }
+  if (loaded.utenti_cancellati && Array.isArray(loaded.utenti_cancellati)) {
+    const delUsers = loaded.utenti_cancellati;
+    loaded.profili_utenti = (loaded.profili_utenti || []).filter(
+      (p) => !delUsers.includes(p.id) && !delUsers.includes(p.email?.toLowerCase())
+    );
+  }
+  if (loaded.prenotazioni_cancellate && Array.isArray(loaded.prenotazioni_cancellate)) {
+    const delBks = loaded.prenotazioni_cancellate;
+    loaded.prenotazioni_slot = (loaded.prenotazioni_slot || []).filter(
+      (p) => !delBks.includes(p.id)
+    );
+  }
+  return loaded;
 }
 function saveData(data) {
   db = data;
@@ -16912,6 +16345,18 @@ async function syncDataToGoogleDrive(fullDb) {
     if (fullDb.transazioni_cancellate !== void 0) {
       driveDb.transazioni_cancellate = fullDb.transazioni_cancellate || [];
     }
+    if (fullDb.utenti_cancellati !== void 0) {
+      driveDb.utenti_cancellati = fullDb.utenti_cancellati || [];
+    }
+    if (fullDb.profili_utenti !== void 0) {
+      driveDb.profili_utenti = fullDb.profili_utenti || [];
+    }
+    if (fullDb.prenotazioni_cancellate !== void 0) {
+      driveDb.prenotazioni_cancellate = fullDb.prenotazioni_cancellate || [];
+    }
+    if (fullDb.prenotazioni_slot !== void 0) {
+      driveDb.prenotazioni_slot = fullDb.prenotazioni_slot || [];
+    }
     if (fullDb.configurazione_lab) {
       driveDb.configurazione_lab = {
         ...driveDb.configurazione_lab || {},
@@ -16951,6 +16396,22 @@ async function tryLoadConfigFromGoogleDrive() {
       );
       db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
         (t) => !db.transazioni_cancellate.includes(t.id) && !db.transazioni_cancellate.includes(t.codice_transazione)
+      );
+    }
+    if (driveDb.utenti_cancellati && Array.isArray(driveDb.utenti_cancellati)) {
+      db.utenti_cancellati = Array.from(
+        /* @__PURE__ */ new Set([...db.utenti_cancellati || [], ...driveDb.utenti_cancellati])
+      );
+      db.profili_utenti = (db.profili_utenti || []).filter(
+        (p) => !db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())
+      );
+    }
+    if (driveDb.prenotazioni_cancellate && Array.isArray(driveDb.prenotazioni_cancellate)) {
+      db.prenotazioni_cancellate = Array.from(
+        /* @__PURE__ */ new Set([...db.prenotazioni_cancellate || [], ...driveDb.prenotazioni_cancellate])
+      );
+      db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
+        (p) => !db.prenotazioni_cancellate.includes(p.id)
       );
     }
     saveData(db);
@@ -17252,7 +16713,8 @@ async function handleLocalApi(req, res, next) {
   }
   if (pathname === "/app-api/profili" && method === "GET") {
     const now = /* @__PURE__ */ new Date();
-    const profili = (db.profili_utenti || []).map((p) => {
+    const delUsers = db.utenti_cancellati || [];
+    const profili = (db.profili_utenti || []).filter((p) => !delUsers.includes(p.id) && !delUsers.includes(p.email?.toLowerCase())).map((p) => {
       let avviso_scadenza = false;
       let giorni_a_scadenza = null;
       if (p.data_scadenza_crediti) {
@@ -17395,6 +16857,20 @@ async function handleLocalApi(req, res, next) {
     db.profili_utenti = (db.profili_utenti || []).filter(
       (p) => p.id !== targetId && p.email?.toLowerCase() !== targetEmail
     );
+    db.utenti_cancellati = db.utenti_cancellati || [];
+    if (targetId && !db.utenti_cancellati.includes(targetId)) {
+      db.utenti_cancellati.push(targetId);
+    }
+    if (targetEmail && !db.utenti_cancellati.includes(targetEmail)) {
+      db.utenti_cancellati.push(targetEmail);
+    }
+    const bksToRemove = (db.prenotazioni_slot || []).filter(
+      (p) => p.atleta_id === targetId || p.email_cliente?.toLowerCase() === targetEmail
+    );
+    const bksToRemoveIds = bksToRemove.map((p) => p.id);
+    db.prenotazioni_cancellate = Array.from(
+      /* @__PURE__ */ new Set([...db.prenotazioni_cancellate || [], ...bksToRemoveIds])
+    );
     db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
       (p) => p.atleta_id !== targetId && p.email_cliente?.toLowerCase() !== targetEmail
     );
@@ -17411,6 +16887,7 @@ async function handleLocalApi(req, res, next) {
       (pref) => pref.email?.toLowerCase() !== targetEmail
     );
     saveData(db);
+    await syncDataToGoogleDrive(db);
     return res.end(
       JSON.stringify({
         success: true,
@@ -17929,7 +17406,10 @@ CALENDARIO E PRENOTAZIONI:
   if (pathname === "/app-api/prenotazioni" && method === "GET") {
     const dataFilter = url.searchParams.get("data");
     const emailFilter = url.searchParams.get("email");
-    let prenotazioni = db.prenotazioni_slot || [];
+    const delBks = db.prenotazioni_cancellate || [];
+    let prenotazioni = (db.prenotazioni_slot || []).filter(
+      (p) => !delBks.includes(p.id) && (p.stato === "confermata" || !p.stato || p.stato === "attiva") && !p.stato?.startsWith("cancellata")
+    );
     if (dataFilter) {
       prenotazioni = prenotazioni.filter((p) => p.data === dataFilter);
     }
@@ -18207,37 +17687,23 @@ CALENDARIO E PRENOTAZIONI:
     let rimborsato = false;
     let statoFinale = "cancellata_tardiva";
     let messaggio = "";
+    const prorogaRequested = url.searchParams.get("proroga") === "true" || url.searchParams.get("proroga") === "7" || parsedBody?.proroga === true || parsedBody?.proroga === "true";
     if (orePreavviso >= oreLimite || isManager) {
       rimborsato = true;
       statoFinale = "cancellata_in_tempo";
       if (bk.credito_scalato && atleta) {
         atleta.crediti = (atleta.crediti ?? 0) + 1;
         let prorogaMsg = "";
-        const isContinuativo = atleta.tipo_abbonamento?.startsWith("lab_continuativo") || atleta.tipo_abbonamento === "abbonamento";
-        if (isManager && atleta.data_scadenza_crediti) {
-          if (isContinuativo) {
-            prorogaMsg = " (Abbonamento continuativo: credito rimborsato al 100%, data rinnovo fissa invariata)";
-          } else {
-            const scadenzaDate = /* @__PURE__ */ new Date(atleta.data_scadenza_crediti + "T00:00:00");
-            const slotDate = /* @__PURE__ */ new Date(bk.data + "T00:00:00");
-            const diffMs = scadenzaDate.getTime() - slotDate.getTime();
-            const diffDays = Math.ceil(diffMs / (1e3 * 60 * 60 * 24));
-            if (diffDays <= 5) {
-              const baseDate = scadenzaDate > slotDate ? new Date(scadenzaDate) : new Date(slotDate);
-              baseDate.setDate(baseDate.getDate() + 7);
-              const y = baseDate.getFullYear();
-              const m = String(baseDate.getMonth() + 1).padStart(2, "0");
-              const d = String(baseDate.getDate()).padStart(2, "0");
-              atleta.data_scadenza_crediti = `${y}-${m}-${d}`;
-              prorogaMsg = ` (Scadenza prorogata al ${(/* @__PURE__ */ new Date(
-                atleta.data_scadenza_crediti + "T00:00:00"
-              )).toLocaleDateString("it-IT")} per recupero senza alterare il ritmo di frequenza)`;
-            } else {
-              prorogaMsg = ` (Scadenza invariata al ${(/* @__PURE__ */ new Date(
-                atleta.data_scadenza_crediti + "T00:00:00"
-              )).toLocaleDateString("it-IT")}: tempo residuo di ${diffDays} gg sufficiente al recupero)`;
-            }
-          }
+        if (isManager && prorogaRequested && atleta.data_scadenza_crediti) {
+          const scadenzaDate = /* @__PURE__ */ new Date(atleta.data_scadenza_crediti + "T00:00:00");
+          scadenzaDate.setDate(scadenzaDate.getDate() + 7);
+          const y = scadenzaDate.getFullYear();
+          const m = String(scadenzaDate.getMonth() + 1).padStart(2, "0");
+          const d = String(scadenzaDate.getDate()).padStart(2, "0");
+          atleta.data_scadenza_crediti = `${y}-${m}-${d}`;
+          prorogaMsg = ` (Scadenza carnet prorogata al ${(/* @__PURE__ */ new Date(
+            atleta.data_scadenza_crediti + "T00:00:00"
+          )).toLocaleDateString("it-IT")})`;
         }
         addMovimentoCrediti(db, {
           atleta_id: atleta.id,
@@ -18246,10 +17712,10 @@ CALENDARIO E PRENOTAZIONI:
           tipo: "rimborso_cancellazione",
           delta_crediti: 1,
           saldo_risultante: atleta.crediti,
-          motivazione: isManager ? `Rimborso slot ${bk.data} ${bk.orario} [Annullato dal Coach per imprevisto${prorogaMsg}]` : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}`,
+          motivazione: isManager ? prorogaRequested ? `Rimborso slot ${bk.data} ${bk.orario} [Con proroga scadenza carnet +7gg]` : `Ripristino credito per cancellazione/spostamento slot ${bk.data} ${bk.orario}` : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}`,
           operatore: isManager ? "coach" : "atleta"
         });
-        messaggio = isManager ? `Sessione annullata dal Coach. 1 credito rimborsato al wallet${prorogaMsg}.` : `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
+        messaggio = isManager ? prorogaRequested ? `Sessione annullata dal Coach. 1 credito riaccreditato e scadenza prorogata di 7 giorni.` : `Sessione annullata dal Coach. 1 credito riaccreditato per consentire lo spostamento dello slot.` : `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
           0,
           Math.round(orePreavviso)
         )}h rimaste su ${oreLimite}h richieste). 1 credito \xE8 stato rimborsato al tuo wallet.`;
@@ -18276,9 +17742,13 @@ CALENDARIO E PRENOTAZIONI:
         Math.round(orePreavviso)
       )}h). In accordo con il regolamento di Area46 Lab, il credito della seduta viene trattenuto.`;
     }
-    bk.stato = statoFinale;
-    bk.cancellato_il = (/* @__PURE__ */ new Date()).toISOString();
+    db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
+    if (!db.prenotazioni_cancellate.includes(bkId)) {
+      db.prenotazioni_cancellate.push(bkId);
+    }
+    db.prenotazioni_slot = (db.prenotazioni_slot || []).filter((p) => p.id !== bkId);
     saveData(db);
+    await syncDataToGoogleDrive(db);
     if (isManager) {
       console.log(
         `[NOTIFICA AUTOMATICA EMAIL] A: ${atleta?.email || bk.email_cliente} - Avviso Annullamento Seduta Area46: ${bk.data} alle ${bk.orario}`

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCurrentUser, useEccezioniCalendario } from "../lib/useUser";
+import { useCurrentUser, useEccezioniCalendario, isBookingDeleted } from "../lib/useUser";
 import {
   Bot,
   Sparkles,
@@ -77,7 +77,13 @@ export function AIBookingConcierge({
     queryFn: async () => {
       const res = await fetch("/app-api/prenotazioni");
       if (!res.ok) return [];
-      return res.json();
+      const list: any[] = await res.json();
+      return list.filter(
+        (p) =>
+          !isBookingDeleted(p.id) &&
+          (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
+          !p.stato?.startsWith("cancellata")
+      );
     },
     enabled: open,
   });

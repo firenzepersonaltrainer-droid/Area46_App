@@ -10,37 +10,53 @@ const __dirname = path.dirname(__filename);
 const TMP_DATA_FILE = "/tmp/demo-data.json";
 
 function loadData() {
+  let loaded: any = null;
   if (fs.existsSync(TMP_DATA_FILE)) {
     try {
       const raw = fs.readFileSync(TMP_DATA_FILE, "utf-8");
-      return JSON.parse(raw);
+      loaded = JSON.parse(raw);
     } catch {
       // fallback
     }
   }
-  try {
-    return JSON.parse(JSON.stringify(defaultData));
-  } catch {
-    return {
-      livelli: [],
-      ordine_livelli: [],
-      database_esercizi: [],
-      allenamenti: [],
-      diario_utente: [],
-      stato_allenamenti: [],
-      preferenze_utente: [],
-      profili_utenti: [],
-      configurazione_lab: {},
-      prenotazioni_slot: [],
-      tariffario_pacchetti: [],
-      transazioni_pagamenti: [],
-      movimenti_crediti: [],
-      eccezioni_calendario: [],
-      attivita_lab: [],
-      regole_palinsesto: [],
-      active_user_id: "usr-atleta-01",
-    };
+  if (!loaded) {
+    try {
+      loaded = JSON.parse(JSON.stringify(defaultData));
+    } catch {
+      loaded = {
+        livelli: [],
+        ordine_livelli: [],
+        database_esercizi: [],
+        allenamenti: [],
+        diario_utente: [],
+        stato_allenamenti: [],
+        preferenze_utente: [],
+        profili_utenti: [],
+        configurazione_lab: {},
+        prenotazioni_slot: [],
+        tariffario_pacchetti: [],
+        transazioni_pagamenti: [],
+        movimenti_crediti: [],
+        eccezioni_calendario: [],
+        attivita_lab: [],
+        regole_palinsesto: [],
+        active_user_id: "usr-atleta-01",
+      };
+    }
   }
+  if (loaded.utenti_cancellati && Array.isArray(loaded.utenti_cancellati)) {
+    const delUsers = loaded.utenti_cancellati;
+    loaded.profili_utenti = (loaded.profili_utenti || []).filter(
+      (p: any) => !delUsers.includes(p.id) && !delUsers.includes(p.email?.toLowerCase())
+    );
+  }
+  if (loaded.prenotazioni_cancellate && Array.isArray(loaded.prenotazioni_cancellate)) {
+    const delBks = loaded.prenotazioni_cancellate;
+    loaded.prenotazioni_slot = (loaded.prenotazioni_slot || []).filter(
+      (p: any) => !delBks.includes(p.id)
+    );
+  }
+  return loaded;
 }
 
 function saveData(data: any) {
@@ -125,6 +141,18 @@ async function syncDataToGoogleDrive(fullDb: any) {
     if (fullDb.transazioni_cancellate !== undefined) {
       driveDb.transazioni_cancellate = fullDb.transazioni_cancellate || [];
     }
+    if (fullDb.utenti_cancellati !== undefined) {
+      driveDb.utenti_cancellati = fullDb.utenti_cancellati || [];
+    }
+    if (fullDb.profili_utenti !== undefined) {
+      driveDb.profili_utenti = fullDb.profili_utenti || [];
+    }
+    if (fullDb.prenotazioni_cancellate !== undefined) {
+      driveDb.prenotazioni_cancellate = fullDb.prenotazioni_cancellate || [];
+    }
+    if (fullDb.prenotazioni_slot !== undefined) {
+      driveDb.prenotazioni_slot = fullDb.prenotazioni_slot || [];
+    }
     if (fullDb.configurazione_lab) {
       driveDb.configurazione_lab = {
         ...(driveDb.configurazione_lab || {}),
@@ -166,6 +194,22 @@ async function tryLoadConfigFromGoogleDrive() {
       );
       db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
         (t: any) => !db.transazioni_cancellate.includes(t.id) && !db.transazioni_cancellate.includes(t.codice_transazione)
+      );
+    }
+    if (driveDb.utenti_cancellati && Array.isArray(driveDb.utenti_cancellati)) {
+      db.utenti_cancellati = Array.from(
+        new Set([...(db.utenti_cancellati || []), ...driveDb.utenti_cancellati])
+      );
+      db.profili_utenti = (db.profili_utenti || []).filter(
+        (p: any) => !db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())
+      );
+    }
+    if (driveDb.prenotazioni_cancellate && Array.isArray(driveDb.prenotazioni_cancellate)) {
+      db.prenotazioni_cancellate = Array.from(
+        new Set([...(db.prenotazioni_cancellate || []), ...driveDb.prenotazioni_cancellate])
+      );
+      db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
+        (p: any) => !db.prenotazioni_cancellate.includes(p.id)
       );
     }
     saveData(db);
@@ -530,7 +574,10 @@ export async function handleLocalApi(
     // GET /app-api/profili (Lista atleti & coach con policy personale)
     if (pathname === "/app-api/profili" && method === "GET") {
       const now = new Date();
-      const profili = (db.profili_utenti || []).map((p: any) => {
+      const delUsers = db.utenti_cancellati || [];
+      const profili = (db.profili_utenti || [])
+        .filter((p: any) => !delUsers.includes(p.id) && !delUsers.includes(p.email?.toLowerCase()))
+        .map((p: any) => {
         let avviso_scadenza = false;
         let giorni_a_scadenza = null;
         if (p.data_scadenza_crediti) {
@@ -699,15 +746,29 @@ export async function handleLocalApi(
       const targetId = atleta ? atleta.id : targetIdentifier;
       const targetEmail = atleta ? atleta.email?.toLowerCase() : targetIdentifier.toLowerCase();
 
-      // 1. Rimuovi da profili_utenti
+      // 1. Rimuovi da profili_utenti e registra in utenti_cancellati
       db.profili_utenti = (db.profili_utenti || []).filter(
         (p: any) => p.id !== targetId && p.email?.toLowerCase() !== targetEmail
       );
+      db.utenti_cancellati = db.utenti_cancellati || [];
+      if (targetId && !db.utenti_cancellati.includes(targetId)) {
+        db.utenti_cancellati.push(targetId);
+      }
+      if (targetEmail && !db.utenti_cancellati.includes(targetEmail)) {
+        db.utenti_cancellati.push(targetEmail);
+      }
 
       // NOTA FISCALE: le transazioni in db.transazioni_pagamenti NON vengono cancellate:
       // i movimenti fiscali e gli incassi storici devono restare a norma contabile.
 
-      // 2. Rimuovi da prenotazioni_slot
+      // 2. Rimuovi da prenotazioni_slot e traccia in prenotazioni_cancellate
+      const bksToRemove = (db.prenotazioni_slot || []).filter(
+        (p: any) => p.atleta_id === targetId || p.email_cliente?.toLowerCase() === targetEmail
+      );
+      const bksToRemoveIds = bksToRemove.map((p: any) => p.id);
+      db.prenotazioni_cancellate = Array.from(
+        new Set([...(db.prenotazioni_cancellate || []), ...bksToRemoveIds])
+      );
       db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
         (p: any) => p.atleta_id !== targetId && p.email_cliente?.toLowerCase() !== targetEmail
       );
@@ -733,6 +794,7 @@ export async function handleLocalApi(
       );
 
       saveData(db);
+      await syncDataToGoogleDrive(db);
       return res.end(
         JSON.stringify({
           success: true,
@@ -1380,7 +1442,13 @@ CALENDARIO E PRENOTAZIONI:
     if (pathname === "/app-api/prenotazioni" && method === "GET") {
       const dataFilter = url.searchParams.get("data");
       const emailFilter = url.searchParams.get("email");
-      let prenotazioni = db.prenotazioni_slot || [];
+      const delBks = db.prenotazioni_cancellate || [];
+      let prenotazioni = (db.prenotazioni_slot || []).filter(
+        (p: any) =>
+          !delBks.includes(p.id) &&
+          (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
+          !p.stato?.startsWith("cancellata")
+      );
       if (dataFilter) {
         prenotazioni = prenotazioni.filter((p: any) => p.data === dataFilter);
       }
@@ -1725,47 +1793,29 @@ CALENDARIO E PRENOTAZIONI:
       let statoFinale = "cancellata_tardiva";
       let messaggio = "";
 
+      const prorogaRequested =
+        url.searchParams.get("proroga") === "true" ||
+        url.searchParams.get("proroga") === "7" ||
+        parsedBody?.proroga === true ||
+        parsedBody?.proroga === "true";
+
       if (orePreavviso >= oreLimite || isManager) {
         rimborsato = true;
         statoFinale = "cancellata_in_tempo";
         if (bk.credito_scalato && atleta) {
           atleta.crediti = (atleta.crediti ?? 0) + 1;
 
-          // Se l'annullamento è operato dal Coach per imprevisto:
-          // 1. Per gli abbonamenti continuativi: NESSUNA proroga (rinnovo mensile a data fissa), solo restituzione del credito al 100%.
-          // 2. Per i pacchetti a consumo: se la scadenza è imminente (<= 5 giorni), proroga di +7 giorni (1 ciclo settimanale intero)
-          //    per consentire all'atleta di ritrovare i propri giorni abituali senza alterare il ritmo di frequenza (2x o 3x).
           let prorogaMsg = "";
-          const isContinuativo =
-            atleta.tipo_abbonamento?.startsWith("lab_continuativo") ||
-            atleta.tipo_abbonamento === "abbonamento";
-
-          if (isManager && atleta.data_scadenza_crediti) {
-            if (isContinuativo) {
-              prorogaMsg = " (Abbonamento continuativo: credito rimborsato al 100%, data rinnovo fissa invariata)";
-            } else {
-              const scadenzaDate = new Date(atleta.data_scadenza_crediti + "T00:00:00");
-              const slotDate = new Date(bk.data + "T00:00:00");
-              const diffMs = scadenzaDate.getTime() - slotDate.getTime();
-              const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
-              if (diffDays <= 5) {
-                // Scadenza imminente (<= 5 giorni): posticipa di +7 giorni di calendario
-                const baseDate = scadenzaDate > slotDate ? new Date(scadenzaDate) : new Date(slotDate);
-                baseDate.setDate(baseDate.getDate() + 7);
-                const y = baseDate.getFullYear();
-                const m = String(baseDate.getMonth() + 1).padStart(2, "0");
-                const d = String(baseDate.getDate()).padStart(2, "0");
-                atleta.data_scadenza_crediti = `${y}-${m}-${d}`;
-                prorogaMsg = ` (Scadenza prorogata al ${new Date(
-                  atleta.data_scadenza_crediti + "T00:00:00"
-                ).toLocaleDateString("it-IT")} per recupero senza alterare il ritmo di frequenza)`;
-              } else {
-                prorogaMsg = ` (Scadenza invariata al ${new Date(
-                  atleta.data_scadenza_crediti + "T00:00:00"
-                ).toLocaleDateString("it-IT")}: tempo residuo di ${diffDays} gg sufficiente al recupero)`;
-              }
-            }
+          if (isManager && prorogaRequested && atleta.data_scadenza_crediti) {
+            const scadenzaDate = new Date(atleta.data_scadenza_crediti + "T00:00:00");
+            scadenzaDate.setDate(scadenzaDate.getDate() + 7);
+            const y = scadenzaDate.getFullYear();
+            const m = String(scadenzaDate.getMonth() + 1).padStart(2, "0");
+            const d = String(scadenzaDate.getDate()).padStart(2, "0");
+            atleta.data_scadenza_crediti = `${y}-${m}-${d}`;
+            prorogaMsg = ` (Scadenza carnet prorogata al ${new Date(
+              atleta.data_scadenza_crediti + "T00:00:00"
+            ).toLocaleDateString("it-IT")})`;
           }
 
           addMovimentoCrediti(db, {
@@ -1776,13 +1826,17 @@ CALENDARIO E PRENOTAZIONI:
             delta_crediti: 1,
             saldo_risultante: atleta.crediti,
             motivazione: isManager
-              ? `Rimborso slot ${bk.data} ${bk.orario} [Annullato dal Coach per imprevisto${prorogaMsg}]`
+              ? (prorogaRequested
+                  ? `Rimborso slot ${bk.data} ${bk.orario} [Con proroga scadenza carnet +7gg]`
+                  : `Ripristino credito per cancellazione/spostamento slot ${bk.data} ${bk.orario}`)
               : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}`,
             operatore: isManager ? "coach" : "atleta",
           });
 
           messaggio = isManager
-            ? `Sessione annullata dal Coach. 1 credito rimborsato al wallet${prorogaMsg}.`
+            ? (prorogaRequested
+                ? `Sessione annullata dal Coach. 1 credito riaccreditato e scadenza prorogata di 7 giorni.`
+                : `Sessione annullata dal Coach. 1 credito riaccreditato per consentire lo spostamento dello slot.`)
             : `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
                 0,
                 Math.round(orePreavviso)
@@ -1811,9 +1865,15 @@ CALENDARIO E PRENOTAZIONI:
         )}h). In accordo con il regolamento di Area46 Lab, il credito della seduta viene trattenuto.`;
       }
 
-      bk.stato = statoFinale;
-      bk.cancellato_il = new Date().toISOString();
+      // Traccia ID cancellato ed elimina fisicamente lo slot attivo
+      db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
+      if (!db.prenotazioni_cancellate.includes(bkId)) {
+        db.prenotazioni_cancellate.push(bkId);
+      }
+      db.prenotazioni_slot = (db.prenotazioni_slot || []).filter((p: any) => p.id !== bkId);
+
       saveData(db);
+      await syncDataToGoogleDrive(db);
 
       if (isManager) {
         console.log(

@@ -867,6 +867,7 @@ app.get("/app-api/prenotazioni", async (c) => {
     SELECT * FROM prenotazioni_slot
     WHERE (${dataParam}::text IS NULL OR data::text = ${dataParam})
       AND (${emailParam}::text IS NULL OR email_cliente = ${emailParam})
+      AND (stato = 'confermata' OR stato = 'attiva' OR stato IS NULL)
     ORDER BY data ASC, orario ASC
   `;
   return c.json(rows);
@@ -983,6 +984,8 @@ app.post("/app-api/prenotazioni", async (c) => {
 app.delete("/app-api/prenotazioni/:id", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const id = c.req.param("id");
+  const prorogaParam = c.req.query("proroga");
+  const prorogaRequested = prorogaParam === "true" || prorogaParam === "7";
 
   const rows = await sql`SELECT * FROM prenotazioni_slot WHERE id = ${id} LIMIT 1`;
   if (rows.length === 0) return c.json({ error: "Prenotazione non trovata" }, 404);
@@ -1011,33 +1014,24 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
         const currentExp = userRows[0]?.data_scadenza_crediti;
         const tipoAbb = userRows[0]?.tipo_abbonamento || "";
         const isContinuativo = tipoAbb.startsWith("lab_continuativo") || tipoAbb === "abbonamento";
-        let prorogaApplicata = false;
 
         if (isContinuativo) {
           await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
           messaggio = "Sessione annullata dal Coach. 1 credito rimborsato al wallet (abbonamento continuativo: scadenza fissa invariata).";
         } else {
-          if (currentExp) {
-            const slotDate = new Date(bk.data.toISOString().slice(0, 10) + "T00:00:00");
-            const expDate = new Date(new Date(currentExp).toISOString().slice(0, 10) + "T00:00:00");
-            const diffDays = Math.ceil((expDate.getTime() - slotDate.getTime()) / (1000 * 60 * 60 * 24));
-
-            if (diffDays <= 5) {
-              // Posticipa la scadenza di +7 giorni (1 ciclo settimanale intero) per consentire il recupero senza alterare il ritmo di frequenza (2x o 3x)
-              await sql`
-                UPDATE profili_utenti 
-                SET crediti = crediti + 1,
-                    data_scadenza_crediti = data_scadenza_crediti + INTERVAL '7 days'
-                WHERE email = ${bk.email_cliente}
-              `;
-              prorogaApplicata = true;
-              messaggio = "Sessione annullata dal Coach. 1 credito rimborsato e scadenza prorogata di 7 giorni per consentire il recupero senza alterare il ritmo di frequenza.";
-            }
-          }
-
-          if (!prorogaApplicata) {
+          if (prorogaRequested && currentExp) {
+            // Proroga esplicita di +7 giorni richiesta dal Coach
+            await sql`
+              UPDATE profili_utenti 
+              SET crediti = crediti + 1,
+                  data_scadenza_crediti = data_scadenza_crediti + INTERVAL '7 days'
+              WHERE email = ${bk.email_cliente}
+            `;
+            messaggio = "Sessione annullata dal Coach. 1 credito rimborsato e scadenza prorogata di 7 giorni su tua scelta esplicita.";
+          } else {
+            // Default: NESSUNA proroga (spostamento/cambio turno senza alterare la scadenza del pacchetto)
             await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
-            messaggio = "Sessione annullata dal Coach. 1 credito rimborsato al wallet (scadenza invariata: tempo residuo sufficiente al recupero).";
+            messaggio = "Sessione annullata dal Coach. 1 credito rimborsato al wallet (scadenza carnet invariata: nessuna proroga).";
           }
         }
       } else {

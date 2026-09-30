@@ -14428,27 +14428,6 @@
       "tempo_anticipo_prenotazione_ore": 24
     },
     {
-      "id": "usr-bw-2080725",
-      "bookyway_id": 2080725,
-      "email": "tebog1887@gmail.com",
-      "nome": "Matteo",
-      "cognome": "Tesse",
-      "nickname": "Matte",
-      "telefono": "",
-      "codice_fiscale": "",
-      "indirizzo": "",
-      "ruolo": "atleta",
-      "crediti": 0,
-      "data_scadenza_crediti": null,
-      "data_ultimo_accesso": "2026-09-15T12:27:35.000Z",
-      "data_creazione": "2026-09-14T08:41:14.000Z",
-      "tempo_cancellazione_ore": 24,
-      "tipo_abbonamento": "standard",
-      "stato_iscrizione": "attivo",
-      "name": "Matteo Tesse",
-      "tempo_anticipo_prenotazione_ore": 24
-    },
-    {
       "id": "usr-bw-1953987",
       "bookyway_id": 1953987,
       "email": "pierpaolaciancia@gmail.com",
@@ -14726,42 +14705,6 @@
   ],
   "prenotazioni_slot": [
     {
-      "id": "bk-bw-2080725-2026-10-12-1800-4",
-      "data": "2026-10-12",
-      "orario": "18:00",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "attivita": "Landmine Lab",
-      "created_at": "2026-09-22T14:40:42.000Z"
-    },
-    {
-      "id": "bk-bw-2080725-2026-10-07-1800-5",
-      "data": "2026-10-07",
-      "orario": "18:00",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "attivita": "Landmine Lab",
-      "created_at": "2026-09-22T14:40:34.000Z"
-    },
-    {
-      "id": "bk-bw-2080725-2026-10-05-1800-6",
-      "data": "2026-10-05",
-      "orario": "18:00",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "attivita": "Landmine Lab",
-      "created_at": "2026-09-22T14:40:27.000Z"
-    },
-    {
       "id": "bk-bw-1953976-2026-10-05-1700-0",
       "data": "2026-10-05",
       "orario": "17:00",
@@ -14786,18 +14729,6 @@
       "created_at": "2026-09-28T18:54:27.000Z"
     },
     {
-      "id": "bk-bw-2080725-2026-09-30-1800-2",
-      "data": "2026-09-30",
-      "orario": "18:00",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "attivita": "Landmine Lab",
-      "created_at": "2026-09-28T00:57:17.000Z"
-    },
-    {
       "id": "bk-bw-1953985-2026-09-28-1815-14",
       "data": "2026-09-28",
       "orario": "18:15",
@@ -14808,18 +14739,6 @@
       "credito_scalato": true,
       "attivita": "Landmine Lab",
       "created_at": "2026-09-20T18:19:49.000Z"
-    },
-    {
-      "id": "bk-bw-2080725-2026-09-28-1800-7",
-      "data": "2026-09-28",
-      "orario": "18:00",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "attivita": "Landmine Lab",
-      "created_at": "2026-09-22T14:40:08.000Z"
     },
     {
       "id": "bk-bw-1953976-2026-09-28-1715-17",
@@ -14882,18 +14801,6 @@
       "created_at": "2026-09-21T19:50:55.000Z"
     },
     {
-      "id": "bk-bw-2080725-2026-09-23-1800-8",
-      "data": "2026-09-23",
-      "orario": "18:00",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "completata",
-      "credito_scalato": true,
-      "attivita": "Landmine Lab",
-      "created_at": "2026-09-22T14:39:38.000Z"
-    },
-    {
       "id": "bk-bw-1953976-2026-09-23-1715-42",
       "data": "2026-09-23",
       "orario": "17:15",
@@ -14942,18 +14849,6 @@
       "created_at": "2026-09-18T00:15:34.000Z"
     },
     {
-      "id": "bk-bw-2080725-2026-09-21-1845-10",
-      "data": "2026-09-21",
-      "orario": "18:45",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "completata",
-      "credito_scalato": true,
-      "attivita": "Landmine Lab",
-      "created_at": "2026-09-21T07:25:25.000Z"
-    },
-    {
       "id": "bk-bw-1953985-2026-09-21-1830-16",
       "data": "2026-09-21",
       "orario": "18:30",
@@ -15000,18 +14895,6 @@
       "credito_scalato": true,
       "attivita": "Landmine Lab",
       "created_at": "2026-09-20T20:02:23.000Z"
-    },
-    {
-      "id": "bk-bw-2080725-2026-09-18-1800-23",
-      "data": "2026-09-18",
-      "orario": "18:00",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "telefono_cliente": "",
-      "stato": "completata",
-      "credito_scalato": true,
-      "attivita": "Landmine LAb",
-      "created_at": "2026-09-16T09:12:21.000Z"
     },
     {
       "id": "bk-bw-1953976-2026-09-18-1715-43",
@@ -15408,30 +15291,6 @@
       "operatore": "coach"
     },
     {
-      "id": "mov-bw-6",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-28T00:57:17.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 30/09/26 18:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-7",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-28T00:56:30.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 30/09/26 18:00",
-      "operatore": "atleta"
-    },
-    {
       "id": "mov-bw-8",
       "atleta_id": "usr-bw-1953992",
       "email_cliente": "matteo.calosci@gmail.com",
@@ -15468,138 +15327,6 @@
       "operatore": "coach"
     },
     {
-      "id": "mov-bw-11",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:42.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 12/10/26 18:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-12",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:40.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 12/10/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-13",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:34.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 07/10/26 18:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-14",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:32.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 07/10/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-15",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:27.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 05/10/26 18:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-16",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:25.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 05/10/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-17",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:17.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 30/09/26 18:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-18",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:14.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 30/09/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-19",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:08.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 28/09/26 18:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-20",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:40:04.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 28/09/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-21",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:39:38.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 23/09/26 18:00",
-      "operatore": "atleta"
-    },
-    {
       "id": "mov-bw-22",
       "atleta_id": "usr-bw-1953992",
       "email_cliente": "matteo.calosci@gmail.com",
@@ -15610,186 +15337,6 @@
       "saldo_risultante": 20,
       "motivazione": "iscrizione a Landmine Lab di 23/09/26 19:00",
       "operatore": "coach"
-    },
-    {
-      "id": "mov-bw-23",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-22T14:39:33.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 23/09/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-24",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-21T07:25:25.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 21/09/2026 18:45",
-      "operatore": "coach"
-    },
-    {
-      "id": "mov-bw-25",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-21T07:25:09.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 21/09/2026 11:00",
-      "operatore": "coach"
-    },
-    {
-      "id": "mov-bw-26",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:43.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 12/10/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-27",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:40.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 12/10/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-28",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:35.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 07/10/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-29",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:31.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 07/10/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-30",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:27.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 05/10/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-31",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:23.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 05/10/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-32",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:15.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 30/09/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-33",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:11.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 30/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-34",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:07.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 28/09/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-35",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:36:03.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 28/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-36",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:35:56.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 23/09/26 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-37",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-20T23:35:47.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 23/09/26 11:00",
-      "operatore": "atleta"
     },
     {
       "id": "mov-bw-38",
@@ -16056,126 +15603,6 @@
       "operatore": "atleta"
     },
     {
-      "id": "mov-bw-60",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-16T09:12:21.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine LAb delle 18/09/26 18:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-61",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-16T09:11:52.000Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 1,
-      "motivazione": "disiscrizione da Landmine Lab delle 18/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-62",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:46:30.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 0,
-      "motivazione": "iscrizione a Landmine Lab delle 12/10/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-63",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:46:23.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 1,
-      "motivazione": "iscrizione a Landmine Lab delle 07/10/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-64",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:35:41.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 2,
-      "motivazione": "iscrizione a Landmine Lab delle 05/10/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-65",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:35:31.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 3,
-      "motivazione": "iscrizione a Landmine Lab delle 30/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-66",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:35:19.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 4,
-      "motivazione": "iscrizione a Landmine Lab delle 28/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-67",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:33:23.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 5,
-      "motivazione": "iscrizione a Landmine Lab delle 23/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-68",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:33:05.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 6,
-      "motivazione": "iscrizione a Landmine Lab delle 21/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-69",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-15T12:32:47.000Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 7,
-      "motivazione": "iscrizione a Landmine Lab delle 18/09/26 11:00",
-      "operatore": "atleta"
-    },
-    {
       "id": "mov-bw-70",
       "atleta_id": "usr-bw-1953979",
       "email_cliente": "vallycamera@hotmail.it",
@@ -16198,30 +15625,6 @@
       "saldo_risultante": 22,
       "motivazione": "iscrizione a Landmine Lab delle 16/09/26 19:00",
       "operatore": "atleta"
-    },
-    {
-      "id": "mov-bw-72",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-14T10:42:31.000Z",
-      "tipo": "modifica_manuale",
-      "delta_crediti": 0,
-      "saldo_risultante": 8,
-      "motivazione": "Trasferimento/Cambio scadenza",
-      "operatore": "coach"
-    },
-    {
-      "id": "mov-bw-73",
-      "atleta_id": "usr-bw-2080725",
-      "email_cliente": "tebog1887@gmail.com",
-      "nome_cliente": "Matteo Tesse",
-      "data_ora": "2026-09-14T10:42:08.000Z",
-      "tipo": "modifica_manuale",
-      "delta_crediti": 8,
-      "saldo_risultante": 8,
-      "motivazione": "Crediti aggiunti",
-      "operatore": "coach"
     },
     {
       "id": "mov-bw-74",
@@ -16794,5 +16197,19 @@
       ],
       "attiva": true
     }
+  ],
+  "prenotazioni_cancellate": [
+    "bk-bw-2080725-2026-10-12-1800-4",
+    "bk-bw-2080725-2026-10-07-1800-5",
+    "bk-bw-2080725-2026-10-05-1800-6",
+    "bk-bw-2080725-2026-09-30-1800-2",
+    "bk-bw-2080725-2026-09-28-1800-7",
+    "bk-bw-2080725-2026-09-23-1800-8",
+    "bk-bw-2080725-2026-09-21-1845-10",
+    "bk-bw-2080725-2026-09-18-1800-23"
+  ],
+  "utenti_cancellati": [
+    "usr-bw-2080725",
+    "tebog1887@gmail.com"
   ]
 }

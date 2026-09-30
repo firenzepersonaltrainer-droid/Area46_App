@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useProfili,
   UserProfile,
   useMovimentiCrediti,
   MovimentoCrediti,
   isTxDeleted,
+  isAthleteDeleted,
+  saveDeletedBookingId,
+  isBookingDeleted,
 } from "../lib/useUser";
 import {
   Users,
@@ -45,6 +48,17 @@ import {
   DialogFooter,
 } from "../components/Dialog";
 import { toast } from "sonner";
+
+function formatGiornoEsteso(iso: string): string {
+  try {
+    const d = new Date(iso + "T00:00:00");
+    const giorni = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+    const mesi = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
+    return `${giorni[d.getDay()]} ${d.getDate()} ${mesi[d.getMonth()]} ${d.getFullYear()}`;
+  } catch {
+    return iso;
+  }
+}
 
 export default function ManagerAtletiPage() {
   const { profili, modificaCrediti, salvaProfilo, dismettiAtleta, eliminaAtleta, isDeleting } = useProfili();
@@ -115,6 +129,81 @@ export default function ManagerAtletiPage() {
     }
   };
 
+  // Modale Sedute Prenotate Future dell'Atleta
+  const [futureBookingsModalOpen, setFutureBookingsModalOpen] = useState(false);
+  const [athleteForFutureBookings, setAthleteForFutureBookings] = useState<UserProfile | null>(null);
+  const [bookingToCancelFromAtleta, setBookingToCancelFromAtleta] = useState<any | null>(null);
+  const [atletaProrogaChoice, setAtletaProrogaChoice] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  // Query Prenotazioni per calcolo e visualizzazione sedute future
+  const { data: prenotazioni = [] } = useQuery<any[]>({
+    queryKey: ["prenotazioni"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/prenotazioni");
+      if (!res.ok) return [];
+      const list: any[] = await res.json();
+      return list.filter(
+        (p) =>
+          !isBookingDeleted(p.id) &&
+          (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
+          !p.stato?.startsWith("cancellata")
+      );
+    },
+  });
+
+  // Calcolo delle sedute future (non ancora svolte) per un atleta
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const currentHM = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+  const getUpcomingBookingsForAthlete = (atleta: UserProfile) => {
+    return prenotazioni
+      .filter((p) => {
+        if (isBookingDeleted(p.id)) return false;
+        const matchesUser =
+          (p.atleta_id && p.atleta_id === atleta.id) ||
+          (p.email_cliente && p.email_cliente.toLowerCase() === atleta.email.toLowerCase());
+        if (!matchesUser) return false;
+        if (p.data < todayISO) return false;
+        if (p.data === todayISO && p.orario < currentHM) return false;
+        return true;
+      })
+      .sort((a, b) => (a.data + a.orario).localeCompare(b.data + b.orario));
+  };
+
+  const cancellaDaAtletaMutation = useMutation({
+    mutationFn: async ({ id, proroga }: { id: string; proroga: boolean }) => {
+      saveDeletedBookingId(id);
+      queryClient.setQueryData<any[]>(["prenotazioni"], (old) =>
+        (old || []).filter((p) => p.id !== id)
+      );
+      const res = await fetch(`/app-api/prenotazioni/${id}?proroga=${proroga}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ proroga }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Errore cancellazione");
+      return json;
+    },
+    onSuccess: (data, variables) => {
+      saveDeletedBookingId(variables.id);
+      queryClient.setQueryData<any[]>(["prenotazioni"], (old) =>
+        (old || []).filter((p) => p.id !== variables.id)
+      );
+      queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["profili"] });
+      queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
+      toast.success(data.messaggio || "Seduta annullata. Credito ripristinato.");
+      setBookingToCancelFromAtleta(null);
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore durante la cancellazione della seduta");
+    },
+  });
+
   // Query Transazioni per calcolo totale versamenti
   const { data: transazioni = [] } = useQuery<any[]>({
     queryKey: ["transazioni"],
@@ -126,7 +215,9 @@ export default function ManagerAtletiPage() {
     },
   });
 
-  const atleti = profili.filter((p) => p.ruolo === "atleta");
+  const atleti = profili.filter(
+    (p) => p.ruolo === "atleta" && !isAthleteDeleted(p.id) && !isAthleteDeleted(p.email)
+  );
 
   const filteredAtleti = atleti.filter((a) => {
     const q = search.toLowerCase();
@@ -451,6 +542,26 @@ export default function ManagerAtletiPage() {
                   >
                     <TrendingUp className="size-3.5 text-[#1c00ff]" />
                     <span>Performance</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setAthleteForFutureBookings(atleta);
+                      setFutureBookingsModalOpen(true);
+                      setBookingToCancelFromAtleta(null);
+                      setAtletaProrogaChoice(false);
+                    }}
+                    className="text-xs font-bold h-8 px-2.5 rounded-xl border-blue-200 text-blue-700 bg-blue-50/60 hover:bg-blue-100/80 flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                    title="Visualizza tutte le sessioni/slot prenotati e non ancora svolti"
+                  >
+                    <Calendar className="size-3.5 text-blue-600" />
+                    <span>Sedute Future</span>
+                    {getUpcomingBookingsForAthlete(atleta).length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full bg-blue-600 text-white text-[10px] font-black leading-tight">
+                        {getUpcomingBookingsForAthlete(atleta).length}
+                      </span>
+                    )}
                   </Button>
                   <Button
                     variant="outline"
@@ -1447,6 +1558,212 @@ export default function ManagerAtletiPage() {
               className="flex-1 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white"
             >
               {isDeleting ? "Eliminazione..." : "Sì, Elimina dall'Anagrafica"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE SEDUTE PRENOTATE FUTURE DELL'ATLETA */}
+      <Dialog
+        open={futureBookingsModalOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setFutureBookingsModalOpen(false);
+            setAthleteForFutureBookings(null);
+            setBookingToCancelFromAtleta(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl max-h-[88vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
+              <Calendar className="size-5 text-[#1c00ff]" />
+              Sedute Prenotate Future
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500">
+              Sessioni in programma non ancora svolte per{" "}
+              <strong className="text-zinc-800">
+                {athleteForFutureBookings?.nome} {athleteForFutureBookings?.cognome}
+              </strong>
+            </DialogDescription>
+          </DialogHeader>
+
+          {athleteForFutureBookings && (() => {
+            const upcoming = getUpcomingBookingsForAthlete(athleteForFutureBookings);
+            if (upcoming.length === 0) {
+              return (
+                <div className="py-8 text-center space-y-2">
+                  <div className="size-12 rounded-2xl bg-zinc-100 text-zinc-400 flex items-center justify-center mx-auto">
+                    <Calendar className="size-6" />
+                  </div>
+                  <div className="text-sm font-bold text-zinc-700">Nessuna seduta futura prenotata</div>
+                  <p className="text-xs text-zinc-400 max-w-xs mx-auto">
+                    Questo atleta al momento non ha turni prenotati per oggi o per i prossimi giorni.
+                  </p>
+                </div>
+              );
+            }
+
+            return (
+              <div className="space-y-2.5 my-2">
+                <div className="flex items-center justify-between text-xs px-1 text-zinc-500 font-bold">
+                  <span>Turni programmati</span>
+                  <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-black">
+                    {upcoming.length} {upcoming.length === 1 ? "seduta" : "sedute"}
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  {upcoming.map((bk) => (
+                    <div
+                      key={bk.id}
+                      className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 transition-all flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="size-11 rounded-xl bg-[#1c00ff] text-white flex flex-col items-center justify-center font-black leading-tight shadow-2xs shrink-0">
+                          <Clock className="size-3.5" />
+                          <span className="text-xs">{bk.orario}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-black text-zinc-900 truncate">
+                            {formatGiornoEsteso(bk.data)}
+                          </div>
+                          <div className="text-[11px] text-zinc-500 flex items-center gap-1.5 mt-0.5">
+                            <span className="font-bold text-zinc-700">{bk.attivita || "Landmine Lab"}</span>
+                            <span>•</span>
+                            <span className="text-emerald-700 font-semibold">Confermata</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setBookingToCancelFromAtleta(bk);
+                          setAtletaProrogaChoice(false);
+                        }}
+                        className="text-xs font-bold h-8 px-2.5 rounded-xl border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 shrink-0 cursor-pointer"
+                        title="Annulla o sposta questo slot"
+                      >
+                        Annulla
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Sotto-sezione conferma annullamento slot selezionato con scelta proroga */}
+          {bookingToCancelFromAtleta && (
+            <div className="mt-3 p-4 rounded-2xl bg-red-50/70 border border-red-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-red-900 flex items-center gap-1.5">
+                  <AlertTriangle className="size-4 text-red-600" />
+                  Conferma Annullamento Seduta
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setBookingToCancelFromAtleta(null)}
+                  className="text-xs text-zinc-400 hover:text-zinc-600 font-bold"
+                >
+                  Chiudi
+                </button>
+              </div>
+
+              <div className="text-xs text-zinc-700">
+                Stai annullando lo slot di{" "}
+                <strong>{formatGiornoEsteso(bookingToCancelFromAtleta.data)}</strong> alle ore{" "}
+                <strong>{bookingToCancelFromAtleta.orario}</strong>. 1 credito verrà restituito al wallet dell'atleta.
+              </div>
+
+              <div className="space-y-1.5 pt-1">
+                <label
+                  onClick={() => setAtletaProrogaChoice(false)}
+                  className={`flex items-start gap-2 p-2.5 rounded-xl border text-xs cursor-pointer ${
+                    !atletaProrogaChoice
+                      ? "bg-white border-[#1c00ff] ring-1 ring-[#1c00ff] text-zinc-900 font-bold"
+                      : "bg-white/60 border-zinc-200 text-zinc-600"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="proroga-atleta"
+                    checked={!atletaProrogaChoice}
+                    onChange={() => setAtletaProrogaChoice(false)}
+                    className="mt-0.5 text-[#1c00ff]"
+                  />
+                  <div>
+                    <div className="font-bold">Nessuna proroga (Consigliato per spostamento)</div>
+                    <div className="text-[11px] text-zinc-500 font-normal mt-0.5">
+                      1 credito restituito. Data di scadenza del pacchetto invariata.
+                    </div>
+                  </div>
+                </label>
+
+                <label
+                  onClick={() => setAtletaProrogaChoice(true)}
+                  className={`flex items-start gap-2 p-2.5 rounded-xl border text-xs cursor-pointer ${
+                    atletaProrogaChoice
+                      ? "bg-amber-50 border-amber-500 ring-1 ring-amber-500 text-amber-950 font-bold"
+                      : "bg-white/60 border-zinc-200 text-zinc-600"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="proroga-atleta"
+                    checked={atletaProrogaChoice}
+                    onChange={() => setAtletaProrogaChoice(true)}
+                    className="mt-0.5 text-amber-600"
+                  />
+                  <div>
+                    <div className="font-bold">Proroga scadenza carnet (+7 giorni)</div>
+                    <div className="text-[11px] text-amber-800 font-normal mt-0.5">
+                      Posticipa di 1 settimana la scadenza dei crediti (recupero straordinario).
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              <div className="flex gap-2 pt-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setBookingToCancelFromAtleta(null)}
+                  className="flex-1 rounded-xl h-8 text-xs font-bold"
+                >
+                  Annulla operazione
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => {
+                    cancellaDaAtletaMutation.mutate({
+                      id: bookingToCancelFromAtleta.id,
+                      proroga: atletaProrogaChoice,
+                    });
+                  }}
+                  disabled={cancellaDaAtletaMutation.isPending}
+                  className="flex-1 rounded-xl h-8 text-xs font-black bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                >
+                  {cancellaDaAtletaMutation.isPending ? "Annullamento..." : "Conferma Annulla Seduta"}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="mt-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setFutureBookingsModalOpen(false);
+                setAthleteForFutureBookings(null);
+                setBookingToCancelFromAtleta(null);
+              }}
+              className="w-full rounded-xl"
+            >
+              Chiudi
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -7,6 +7,8 @@ import {
   useEccezioniCalendario,
   useAttivita,
   useRegolePalinsesto,
+  saveDeletedBookingId,
+  isBookingDeleted,
 } from "../lib/useUser";
 import { calcolaSlotPerGiorno } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
@@ -106,6 +108,9 @@ export default function ManagerCalendarPage() {
   const [periodoFine, setPeriodoFine] = useState(selectedDate);
   const [prorogaScadenze, setProrogaScadenze] = useState(true);
 
+  // Modale Eliminazione con Scelta Proroga
+  const [prorogaScadenzaChoice, setProrogaScadenzaChoice] = useState(false);
+
   // Modale Palinsesto & Attività
   const [palinsestoModalOpen, setPalinsestoModalOpen] = useState(false);
 
@@ -119,7 +124,13 @@ export default function ManagerCalendarPage() {
     queryFn: async () => {
       const res = await fetch("/app-api/prenotazioni");
       if (!res.ok) throw new Error("Errore recupero prenotazioni");
-      return res.json();
+      const list: Prenotazione[] = await res.json();
+      return list.filter(
+        (p) =>
+          !isBookingDeleted(p.id) &&
+          (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
+          !p.stato?.startsWith("cancellata")
+      );
     },
     refetchInterval: 10000,
   });
@@ -146,7 +157,13 @@ export default function ManagerCalendarPage() {
 
   // Prenotazioni attive del giorno
   const prenotazioniGiorno = useMemo(() => {
-    return prenotazioni.filter((p) => p.data === selectedDate && p.stato === "confermata");
+    return prenotazioni.filter(
+      (p) =>
+        !isBookingDeleted(p.id) &&
+        p.data === selectedDate &&
+        (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
+        !p.stato?.startsWith("cancellata")
+    );
   }, [prenotazioni, selectedDate]);
 
   // Mutation Nuova Prenotazione Manuale Coach
@@ -188,17 +205,29 @@ export default function ManagerCalendarPage() {
 
   // Mutation Cancellazione Coach
   const cancellaMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const res = await fetch(`/app-api/prenotazioni/${id}`, { method: "DELETE" });
+    mutationFn: async ({ id, proroga }: { id: string; proroga: boolean }) => {
+      saveDeletedBookingId(id);
+      queryClient.setQueryData<Prenotazione[]>(["prenotazioni"], (old) =>
+        (old || []).filter((p) => p.id !== id)
+      );
+      const res = await fetch(`/app-api/prenotazioni/${id}?proroga=${proroga}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ proroga }),
+      });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Errore cancellazione");
       return json;
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
+      saveDeletedBookingId(variables.id);
+      queryClient.setQueryData<Prenotazione[]>(["prenotazioni"], (old) =>
+        (old || []).filter((p) => p.id !== variables.id)
+      );
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
-      toast.success("Prenotazione annullata dal Coach. Credito ripristinato.");
+      toast.success(data.messaggio || "Prenotazione annullata dal Coach. Credito ripristinato.");
 
       if (selectedBooking) {
         setNotifyModalData({
@@ -874,17 +903,25 @@ export default function ManagerCalendarPage() {
       </Dialog>
 
       {/* MODALE DETTAGLIO PRENOTAZIONE */}
-      <Dialog open={!!selectedBooking} onOpenChange={(open) => !open && setSelectedBooking(null)}>
-        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+      <Dialog
+        open={!!selectedBooking}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedBooking(null);
+            setProrogaScadenzaChoice(false);
+          }
+        }}
+      >
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
               <User className="size-5 text-[#1c00ff]" />
-              Dettaglio Seduta
+              Dettaglio & Gestione Seduta
             </DialogTitle>
           </DialogHeader>
 
           {selectedBooking && (
-            <div className="my-3 space-y-2 text-xs">
+            <div className="my-3 space-y-3 text-xs">
               <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5">
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Atleta:</span>
@@ -912,22 +949,90 @@ export default function ManagerCalendarPage() {
                   </strong>
                 </div>
               </div>
+
+              {/* OPZIONI PROROGA SCADENZA CARNET (NESSUN AUTOMATISMO) */}
+              <div className="p-3.5 rounded-2xl bg-zinc-50/80 border border-zinc-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-zinc-900 text-xs">Proroga Scadenza Carnet</span>
+                  <span className="text-[10px] text-zinc-500 font-bold">Controllo Coach</span>
+                </div>
+                <p className="text-[11px] text-zinc-500 leading-tight">
+                  Seleziona l'azione desiderata per la data di scadenza del pacchetto dell'atleta:
+                </p>
+                <div className="space-y-1.5 pt-0.5">
+                  <label
+                    onClick={() => setProrogaScadenzaChoice(false)}
+                    className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
+                      !prorogaScadenzaChoice
+                        ? "bg-white border-[#1c00ff] ring-1 ring-[#1c00ff] shadow-2xs text-zinc-900"
+                        : "bg-white/60 border-zinc-200 text-zinc-600 hover:bg-white"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="proroga-choice"
+                      checked={!prorogaScadenzaChoice}
+                      onChange={() => setProrogaScadenzaChoice(false)}
+                      className="mt-0.5 text-[#1c00ff]"
+                    />
+                    <div>
+                      <div className="font-black text-zinc-900">Nessuna proroga (Consigliato per spostamento)</div>
+                      <div className="text-[11px] text-zinc-500 mt-0.5">
+                        1 credito ripristinato al wallet per riprenotare. La scadenza del pacchetto resta <strong>invariata</strong>.
+                      </div>
+                    </div>
+                  </label>
+
+                  <label
+                    onClick={() => setProrogaScadenzaChoice(true)}
+                    className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
+                      prorogaScadenzaChoice
+                        ? "bg-amber-50/70 border-amber-500 ring-1 ring-amber-500 shadow-2xs text-amber-950 font-bold"
+                        : "bg-white/60 border-zinc-200 text-zinc-600 hover:bg-white"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="proroga-choice"
+                      checked={prorogaScadenzaChoice}
+                      onChange={() => setProrogaScadenzaChoice(true)}
+                      className="mt-0.5 text-amber-600"
+                    />
+                    <div>
+                      <div className="font-black text-amber-900">Proroga scadenza carnet (+7 giorni)</div>
+                      <div className="text-[11px] text-amber-800 mt-0.5">
+                        1 credito ripristinato e la data di scadenza viene posticipata di 7 giorni (per recupero straordinario).
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
             </div>
           )}
 
           <DialogFooter className="flex gap-2">
-            <Button variant="outline" onClick={() => setSelectedBooking(null)} className="flex-1 rounded-xl">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSelectedBooking(null);
+                setProrogaScadenzaChoice(false);
+              }}
+              className="flex-1 rounded-xl"
+            >
               Chiudi
             </Button>
             <Button
               variant="destructive"
               onClick={() => {
                 if (selectedBooking) {
-                  cancellaMutation.mutate(selectedBooking.id);
+                  cancellaMutation.mutate({
+                    id: selectedBooking.id,
+                    proroga: prorogaScadenzaChoice,
+                  });
                 }
               }}
               disabled={cancellaMutation.isPending}
-              className="flex-1 rounded-xl font-bold bg-red-600 hover:bg-red-700 text-white"
+              className="flex-1 rounded-xl font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
             >
               {cancellaMutation.isPending ? "Annullamento..." : "Annulla Seduta"}
             </Button>
