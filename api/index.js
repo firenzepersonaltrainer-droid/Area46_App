@@ -14787,7 +14787,12 @@ var demo_data_default = {
     "usr-bw-1953606",
     "a46firenze@gmail.com",
     "usr-bw-1953979",
-    "vallycamera@hotmail.it"
+    "vallycamera@hotmail.it",
+    "usr-atleta-1790769219841",
+    "usr-atleta-1790769219924",
+    "marco.verdi.test@area46lab.it",
+    "usr-atleta-1790768664074",
+    "mario.rossi@example.com"
   ]
 };
 
@@ -14975,6 +14980,15 @@ async function tryLoadConfigFromGoogleDrive() {
       db.profili_utenti = (db.profili_utenti || []).filter(
         (p) => !db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())
       );
+    }
+    if (driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
+      const existingMap = new Map((db.profili_utenti || []).map((p) => [p.id, p]));
+      for (const p of driveDb.profili_utenti) {
+        if (!db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())) {
+          existingMap.set(p.id, { ...existingMap.get(p.id) || {}, ...p });
+        }
+      }
+      db.profili_utenti = Array.from(existingMap.values());
     }
     if (driveDb.prenotazioni_cancellate && Array.isArray(driveDb.prenotazioni_cancellate)) {
       db.prenotazioni_cancellate = Array.from(
@@ -15347,15 +15361,27 @@ async function handleLocalApi(req, res, next) {
   }
   if (pathname === "/app-api/profili" && method === "POST") {
     const creditiIniziali = Number(parsedBody.crediti ?? 0);
+    const email = (parsedBody.email || `atleta${Date.now()}@area46lab.it`).trim().toLowerCase();
+    const existingId = parsedBody.id || `usr-atleta-${Date.now()}`;
+    if (db.utenti_cancellati && Array.isArray(db.utenti_cancellati)) {
+      db.utenti_cancellati = db.utenti_cancellati.filter(
+        (u) => u !== existingId && u.toLowerCase() !== email
+      );
+    }
+    db.profili_utenti = db.profili_utenti || [];
+    const existingIndex = db.profili_utenti.findIndex(
+      (p) => p.id && p.id === existingId || p.email && p.email.toLowerCase() === email
+    );
     const nuovo = {
-      id: `usr-atleta-${Date.now()}`,
-      nome: parsedBody.nome || "Nuovo",
-      cognome: parsedBody.cognome || "Atleta",
-      email: parsedBody.email || `atleta${Date.now()}@example.com`,
-      telefono: parsedBody.telefono || "",
-      codice_fiscale: parsedBody.codice_fiscale || "",
-      indirizzo: parsedBody.indirizzo || "",
-      ruolo: "atleta",
+      ...existingIndex >= 0 ? db.profili_utenti[existingIndex] : {},
+      id: existingIndex >= 0 ? db.profili_utenti[existingIndex].id : existingId,
+      nome: (parsedBody.nome || "Nuovo").trim(),
+      cognome: (parsedBody.cognome || "Atleta").trim(),
+      email,
+      telefono: (parsedBody.telefono || "").trim(),
+      codice_fiscale: (parsedBody.codice_fiscale || "").trim(),
+      indirizzo: (parsedBody.indirizzo || "").trim(),
+      ruolo: parsedBody.ruolo || "atleta",
       crediti: creditiIniziali,
       shared_wallet_with: parsedBody.shared_wallet_with?.trim() || null,
       tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
@@ -15363,10 +15389,13 @@ async function handleLocalApi(req, res, next) {
       data_scadenza_crediti: parsedBody.data_scadenza_crediti || new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10),
       data_ultimo_accesso: (/* @__PURE__ */ new Date()).toISOString(),
       note_coach: parsedBody.note_coach || "",
-      created_at: (/* @__PURE__ */ new Date()).toISOString()
+      created_at: existingIndex >= 0 && db.profili_utenti[existingIndex].created_at ? db.profili_utenti[existingIndex].created_at : (/* @__PURE__ */ new Date()).toISOString()
     };
-    db.profili_utenti = db.profili_utenti || [];
-    db.profili_utenti.push(nuovo);
+    if (existingIndex >= 0) {
+      db.profili_utenti[existingIndex] = nuovo;
+    } else {
+      db.profili_utenti.push(nuovo);
+    }
     if (creditiIniziali !== 0) {
       addMovimentoCrediti(db, {
         atleta_id: nuovo.id,
@@ -15375,11 +15404,12 @@ async function handleLocalApi(req, res, next) {
         tipo: creditiIniziali > 0 ? "bonus_regalo" : "penalty",
         delta_crediti: creditiIniziali,
         saldo_risultante: creditiIniziali,
-        motivazione: "Crediti iniziali configurati in anagrafica",
+        motivazione: "Crediti configurati in anagrafica",
         operatore: "coach"
       });
     }
     saveData(db);
+    await syncDataToGoogleDrive(db);
     res.statusCode = 201;
     return res.end(JSON.stringify(nuovo));
   }
@@ -15450,6 +15480,7 @@ async function handleLocalApi(req, res, next) {
     }
     profilo.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     saveData(db);
+    await syncDataToGoogleDrive(db);
     return res.end(JSON.stringify(profilo));
   }
   const atletaDeleteMatch = pathname.match(/^\/app-api\/(?:atleti|profili)\/([a-zA-Z0-9_@.-]+)$/);

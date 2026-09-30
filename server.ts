@@ -606,7 +606,7 @@ app.get("/app-api/profili", async (c) => {
 app.post("/app-api/profili", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const body = await c.req.json();
-  const id = `usr-atleta-${Date.now()}`;
+  const id = body.id || `usr-atleta-${Date.now()}`;
   const rows = await sql`
     INSERT INTO profili_utenti (
       id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach, shared_wallet_with
@@ -614,6 +614,18 @@ app.post("/app-api/profili", async (c) => {
       ${id}, ${body.email}, ${body.nome}, ${body.cognome}, ${body.telefono || null}, ${body.codice_fiscale || null},
       ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}, ${body.shared_wallet_with || null}
     )
+    ON CONFLICT (email) DO UPDATE SET
+      nome = EXCLUDED.nome,
+      cognome = EXCLUDED.cognome,
+      telefono = COALESCE(EXCLUDED.telefono, profili_utenti.telefono),
+      codice_fiscale = COALESCE(EXCLUDED.codice_fiscale, profili_utenti.codice_fiscale),
+      indirizzo = COALESCE(EXCLUDED.indirizzo, profili_utenti.indirizzo),
+      crediti = EXCLUDED.crediti,
+      tempo_cancellazione_ore = EXCLUDED.tempo_cancellazione_ore,
+      data_scadenza_crediti = COALESCE(EXCLUDED.data_scadenza_crediti, profili_utenti.data_scadenza_crediti),
+      note_coach = COALESCE(EXCLUDED.note_coach, profili_utenti.note_coach),
+      shared_wallet_with = EXCLUDED.shared_wallet_with,
+      updated_at = NOW()
     RETURNING *
   `;
   return c.json(rows[0], 201);

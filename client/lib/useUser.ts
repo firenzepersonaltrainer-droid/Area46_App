@@ -255,9 +255,33 @@ export function useProfili() {
   const { data: profili = [], isLoading, refetch } = useQuery<UserProfile[]>({
     queryKey: ["profili"],
     queryFn: async () => {
-      const res = await fetch("/app-api/profili");
-      if (!res.ok) throw new Error("Errore recupero profili");
-      const list: UserProfile[] = await res.json();
+      let list: UserProfile[] = [];
+      try {
+        const res = await fetch("/app-api/profili");
+        if (res.ok) {
+          list = await res.json();
+        }
+      } catch (e) {
+        console.error("Errore fetch profili:", e);
+      }
+
+      // Recupera atleti custom salvati localmente per resilienza Vercel / cold start
+      const localCustom = getCustomAthletes();
+      for (const custom of localCustom) {
+        const exists = list.some(
+          (p) => p.id === custom.id || p.email?.toLowerCase().trim() === custom.email?.toLowerCase().trim()
+        );
+        if (!exists) {
+          list.push(custom);
+          // Auto-reidratazione backend asincrona
+          fetch("/app-api/profili", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(custom),
+          }).catch(() => {});
+        }
+      }
+
       return list.filter((p) => !isAthleteDeleted(p.id) && !isAthleteDeleted(p.email));
     },
   });
@@ -307,13 +331,36 @@ export function useProfili() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profilo),
       });
-      if (!res.ok) throw new Error("Errore salvataggio profilo");
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Errore salvataggio profilo");
+      }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (savedUser: UserProfile) => {
+      if (savedUser && savedUser.id) {
+        saveCustomAthleteLocally(savedUser);
+        unmarkAthleteDeleted(savedUser.id);
+        if (savedUser.email) unmarkAthleteDeleted(savedUser.email);
+
+        queryClient.setQueryData<UserProfile[]>(["profili"], (old = []) => {
+          const idx = old.findIndex(
+            (p) => p.id === savedUser.id || p.email?.toLowerCase().trim() === savedUser.email?.toLowerCase().trim()
+          );
+          if (idx >= 0) {
+            const next = [...old];
+            next[idx] = { ...next[idx], ...savedUser };
+            return next;
+          }
+          return [...old, savedUser];
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
       toast.success("Profilo salvato correttamente!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore durante il salvataggio del profilo");
     },
   });
 
@@ -356,6 +403,7 @@ export function useProfili() {
   const eliminaAtleta = useMutation({
     mutationFn: async (idOrEmail: string) => {
       saveDeletedAthleteId(idOrEmail);
+      removeCustomAthleteLocally(idOrEmail);
       queryClient.setQueryData<UserProfile[]>(["profili"], (old) =>
         (old || []).filter(
           (p) => p.id !== idOrEmail && p.email?.toLowerCase() !== idOrEmail.toLowerCase()
@@ -372,6 +420,7 @@ export function useProfili() {
     },
     onSuccess: (_, idOrEmail) => {
       saveDeletedAthleteId(idOrEmail);
+      removeCustomAthleteLocally(idOrEmail);
       queryClient.setQueryData<UserProfile[]>(["profili"], (old) =>
         (old || []).filter(
           (p) => p.id !== idOrEmail && p.email?.toLowerCase() !== idOrEmail.toLowerCase()
@@ -617,10 +666,73 @@ export function saveDeletedAthleteId(idOrEmail: string) {
   }
 }
 
+export function unmarkAthleteDeleted(idOrEmail?: string) {
+  if (typeof window === "undefined" || !idOrEmail) return;
+  try {
+    const current = getDeletedAthleteIds();
+    const val = idOrEmail.toLowerCase().trim();
+    const updated = current.filter((x) => x !== val);
+    localStorage.setItem(DELETED_ATHLETES_STORAGE_KEY, JSON.stringify(updated));
+  } catch {
+    // ignore
+  }
+}
+
+export const CUSTOM_ATHLETES_STORAGE_KEY = "area46_custom_athletes_v1";
+
+export function getCustomAthletes(): UserProfile[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(CUSTOM_ATHLETES_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveCustomAthleteLocally(atleta: UserProfile) {
+  if (typeof window === "undefined" || !atleta) return;
+  try {
+    const current = getCustomAthletes();
+    const existingIndex = current.findIndex(
+      (a) => a.id === atleta.id || a.email?.toLowerCase().trim() === atleta.email?.toLowerCase().trim()
+    );
+    if (existingIndex >= 0) {
+      current[existingIndex] = { ...current[existingIndex], ...atleta };
+    } else {
+      current.push(atleta);
+    }
+    localStorage.setItem(CUSTOM_ATHLETES_STORAGE_KEY, JSON.stringify(current));
+    if (atleta.id) unmarkAthleteDeleted(atleta.id);
+    if (atleta.email) unmarkAthleteDeleted(atleta.email);
+  } catch {
+    // ignore
+  }
+}
+
+export function removeCustomAthleteLocally(idOrEmail: string) {
+  if (typeof window === "undefined" || !idOrEmail) return;
+  try {
+    const current = getCustomAthletes();
+    const val = idOrEmail.toLowerCase().trim();
+    const filtered = current.filter(
+      (a) => a.id !== val && a.email?.toLowerCase().trim() !== val
+    );
+    localStorage.setItem(CUSTOM_ATHLETES_STORAGE_KEY, JSON.stringify(filtered));
+  } catch {
+    // ignore
+  }
+}
+
 export function isAthleteDeleted(idOrEmail?: string): boolean {
   if (!idOrEmail) return false;
-  const deleted = getDeletedAthleteIds();
   const val = idOrEmail.toLowerCase().trim();
+  // Se l'atleta è nei custom athletes salvati/attivi, non è cancellato
+  const custom = getCustomAthletes();
+  if (custom.some((c) => c.id === val || c.email?.toLowerCase().trim() === val)) {
+    return false;
+  }
+  const deleted = getDeletedAthleteIds();
   return deleted.includes(val);
 }
 

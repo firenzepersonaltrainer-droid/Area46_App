@@ -318,12 +318,28 @@ export default function ManagerAtletiPage() {
   };
 
   const handleSaveAnagrafica = async () => {
-    if (!editForm.nome || !editForm.cognome) {
+    if (!editForm.nome?.trim() || !editForm.cognome?.trim()) {
       toast.error("Nome e Cognome sono obbligatori");
       return;
     }
+    const cleanNome = editForm.nome.trim();
+    const cleanCognome = editForm.cognome.trim();
+    const fallbackEmail = `${cleanNome.toLowerCase().replace(/[^a-z0-9]/g, "")}.${cleanCognome.toLowerCase().replace(/[^a-z0-9]/g, "")}${Date.now().toString().slice(-4)}@area46lab.it`;
+    const cleanEmail = editForm.email?.trim() ? editForm.email.trim().toLowerCase() : fallbackEmail;
+
+    const payload: any = {
+      ...editForm,
+      nome: cleanNome,
+      cognome: cleanCognome,
+      email: cleanEmail,
+      ruolo: "atleta",
+      crediti: Number(editForm.crediti || 0),
+      tempo_cancellazione_ore: Number(editForm.tempo_cancellazione_ore || 24),
+      tempo_anticipo_prenotazione_ore: Number(editForm.tempo_anticipo_prenotazione_ore || 24),
+    };
+
     try {
-      await salvaProfilo(editForm);
+      await salvaProfilo(payload);
       setAnagraficaModalOpen(false);
     } catch {
       // toast già gestito da hook
