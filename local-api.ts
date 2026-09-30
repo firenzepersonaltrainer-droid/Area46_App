@@ -255,33 +255,76 @@ export function getWalletOwner(atleta: any, database: any) {
   return atleta;
 }
 
-export function getCurrentUser(database: any) {
-  if (database.active_user_id === null) {
-    return null;
-  }
-  const activeId = database.active_user_id || "usr-atleta-01";
-  const user = (database.profili_utenti || []).find((u: any) => u.id === activeId);
-  if (user) {
-    const walletOwner = getWalletOwner(user, database);
-    const isShared = walletOwner && walletOwner.id !== user.id;
-    return {
-      ...user,
-      name: `${user.nome} ${user.cognome}`.trim(),
-      crediti: isShared ? walletOwner.crediti : user.crediti,
-      data_scadenza_crediti: isShared ? walletOwner.data_scadenza_crediti : user.data_scadenza_crediti,
-      is_shared_wallet: isShared,
-      shared_master_nome: isShared ? `${walletOwner.nome} ${walletOwner.cognome}`.trim() : undefined,
-    };
-  }
+function parseCookies(cookieHeader: string | undefined): Record<string, string> {
+  const list: Record<string, string> = {};
+  if (!cookieHeader) return list;
+  cookieHeader.split(";").forEach((cookie) => {
+    const parts = cookie.split("=");
+    const name = parts[0]?.trim();
+    if (!name) return;
+    const value = parts.slice(1).join("=").trim();
+    list[name] = decodeURIComponent(value);
+  });
+  return list;
+}
+
+export function getHydratedUser(user: any, database: any) {
+  if (!user) return null;
+  const walletOwner = getWalletOwner(user, database);
+  const isShared = walletOwner && walletOwner.id !== user.id;
+  const partners = (database.profili_utenti || []).filter(
+    (other: any) =>
+      other.id !== user.id &&
+      (other.shared_wallet_with === user.id ||
+        other.shared_wallet_with?.toLowerCase() === user.email?.toLowerCase())
+  );
   return {
-    id: "usr-coach-01",
-    email: "firenzepersonaltrainer@gmail.com",
-    nome: "Coach",
-    cognome: "Area46",
-    name: "Coach Area46",
-    ruolo: "manager",
-    crediti: 999,
+    ...user,
+    name: `${user.nome} ${user.cognome}`.trim(),
+    crediti: isShared ? walletOwner.crediti : user.crediti,
+    data_scadenza_crediti: isShared ? walletOwner.data_scadenza_crediti : user.data_scadenza_crediti,
+    is_shared_wallet: isShared,
+    shared_master_nome: isShared ? `${walletOwner.nome} ${walletOwner.cognome}`.trim() : undefined,
+    is_wallet_master: partners.length > 0,
+    shared_partners_count: partners.length,
+    shared_partner_names: partners.map((x: any) => `${x.nome} ${x.cognome}`.trim()),
   };
+}
+
+export function getCurrentUser(reqOrDb: any, maybeDb?: any) {
+  const req = maybeDb ? reqOrDb : null;
+  const database = maybeDb || reqOrDb;
+
+  let candidate: string | null = null;
+
+  if (req && req.headers) {
+    const headerUser =
+      req.headers["x-area46-user"] ||
+      req.headers["x-user-id"] ||
+      (typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ")
+        ? req.headers.authorization.slice(7)
+        : null);
+
+    const cookies = parseCookies(req.headers.cookie);
+    const cookieUser = cookies["area46_user_id"] || cookies["area46_user_email"];
+
+    candidate = (headerUser || cookieUser || "").trim() || null;
+  }
+
+  // 1. Identificativo presente nella sessione del browser (header o cookie)
+  if (candidate) {
+    const user = (database.profili_utenti || []).find(
+      (u: any) =>
+        u.id === candidate ||
+        u.email?.toLowerCase() === candidate.toLowerCase()
+    );
+    if (user) {
+      return getHydratedUser(user, database);
+    }
+  }
+
+  // IMPORTANTE: Se non vi è sessione (finestra anonima/incognito o logout), restituire rigorosamente null.
+  return null;
 }
 
 function addMovimentoCrediti(
@@ -380,7 +423,7 @@ export async function handleLocalApi(
   };
 
   const { parsedBody, rawBody } = await getBody();
-  const currentUser = getCurrentUser(db);
+  const currentUser = getCurrentUser(req, db);
 
     // ─────────────────────────────────────────────────────────────────────────
     // AUTH & PROFILI UTENTI
@@ -393,8 +436,10 @@ export async function handleLocalApi(
 
     // POST /app-api/auth/logout (Disconnessione Utente)
     if (pathname === "/app-api/auth/logout" && method === "POST") {
-      db.active_user_id = null;
-      saveData(db);
+      res.setHeader(
+        "Set-Cookie",
+        "area46_user_id=; Path=/; Max-Age=0; SameSite=Lax"
+      );
       return res.end(JSON.stringify({ ok: true, messaggio: "Disconnessione effettuata." }));
     }
 
@@ -409,10 +454,6 @@ export async function handleLocalApi(
         return res.end(JSON.stringify({ error: "Inserisci un indirizzo email valido." }));
       }
 
-      const found = (db.profili_utenti || []).find(
-        (u: any) => u.email.toLowerCase() === email
-      );
-
       if (requestOtpOnly) {
         return res.end(
           JSON.stringify({
@@ -423,33 +464,86 @@ export async function handleLocalApi(
         );
       }
 
-      // Se code non fornito e non requestOtpOnly, oppure se code valido (in demo accetta 464646 o qualunque codice a 6 cifre)
+      const found = (db.profili_utenti || []).find(
+        (u: any) => u.email?.toLowerCase() === email
+      );
+
       if (found) {
-        db.active_user_id = found.id;
+        if (db.utenti_cancellati && Array.isArray(db.utenti_cancellati)) {
+          db.utenti_cancellati = db.utenti_cancellati.filter(
+            (u: string) => u !== found.id && u.toLowerCase() !== email
+          );
+        }
         found.data_ultimo_accesso = new Date().toISOString();
         saveData(db);
-        return res.end(JSON.stringify({ ok: true, user: getCurrentUser(db) }));
+        res.setHeader(
+          "Set-Cookie",
+          `area46_user_id=${encodeURIComponent(found.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+        );
+        return res.end(JSON.stringify({ ok: true, user: getHydratedUser(found, db) }));
       }
 
-      // Nuovo atleta non ancora censito (migrazione o nuovo ingresso)
+      if (email === "firenzepersonaltrainer@gmail.com") {
+        if (db.utenti_cancellati && Array.isArray(db.utenti_cancellati)) {
+          db.utenti_cancellati = db.utenti_cancellati.filter(
+            (u: string) => u !== "usr-coach-01" && u.toLowerCase() !== email
+          );
+        }
+        const coach = {
+          id: "usr-coach-01",
+          email: "firenzepersonaltrainer@gmail.com",
+          nome: "Stefano",
+          cognome: "Tronconi",
+          ruolo: "manager",
+          crediti: 999,
+          data_ultimo_accesso: new Date().toISOString(),
+        };
+        db.profili_utenti = db.profili_utenti || [];
+        db.profili_utenti.push(coach);
+        saveData(db);
+        await syncDataToGoogleDrive(db);
+        res.setHeader(
+          "Set-Cookie",
+          `area46_user_id=${encodeURIComponent(coach.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+        );
+        return res.end(JSON.stringify({ ok: true, user: getHydratedUser(coach, db) }));
+      }
+
+      // Nuovo atleta (es. seconda email di Stefano per testare o nuovo iscritto)
+      const cleanName = email.split("@")[0].replace(/[._-]/g, " ");
+      const parts = cleanName.split(" ").filter(Boolean);
+      const nome = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1) : "Nuovo";
+      const cognome = parts.slice(1).map((p: string) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ") || "Atleta";
+
       const nuovoAtleta = {
-        id: `usr-${Date.now()}`,
+        id: `usr-atleta-${Date.now()}`,
         email: email,
-        nome: email.split("@")[0],
-        cognome: "",
-        name: email.split("@")[0],
-        ruolo: email === "firenzepersonaltrainer@gmail.com" ? "manager" : "atleta",
+        nome: nome,
+        cognome: cognome,
+        name: `${nome} ${cognome}`.trim(),
+        ruolo: "atleta",
         crediti: 0,
         tempo_cancellazione_ore: 24,
+        tempo_anticipo_prenotazione_ore: 24,
         data_scadenza_crediti: null,
         tipo_abbonamento: "standard",
         data_ultimo_accesso: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       };
+      if (db.utenti_cancellati && Array.isArray(db.utenti_cancellati)) {
+        db.utenti_cancellati = db.utenti_cancellati.filter(
+          (u: string) => u !== nuovoAtleta.id && u.toLowerCase() !== email
+        );
+      }
       db.profili_utenti = db.profili_utenti || [];
       db.profili_utenti.push(nuovoAtleta);
-      db.active_user_id = nuovoAtleta.id;
       saveData(db);
-      return res.end(JSON.stringify({ ok: true, user: getCurrentUser(db), isNew: true }));
+      await syncDataToGoogleDrive(db);
+      res.setHeader(
+        "Set-Cookie",
+        `area46_user_id=${encodeURIComponent(nuovoAtleta.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+      );
+      return res.end(JSON.stringify({ ok: true, user: getHydratedUser(nuovoAtleta, db), isNew: true }));
     }
 
     // POST /app-api/auth/oauth-login (Opzione C: Accedi con Google o Apple)
@@ -463,8 +557,14 @@ export async function handleLocalApi(
         return res.end(JSON.stringify({ error: "Email account social non valida." }));
       }
 
+      if (db.utenti_cancellati && Array.isArray(db.utenti_cancellati)) {
+        db.utenti_cancellati = db.utenti_cancellati.filter(
+          (u: string) => u.toLowerCase() !== email
+        );
+      }
+
       let found = (db.profili_utenti || []).find(
-        (u: any) => u.email.toLowerCase() === email
+        (u: any) => u.email?.toLowerCase() === email
       );
 
       if (!found) {
@@ -480,28 +580,38 @@ export async function handleLocalApi(
           data_scadenza_crediti: null,
           tipo_abbonamento: "standard",
           data_ultimo_accesso: new Date().toISOString(),
+          created_at: new Date().toISOString(),
         };
         db.profili_utenti = db.profili_utenti || [];
         db.profili_utenti.push(found);
+        saveData(db);
+        await syncDataToGoogleDrive(db);
+      } else {
+        found.data_ultimo_accesso = new Date().toISOString();
+        saveData(db);
       }
 
-      db.active_user_id = found.id;
-      found.data_ultimo_accesso = new Date().toISOString();
-      saveData(db);
-      return res.end(JSON.stringify({ ok: true, user: getCurrentUser(db) }));
+      res.setHeader(
+        "Set-Cookie",
+        `area46_user_id=${encodeURIComponent(found.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+      );
+      return res.end(JSON.stringify({ ok: true, user: getHydratedUser(found, db) }));
     }
 
     // POST /app-api/auth/switch-user (Per switch rapido Coach / Atleta in test)
     if (pathname === "/app-api/auth/switch-user" && method === "POST") {
       const targetId = parsedBody.userId;
       const found = (db.profili_utenti || []).find(
-        (u: any) => u.id === targetId || u.email === targetId
+        (u: any) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase()
       );
       if (found) {
-        db.active_user_id = found.id;
         found.data_ultimo_accesso = new Date().toISOString();
         saveData(db);
-        return res.end(JSON.stringify(getCurrentUser(db)));
+        res.setHeader(
+          "Set-Cookie",
+          `area46_user_id=${encodeURIComponent(found.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+        );
+        return res.end(JSON.stringify(getHydratedUser(found, db)));
       }
       res.statusCode = 404;
       return res.end(JSON.stringify({ error: "Utente non trovato" }));

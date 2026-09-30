@@ -22,19 +22,20 @@ export interface SessionClient {
   get: () => Promise<AppUser>;
 }
 
-export const DEMO_USER: AppUser = {
-  id: "usr-coach-01",
-  email: "firenzepersonaltrainer@gmail.com",
-  name: "Coach Area46",
-  nome: "Coach",
-  cognome: "Area46",
-  ruolo: "manager",
-  crediti: 999,
-};
-
-export function auth(_c?: any): AuthClient {
+export function auth(c?: any): AuthClient {
+  let user: AppUser | null = null;
+  if (c && c.req) {
+    const headerId = c.req.header("x-area46-user") || c.req.header("x-user-id");
+    const cookieHeader = c.req.header("cookie");
+    const match = cookieHeader?.match(/area46_user_id=([^;]+)/);
+    const cookieId = match ? decodeURIComponent(match[1]) : null;
+    const candidate = headerId || cookieId;
+    if (candidate) {
+      user = { id: candidate, email: candidate, name: candidate };
+    }
+  }
   return {
-    user: () => DEMO_USER,
+    user: () => user,
   };
 }
 
@@ -43,15 +44,16 @@ export const session: SessionClient = {
     try {
       const res = await fetch("/app-api/auth/current-user");
       if (res.ok) {
-        return await res.json();
+        const data = await res.json();
+        return data || null;
       }
     } catch {
       // fallback in caso di SSR o mancata connettività
     }
-    return DEMO_USER;
+    return null as any;
   },
 };
 
 export function signOut(): void {
-  console.log("Area46 Demo mode: sessione attiva.");
+  // Session sign out
 }

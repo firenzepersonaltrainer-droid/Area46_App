@@ -14287,7 +14287,7 @@
       "ruolo": "manager",
       "crediti": 998,
       "data_scadenza_crediti": "2099-12-31",
-      "data_ultimo_accesso": "2026-09-30T09:38:18.917Z",
+      "data_ultimo_accesso": "2026-09-30T12:19:40.950Z",
       "note_coach": "Head Coach & Amministratore Lab",
       "tempo_cancellazione_ore": 12,
       "name": "Stefano Tronconi",
@@ -14613,7 +14613,7 @@
     "TX-46-454580",
     "TX-46-641672"
   ],
-  "active_user_id": "usr-coach-01",
+  "active_user_id": null,
   "movimenti_crediti": [
     {
       "id": "mov-1790761201851-390",
@@ -14780,11 +14780,6 @@
     "usr-bw-1953606",
     "a46firenze@gmail.com",
     "usr-bw-1953979",
-    "vallycamera@hotmail.it",
-    "usr-atleta-1790769219841",
-    "usr-atleta-1790769219924",
-    "marco.verdi.test@area46lab.it",
-    "usr-atleta-1790768664074",
-    "mario.rossi@example.com"
+    "vallycamera@hotmail.it"
   ]
 }

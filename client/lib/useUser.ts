@@ -89,22 +89,53 @@ export interface LabConfig {
   stripe_collegato?: boolean;
 }
 
+export function getActiveUserId(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("area46_active_user_id_v1");
+}
+
+export function setActiveUserId(id: string | null) {
+  if (typeof window === "undefined") return;
+  if (id) {
+    localStorage.setItem("area46_active_user_id_v1", id);
+    document.cookie = `area46_user_id=${encodeURIComponent(id)}; path=/; max-age=31536000; SameSite=Lax`;
+  } else {
+    localStorage.removeItem("area46_active_user_id_v1");
+    localStorage.removeItem("area46_active_user_email_v1");
+    document.cookie = `area46_user_id=; path=/; max-age=0; SameSite=Lax`;
+  }
+}
+
 export function useCurrentUser() {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, refetch } = useQuery<UserProfile>({
+  const { data: user, isLoading, refetch } = useQuery<UserProfile | null>({
     queryKey: ["current-user"],
     queryFn: async () => {
       try {
-        const res = await fetch("/app-api/auth/current-user");
-        if (!res.ok) return null as any;
+        const storedId = getActiveUserId();
+        const headers: Record<string, string> = {};
+        if (storedId) {
+          headers["x-area46-user"] = storedId;
+        }
+        const res = await fetch("/app-api/auth/current-user", {
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) return null;
         const ct = res.headers.get("content-type") || "";
         if (!ct.includes("json")) {
-          return null as any;
+          return null;
         }
-        return await res.json();
+        const data = await res.json();
+        if (data && data.id) {
+          setActiveUserId(data.id);
+          return data;
+        }
+        setActiveUserId(null);
+        return null;
       } catch {
-        return null as any;
+        return null;
       }
     },
     staleTime: 1000 * 30, // 30 sec
@@ -126,12 +157,16 @@ export function useCurrentUser() {
       const res = await fetch("/app-api/auth/switch-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ userId }),
       });
       if (!res.ok) throw new Error("Errore durante il cambio utente");
       return res.json();
     },
     onSuccess: (updatedUser) => {
+      if (updatedUser && updatedUser.id) {
+        setActiveUserId(updatedUser.id);
+      }
       queryClient.setQueryData(["current-user"], updatedUser);
       queryClient.invalidateQueries({ queryKey: ["profili"] });
       queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
@@ -156,11 +191,15 @@ export function useCurrentUser() {
   // Logout
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/app-api/auth/logout", { method: "POST" });
+      const res = await fetch("/app-api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Errore durante il logout");
       return res.json();
     },
     onSuccess: () => {
+      setActiveUserId(null);
       queryClient.setQueryData(["current-user"], null);
       queryClient.invalidateQueries();
       toast.info("Sessione terminata. A presto!");
@@ -186,6 +225,7 @@ export function useCurrentUser() {
       const res = await fetch("/app-api/auth/login-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, code, requestOtpOnly }),
       });
       const data = await res.json();
@@ -194,6 +234,7 @@ export function useCurrentUser() {
     },
     onSuccess: (data) => {
       if (data.user) {
+        setActiveUserId(data.user.id);
         queryClient.setQueryData(["current-user"], data.user);
         queryClient.invalidateQueries();
         toast.success(`Accesso completato: benvenuto ${data.user.nome || data.user.name}!`);
@@ -215,6 +256,7 @@ export function useCurrentUser() {
       const res = await fetch("/app-api/auth/oauth-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ provider, email, name }),
       });
       const data = await res.json();
@@ -223,6 +265,7 @@ export function useCurrentUser() {
     },
     onSuccess: (data) => {
       if (data.user) {
+        setActiveUserId(data.user.id);
         queryClient.setQueryData(["current-user"], data.user);
         queryClient.invalidateQueries();
         toast.success(`Accesso ${data.user.ruolo === "manager" ? "Coach" : "Atleta"} completato!`);

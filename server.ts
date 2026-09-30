@@ -459,6 +459,7 @@ app.get("/app-api/auth/current-user", async (c) => {
 });
 
 app.post("/app-api/auth/logout", async (c) => {
+  c.header("Set-Cookie", "area46_user_id=; Path=/; Max-Age=0; SameSite=Lax");
   return c.json({ ok: true, messaggio: "Disconnessione effettuata." });
 });
 
@@ -484,6 +485,7 @@ app.post("/app-api/auth/login-email", async (c) => {
   if (rows.length > 0) {
     const user = rows[0];
     await sql`UPDATE profili_utenti SET data_ultimo_accesso = NOW() WHERE id = ${user.id}`;
+    c.header("Set-Cookie", `area46_user_id=${encodeURIComponent(user.id)}; Path=/; Max-Age=31536000; SameSite=Lax`);
     return c.json({ ok: true, user: { ...user, name: `${user.nome} ${user.cognome}`.trim() } });
   }
 
@@ -499,6 +501,7 @@ app.post("/app-api/auth/login-email", async (c) => {
     RETURNING *
   `;
   const newUser = inserted[0];
+  c.header("Set-Cookie", `area46_user_id=${encodeURIComponent(newUser.id)}; Path=/; Max-Age=31536000; SameSite=Lax`);
   return c.json({ ok: true, user: { ...newUser, name: newUser.nome }, isNew: true });
 });
 
@@ -517,6 +520,7 @@ app.post("/app-api/auth/oauth-login", async (c) => {
   if (rows.length > 0) {
     const user = rows[0];
     await sql`UPDATE profili_utenti SET data_ultimo_accesso = NOW() WHERE id = ${user.id}`;
+    c.header("Set-Cookie", `area46_user_id=${encodeURIComponent(user.id)}; Path=/; Max-Age=31536000; SameSite=Lax`);
     return c.json({ ok: true, user: { ...user, name: `${user.nome} ${user.cognome}`.trim() } });
   }
 
@@ -534,6 +538,7 @@ app.post("/app-api/auth/oauth-login", async (c) => {
     RETURNING *
   `;
   const newUser = inserted[0];
+  c.header("Set-Cookie", `area46_user_id=${encodeURIComponent(newUser.id)}; Path=/; Max-Age=31536000; SameSite=Lax`);
   return c.json({ ok: true, user: { ...newUser, name: `${newUser.nome} ${newUser.cognome}`.trim() }, isNew: true });
 });
 
@@ -547,6 +552,7 @@ app.post("/app-api/auth/switch-user", async (c) => {
   `;
   if (rows.length === 0) return c.json({ error: "Utente non trovato" }, 404);
   const p = rows[0];
+  c.header("Set-Cookie", `area46_user_id=${encodeURIComponent(p.id)}; Path=/; Max-Age=31536000; SameSite=Lax`);
   return c.json({ ...p, name: `${p.nome} ${p.cognome}`.trim() });
 });
 
