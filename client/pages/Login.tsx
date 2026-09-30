@@ -84,13 +84,11 @@ export default function LoginPage() {
   // 3. Social Login (Opzione C: Google / Apple)
   const handleSocialLogin = async (provider: "google" | "apple", demoEmail?: string, demoName?: string) => {
     try {
-      const emailToUse =
-        demoEmail ||
-        (email.trim()
-          ? email.trim().toLowerCase()
-          : provider === "google"
-          ? "firenzepersonaltrainer@gmail.com"
-          : "daniele.casci@gmail.com");
+      const emailToUse = demoEmail || (email.trim() ? email.trim().toLowerCase() : "");
+      if (!emailToUse || !emailToUse.includes("@")) {
+        toast.error(`Inserisci prima la tua email nel campo per accedere con ${provider === "google" ? "Google" : "Apple"}.`);
+        return;
+      }
       const nameToUse =
         demoName ||
         (emailToUse === "firenzepersonaltrainer@gmail.com"
@@ -290,58 +288,9 @@ export default function LoginPage() {
             <span className="text-[10px] font-bold text-[#1c00ff]">&rarr;</span>
           </button>
 
-          {/* Daniele Casci (Atleta) */}
-          <button
-            type="button"
-            onClick={() => handleSocialLogin("apple", "daniele.casci@gmail.com", "Daniele Casci")}
-            className="w-full p-2.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-left transition-all flex items-center justify-between cursor-pointer"
-          >
-            <div className="flex items-center gap-2">
-              <div className="size-6 rounded-lg bg-[#1c00ff]/10 text-[#1c00ff] flex items-center justify-center font-black text-xs border border-[#1c00ff]/20">
-                <User className="size-3.5 text-[#1c00ff]" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-zinc-900 leading-none">
-                  Daniele Casci (Atleta)
-                </div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">
-                  daniele.casci@gmail.com
-                </div>
-              </div>
-            </div>
-            <span className="text-[10px] font-bold text-[#1c00ff]">&rarr;</span>
-          </button>
-
-          {/* Roberto Sestito (Atleta) */}
-          <button
-            type="button"
-            onClick={() => handleSocialLogin("google", "robertoilario.sestito@gmail.com", "Roberto Sestito")}
-            className="w-full p-2.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-left transition-all flex items-center justify-between cursor-pointer"
-          >
-            <div className="flex items-center gap-2">
-              <div className="size-6 rounded-lg bg-zinc-100 text-zinc-800 flex items-center justify-center font-black text-xs">
-                <User className="size-3.5" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-zinc-900 leading-none">
-                  Roberto Sestito (Atleta)
-                </div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">
-                  robertoilario.sestito@gmail.com
-                </div>
-              </div>
-            </div>
-            <span className="text-[10px] font-bold text-[#1c00ff]">&rarr;</span>
-          </button>
-
-          {/* Altri Atleti Censiti (inclusi profili atleta creati dal coach) */}
+          {/* Atleti Censiti Dinamicamente dall'Anagrafica (se presenti) */}
           {profili
-            .filter(
-              (p) =>
-                p.ruolo === "atleta" &&
-                p.email !== "daniele.casci@gmail.com" &&
-                p.email !== "robertoilario.sestito@gmail.com"
-            )
+            .filter((p) => p.ruolo === "atleta")
             .map((atleta) => (
               <button
                 key={atleta.id}
@@ -356,8 +305,8 @@ export default function LoginPage() {
                 className="w-full p-2.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-left transition-all flex items-center justify-between cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <div className="size-6 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-xs border border-emerald-200">
-                    <User className="size-3.5" />
+                  <div className="size-6 rounded-lg bg-[#1c00ff]/10 text-[#1c00ff] flex items-center justify-center font-black text-xs border border-[#1c00ff]/20">
+                    <User className="size-3.5 text-[#1c00ff]" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-zinc-900 leading-none">
