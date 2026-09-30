@@ -107,6 +107,10 @@ async function getGoogleDriveAccessToken() {
 }
 
 async function syncConfigToGoogleDrive(config: any) {
+  return syncDataToGoogleDrive({ configurazione_lab: config });
+}
+
+async function syncDataToGoogleDrive(fullDb: any) {
   try {
     const token = await getGoogleDriveAccessToken();
     if (!token) return;
@@ -115,11 +119,19 @@ async function syncConfigToGoogleDrive(config: any) {
     });
     if (!resGet.ok) return;
     const driveDb = await resGet.json();
-    driveDb.configurazione_lab = {
-      ...(driveDb.configurazione_lab || {}),
-      ...config,
-      last_cloud_sync: new Date().toISOString(),
-    };
+    if (fullDb.transazioni_pagamenti !== undefined) {
+      driveDb.transazioni_pagamenti = fullDb.transazioni_pagamenti || [];
+    }
+    if (fullDb.transazioni_cancellate !== undefined) {
+      driveDb.transazioni_cancellate = fullDb.transazioni_cancellate || [];
+    }
+    if (fullDb.configurazione_lab) {
+      driveDb.configurazione_lab = {
+        ...(driveDb.configurazione_lab || {}),
+        ...fullDb.configurazione_lab,
+      };
+    }
+    driveDb.last_cloud_sync = new Date().toISOString();
     await fetch(`https://www.googleapis.com/upload/drive/v3/files/${GDRIVE_DEMO_DATA_ID}?uploadType=media`, {
       method: "PATCH",
       headers: {
@@ -147,15 +159,35 @@ async function tryLoadConfigFromGoogleDrive() {
         ...(db.configurazione_lab || {}),
         ...driveDb.configurazione_lab,
       };
-      saveData(db);
     }
+    if (driveDb.transazioni_cancellate && Array.isArray(driveDb.transazioni_cancellate)) {
+      db.transazioni_cancellate = Array.from(
+        new Set([...(db.transazioni_cancellate || []), ...driveDb.transazioni_cancellate, ...FICTITIOUS_TX_IDS])
+      );
+      db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
+        (t: any) => !db.transazioni_cancellate.includes(t.id) && !db.transazioni_cancellate.includes(t.codice_transazione)
+      );
+    }
+    saveData(db);
   } catch {
     // Non-fatal
   }
 }
 tryLoadConfigFromGoogleDrive().catch(() => {});
 
+const FICTITIOUS_TX_IDS = [
+  "TX-46-2026-001",
+  "TX-46-2026-002",
+  "TX-46-2026-003",
+  "TX-46-2026-004",
+  "TX-46-2026-005",
+];
+
 let db = loadData();
+db.transazioni_cancellate = Array.from(new Set([...(db.transazioni_cancellate || []), ...FICTITIOUS_TX_IDS]));
+db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
+  (t: any) => !db.transazioni_cancellate.includes(t.codice_transazione) && !db.transazioni_cancellate.includes(t.id)
+);
 
 export function getCurrentUser(database: any) {
   if (database.active_user_id === null) {
@@ -1837,7 +1869,15 @@ CALENDARIO E PRENOTAZIONI:
 
     // GET /app-api/transazioni
     if (pathname === "/app-api/transazioni" && method === "GET") {
-      return res.end(JSON.stringify(db.transazioni_pagamenti || []));
+      const cancellate: string[] = db.transazioni_cancellate || [];
+      const txs = (db.transazioni_pagamenti || []).filter(
+        (t: any) =>
+          !cancellate.includes(t.id) &&
+          !cancellate.includes(t.codice_transazione) &&
+          !FICTITIOUS_TX_IDS.includes(t.id) &&
+          !FICTITIOUS_TX_IDS.includes(t.codice_transazione)
+      );
+      return res.end(JSON.stringify(txs));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -2517,15 +2557,37 @@ CALENDARIO E PRENOTAZIONI:
     if (txDeleteMatch && method === "DELETE") {
       const targetParam = decodeURIComponent(txDeleteMatch[1]);
       const initialCount = (db.transazioni_pagamenti || []).length;
+      db.transazioni_cancellate = db.transazioni_cancellate || [];
+      if (!db.transazioni_cancellate.includes(targetParam)) {
+        db.transazioni_cancellate.push(targetParam);
+      }
       db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter((t: any) => {
         return t.id !== targetParam && t.codice_transazione !== targetParam;
       });
       saveData(db);
+      syncDataToGoogleDrive(db).catch(() => {});
       return res.end(
         JSON.stringify({
           success: true,
           deletedCount: initialCount - (db.transazioni_pagamenti || []).length,
           message: "Movimento fiscale eliminato con successo. Registro incassi ricalcolato.",
+        })
+      );
+    }
+
+    // POST /app-api/transazioni/svuota-tutto (Elimina tutti i movimenti fiscali permanentemente)
+    if (pathname === "/app-api/transazioni/svuota-tutto" && method === "POST") {
+      const allCodes = (db.transazioni_pagamenti || []).map((t: any) => t.codice_transazione || t.id);
+      db.transazioni_cancellate = Array.from(
+        new Set([...(db.transazioni_cancellate || []), ...allCodes, ...FICTITIOUS_TX_IDS])
+      );
+      db.transazioni_pagamenti = [];
+      saveData(db);
+      syncDataToGoogleDrive(db).catch(() => {});
+      return res.end(
+        JSON.stringify({
+          success: true,
+          message: "Tutti i movimenti fiscali sono stati eliminati permanentemente.",
         })
       );
     }

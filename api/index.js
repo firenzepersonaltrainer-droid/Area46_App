@@ -15345,79 +15345,12 @@ var demo_data_default = {
       created_at: "2026-08-28T21:42:16.000Z"
     }
   ],
-  transazioni_pagamenti: [
-    {
-      codice_transazione: "TX-46-2026-002",
-      atleta_id: "usr-bw-1953976",
-      email_cliente: "daniele.casci@gmail.com",
-      nome_cliente: "Daniele Casci",
-      codice_fiscale: "CSCDNL85T12D612K",
-      indirizzo: "Via Baracca 112, Firenze",
-      id_pacchetto: "pack-12",
-      nome_pacchetto: "Pacchetto Lab 12",
-      importo_euro: 450,
-      metodo: "carta",
-      crediti_acquistati: 12,
-      debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: 12,
-      stato: "completato",
-      stato_fattura: "emessa",
-      created_at: "2026-09-06T14:40:00.000Z"
-    },
-    {
-      codice_transazione: "TX-46-2026-003",
-      atleta_id: "usr-bw-1953992",
-      email_cliente: "matteo.calosci@gmail.com",
-      nome_cliente: "Matteo Calosci",
-      codice_fiscale: "CLSMTT91C22D612P",
-      indirizzo: "Via Bolognese 70, Firenze",
-      id_pacchetto: "pack-10",
-      nome_pacchetto: "Pacchetto Lab 10",
-      importo_euro: 380,
-      metodo: "bonifico",
-      crediti_acquistati: 10,
-      debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: 10,
-      stato: "completato",
-      stato_fattura: "emessa",
-      created_at: "2026-09-11T16:20:00.000Z"
-    },
-    {
-      codice_transazione: "TX-46-2026-004",
-      atleta_id: "usr-bw-1953985",
-      email_cliente: "pantanella@gmail.com",
-      nome_cliente: "Alessandro Pantanella",
-      codice_fiscale: "PNTLSN87A04D612A",
-      indirizzo: "Via Cavour 18, Firenze",
-      id_pacchetto: "pack-12",
-      nome_pacchetto: "Pacchetto Lab 12",
-      importo_euro: 450,
-      metodo: "carta",
-      crediti_acquistati: 12,
-      debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: 12,
-      stato: "completato",
-      stato_fattura: "emessa",
-      created_at: "2026-09-14T11:30:00.000Z"
-    },
-    {
-      codice_transazione: "TX-46-2026-005",
-      atleta_id: "usr-bw-1953979",
-      email_cliente: "vallycamera@hotmail.it",
-      nome_cliente: "Valeria Camera",
-      codice_fiscale: "CMRVLR89M55D612B",
-      indirizzo: "Piazza della Libert\xE0 8, Firenze",
-      id_pacchetto: "pack-10",
-      nome_pacchetto: "Pacchetto Lab 10",
-      importo_euro: 380,
-      metodo: "carta",
-      crediti_acquistati: 10,
-      debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: 10,
-      stato: "completato",
-      stato_fattura: "emessa",
-      created_at: "2026-09-19T17:50:00.000Z"
-    }
+  transazioni_pagamenti: [],
+  transazioni_cancellate: [
+    "TX-46-2026-002",
+    "TX-46-2026-003",
+    "TX-46-2026-004",
+    "TX-46-2026-005"
   ],
   active_user_id: "usr-coach-01",
   movimenti_crediti: [
@@ -16962,6 +16895,9 @@ async function getGoogleDriveAccessToken() {
   }
 }
 async function syncConfigToGoogleDrive(config) {
+  return syncDataToGoogleDrive({ configurazione_lab: config });
+}
+async function syncDataToGoogleDrive(fullDb) {
   try {
     const token = await getGoogleDriveAccessToken();
     if (!token) return;
@@ -16970,11 +16906,19 @@ async function syncConfigToGoogleDrive(config) {
     });
     if (!resGet.ok) return;
     const driveDb = await resGet.json();
-    driveDb.configurazione_lab = {
-      ...driveDb.configurazione_lab || {},
-      ...config,
-      last_cloud_sync: (/* @__PURE__ */ new Date()).toISOString()
-    };
+    if (fullDb.transazioni_pagamenti !== void 0) {
+      driveDb.transazioni_pagamenti = fullDb.transazioni_pagamenti || [];
+    }
+    if (fullDb.transazioni_cancellate !== void 0) {
+      driveDb.transazioni_cancellate = fullDb.transazioni_cancellate || [];
+    }
+    if (fullDb.configurazione_lab) {
+      driveDb.configurazione_lab = {
+        ...driveDb.configurazione_lab || {},
+        ...fullDb.configurazione_lab
+      };
+    }
+    driveDb.last_cloud_sync = (/* @__PURE__ */ new Date()).toISOString();
     await fetch(`https://www.googleapis.com/upload/drive/v3/files/${GDRIVE_DEMO_DATA_ID}?uploadType=media`, {
       method: "PATCH",
       headers: {
@@ -17000,14 +16944,33 @@ async function tryLoadConfigFromGoogleDrive() {
         ...db.configurazione_lab || {},
         ...driveDb.configurazione_lab
       };
-      saveData(db);
     }
+    if (driveDb.transazioni_cancellate && Array.isArray(driveDb.transazioni_cancellate)) {
+      db.transazioni_cancellate = Array.from(
+        /* @__PURE__ */ new Set([...db.transazioni_cancellate || [], ...driveDb.transazioni_cancellate, ...FICTITIOUS_TX_IDS])
+      );
+      db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
+        (t) => !db.transazioni_cancellate.includes(t.id) && !db.transazioni_cancellate.includes(t.codice_transazione)
+      );
+    }
+    saveData(db);
   } catch {
   }
 }
 tryLoadConfigFromGoogleDrive().catch(() => {
 });
+var FICTITIOUS_TX_IDS = [
+  "TX-46-2026-001",
+  "TX-46-2026-002",
+  "TX-46-2026-003",
+  "TX-46-2026-004",
+  "TX-46-2026-005"
+];
 var db = loadData();
+db.transazioni_cancellate = Array.from(/* @__PURE__ */ new Set([...db.transazioni_cancellate || [], ...FICTITIOUS_TX_IDS]));
+db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
+  (t) => !db.transazioni_cancellate.includes(t.codice_transazione) && !db.transazioni_cancellate.includes(t.id)
+);
 function getCurrentUser(database) {
   if (database.active_user_id === null) {
     return null;
@@ -18355,7 +18318,11 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify(pack));
   }
   if (pathname === "/app-api/transazioni" && method === "GET") {
-    return res.end(JSON.stringify(db.transazioni_pagamenti || []));
+    const cancellate = db.transazioni_cancellate || [];
+    const txs = (db.transazioni_pagamenti || []).filter(
+      (t) => !cancellate.includes(t.id) && !cancellate.includes(t.codice_transazione) && !FICTITIOUS_TX_IDS.includes(t.id) && !FICTITIOUS_TX_IDS.includes(t.codice_transazione)
+    );
+    return res.end(JSON.stringify(txs));
   }
   if (pathname === "/app-api/config/stripe/test-connection" && method === "POST") {
     const secretKey = parsedBody.stripe_secret_key || req.headers["x-stripe-secret-key"] || db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
@@ -18907,15 +18874,37 @@ CALENDARIO E PRENOTAZIONI:
   if (txDeleteMatch && method === "DELETE") {
     const targetParam = decodeURIComponent(txDeleteMatch[1]);
     const initialCount = (db.transazioni_pagamenti || []).length;
+    db.transazioni_cancellate = db.transazioni_cancellate || [];
+    if (!db.transazioni_cancellate.includes(targetParam)) {
+      db.transazioni_cancellate.push(targetParam);
+    }
     db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter((t) => {
       return t.id !== targetParam && t.codice_transazione !== targetParam;
     });
     saveData(db);
+    syncDataToGoogleDrive(db).catch(() => {
+    });
     return res.end(
       JSON.stringify({
         success: true,
         deletedCount: initialCount - (db.transazioni_pagamenti || []).length,
         message: "Movimento fiscale eliminato con successo. Registro incassi ricalcolato."
+      })
+    );
+  }
+  if (pathname === "/app-api/transazioni/svuota-tutto" && method === "POST") {
+    const allCodes = (db.transazioni_pagamenti || []).map((t) => t.codice_transazione || t.id);
+    db.transazioni_cancellate = Array.from(
+      /* @__PURE__ */ new Set([...db.transazioni_cancellate || [], ...allCodes, ...FICTITIOUS_TX_IDS])
+    );
+    db.transazioni_pagamenti = [];
+    saveData(db);
+    syncDataToGoogleDrive(db).catch(() => {
+    });
+    return res.end(
+      JSON.stringify({
+        success: true,
+        message: "Tutti i movimenti fiscali sono stati eliminati permanentemente."
       })
     );
   }

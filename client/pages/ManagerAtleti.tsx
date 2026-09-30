@@ -6,6 +6,7 @@ import {
   UserProfile,
   useMovimentiCrediti,
   MovimentoCrediti,
+  isTxDeleted,
 } from "../lib/useUser";
 import {
   Users,
@@ -120,7 +121,8 @@ export default function ManagerAtletiPage() {
     queryFn: async () => {
       const res = await fetch("/app-api/transazioni");
       if (!res.ok) return [];
-      return res.json();
+      const list: any[] = await res.json();
+      return list.filter((t) => !isTxDeleted(t.codice_transazione) && !isTxDeleted(t.id));
     },
   });
 

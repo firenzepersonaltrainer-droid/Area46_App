@@ -5,6 +5,8 @@ import {
   useProfili,
   getStoredStripeCredentials,
   saveStoredStripeCredentials,
+  saveDeletedTxId,
+  isTxDeleted,
 } from "../lib/useUser";
 import {
   Settings,
@@ -114,6 +116,9 @@ export default function ManagerFiscoPage() {
 
   const eliminaTxMutation = useMutation({
     mutationFn: async (codiceOrId: string) => {
+      // 1. Memorizza istantaneamente l'ID cancellato nel vault permanente locale
+      saveDeletedTxId(codiceOrId);
+
       const res = await fetch(`/app-api/transazioni/${encodeURIComponent(codiceOrId)}`, {
         method: "DELETE",
       });
@@ -123,11 +128,18 @@ export default function ManagerFiscoPage() {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, codiceOrId) => {
+      // 2. Rimuove all'istante il record dalla cache React Query
+      queryClient.setQueryData<Transazione[]>(["transazioni"], (old = []) => {
+        return old.filter(
+          (t) => t.codice_transazione !== codiceOrId && (t as any).id !== codiceOrId && !isTxDeleted(t.codice_transazione)
+        );
+      });
       queryClient.invalidateQueries({ queryKey: ["transazioni"] });
+      queryClient.invalidateQueries({ queryKey: ["profili"] });
       setDeleteModalOpen(false);
       setTxDaCancellare(null);
-      toast.success("Movimento fiscale eliminato. Registro incassi ricalcolato.");
+      toast.success("Movimento fiscale eliminato in modo definitivo. Registro incassi ricalcolato.");
     },
     onError: (err: any) => {
       toast.error(err.message || "Errore durante l'eliminazione");
@@ -184,13 +196,14 @@ export default function ManagerFiscoPage() {
     }
   }, [config]);
 
-  // Query Transazioni
+  // Query Transazioni - filtrando via i movimenti cancellati permanentemente
   const { data: transazioni = [] } = useQuery<Transazione[]>({
     queryKey: ["transazioni"],
     queryFn: async () => {
       const res = await fetch("/app-api/transazioni");
       if (!res.ok) throw new Error("Errore recupero transazioni");
-      return res.json();
+      const list: Transazione[] = await res.json();
+      return list.filter((t) => !isTxDeleted(t.codice_transazione) && !isTxDeleted((t as any).id));
     },
     refetchInterval: 10000,
   });

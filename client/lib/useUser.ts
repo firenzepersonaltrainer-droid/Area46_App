@@ -534,6 +534,44 @@ export function saveStoredStripeCredentials(creds: Partial<StoredStripeCredentia
   }
 }
 
+export const DELETED_TX_STORAGE_KEY = "area46_deleted_tx_v1";
+
+export function getDeletedTxIds(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(DELETED_TX_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveDeletedTxId(idOrCode: string) {
+  if (typeof window === "undefined" || !idOrCode) return;
+  try {
+    const current = getDeletedTxIds();
+    if (!current.includes(idOrCode)) {
+      current.push(idOrCode);
+      localStorage.setItem(DELETED_TX_STORAGE_KEY, JSON.stringify(current));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+export function isTxDeleted(idOrCode?: string): boolean {
+  if (!idOrCode) return false;
+  const deleted = getDeletedTxIds();
+  return (
+    deleted.includes(idOrCode) ||
+    idOrCode === "TX-46-2026-001" ||
+    idOrCode === "TX-46-2026-002" ||
+    idOrCode === "TX-46-2026-003" ||
+    idOrCode === "TX-46-2026-004" ||
+    idOrCode === "TX-46-2026-005"
+  );
+}
+
 export function getStripeHeaders(): Record<string, string> {
   const creds = getStoredStripeCredentials();
   const headers: Record<string, string> = {};
