@@ -2043,34 +2043,44 @@ CALENDARIO E PRENOTAZIONI:
           saveData(db);
         }
         try {
-          const params = new URLSearchParams();
-          params.append("mode", "payment");
-          params.append("payment_method_types[0]", "card");
-          params.append("line_items[0][price_data][currency]", "eur");
-          params.append("line_items[0][price_data][unit_amount]", String(Math.round(pacchetto.prezzo_euro * 100)));
-          params.append("line_items[0][price_data][product_data][name]", pacchetto.nome);
-          params.append(
-            "line_items[0][price_data][product_data][description]",
-            pacchetto.descrizione || "Pacchetto ingressi Area46 Landmine Lab"
-          );
-          params.append("line_items[0][quantity]", "1");
-          params.append("customer_email", atleta.email);
-          params.append("client_reference_id", atleta.id);
-          params.append("metadata[pack_id]", pacchetto.id);
-          params.append("metadata[pack_nome]", pacchetto.nome);
-          params.append("metadata[pack_crediti]", String(pacchetto.crediti));
-          params.append("metadata[giorni_validita]", String(pacchetto.giorni_validita || 60));
-          params.append("metadata[atleta_id]", atleta.id);
-          params.append("metadata[atleta_email]", atleta.email);
-          params.append("metadata[codice_fiscale]", parsedBody.codice_fiscale || atleta.codice_fiscale || "");
-          params.append("metadata[indirizzo]", parsedBody.indirizzo || atleta.indirizzo || "");
-          params.append(
-            "success_url",
-            `${origin}/account?session_id={CHECKOUT_SESSION_ID}&success=true`
-          );
-          params.append("cancel_url", `${origin}/account?canceled=true`);
+          const returnPath = parsedBody.return_url || "/account";
+          const buildParams = (includePayPal: boolean) => {
+            const p = new URLSearchParams();
+            p.append("mode", "payment");
+            p.append("payment_method_types[0]", "card");
+            if (includePayPal) {
+              p.append("payment_method_types[1]", "paypal");
+            }
+            p.append("line_items[0][price_data][currency]", "eur");
+            p.append("line_items[0][price_data][unit_amount]", String(Math.round(pacchetto.prezzo_euro * 100)));
+            p.append("line_items[0][price_data][product_data][name]", pacchetto.nome);
+            p.append(
+              "line_items[0][price_data][product_data][description]",
+              pacchetto.descrizione || "Pacchetto ingressi Area46 Landmine Lab"
+            );
+            p.append("line_items[0][quantity]", "1");
+            p.append("customer_email", atleta.email);
+            p.append("client_reference_id", atleta.id);
+            p.append("metadata[pack_id]", pacchetto.id);
+            p.append("metadata[pack_nome]", pacchetto.nome);
+            p.append("metadata[pack_crediti]", String(pacchetto.crediti));
+            p.append("metadata[giorni_validita]", String(pacchetto.giorni_validita || 60));
+            p.append("metadata[atleta_id]", atleta.id);
+            p.append("metadata[atleta_email]", atleta.email);
+            p.append("metadata[codice_fiscale]", parsedBody.codice_fiscale || atleta.codice_fiscale || "");
+            p.append("metadata[indirizzo]", parsedBody.indirizzo || atleta.indirizzo || "");
+            p.append(
+              "success_url",
+              `${origin}${returnPath}?session_id={CHECKOUT_SESSION_ID}&success=true`
+            );
+            p.append("cancel_url", `${origin}${returnPath}?canceled=true`);
+            return p;
+          };
 
-          const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+          const wantsPayPal = parsedBody.metodo === "paypal";
+          let params = buildParams(wantsPayPal);
+
+          let stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
             method: "POST",
             headers: {
               Authorization: `Bearer ${secretKey.trim()}`,
@@ -2079,7 +2089,21 @@ CALENDARIO E PRENOTAZIONI:
             body: params.toString(),
           });
 
-          const session = await stripeRes.json();
+          let session = await stripeRes.json();
+          // Se PayPal non è abilitato nella dashboard del coach, riprova subito con carta/Apple Pay per non bloccare l'atleta
+          if (!stripeRes.ok && wantsPayPal) {
+            params = buildParams(false);
+            stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${secretKey.trim()}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: params.toString(),
+            });
+            session = await stripeRes.json();
+          }
+
           if (!stripeRes.ok) {
             throw new Error(session.error?.message || "Errore nella creazione della sessione di pagamento Stripe");
           }

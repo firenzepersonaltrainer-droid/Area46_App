@@ -192,6 +192,15 @@ export default function ManagerFiscoPage() {
           stripe_secret_key: config.stripe_secret_key,
           stripe_webhook_secret: config.stripe_webhook_secret,
         });
+      } else if (!config.stripe_secret_key && stored?.stripe_secret_key) {
+        // Se il client ha le chiavi nel local vault ma il server non le ha ancora (es. dopo cold start), reidrata subito il backend
+        aggiornaConfig({
+          stripe_mode: stored.stripe_mode || "live",
+          stripe_publishable_key: stored.stripe_publishable_key,
+          stripe_secret_key: stored.stripe_secret_key,
+          stripe_webhook_secret: stored.stripe_webhook_secret,
+          stripe_collegato: true,
+        }).catch(() => {});
       }
     }
   }, [config]);

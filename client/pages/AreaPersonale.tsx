@@ -2071,10 +2071,10 @@ export default function AreaPersonalePage() {
                 <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-1">
                   <div className="font-bold">Coordinate Bonifico:</div>
                   <div className="font-mono text-[11px] select-all bg-white p-1.5 rounded border border-amber-300">
-                    IBAN: {config?.iban || "IT46X0306909606100000046460"}
+                    IBAN: {config?.iban || "IT35A0103037761000000746509"}
                   </div>
                   <div className="text-[10px] text-amber-800">
-                    Intestatario: {config?.intestatario_iban}
+                    Intestatario: {config?.intestatario_iban || "Stefano Tronconi (Banca MPS)"}
                   </div>
                 </div>
               )}
