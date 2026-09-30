@@ -418,7 +418,42 @@ app.get("/app-api/auth/current-user", async (c) => {
   const rows = await sql`SELECT * FROM profili_utenti WHERE email = ${user.email} LIMIT 1`;
   if (rows.length > 0) {
     const p = rows[0];
-    return c.json({ ...p, name: `${p.nome} ${p.cognome}`.trim() });
+    let crediti = p.crediti;
+    let data_scadenza_crediti = p.data_scadenza_crediti;
+    let is_shared_wallet = false;
+    let shared_master_nome: string | undefined = undefined;
+
+    if (p.shared_wallet_with) {
+      const masterRows = await sql`
+        SELECT * FROM profili_utenti 
+        WHERE id = ${p.shared_wallet_with} OR LOWER(email) = LOWER(${p.shared_wallet_with}) 
+        LIMIT 1
+      `;
+      if (masterRows.length > 0) {
+        const master = masterRows[0];
+        crediti = master.crediti;
+        data_scadenza_crediti = master.data_scadenza_crediti;
+        is_shared_wallet = true;
+        shared_master_nome = `${master.nome} ${master.cognome}`.trim();
+      }
+    }
+
+    const partnerRows = await sql`
+      SELECT nome, cognome FROM profili_utenti 
+      WHERE shared_wallet_with = ${p.id} OR LOWER(shared_wallet_with) = LOWER(${p.email})
+    `;
+
+    return c.json({
+      ...p,
+      name: `${p.nome} ${p.cognome}`.trim(),
+      crediti,
+      data_scadenza_crediti,
+      is_shared_wallet,
+      shared_master_nome,
+      is_wallet_master: partnerRows.length > 0,
+      shared_partners_count: partnerRows.length,
+      shared_partner_names: partnerRows.map((r: any) => `${r.nome} ${r.cognome}`.trim()),
+    });
   }
   return c.json(user);
 });
@@ -533,7 +568,39 @@ app.get("/app-api/profili", async (c) => {
     FROM profili_utenti
     ORDER BY ruolo DESC, nome ASC
   `;
-  return c.json(rows);
+
+  const mapped = rows.map((p: any) => {
+    let walletOwner = p;
+    if (p.shared_wallet_with) {
+      const master = rows.find(
+        (m: any) =>
+          m.id === p.shared_wallet_with ||
+          m.email?.toLowerCase() === p.shared_wallet_with?.toLowerCase()
+      );
+      if (master) walletOwner = master;
+    }
+    const isShared = walletOwner.id !== p.id;
+    const partners = rows.filter(
+      (o: any) =>
+        o.id !== p.id &&
+        (o.shared_wallet_with === p.id ||
+          o.shared_wallet_with?.toLowerCase() === p.email?.toLowerCase())
+    );
+
+    return {
+      ...p,
+      crediti: isShared ? walletOwner.crediti : p.crediti,
+      data_scadenza_crediti: isShared ? walletOwner.data_scadenza_crediti : p.data_scadenza_crediti,
+      shared_wallet_with: p.shared_wallet_with || null,
+      is_shared_wallet: isShared,
+      shared_master_nome: isShared ? `${walletOwner.nome} ${walletOwner.cognome}`.trim() : undefined,
+      is_wallet_master: partners.length > 0,
+      shared_partners_count: partners.length,
+      shared_partner_names: partners.map((x: any) => `${x.nome} ${x.cognome}`.trim()),
+    };
+  });
+
+  return c.json(mapped);
 });
 
 app.post("/app-api/profili", async (c) => {
@@ -542,10 +609,10 @@ app.post("/app-api/profili", async (c) => {
   const id = `usr-atleta-${Date.now()}`;
   const rows = await sql`
     INSERT INTO profili_utenti (
-      id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach
+      id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach, shared_wallet_with
     ) VALUES (
       ${id}, ${body.email}, ${body.nome}, ${body.cognome}, ${body.telefono || null}, ${body.codice_fiscale || null},
-      ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}
+      ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}, ${body.shared_wallet_with || null}
     )
     RETURNING *
   `;
@@ -569,6 +636,7 @@ app.put("/app-api/profili/:id", async (c) => {
       tempo_cancellazione_ore = COALESCE(${body.tempo_cancellazione_ore !== undefined ? Number(body.tempo_cancellazione_ore) : null}, tempo_cancellazione_ore),
       data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti}, data_scadenza_crediti),
       note_coach = COALESCE(${body.note_coach}, note_coach),
+      shared_wallet_with = CASE WHEN ${body.shared_wallet_with !== undefined} THEN ${body.shared_wallet_with || null} ELSE shared_wallet_with END,
       updated_at = NOW()
     WHERE id = ${id}
     RETURNING *
@@ -885,8 +953,21 @@ app.post("/app-api/prenotazioni/batch", async (c) => {
 
   const atletaEmail = body.email_cliente || user?.email;
   const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${atletaEmail} LIMIT 1`;
-  const isManager = atletaRows[0]?.ruolo === "manager";
+  const atleta = atletaRows[0];
+  const isManager = atleta?.ruolo === "manager";
   const totalCost = requestedSlots.length;
+
+  let walletOwner = atleta;
+  if (atleta?.shared_wallet_with) {
+    const masterRows = await sql`
+      SELECT * FROM profili_utenti 
+      WHERE id = ${atleta.shared_wallet_with} OR LOWER(email) = LOWER(${atleta.shared_wallet_with}) 
+      LIMIT 1
+    `;
+    if (masterRows.length > 0) {
+      walletOwner = masterRows[0];
+    }
+  }
 
   // Controllo anticipo prenotazione
   const configRows = await sql`SELECT tempo_anticipo_prenotazione_ore FROM configurazione_lab WHERE id = 1 LIMIT 1`;
@@ -901,11 +982,28 @@ app.post("/app-api/prenotazioni/batch", async (c) => {
     }
   }
 
-  if (!isManager && atletaRows.length > 0) {
-    if ((atletaRows[0].crediti ?? 0) < totalCost) {
-      return c.json({ error: `Crediti insufficienti. Disponibili: ${atletaRows[0].crediti}, richiesti: ${totalCost}` }, 403);
+  if (!isManager && walletOwner) {
+    if ((walletOwner.crediti ?? 0) < totalCost) {
+      return c.json({ error: `Crediti insufficienti. Disponibili: ${walletOwner.crediti}, richiesti: ${totalCost}` }, 403);
     }
-    await sql`UPDATE profili_utenti SET crediti = crediti - ${totalCost}, data_ultimo_accesso = NOW() WHERE email = ${atletaEmail}`;
+    await sql`UPDATE profili_utenti SET crediti = crediti - ${totalCost} WHERE id = ${walletOwner.id}`;
+    if (atleta && atleta.id !== walletOwner.id) {
+      await sql`UPDATE profili_utenti SET data_ultimo_accesso = NOW() WHERE id = ${atleta.id}`;
+    }
+
+    const isShared = walletOwner.id !== atleta?.id;
+    const movId = `mov-${Date.now()}`;
+    const motivazione = isShared
+      ? `Prenotazione ${requestedSlots.length} sessioni per ${atleta?.nome} ${atleta?.cognome} [Borsellino Condiviso]`
+      : `Prenotazione Multipla (${requestedSlots.length} slot)`;
+    await sql`
+      INSERT INTO movimenti_crediti (
+        id, atleta_id, email_cliente, nome_cliente, data_ora, tipo, delta_crediti, saldo_risultante, motivazione, operatore
+      ) VALUES (
+        ${movId}, ${walletOwner.id}, ${walletOwner.email}, ${`${walletOwner.nome} ${walletOwner.cognome}`.trim()},
+        NOW(), 'prenotazione_slot', ${-totalCost}, ${walletOwner.crediti - totalCost}, ${motivazione}, 'atleta'
+      )
+    `;
   }
 
   const created = [];
@@ -917,9 +1015,9 @@ app.post("/app-api/prenotazioni/batch", async (c) => {
       INSERT INTO prenotazioni_slot (
         id, data, orario, atleta_id, email_cliente, nome_cliente, telefono_cliente, stato, credito_scalato, note
       ) VALUES (
-        ${id}, ${s.data}::date, ${s.orario}, ${atletaRows[0]?.id || null}, ${atletaEmail},
-        ${atletaRows[0] ? `${atletaRows[0].nome} ${atletaRows[0].cognome}` : (user?.name || "Atleta")},
-        ${atletaRows[0]?.telefono || null}, 'confermata', true, ${s.note || "Prenotazione Multipla"}
+        ${id}, ${s.data}::date, ${s.orario}, ${atleta?.id || null}, ${atletaEmail},
+        ${atleta ? `${atleta.nome} ${atleta.cognome}` : (user?.name || "Atleta")},
+        ${atleta?.telefono || null}, 'confermata', true, ${s.note || "Prenotazione Multipla"}
       )
       RETURNING *
     `;
@@ -947,7 +1045,20 @@ app.post("/app-api/prenotazioni", async (c) => {
   // Deduci credito
   const atletaEmail = body.email_cliente || user?.email;
   const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${atletaEmail} LIMIT 1`;
-  const isManager = atletaRows[0]?.ruolo === "manager";
+  const atleta = atletaRows[0];
+  const isManager = atleta?.ruolo === "manager";
+
+  let walletOwner = atleta;
+  if (atleta?.shared_wallet_with) {
+    const masterRows = await sql`
+      SELECT * FROM profili_utenti 
+      WHERE id = ${atleta.shared_wallet_with} OR LOWER(email) = LOWER(${atleta.shared_wallet_with}) 
+      LIMIT 1
+    `;
+    if (masterRows.length > 0) {
+      walletOwner = masterRows[0];
+    }
+  }
 
   // Controllo anticipo prenotazione
   const configRows = await sql`SELECT tempo_anticipo_prenotazione_ore FROM configurazione_lab WHERE id = 1 LIMIT 1`;
@@ -960,11 +1071,28 @@ app.post("/app-api/prenotazioni", async (c) => {
     }
   }
 
-  if (atletaRows.length > 0 && !isManager) {
-    if (atletaRows[0].crediti <= 0) {
+  if (walletOwner && !isManager) {
+    if (walletOwner.crediti <= 0) {
       return c.json({ error: "Crediti esauriti. Ricarica per prenotare." }, 403);
     }
-    await sql`UPDATE profili_utenti SET crediti = crediti - 1, data_ultimo_accesso = NOW() WHERE email = ${atletaEmail}`;
+    await sql`UPDATE profili_utenti SET crediti = crediti - 1 WHERE id = ${walletOwner.id}`;
+    if (atleta && atleta.id !== walletOwner.id) {
+      await sql`UPDATE profili_utenti SET data_ultimo_accesso = NOW() WHERE id = ${atleta.id}`;
+    }
+
+    const isShared = walletOwner.id !== atleta?.id;
+    const movId = `mov-${Date.now()}`;
+    const motivazione = isShared
+      ? `Prenotazione slot ${body.data} ${body.orario} per ${atleta?.nome} ${atleta?.cognome} [Borsellino Condiviso]`
+      : `Prenotazione slot ${body.data} ${body.orario}`;
+    await sql`
+      INSERT INTO movimenti_crediti (
+        id, atleta_id, email_cliente, nome_cliente, data_ora, tipo, delta_crediti, saldo_risultante, motivazione, operatore
+      ) VALUES (
+        ${movId}, ${walletOwner.id}, ${walletOwner.email}, ${`${walletOwner.nome} ${walletOwner.cognome}`.trim()},
+        NOW(), 'prenotazione_slot', -1, ${walletOwner.crediti - 1}, ${motivazione}, 'atleta'
+      )
+    `;
   }
 
   const id = `bk-${Date.now()}`;
@@ -972,9 +1100,9 @@ app.post("/app-api/prenotazioni", async (c) => {
     INSERT INTO prenotazioni_slot (
       id, data, orario, atleta_id, email_cliente, nome_cliente, telefono_cliente, stato, credito_scalato, note
     ) VALUES (
-      ${id}, ${body.data}::date, ${body.orario}, ${atletaRows[0]?.id || null}, ${atletaEmail},
-      ${atletaRows[0] ? `${atletaRows[0].nome} ${atletaRows[0].cognome}` : (user?.name || "Atleta")},
-      ${atletaRows[0]?.telefono || null}, 'confermata', true, ${body.note || null}
+      ${id}, ${body.data}::date, ${body.orario}, ${atleta?.id || null}, ${atletaEmail},
+      ${atleta ? `${atleta.nome} ${atleta.cognome}` : (user?.name || "Atleta")},
+      ${atleta?.telefono || null}, 'confermata', true, ${body.note || null}
     )
     RETURNING *
   `;
@@ -991,9 +1119,21 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
   if (rows.length === 0) return c.json({ error: "Prenotazione non trovata" }, 404);
   const bk = rows[0];
 
-  const atletaRows = await sql`SELECT tempo_cancellazione_ore FROM profili_utenti WHERE email = ${bk.email_cliente} LIMIT 1`;
+  const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${bk.email_cliente} LIMIT 1`;
+  const atleta = atletaRows[0];
+  let walletOwner = atleta;
+  if (atleta?.shared_wallet_with) {
+    const masterRows = await sql`
+      SELECT * FROM profili_utenti 
+      WHERE id = ${atleta.shared_wallet_with} OR LOWER(email) = LOWER(${atleta.shared_wallet_with}) 
+      LIMIT 1
+    `;
+    if (masterRows.length > 0) walletOwner = masterRows[0];
+  }
+  const isShared = walletOwner && atleta && walletOwner.id !== atleta.id;
+
   const configRows = await sql`SELECT tempo_cancellazione_ore FROM configurazione_lab WHERE id = 1 LIMIT 1`;
-  const policyOre = Number(atletaRows[0]?.tempo_cancellazione_ore || configRows[0]?.tempo_cancellazione_ore || 24);
+  const policyOre = Number(atleta?.tempo_cancellazione_ore || configRows[0]?.tempo_cancellazione_ore || 24);
 
   const slotTs = new Date(`${bk.data.toISOString().slice(0, 10)}T${bk.orario}:00`).getTime();
   const oreDiff = (slotTs - Date.now()) / (1000 * 60 * 60);
@@ -1008,15 +1148,14 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
   if (oreDiff >= policyOre || isManager) {
     rimborsato = true;
     statoFinale = "cancellata_in_tempo";
-    if (bk.credito_scalato) {
+    if (bk.credito_scalato && walletOwner) {
       if (isManager) {
-        const userRows = await sql`SELECT data_scadenza_crediti, tipo_abbonamento FROM profili_utenti WHERE email = ${bk.email_cliente} LIMIT 1`;
-        const currentExp = userRows[0]?.data_scadenza_crediti;
-        const tipoAbb = userRows[0]?.tipo_abbonamento || "";
+        const currentExp = walletOwner.data_scadenza_crediti;
+        const tipoAbb = walletOwner.tipo_abbonamento || "";
         const isContinuativo = tipoAbb.startsWith("lab_continuativo") || tipoAbb === "abbonamento";
 
         if (isContinuativo) {
-          await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+          await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE id = ${walletOwner.id}`;
           messaggio = "Sessione annullata dal Coach. 1 credito rimborsato al wallet (abbonamento continuativo: scadenza fissa invariata).";
         } else {
           if (prorogaRequested && currentExp) {
@@ -1025,19 +1164,37 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
               UPDATE profili_utenti 
               SET crediti = crediti + 1,
                   data_scadenza_crediti = data_scadenza_crediti + INTERVAL '7 days'
-              WHERE email = ${bk.email_cliente}
+              WHERE id = ${walletOwner.id}
             `;
             messaggio = "Sessione annullata dal Coach. 1 credito rimborsato e scadenza prorogata di 7 giorni su tua scelta esplicita.";
           } else {
             // Default: NESSUNA proroga (spostamento/cambio turno senza alterare la scadenza del pacchetto)
-            await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+            await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE id = ${walletOwner.id}`;
             messaggio = "Sessione annullata dal Coach. 1 credito rimborsato al wallet (scadenza carnet invariata: nessuna proroga).";
           }
         }
       } else {
-        await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE email = ${bk.email_cliente}`;
+        await sql`UPDATE profili_utenti SET crediti = crediti + 1 WHERE id = ${walletOwner.id}`;
         messaggio = `Cancellazione effettuata in tempo. 1 credito riaccreditato.`;
       }
+
+      // Registra rimborso nel ledger del walletOwner
+      const movId = `mov-${Date.now()}`;
+      const bkDateStr = typeof bk.data === "string" ? bk.data : bk.data.toISOString().slice(0, 10);
+      const motivazione = isManager
+        ? (prorogaRequested
+            ? `Rimborso slot ${bkDateStr} ${bk.orario} per ${atleta?.nome} ${atleta?.cognome}${isShared ? " [Borsellino Condiviso]" : ""} [Con proroga scadenza carnet +7gg]`
+            : `Ripristino credito per cancellazione/spostamento slot ${bkDateStr} ${bk.orario} per ${atleta?.nome} ${atleta?.cognome}${isShared ? " [Borsellino Condiviso]" : ""}`)
+        : `Rimborso per cancellazione in tempo slot del ${bkDateStr} ${bk.orario}${isShared ? " [Borsellino Condiviso]" : ""}`;
+
+      await sql`
+        INSERT INTO movimenti_crediti (
+          id, atleta_id, email_cliente, nome_cliente, data_ora, tipo, delta_crediti, saldo_risultante, motivazione, operatore
+        ) VALUES (
+          ${movId}, ${walletOwner.id}, ${walletOwner.email}, ${`${walletOwner.nome} ${walletOwner.cognome}`.trim()},
+          NOW(), 'rimborso_cancellazione', 1, ${walletOwner.crediti + 1}, ${motivazione}, ${isManager ? "coach" : "atleta"}
+        )
+      `;
     }
   } else {
     messaggio = `Cancellazione tardiva (meno di ${policyOre}h). Credito trattenuto come da tua policy.`;

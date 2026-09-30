@@ -10,6 +10,8 @@ import {
   ShieldCheck,
   UserCheck,
   LogOut,
+  Share2,
+  Crown,
 } from "lucide-react";
 
 export function WalletBar() {
@@ -157,6 +159,34 @@ export function WalletBar() {
               >
                 Ricarica <ArrowRight className="size-3" />
               </Link>
+            </div>
+          )}
+
+          {user?.is_shared_wallet && (
+            <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] font-semibold flex items-center justify-between gap-2 mt-1.5 shadow-2xs">
+              <div className="flex items-center gap-1.5">
+                <Share2 className="size-3.5 text-indigo-600 shrink-0" />
+                <span>
+                  Borsellino Condiviso con <strong>{user.shared_master_nome || "il Titolare"}</strong> ({crediti} crediti comuni).
+                </span>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                Partner
+              </span>
+            </div>
+          )}
+
+          {user?.is_wallet_master && (
+            <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-semibold flex items-center justify-between gap-2 mt-1.5 shadow-2xs">
+              <div className="flex items-center gap-1.5">
+                <Crown className="size-3.5 text-amber-600 shrink-0" />
+                <span>
+                  Titolare Borsellino ({user.shared_partners_count} partner collegat{user.shared_partners_count === 1 ? "o" : "i"}) • Saldo pacchetto: <strong>{crediti} crediti</strong>
+                </span>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                Master
+              </span>
             </div>
           )}
         </div>

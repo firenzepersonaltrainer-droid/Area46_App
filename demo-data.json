@@ -14285,9 +14285,9 @@
       "codice_fiscale": "ARECST80A01D612Y",
       "indirizzo": "Via del Landmine 46, Firenze",
       "ruolo": "manager",
-      "crediti": 999,
+      "crediti": 998,
       "data_scadenza_crediti": "2099-12-31",
-      "data_ultimo_accesso": "2026-09-28T19:38:28.350Z",
+      "data_ultimo_accesso": "2026-09-30T09:38:18.917Z",
       "note_coach": "Head Coach & Amministratore Lab",
       "tempo_cancellazione_ore": 12,
       "name": "Stefano Tronconi",
@@ -14306,15 +14306,16 @@
       "codice_fiscale": "",
       "indirizzo": "",
       "ruolo": "atleta",
-      "crediti": 0,
-      "data_scadenza_crediti": null,
-      "data_ultimo_accesso": "2026-09-30T07:34:01.708Z",
+      "crediti": 36,
+      "data_scadenza_crediti": "2026-12-31",
+      "data_ultimo_accesso": "2026-09-30T09:40:01.823Z",
       "data_creazione": "2026-02-10T13:54:55.000Z",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "name": "Daniele Casci",
-      "tempo_anticipo_prenotazione_ore": 24
+      "tempo_anticipo_prenotazione_ore": 24,
+      "updated_at": "2026-09-30T09:40:01.731Z"
     },
     {
       "id": "usr-bw-2084583",
@@ -14329,13 +14330,15 @@
       "ruolo": "atleta",
       "crediti": 0,
       "data_scadenza_crediti": null,
-      "data_ultimo_accesso": "2026-09-16T12:56:44.000Z",
+      "data_ultimo_accesso": "2026-09-30T09:40:01.823Z",
       "data_creazione": "2026-09-16T10:10:35.000Z",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "name": "Roberto Ilario Sestito",
-      "tempo_anticipo_prenotazione_ore": 24
+      "tempo_anticipo_prenotazione_ore": 24,
+      "shared_wallet_with": null,
+      "updated_at": "2026-09-30T09:40:01.871Z"
     }
   ],
   "configurazione_lab": {
@@ -14611,7 +14614,80 @@
     "TX-46-641672"
   ],
   "active_user_id": "usr-coach-01",
-  "movimenti_crediti": [],
+  "movimenti_crediti": [
+    {
+      "id": "mov-1790761201851-390",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-09-30T09:40:01.851Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 36,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-12-22 09:00 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1790761201838-711",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-09-30T09:40:01.838Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 35,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-12-21 09:00 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1790761201823-172",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-09-30T09:40:01.823Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -2,
+      "saldo_risultante": 34,
+      "motivazione": "Prenotazione a blocchi di 2 sessioni per Roberto Ilario Sestito [Borsellino Condiviso]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1790761201795-158",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-09-30T09:40:01.795Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 36,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-12-15 11:15 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1790761201769-482",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-09-30T09:40:01.769Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 35,
+      "motivazione": "Prenotazione slot del 2026-12-15 ore 11:15 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1790761098917-304",
+      "atleta_id": "usr-coach-01",
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "nome_cliente": "Stefano Tronconi",
+      "data_ora": "2026-09-30T09:38:18.917Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 998,
+      "motivazione": "Prenotazione slot del 2026-10-15 ore 18:00",
+      "operatore": "coach"
+    }
+  ],
   "eccezioni_calendario": [],
   "attivita_lab": [
     {
@@ -14675,7 +14751,10 @@
     "bk-bw-2080725-2026-09-28-1800-7",
     "bk-bw-2080725-2026-09-23-1800-8",
     "bk-bw-2080725-2026-09-21-1845-10",
-    "bk-bw-2080725-2026-09-18-1800-23"
+    "bk-bw-2080725-2026-09-18-1800-23",
+    "bk-1790761201769",
+    "bk-1790761201823-0",
+    "bk-1790761201823-1"
   ],
   "utenti_cancellati": [
     "usr-bw-2080725",

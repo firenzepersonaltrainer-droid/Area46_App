@@ -14292,9 +14292,9 @@ var demo_data_default = {
       codice_fiscale: "ARECST80A01D612Y",
       indirizzo: "Via del Landmine 46, Firenze",
       ruolo: "manager",
-      crediti: 999,
+      crediti: 998,
       data_scadenza_crediti: "2099-12-31",
-      data_ultimo_accesso: "2026-09-28T19:38:28.350Z",
+      data_ultimo_accesso: "2026-09-30T09:38:18.917Z",
       note_coach: "Head Coach & Amministratore Lab",
       tempo_cancellazione_ore: 12,
       name: "Stefano Tronconi",
@@ -14313,15 +14313,16 @@ var demo_data_default = {
       codice_fiscale: "",
       indirizzo: "",
       ruolo: "atleta",
-      crediti: 0,
-      data_scadenza_crediti: null,
-      data_ultimo_accesso: "2026-09-30T07:34:01.708Z",
+      crediti: 36,
+      data_scadenza_crediti: "2026-12-31",
+      data_ultimo_accesso: "2026-09-30T09:40:01.823Z",
       data_creazione: "2026-02-10T13:54:55.000Z",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       name: "Daniele Casci",
-      tempo_anticipo_prenotazione_ore: 24
+      tempo_anticipo_prenotazione_ore: 24,
+      updated_at: "2026-09-30T09:40:01.731Z"
     },
     {
       id: "usr-bw-2084583",
@@ -14336,13 +14337,15 @@ var demo_data_default = {
       ruolo: "atleta",
       crediti: 0,
       data_scadenza_crediti: null,
-      data_ultimo_accesso: "2026-09-16T12:56:44.000Z",
+      data_ultimo_accesso: "2026-09-30T09:40:01.823Z",
       data_creazione: "2026-09-16T10:10:35.000Z",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       name: "Roberto Ilario Sestito",
-      tempo_anticipo_prenotazione_ore: 24
+      tempo_anticipo_prenotazione_ore: 24,
+      shared_wallet_with: null,
+      updated_at: "2026-09-30T09:40:01.871Z"
     }
   ],
   configurazione_lab: {
@@ -14618,7 +14621,80 @@ var demo_data_default = {
     "TX-46-641672"
   ],
   active_user_id: "usr-coach-01",
-  movimenti_crediti: [],
+  movimenti_crediti: [
+    {
+      id: "mov-1790761201851-390",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-09-30T09:40:01.851Z",
+      tipo: "rimborso_cancellazione",
+      delta_crediti: 1,
+      saldo_risultante: 36,
+      motivazione: "Ripristino credito per cancellazione/spostamento slot 2026-12-22 09:00 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790761201838-711",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-09-30T09:40:01.838Z",
+      tipo: "rimborso_cancellazione",
+      delta_crediti: 1,
+      saldo_risultante: 35,
+      motivazione: "Ripristino credito per cancellazione/spostamento slot 2026-12-21 09:00 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790761201823-172",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-09-30T09:40:01.823Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -2,
+      saldo_risultante: 34,
+      motivazione: "Prenotazione a blocchi di 2 sessioni per Roberto Ilario Sestito [Borsellino Condiviso]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790761201795-158",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-09-30T09:40:01.795Z",
+      tipo: "rimborso_cancellazione",
+      delta_crediti: 1,
+      saldo_risultante: 36,
+      motivazione: "Ripristino credito per cancellazione/spostamento slot 2026-12-15 11:15 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790761201769-482",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-09-30T09:40:01.769Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 35,
+      motivazione: "Prenotazione slot del 2026-12-15 ore 11:15 per Roberto Ilario Sestito [Borsellino Condiviso]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790761098917-304",
+      atleta_id: "usr-coach-01",
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      nome_cliente: "Stefano Tronconi",
+      data_ora: "2026-09-30T09:38:18.917Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 998,
+      motivazione: "Prenotazione slot del 2026-10-15 ore 18:00",
+      operatore: "coach"
+    }
+  ],
   eccezioni_calendario: [],
   attivita_lab: [
     {
@@ -14682,7 +14758,10 @@ var demo_data_default = {
     "bk-bw-2080725-2026-09-28-1800-7",
     "bk-bw-2080725-2026-09-23-1800-8",
     "bk-bw-2080725-2026-09-21-1845-10",
-    "bk-bw-2080725-2026-09-18-1800-23"
+    "bk-bw-2080725-2026-09-18-1800-23",
+    "bk-1790761201769",
+    "bk-1790761201823-0",
+    "bk-1790761201823-1"
   ],
   utenti_cancellati: [
     "usr-bw-2080725",
@@ -14923,6 +15002,16 @@ db.transazioni_cancellate = Array.from(/* @__PURE__ */ new Set([...db.transazion
 db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
   (t) => !db.transazioni_cancellate.includes(t.codice_transazione) && !db.transazioni_cancellate.includes(t.id)
 );
+function getWalletOwner(atleta, database) {
+  if (!atleta) return null;
+  if (atleta.shared_wallet_with) {
+    const master = (database?.profili_utenti || []).find(
+      (p) => p.id === atleta.shared_wallet_with || p.email?.toLowerCase() === atleta.shared_wallet_with?.toLowerCase()
+    );
+    if (master) return master;
+  }
+  return atleta;
+}
 function getCurrentUser(database) {
   if (database.active_user_id === null) {
     return null;
@@ -14930,9 +15019,15 @@ function getCurrentUser(database) {
   const activeId = database.active_user_id || "usr-atleta-01";
   const user = (database.profili_utenti || []).find((u) => u.id === activeId);
   if (user) {
+    const walletOwner = getWalletOwner(user, database);
+    const isShared = walletOwner && walletOwner.id !== user.id;
     return {
       ...user,
-      name: `${user.nome} ${user.cognome}`.trim()
+      name: `${user.nome} ${user.cognome}`.trim(),
+      crediti: isShared ? walletOwner.crediti : user.crediti,
+      data_scadenza_crediti: isShared ? walletOwner.data_scadenza_crediti : user.data_scadenza_crediti,
+      is_shared_wallet: isShared,
+      shared_master_nome: isShared ? `${walletOwner.nome} ${walletOwner.cognome}`.trim() : void 0
     };
   }
   return {
@@ -15206,11 +15301,19 @@ async function handleLocalApi(req, res, next) {
     const now = /* @__PURE__ */ new Date();
     const delUsers = db.utenti_cancellati || [];
     const profili = (db.profili_utenti || []).filter((p) => !delUsers.includes(p.id) && !delUsers.includes(p.email?.toLowerCase())).map((p) => {
+      const walletOwner = getWalletOwner(p, db);
+      const isShared = walletOwner && walletOwner.id !== p.id;
+      const effectiveCrediti = isShared ? walletOwner.crediti : p.crediti;
+      const effectiveScadenza = isShared ? walletOwner.data_scadenza_crediti : p.data_scadenza_crediti;
+      const partners = (db.profili_utenti || []).filter(
+        (other) => other.id !== p.id && (other.shared_wallet_with === p.id || other.shared_wallet_with?.toLowerCase() === p.email?.toLowerCase())
+      );
+      const isMaster = partners.length > 0;
       let avviso_scadenza = false;
       let giorni_a_scadenza = null;
-      if (p.data_scadenza_crediti) {
+      if (effectiveScadenza) {
         const diffDays = Math.ceil(
-          (new Date(p.data_scadenza_crediti).getTime() - now.getTime()) / (1e3 * 60 * 60 * 24)
+          (new Date(effectiveScadenza).getTime() - now.getTime()) / (1e3 * 60 * 60 * 24)
         );
         giorni_a_scadenza = diffDays;
         if (diffDays <= 7) avviso_scadenza = true;
@@ -15224,6 +15327,14 @@ async function handleLocalApi(req, res, next) {
       }
       return {
         ...p,
+        crediti: effectiveCrediti,
+        data_scadenza_crediti: effectiveScadenza,
+        shared_wallet_with: p.shared_wallet_with || null,
+        is_shared_wallet: isShared,
+        shared_master_nome: isShared ? `${walletOwner.nome} ${walletOwner.cognome}`.trim() : void 0,
+        is_wallet_master: isMaster,
+        shared_partners_count: partners.length,
+        shared_partner_names: partners.map((x) => `${x.nome} ${x.cognome}`.trim()),
         tempo_cancellazione_ore: p.tempo_cancellazione_ore || 24,
         tempo_anticipo_prenotazione_ore: p.tempo_anticipo_prenotazione_ore || 24,
         giorni_a_scadenza,
@@ -15246,6 +15357,7 @@ async function handleLocalApi(req, res, next) {
       indirizzo: parsedBody.indirizzo || "",
       ruolo: "atleta",
       crediti: creditiIniziali,
+      shared_wallet_with: parsedBody.shared_wallet_with?.trim() || null,
       tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
       tempo_anticipo_prenotazione_ore: Number(parsedBody.tempo_anticipo_prenotazione_ore || 24),
       data_scadenza_crediti: parsedBody.data_scadenza_crediti || new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10),
@@ -15333,6 +15445,9 @@ async function handleLocalApi(req, res, next) {
       profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
     }
     if (parsedBody.note_coach !== void 0) profilo.note_coach = parsedBody.note_coach;
+    if (parsedBody.shared_wallet_with !== void 0) {
+      profilo.shared_wallet_with = parsedBody.shared_wallet_with?.trim() || null;
+    }
     profilo.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     saveData(db);
     return res.end(JSON.stringify(profilo));
@@ -15910,8 +16025,10 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify(prenotazioni));
   }
   if (pathname === "/app-api/prenotazioni/batch" && method === "POST") {
-    const atletaId = parsedBody.atleta_id || currentUser.id;
-    const atleta = (db.profili_utenti || []).find((p) => p.id === atletaId || p.email === atletaId) || currentUser;
+    const atletaId = parsedBody.atleta_id || parsedBody.email_cliente || currentUser.id;
+    const atleta = (db.profili_utenti || []).find(
+      (p) => p.id === atletaId || p.email?.toLowerCase() === atletaId?.toLowerCase() || p.email?.toLowerCase() === parsedBody.email_cliente?.toLowerCase()
+    ) || currentUser;
     const requestedSlots = parsedBody.slots || [];
     if (!Array.isArray(requestedSlots) || requestedSlots.length === 0) {
       res.statusCode = 400;
@@ -15919,28 +16036,30 @@ CALENDARIO E PRENOTAZIONI:
     }
     const isManager = currentUser.ruolo === "manager";
     const totalCost = requestedSlots.length;
+    const walletOwner = getWalletOwner(atleta, db);
+    const isShared = walletOwner && walletOwner.id !== atleta.id;
     if (!isManager) {
-      if ((atleta.crediti ?? 0) < totalCost) {
+      if ((walletOwner.crediti ?? 0) < totalCost) {
         res.statusCode = 403;
         return res.end(
           JSON.stringify({
-            error: `Crediti insufficienti. Hai ${atleta.crediti ?? 0} crediti ma hai selezionato ${totalCost} slot. Acquista un nuovo Pacchetto Lab o riduci la selezione.`,
+            error: `Crediti insufficienti. ${isShared ? `Il borsellino condiviso (${walletOwner.nome} ${walletOwner.cognome}) ha` : "Hai"} ${walletOwner.crediti ?? 0} crediti ma hai selezionato ${totalCost} slot. Acquista un nuovo Pacchetto Lab o riduci la selezione.`,
             motivo: "crediti_insufficienti",
-            crediti: atleta.crediti,
+            crediti: walletOwner.crediti,
             richiesti: totalCost
           })
         );
       }
-      if (atleta.data_scadenza_crediti) {
-        const scadenza = new Date(atleta.data_scadenza_crediti);
+      if (walletOwner.data_scadenza_crediti) {
+        const scadenza = new Date(walletOwner.data_scadenza_crediti);
         for (const s of requestedSlots) {
           if (new Date(s.data) > scadenza) {
             res.statusCode = 403;
             return res.end(
               JSON.stringify({
-                error: `Uno o pi\xF9 slot selezionati (${s.data}) superano la data di scadenza del tuo pacchetto (${atleta.data_scadenza_crediti}). Rinnova il pacchetto per prenotare.`,
+                error: `Uno o pi\xF9 slot selezionati (${s.data}) superano la data di scadenza del pacchetto (${walletOwner.data_scadenza_crediti}). Rinnova il pacchetto per prenotare.`,
                 motivo: "crediti_scaduti",
-                scadenza: atleta.data_scadenza_crediti
+                scadenza: walletOwner.data_scadenza_crediti
               })
             );
           }
@@ -15993,8 +16112,9 @@ CALENDARIO E PRENOTAZIONI:
         );
       }
     }
-    atleta.crediti = (atleta.crediti ?? 0) - totalCost;
+    walletOwner.crediti = (walletOwner.crediti ?? 0) - totalCost;
     atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
     const createPrenotazioni = [];
     const now = Date.now();
     requestedSlots.forEach((s, idx) => {
@@ -16015,13 +16135,13 @@ CALENDARIO E PRENOTAZIONI:
       createPrenotazioni.push(bk);
     });
     addMovimentoCrediti(db, {
-      atleta_id: atleta.id,
-      email_cliente: atleta.email,
-      nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
+      atleta_id: walletOwner.id,
+      email_cliente: walletOwner.email,
+      nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
       tipo: "prenotazione_slot",
       delta_crediti: -totalCost,
-      saldo_risultante: atleta.crediti,
-      motivazione: `Prenotazione multipla di ${totalCost} sessioni`,
+      saldo_risultante: walletOwner.crediti,
+      motivazione: isShared ? `Prenotazione a blocchi di ${totalCost} sessioni per ${atleta.nome} ${atleta.cognome} [Borsellino Condiviso]` : `Prenotazione multipla di ${totalCost} sessioni`,
       operatore: isManager ? "coach" : "atleta"
     });
     saveData(db);
@@ -16031,14 +16151,16 @@ CALENDARIO E PRENOTAZIONI:
         ok: true,
         count: createPrenotazioni.length,
         prenotazioni: createPrenotazioni,
-        crediti_rimanenti: atleta.crediti,
+        crediti_rimanenti: walletOwner.crediti,
         messaggio: `${createPrenotazioni.length} sessioni prenotate con successo!`
       })
     );
   }
   if (pathname === "/app-api/prenotazioni" && method === "POST") {
-    const atletaId = parsedBody.atleta_id || currentUser.id;
-    const atleta = (db.profili_utenti || []).find((p) => p.id === atletaId || p.email === atletaId) || currentUser;
+    const atletaId = parsedBody.atleta_id || parsedBody.email_cliente || currentUser.id;
+    const atleta = (db.profili_utenti || []).find(
+      (p) => p.id === atletaId || p.email?.toLowerCase() === atletaId?.toLowerCase() || p.email?.toLowerCase() === parsedBody.email_cliente?.toLowerCase()
+    ) || currentUser;
     const dataSlot = parsedBody.data;
     const orarioSlot = parsedBody.orario;
     if (!dataSlot || !orarioSlot) {
@@ -16070,27 +16192,29 @@ CALENDARIO E PRENOTAZIONI:
       );
     }
     const isManager = currentUser.ruolo === "manager";
+    const walletOwner = getWalletOwner(atleta, db);
+    const isShared = walletOwner && walletOwner.id !== atleta.id;
     if (!isManager) {
-      if ((atleta.crediti ?? 0) <= 0) {
+      if ((walletOwner.crediti ?? 0) <= 0) {
         res.statusCode = 403;
         return res.end(
           JSON.stringify({
-            error: "Crediti esauriti o saldo a debito. Acquista un nuovo pacchetto lab per procedere con la prenotazione.",
+            error: isShared ? `Crediti esauriti sul borsellino condiviso (${walletOwner.nome} ${walletOwner.cognome}). Rinnova il pacchetto per procedere con la prenotazione.` : "Crediti esauriti o saldo a debito. Acquista un nuovo pacchetto lab per procedere con la prenotazione.",
             motivo: "crediti_insufficienti",
-            crediti: atleta.crediti
+            crediti: walletOwner.crediti
           })
         );
       }
-      if (atleta.data_scadenza_crediti) {
-        const scadenza = new Date(atleta.data_scadenza_crediti);
+      if (walletOwner.data_scadenza_crediti) {
+        const scadenza = new Date(walletOwner.data_scadenza_crediti);
         const dataPrenotazione = new Date(dataSlot);
         if (dataPrenotazione > scadenza) {
           res.statusCode = 403;
           return res.end(
             JSON.stringify({
-              error: `Il tuo pacchetto crediti \xE8 scaduto il ${atleta.data_scadenza_crediti}. Rinnova il pacchetto per prenotare questa data.`,
+              error: `Il pacchetto crediti \xE8 scaduto il ${walletOwner.data_scadenza_crediti}. Rinnova il pacchetto per prenotare questa data.`,
               motivo: "crediti_scaduti",
-              scadenza: atleta.data_scadenza_crediti
+              scadenza: walletOwner.data_scadenza_crediti
             })
           );
         }
@@ -16113,8 +16237,9 @@ CALENDARIO E PRENOTAZIONI:
         }
       }
     }
-    atleta.crediti = (atleta.crediti ?? 0) - 1;
+    walletOwner.crediti = (walletOwner.crediti ?? 0) - 1;
     atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
     const nuovaPrenotazione = {
       id: `bk-${Date.now()}`,
       data: dataSlot,
@@ -16130,13 +16255,13 @@ CALENDARIO E PRENOTAZIONI:
     };
     db.prenotazioni_slot.push(nuovaPrenotazione);
     addMovimentoCrediti(db, {
-      atleta_id: atleta.id,
-      email_cliente: atleta.email,
-      nome_cliente: nuovaPrenotazione.nome_cliente,
+      atleta_id: walletOwner.id,
+      email_cliente: walletOwner.email,
+      nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
       tipo: "prenotazione_slot",
       delta_crediti: -1,
-      saldo_risultante: atleta.crediti,
-      motivazione: `Prenotazione slot del ${dataSlot} ore ${orarioSlot}`,
+      saldo_risultante: walletOwner.crediti,
+      motivazione: isShared ? `Prenotazione slot del ${dataSlot} ore ${orarioSlot} per ${atleta.nome} ${atleta.cognome} [Borsellino Condiviso]` : `Prenotazione slot del ${dataSlot} ore ${orarioSlot}`,
       operatore: isManager ? "coach" : "atleta"
     });
     saveData(db);
@@ -16148,7 +16273,7 @@ CALENDARIO E PRENOTAZIONI:
       JSON.stringify({
         ok: true,
         prenotazione: nuovaPrenotazione,
-        crediti_rimanenti: atleta.crediti,
+        crediti_rimanenti: walletOwner.crediti,
         messaggio: `Slot confermato per il ${dataSlot} alle ${orarioSlot}. Ti aspettiamo al Lab!`,
         notifica: {
           email_inviata: true,
@@ -16171,6 +16296,8 @@ CALENDARIO E PRENOTAZIONI:
     const atleta = (db.profili_utenti || []).find(
       (p) => p.email === bk.email_cliente || p.id === bk.atleta_id
     );
+    const walletOwner = atleta ? getWalletOwner(atleta, db) : null;
+    const isShared = walletOwner && atleta && walletOwner.id !== atleta.id;
     const oreLimite = atleta?.tempo_cancellazione_ore || db.configurazione_lab?.tempo_cancellazione_ore || 24;
     const slotTimestamp = (/* @__PURE__ */ new Date(`${bk.data}T${bk.orario}:00`)).getTime();
     const nowTimestamp = Date.now();
@@ -16182,28 +16309,28 @@ CALENDARIO E PRENOTAZIONI:
     if (orePreavviso >= oreLimite || isManager) {
       rimborsato = true;
       statoFinale = "cancellata_in_tempo";
-      if (bk.credito_scalato && atleta) {
-        atleta.crediti = (atleta.crediti ?? 0) + 1;
+      if (bk.credito_scalato && atleta && walletOwner) {
+        walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
         let prorogaMsg = "";
-        if (isManager && prorogaRequested && atleta.data_scadenza_crediti) {
-          const scadenzaDate = /* @__PURE__ */ new Date(atleta.data_scadenza_crediti + "T00:00:00");
+        if (isManager && prorogaRequested && walletOwner.data_scadenza_crediti) {
+          const scadenzaDate = /* @__PURE__ */ new Date(walletOwner.data_scadenza_crediti + "T00:00:00");
           scadenzaDate.setDate(scadenzaDate.getDate() + 7);
           const y = scadenzaDate.getFullYear();
           const m = String(scadenzaDate.getMonth() + 1).padStart(2, "0");
           const d = String(scadenzaDate.getDate()).padStart(2, "0");
-          atleta.data_scadenza_crediti = `${y}-${m}-${d}`;
+          walletOwner.data_scadenza_crediti = `${y}-${m}-${d}`;
           prorogaMsg = ` (Scadenza carnet prorogata al ${(/* @__PURE__ */ new Date(
-            atleta.data_scadenza_crediti + "T00:00:00"
+            walletOwner.data_scadenza_crediti + "T00:00:00"
           )).toLocaleDateString("it-IT")})`;
         }
         addMovimentoCrediti(db, {
-          atleta_id: atleta.id,
-          email_cliente: atleta.email,
-          nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+          atleta_id: walletOwner.id,
+          email_cliente: walletOwner.email,
+          nome_cliente: `${walletOwner.nome} ${walletOwner.cognome}`.trim(),
           tipo: "rimborso_cancellazione",
           delta_crediti: 1,
-          saldo_risultante: atleta.crediti,
-          motivazione: isManager ? prorogaRequested ? `Rimborso slot ${bk.data} ${bk.orario} [Con proroga scadenza carnet +7gg]` : `Ripristino credito per cancellazione/spostamento slot ${bk.data} ${bk.orario}` : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}`,
+          saldo_risultante: walletOwner.crediti,
+          motivazione: isManager ? prorogaRequested ? `Rimborso slot ${bk.data} ${bk.orario} per ${atleta.nome} ${atleta.cognome}${isShared ? " [Borsellino Condiviso]" : ""} [Con proroga scadenza carnet +7gg]` : `Ripristino credito per cancellazione/spostamento slot ${bk.data} ${bk.orario} per ${atleta.nome} ${atleta.cognome}${isShared ? " [Borsellino Condiviso]" : ""}` : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}${isShared ? " [Borsellino Condiviso]" : ""}`,
           operatore: isManager ? "coach" : "atleta"
         });
         messaggio = isManager ? prorogaRequested ? `Sessione annullata dal Coach. 1 credito riaccreditato e scadenza prorogata di 7 giorni.` : `Sessione annullata dal Coach. 1 credito riaccreditato per consentire lo spostamento dello slot.` : `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
@@ -16216,14 +16343,14 @@ CALENDARIO E PRENOTAZIONI:
     } else {
       rimborsato = false;
       statoFinale = "cancellata_tardiva";
-      if (atleta) {
+      if (atleta && walletOwner) {
         addMovimentoCrediti(db, {
-          atleta_id: atleta.id,
-          email_cliente: atleta.email,
-          nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+          atleta_id: walletOwner.id,
+          email_cliente: walletOwner.email,
+          nome_cliente: `${walletOwner.nome} ${walletOwner.cognome}`.trim(),
           tipo: "penalty",
           delta_crediti: 0,
-          saldo_risultante: atleta.crediti,
+          saldo_risultante: walletOwner.crediti,
           motivazione: `Cancellazione tardiva slot del ${bk.data} ${bk.orario} (preavviso < ${oreLimite}h: credito trattenuto)`,
           operatore: "sistema"
         });
@@ -16252,7 +16379,7 @@ CALENDARIO E PRENOTAZIONI:
         stato: statoFinale,
         ore_preavviso: Math.round(orePreavviso * 10) / 10,
         ore_limite: oreLimite,
-        crediti_attuali: atleta?.crediti,
+        crediti_attuali: walletOwner ? walletOwner.crediti : atleta?.crediti,
         messaggio,
         notifica: {
           email_inviata: true,

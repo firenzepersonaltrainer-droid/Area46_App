@@ -47,6 +47,8 @@ import {
   Bot,
   BookOpen,
   LogOut,
+  Share2,
+  Crown,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -618,6 +620,28 @@ export default function AreaPersonalePage() {
           </span>
         </div>
       </div>
+
+      {/* BANNER INFORMATIVO BORSELLINO CONDIVISO */}
+      {user?.is_shared_wallet && (
+        <div className="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-950 flex items-start gap-2.5 shadow-2xs">
+          <Share2 className="size-4 text-indigo-600 shrink-0 mt-0.5" />
+          <div className="text-xs leading-relaxed">
+            <span className="font-bold text-indigo-900">Borsellino Condiviso attivo:</span> Condividi il pacchetto crediti con{" "}
+            <strong>{user.shared_master_nome || "il Titolare"}</strong>. Le tue prenotazioni scalano automaticamente dal monte crediti comune, mentre il tuo calendario, i tuoi allenamenti e il diario restano 100% personali e privati.
+          </div>
+        </div>
+      )}
+
+      {user?.is_wallet_master && (
+        <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 flex items-start gap-2.5 shadow-2xs">
+          <Crown className="size-4 text-amber-700 shrink-0 mt-0.5" />
+          <div className="text-xs leading-relaxed">
+            <span className="font-bold text-amber-900">Sei Titolare del Borsellino Condiviso:</span> Hai{" "}
+            <strong>{user.shared_partners_count} partner collegat{user.shared_partners_count === 1 ? "o" : "i"}</strong>{" "}
+            {user.shared_partner_names?.length ? `(${user.shared_partner_names.join(", ")})` : ""} che attinge al tuo pacchetto crediti. Le ricevute e i pagamenti sono intestati al tuo profilo.
+          </div>
+        </div>
+      )}
 
       {/* TABS DI NAVIGAZIONE INTERNA */}
       <div className="grid grid-cols-4 gap-1 p-1 rounded-2xl bg-zinc-200/80 text-xs font-bold text-zinc-600">

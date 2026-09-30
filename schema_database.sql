@@ -251,6 +251,7 @@ CREATE TABLE IF NOT EXISTS profili_utenti (
   data_scadenza_crediti   date,
   data_ultimo_accesso     timestamptz DEFAULT now(),
   note_coach              text,
+  shared_wallet_with      text REFERENCES profili_utenti(id),
   created_at              timestamptz DEFAULT now(),
   updated_at              timestamptz DEFAULT now()
 );

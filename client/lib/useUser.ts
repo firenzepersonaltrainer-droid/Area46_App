@@ -34,6 +34,12 @@ export interface UserProfile {
   data_inizio_abbonamento?: string;
   stripe_subscription_id?: string;
   stripe_customer_id?: string;
+  shared_wallet_with?: string | null;
+  is_shared_wallet?: boolean;
+  shared_master_nome?: string;
+  is_wallet_master?: boolean;
+  shared_partners_count?: number;
+  shared_partner_names?: string[];
 }
 
 export interface MovimentoCrediti {

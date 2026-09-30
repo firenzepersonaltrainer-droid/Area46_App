@@ -35,6 +35,8 @@ import {
   Receipt,
   TrendingUp,
   Trash2,
+  Share2,
+  Crown,
 } from "lucide-react";
 import { PerformanceModal } from "../components/PerformanceModal";
 import { Button } from "../components/Button";
@@ -254,6 +256,7 @@ export default function ManagerAtletiPage() {
     if (atleta) {
       setEditForm({
         ...atleta,
+        shared_wallet_with: atleta.shared_wallet_with || "",
         tempo_cancellazione_ore: atleta.tempo_cancellazione_ore || 24,
         tempo_anticipo_prenotazione_ore: atleta.tempo_anticipo_prenotazione_ore ?? 24,
       });
@@ -266,6 +269,7 @@ export default function ManagerAtletiPage() {
         codice_fiscale: "",
         indirizzo: "",
         crediti: 10,
+        shared_wallet_with: "",
         tempo_cancellazione_ore: 24,
         tempo_anticipo_prenotazione_ore: 24,
         data_scadenza_crediti: new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10),
@@ -436,6 +440,19 @@ export default function ManagerAtletiPage() {
                       <h3 className="text-base font-black text-zinc-900 leading-tight">
                         {atleta.nome} {atleta.cognome}
                       </h3>
+                      {atleta.is_shared_wallet && (
+                        <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center gap-1 shadow-2xs">
+                          <Share2 className="size-2.5 text-indigo-600" />
+                          Condiviso con {atleta.shared_master_nome || "Master"}
+                        </span>
+                      )}
+                      {atleta.is_wallet_master && (
+                        <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300 flex items-center gap-1 shadow-2xs">
+                          <Crown className="size-2.5 text-amber-600" />
+                          Titolare Borsellino ({atleta.shared_partners_count || 1}{" "}
+                          {atleta.shared_partners_count === 1 ? "partner" : "partner"})
+                        </span>
+                      )}
                       {atleta.stato_iscrizione === "dismesso" && (
                         <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-300">
                           Dismesso
@@ -483,6 +500,16 @@ export default function ManagerAtletiPage() {
                         })}`
                       : "Senza scadenza"}
                   </div>
+                  {atleta.is_shared_wallet && (
+                    <div className="text-[9px] font-bold text-indigo-600 mt-0.5">
+                      Borsellino comune
+                    </div>
+                  )}
+                  {atleta.is_wallet_master && (
+                    <div className="text-[9px] font-bold text-amber-700 mt-0.5">
+                      Monte crediti comune
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -888,6 +915,40 @@ export default function ManagerAtletiPage() {
               <p className="text-[10px] text-zinc-400 mt-1">
                 L&apos;atleta può prenotare con almeno <strong>{editForm.tempo_anticipo_prenotazione_ore ?? 24} ore</strong> di anticipo rispetto all&apos;orario dello slot.
               </p>
+            </div>
+
+            {/* SEZIONE BORSELLINO CREDITI CONDIVISO (SOLUZIONE MASTER & PARTNER) */}
+            <div className="p-3 bg-indigo-50/50 border border-indigo-100 rounded-2xl space-y-2 mt-2">
+              <label className="text-[10px] font-bold uppercase text-indigo-900 flex items-center gap-1.5">
+                <Share2 className="size-3.5 text-[#1c00ff]" />
+                Borsellino Crediti Condiviso (Partner & Coppie)
+              </label>
+              <p className="text-[10px] text-zinc-600 leading-tight">
+                Consente a due o più atleti di usufruire dello stesso pacchetto con un solo pagamento/fisco a carico del titolare, mantenendo app, calendario e diario 100% individuali.
+              </p>
+              <div>
+                <select
+                  value={editForm.shared_wallet_with || ""}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, shared_wallet_with: e.target.value })
+                  }
+                  className="w-full bg-white border border-zinc-200 rounded-xl px-3 py-2 text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#1c00ff]"
+                >
+                  <option value="">🔘 Borsellino Autonomo (Personale)</option>
+                  {atleti
+                    .filter((a) => a.id !== editForm.id && a.ruolo === "atleta")
+                    .map((a) => (
+                      <option key={a.id} value={a.id}>
+                        🤝 Condiviso con {a.nome} {a.cognome} ({a.crediti} crediti attuali)
+                      </option>
+                    ))}
+                </select>
+              </div>
+              {editForm.shared_wallet_with && (
+                <div className="p-2 bg-indigo-100/70 border border-indigo-200 rounded-xl text-[11px] text-indigo-950 font-medium leading-relaxed">
+                  💡 Questo atleta scalerà automaticamente le sessioni dal pacchetto del titolare selezionato e ne condividerà la scadenza. Le sue prenotazioni a calendario e il suo diario di allenamento resteranno del tutto privati e separati.
+                </div>
+              )}
             </div>
           </div>
 
