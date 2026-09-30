@@ -77,7 +77,7 @@ export default function DesktopControlPanel() {
   }, []);
 
   // Conteggi e metriche rapide per la topbar
-  const atletiAttivi = profili.filter((p) => p.ruolo === "atleta" && p.stato_iscrizione !== "dismesso").length;
+  const atletiAttivi = profili.filter((p) => p.ruolo === "atleta").length;
   const atletiInScadenza = profili.filter(
     (p) => p.ruolo === "atleta" && p.avviso_scadenza && p.stato_iscrizione !== "dismesso"
   ).length;
@@ -113,7 +113,7 @@ export default function DesktopControlPanel() {
           <div className="p-4 rounded-2xl bg-zinc-800/50 border border-zinc-700/60 text-left space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="text-zinc-400">Account Manager:</span>
-              <strong className="text-white font-mono">coach@area46.it</strong>
+              <strong className="text-white font-mono">firenzepersonaltrainer@gmail.com</strong>
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-zinc-400">Coach Titolare:</span>

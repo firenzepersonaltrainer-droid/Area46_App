@@ -208,11 +208,19 @@ async function tryLoadConfigFromGoogleDrive() {
       const existingMap = new Map((db.profili_utenti || []).map((p: any) => [p.id, p]));
       for (const p of driveDb.profili_utenti) {
         if (!db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())) {
+          if (p.id === "usr-coach-01") {
+            p.email = "firenzepersonaltrainer@gmail.com";
+            p.nome = "Stefano";
+            p.cognome = "Tronconi";
+            p.name = "Stefano Tronconi";
+            p.ruolo = "manager";
+          }
           existingMap.set(p.id, { ...(existingMap.get(p.id) || {}), ...p });
         }
       }
       db.profili_utenti = Array.from(existingMap.values());
     }
+    db.active_user_id = null;
     if (driveDb.prenotazioni_cancellate && Array.isArray(driveDb.prenotazioni_cancellate)) {
       db.prenotazioni_cancellate = Array.from(
         new Set([...(db.prenotazioni_cancellate || []), ...driveDb.prenotazioni_cancellate])

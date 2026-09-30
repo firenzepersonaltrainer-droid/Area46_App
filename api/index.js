@@ -14294,7 +14294,7 @@ var demo_data_default = {
       ruolo: "manager",
       crediti: 998,
       data_scadenza_crediti: "2099-12-31",
-      data_ultimo_accesso: "2026-09-30T12:19:40.950Z",
+      data_ultimo_accesso: "2026-09-30T12:37:48.670Z",
       note_coach: "Head Coach & Amministratore Lab",
       tempo_cancellazione_ore: 12,
       name: "Stefano Tronconi",
@@ -14787,7 +14787,12 @@ var demo_data_default = {
     "usr-bw-1953606",
     "a46firenze@gmail.com",
     "usr-bw-1953979",
-    "vallycamera@hotmail.it"
+    "vallycamera@hotmail.it",
+    "usr-atleta-01",
+    "mario.rossi@example.com",
+    "usr-atleta-02",
+    "laura.bianchi@example.com",
+    "coach@area46.it"
   ]
 };
 
@@ -14980,11 +14985,19 @@ async function tryLoadConfigFromGoogleDrive() {
       const existingMap = new Map((db.profili_utenti || []).map((p) => [p.id, p]));
       for (const p of driveDb.profili_utenti) {
         if (!db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())) {
+          if (p.id === "usr-coach-01") {
+            p.email = "firenzepersonaltrainer@gmail.com";
+            p.nome = "Stefano";
+            p.cognome = "Tronconi";
+            p.name = "Stefano Tronconi";
+            p.ruolo = "manager";
+          }
           existingMap.set(p.id, { ...existingMap.get(p.id) || {}, ...p });
         }
       }
       db.profili_utenti = Array.from(existingMap.values());
     }
+    db.active_user_id = null;
     if (driveDb.prenotazioni_cancellate && Array.isArray(driveDb.prenotazioni_cancellate)) {
       db.prenotazioni_cancellate = Array.from(
         /* @__PURE__ */ new Set([...db.prenotazioni_cancellate || [], ...driveDb.prenotazioni_cancellate])

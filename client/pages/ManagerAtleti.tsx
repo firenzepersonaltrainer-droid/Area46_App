@@ -217,9 +217,7 @@ export default function ManagerAtletiPage() {
     },
   });
 
-  const atleti = profili.filter(
-    (p) => p.ruolo === "atleta" && !isAthleteDeleted(p.id) && !isAthleteDeleted(p.email)
-  );
+  const atleti = profili.filter((p) => p.ruolo === "atleta");
 
   const filteredAtleti = atleti.filter((a) => {
     const q = search.toLowerCase();

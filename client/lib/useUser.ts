@@ -298,35 +298,27 @@ export function useProfili() {
   const { data: profili = [], isLoading, refetch } = useQuery<UserProfile[]>({
     queryKey: ["profili"],
     queryFn: async () => {
-      let list: UserProfile[] = [];
+      // Pulizia automatica delle vecchie chiavi locali legacy per evitare disallineamenti tra desktop e mobile
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.removeItem("area46_custom_athletes_v1");
+          localStorage.removeItem("area46_deleted_athletes_v1");
+        } catch {}
+      }
+
       try {
         const res = await fetch("/app-api/profili");
         if (res.ok) {
-          list = await res.json();
+          const list = await res.json();
+          if (Array.isArray(list)) return list;
         }
       } catch (e) {
         console.error("Errore fetch profili:", e);
       }
 
-      // Recupera atleti custom salvati localmente per resilienza Vercel / cold start
-      const localCustom = getCustomAthletes();
-      for (const custom of localCustom) {
-        const exists = list.some(
-          (p) => p.id === custom.id || p.email?.toLowerCase().trim() === custom.email?.toLowerCase().trim()
-        );
-        if (!exists) {
-          list.push(custom);
-          // Auto-reidratazione backend asincrona
-          fetch("/app-api/profili", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(custom),
-          }).catch(() => {});
-        }
-      }
-
-      return list.filter((p) => !isAthleteDeleted(p.id) && !isAthleteDeleted(p.email));
+      return [];
     },
+    staleTime: 5000,
   });
 
   const modificaCrediti = useMutation({
@@ -768,15 +760,8 @@ export function removeCustomAthleteLocally(idOrEmail: string) {
 }
 
 export function isAthleteDeleted(idOrEmail?: string): boolean {
-  if (!idOrEmail) return false;
-  const val = idOrEmail.toLowerCase().trim();
-  // Se l'atleta è nei custom athletes salvati/attivi, non è cancellato
-  const custom = getCustomAthletes();
-  if (custom.some((c) => c.id === val || c.email?.toLowerCase().trim() === val)) {
-    return false;
-  }
-  const deleted = getDeletedAthleteIds();
-  return deleted.includes(val);
+  // L'autorità sulla cancellazione atleti è unicamente il backend/Google Drive (db.utenti_cancellati)
+  return false;
 }
 
 export const DELETED_BOOKINGS_STORAGE_KEY = "area46_deleted_bookings_v1";
