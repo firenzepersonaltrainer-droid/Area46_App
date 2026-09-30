@@ -372,9 +372,8 @@ export function useProfili() {
       }
       return res.json();
     },
-    onSuccess: (savedUser: UserProfile) => {
+    onSuccess: (savedUser: any) => {
       if (savedUser && savedUser.id) {
-        saveCustomAthleteLocally(savedUser);
         unmarkAthleteDeleted(savedUser.id);
         if (savedUser.email) unmarkAthleteDeleted(savedUser.email);
 

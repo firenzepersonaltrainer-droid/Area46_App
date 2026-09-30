@@ -31,7 +31,7 @@ export default function LoginPage() {
   // Se l'utente è già loggato, reindirizza
   useEffect(() => {
     if (user) {
-      navigate(user.ruolo === "manager" ? "/manager/calendario" : "/account");
+      navigate(user.ruolo === "manager" ? "/manager/calendario" : "/");
     }
   }, [user, navigate]);
 
@@ -74,7 +74,7 @@ export default function LoginPage() {
         code: otpCode,
       });
       if (res.user) {
-        navigate(res.user.ruolo === "manager" ? "/manager/calendario" : "/account");
+        navigate(res.user.ruolo === "manager" ? "/manager/calendario" : "/");
       }
     } catch (err: any) {
       toast.error(err.message || "Codice non valido o scaduto.");
@@ -102,7 +102,7 @@ export default function LoginPage() {
         name: nameToUse,
       });
       if (res.user) {
-        navigate(res.user.ruolo === "manager" ? "/manager/calendario" : "/account");
+        navigate(res.user.ruolo === "manager" ? "/manager/calendario" : "/");
       }
     } catch (err: any) {
       toast.error(err.message || "Accesso social non riuscito.");

@@ -14793,6 +14793,192 @@ var demo_data_default = {
     "usr-atleta-02",
     "laura.bianchi@example.com",
     "coach@area46.it"
+  ],
+  notifiche_email: [
+    {
+      id: "email-1790772858412-131",
+      destinatario: "nuovo.atleta.1790772858406@example.com",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: nuovo.atleta.1790772858406@example.com
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: nuovo.atleta.1790772858406@example.com<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com`,
+      inviato_il: "2026-09-30T12:54:18.412Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790772824808-714",
+      destinatario: "nuovo.atleta.1790772824797@example.com",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: nuovo.atleta.1790772824797@example.com
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: nuovo.atleta.1790772824797@example.com<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com`,
+      inviato_il: "2026-09-30T12:53:44.809Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790772787801-320",
+      destinatario: "nuovo.atleta.1790772787776@example.com",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: nuovo.atleta.1790772787776@example.com
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: nuovo.atleta.1790772787776@example.com<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com`,
+      inviato_il: "2026-09-30T12:53:07.801Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790772770187-632",
+      destinatario: "nuovo.atleta.1790772770099@example.com",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: nuovo.atleta.1790772770099@example.com
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: nuovo.atleta.1790772770099@example.com<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com`,
+      inviato_il: "2026-09-30T12:52:50.187Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    }
   ]
 };
 
@@ -15046,6 +15232,46 @@ function parseCookies(cookieHeader) {
   });
   return list;
 }
+async function sendEmailNotification(params) {
+  const emailRecord = {
+    id: `email-${Date.now()}-${Math.floor(Math.random() * 1e3)}`,
+    destinatario: params.to,
+    oggetto: params.subject,
+    corpo: params.body,
+    html: params.html || params.body.replace(/\n/g, "<br>"),
+    inviato_il: (/* @__PURE__ */ new Date()).toISOString(),
+    tipo: params.tipo || "sistema",
+    stato: "inviata"
+  };
+  db.notifiche_email = db.notifiche_email || [];
+  db.notifiche_email.unshift(emailRecord);
+  const resendApiKey = db.configurazione_lab?.resend_api_key || process.env.RESEND_API_KEY;
+  if (resendApiKey) {
+    try {
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: "Area46 Landmine Lab <notifiche@area46lab.it>",
+          to: [params.to],
+          subject: params.subject,
+          text: params.body,
+          html: emailRecord.html
+        })
+      });
+      console.log(`[EMAIL DISPATCH] Inviata con successo via Resend a ${params.to}`);
+    } catch (err) {
+      console.warn(`[EMAIL DISPATCH ERROR]`, err);
+    }
+  } else {
+    console.log(`[NOTIFICA EMAIL REGISTRATA] A: ${params.to} | Oggetto: ${params.subject}`);
+  }
+  saveData(db);
+  return emailRecord;
+}
 function getHydratedUser(user, database) {
   if (!user) return null;
   const walletOwner = getWalletOwner(user, database);
@@ -15254,6 +15480,32 @@ async function handleLocalApi(req, res, next) {
     db.profili_utenti.push(nuovoAtleta);
     saveData(db);
     await syncDataToGoogleDrive(db);
+    const emailCoach = db.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
+    const notificaCoachBody = `
+NOTIFICA NUOVO ACCESSO ATLETA \u2014 AREA46 TRAINING LAB
+=============================================================================
+Data e Ora: ${(/* @__PURE__ */ new Date()).toLocaleString("it-IT")}
+Evento: Un nuovo atleta ha effettuato il primo accesso all'applicazione
+
+DATI DEL NUOVO ATLETA:
+- Nome e Cognome: ${nuovoAtleta.nome} ${nuovoAtleta.cognome}
+- Email: ${nuovoAtleta.email}
+- Ruolo: Atleta
+- Saldo Crediti: 0 crediti
+
+STATO ACCOUNT:
+L'atleta \xE8 stato aggiunto automaticamente all'anagrafica del tuo gestionale.
+Ha accesso immediato e gratuito a tutti i programmi di allenamento del Lab.
+Puoi visualizzare la sua posizione, assegnare crediti o configurare pacchetti
+direttamente dal Pannello Manager Atleti.
+=============================================================================
+      `.trim();
+    await sendEmailNotification({
+      to: emailCoach,
+      subject: `[AREA46 NOTIFICA] Nuovo Atleta Registrato \u2014 ${nuovoAtleta.nome} ${nuovoAtleta.cognome}`,
+      body: notificaCoachBody,
+      tipo: "nuovo_utente_registrato"
+    });
     res.setHeader(
       "Set-Cookie",
       `area46_user_id=${encodeURIComponent(nuovoAtleta.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
@@ -15276,7 +15528,9 @@ async function handleLocalApi(req, res, next) {
     let found = (db.profili_utenti || []).find(
       (u) => u.email?.toLowerCase() === email
     );
+    let isNewOauth = false;
     if (!found) {
+      isNewOauth = true;
       found = {
         id: `usr-${provider}-${Date.now()}`,
         email,
@@ -15295,6 +15549,34 @@ async function handleLocalApi(req, res, next) {
       db.profili_utenti.push(found);
       saveData(db);
       await syncDataToGoogleDrive(db);
+      if (found.ruolo === "atleta") {
+        const emailCoach = db.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
+        const notificaSocialBody = `
+NOTIFICA NUOVO ACCESSO SOCIAL ATLETA \u2014 AREA46 TRAINING LAB
+=============================================================================
+Data e Ora: ${(/* @__PURE__ */ new Date()).toLocaleString("it-IT")}
+Evento: Un nuovo atleta ha effettuato il primo accesso tramite social (${provider.toUpperCase()})
+
+DATI DEL NUOVO ATLETA:
+- Nome e Cognome: ${found.nome} ${found.cognome}
+- Email: ${found.email}
+- Ruolo: Atleta
+- Saldo Crediti: 0 crediti
+
+STATO ACCOUNT:
+L'atleta \xE8 stato aggiunto automaticamente all'anagrafica del tuo gestionale.
+Ha accesso immediato e gratuito a tutti i programmi di allenamento del Lab.
+Puoi visualizzare la sua posizione, assegnare crediti o configurare pacchetti
+direttamente dal Pannello Manager Atleti.
+=============================================================================
+          `.trim();
+        await sendEmailNotification({
+          to: emailCoach,
+          subject: `[AREA46 NOTIFICA] Nuovo Atleta Registrato \u2014 ${found.nome} ${found.cognome}`,
+          body: notificaSocialBody,
+          tipo: "nuovo_utente_registrato"
+        });
+      }
     } else {
       found.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
       saveData(db);
@@ -15303,7 +15585,7 @@ async function handleLocalApi(req, res, next) {
       "Set-Cookie",
       `area46_user_id=${encodeURIComponent(found.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
     );
-    return res.end(JSON.stringify({ ok: true, user: getHydratedUser(found, db) }));
+    return res.end(JSON.stringify({ ok: true, user: getHydratedUser(found, db), isNew: isNewOauth }));
   }
   if (pathname === "/app-api/auth/switch-user" && method === "POST") {
     const targetId = parsedBody.userId;
@@ -15504,10 +15786,59 @@ async function handleLocalApi(req, res, next) {
         operatore: "coach"
       });
     }
+    let notificaEmail = null;
+    if (existingIndex < 0 && nuovo.ruolo === "atleta" && nuovo.email.includes("@")) {
+      const appUrl = "https://area46-app.vercel.app";
+      const welcomeBody = `
+Ciao ${nuovo.nome}!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: ${appUrl}
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: ${appUrl}
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: ${nuovo.email}
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com
+        `.trim();
+      notificaEmail = await sendEmailNotification({
+        to: nuovo.email,
+        subject: `Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F`,
+        body: welcomeBody,
+        tipo: "benvenuto_nuovo_atleta"
+      });
+    }
     saveData(db);
     await syncDataToGoogleDrive(db);
     res.statusCode = 201;
-    return res.end(JSON.stringify(nuovo));
+    return res.end(JSON.stringify({ ...nuovo, notifica_email: notificaEmail, isNew: existingIndex < 0 }));
   }
   const modCreditiMatch = pathname.match(/^\/app-api\/profili\/([a-zA-Z0-9_-]+)\/modifica-crediti$/);
   if (modCreditiMatch && method === "POST") {

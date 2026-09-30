@@ -148,16 +148,16 @@ export function WalletBar() {
           )}
 
           {!hasDebt && isZeroCredits && (
-            <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-semibold flex items-center justify-between gap-2">
+            <div className="p-2 rounded-xl bg-blue-50/80 border border-blue-200 text-blue-900 text-[11px] font-semibold flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5">
-                <AlertTriangle className="size-3.5 text-amber-600 shrink-0" />
-                <span>Crediti esauriti. Le prenotazioni degli slot sono temporaneamente bloccate.</span>
+                <Sparkles className="size-3.5 text-[#1c00ff] shrink-0" />
+                <span>Programmi di allenamento gratuiti sempre attivi! Ricarica crediti solo per prenotare le postazioni in presenza al Lab.</span>
               </div>
               <Link
                 to="/tariffario"
-                className="text-amber-950 font-bold underline shrink-0 flex items-center gap-0.5"
+                className="text-[#1c00ff] font-bold underline shrink-0 flex items-center gap-0.5"
               >
-                Ricarica <ArrowRight className="size-3" />
+                Tariffe Lab <ArrowRight className="size-3" />
               </Link>
             </div>
           )}

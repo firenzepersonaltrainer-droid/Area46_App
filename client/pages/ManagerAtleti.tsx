@@ -37,6 +37,9 @@ import {
   Trash2,
   Share2,
   Crown,
+  Smartphone,
+  Send,
+  Sparkles,
 } from "lucide-react";
 import { PerformanceModal } from "../components/PerformanceModal";
 import { Button } from "../components/Button";
@@ -77,6 +80,10 @@ export default function ManagerAtletiPage() {
   // Modale Anagrafica / Nuovo Atleta
   const [anagraficaModalOpen, setAnagraficaModalOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<UserProfile>>({});
+
+  // Modale Benvenuto Nuovo Atleta & Istruzioni PWA
+  const [welcomeModalOpen, setWelcomeModalOpen] = useState(false);
+  const [welcomeAtletaData, setWelcomeAtletaData] = useState<any | null>(null);
 
   // Modale Storico Crediti (Audit Ledger)
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
@@ -325,6 +332,7 @@ export default function ManagerAtletiPage() {
     const fallbackEmail = `${cleanNome.toLowerCase().replace(/[^a-z0-9]/g, "")}.${cleanCognome.toLowerCase().replace(/[^a-z0-9]/g, "")}${Date.now().toString().slice(-4)}@area46lab.it`;
     const cleanEmail = editForm.email?.trim() ? editForm.email.trim().toLowerCase() : fallbackEmail;
 
+    const isNew = !editForm.id;
     const payload: any = {
       ...editForm,
       nome: cleanNome,
@@ -337,8 +345,15 @@ export default function ManagerAtletiPage() {
     };
 
     try {
-      await salvaProfilo(payload);
+      const res = await salvaProfilo(payload);
       setAnagraficaModalOpen(false);
+      if (isNew) {
+        setWelcomeAtletaData({
+          atleta: res || payload,
+          notifica: res?.notifica_email,
+        });
+        setWelcomeModalOpen(true);
+      }
     } catch {
       // toast già gestito da hook
     }
@@ -1835,6 +1850,142 @@ export default function ManagerAtletiPage() {
                 setFutureBookingsModalOpen(false);
                 setAthleteForFutureBookings(null);
                 setBookingToCancelFromAtleta(null);
+              }}
+              className="w-full rounded-xl"
+            >
+              Chiudi
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE BENVENUTO NUOVO ATLETA & ISTRUZIONI PWA */}
+      <Dialog
+        open={welcomeModalOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setWelcomeModalOpen(false);
+            setWelcomeAtletaData(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-md p-6 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <div className="size-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <Sparkles className="size-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-base font-black text-zinc-900">
+                  Nuovo Atleta Registrato!
+                </DialogTitle>
+                <DialogDescription className="text-xs text-zinc-500 mt-0.5">
+                  Profilo censito con successo e notifica di benvenuto generata.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {welcomeAtletaData?.atleta && (
+            <div className="space-y-4 my-2">
+              {/* STATUS BADGE EMAIL */}
+              <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-start gap-2.5 text-xs">
+                <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <div className="font-bold">Notifica Email inviata all'atleta</div>
+                  <div className="text-[11px] text-emerald-800">
+                    Inviata a <strong>{welcomeAtletaData.atleta.email}</strong> con la guida completa passo-passo per iPhone e Android.
+                  </div>
+                </div>
+              </div>
+
+              {/* RIEPILOGO ATLETA */}
+              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-2 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500 font-bold uppercase text-[10px] tracking-wider">Atleta</span>
+                  <span className="font-black text-zinc-900">
+                    {welcomeAtletaData.atleta.nome} {welcomeAtletaData.atleta.cognome}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500 font-bold uppercase text-[10px] tracking-wider">Email</span>
+                  <span className="font-mono text-zinc-800">{welcomeAtletaData.atleta.email}</span>
+                </div>
+                {welcomeAtletaData.atleta.telefono && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-500 font-bold uppercase text-[10px] tracking-wider">Telefono</span>
+                    <span className="font-medium text-zinc-800">{welcomeAtletaData.atleta.telefono}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center pt-1 border-t border-zinc-200/60">
+                  <span className="text-zinc-500 font-bold uppercase text-[10px] tracking-wider">Accesso Programmi</span>
+                  <span className="font-bold text-[#1c00ff]">Immediato & Gratuito (100%)</span>
+                </div>
+              </div>
+
+              {/* ANTEPRIMA GUIDA INSTALLAZIONE PWA SMARTPHONE */}
+              <div className="space-y-2">
+                <div className="text-xs font-black uppercase tracking-wider text-zinc-700 flex items-center gap-1.5">
+                  <Smartphone className="size-3.5 text-[#1c00ff]" />
+                  Guida Installazione Rapida Telefono
+                </div>
+                <div className="p-3 rounded-2xl bg-zinc-900 text-zinc-100 text-[11px] space-y-2 font-mono leading-relaxed select-text">
+                  <p className="text-[#e3ff00] font-bold">🍏 IPHONE (SAFARI):</p>
+                  <p className="text-zinc-300">
+                    1. Safari: https://area46-app.vercel.app<br />
+                    2. Icona Condividi ⎋ &rarr; "Aggiungi a schermata Home" (+)
+                  </p>
+                  <p className="text-[#e3ff00] font-bold pt-1">🤖 ANDROID (CHROME):</p>
+                  <p className="text-zinc-300">
+                    1. Chrome: https://area46-app.vercel.app<br />
+                    2. Menu ⋮ &rarr; "Installa app" / "Aggiungi a schermata Home"
+                  </p>
+                  <p className="text-emerald-400 font-bold pt-1">🔑 ACCESSO OTP:</p>
+                  <p className="text-zinc-300">
+                    Email {welcomeAtletaData.atleta.email} &rarr; Codice OTP numerico istantaneo
+                  </p>
+                </div>
+              </div>
+
+              {/* PULSANTI DI CONDIVISIONE RAPIDA */}
+              <div className="space-y-2 pt-1">
+                {/* WHATSAPP */}
+                <a
+                  href={`https://wa.me/${(welcomeAtletaData.atleta.telefono || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                    `Ciao ${welcomeAtletaData.atleta.nome}! Il Coach Stefano Tronconi ha creato il tuo profilo atleta in Area46 Landmine Lab! 🏋️‍♂️\n\nEcco come salvare e installare l'app sul display del tuo telefono:\n\n🍏 IPHONE (SAFARI):\n1. Apri con SAFARI: https://area46-app.vercel.app\n2. Tocca l'icona Condividi in basso (quadrato con freccetta ⎋)\n3. Scegli "Aggiungi alla schermata Home" (+)\n4. Tocca "Aggiungi"\n\n🤖 ANDROID (CHROME):\n1. Apri con GOOGLE CHROME: https://area46-app.vercel.app\n2. Tocca i tre puntini in alto a destra (⋮)\n3. Tocca "Installa app" o "Aggiungi a schermata Home"\n\n🔑 ACCESSO RAPIDO:\n1. Apri l'app dal tuo telefono\n2. Inserisci la tua email: ${welcomeAtletaData.atleta.email}\n3. Clicca su "Ricevi Codice di Accesso (OTP)" per entrare subito in sicurezza senza password complesse!`
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
+                >
+                  <Send className="size-3.5" />
+                  Invia Istruzioni su WhatsApp
+                </a>
+
+                {/* COPIA NEGLI APPUNTI */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const text = `Ciao ${welcomeAtletaData.atleta.nome}! Il Coach Stefano Tronconi ha creato il tuo profilo atleta in Area46 Landmine Lab! 🏋️‍♂️\n\nEcco come salvare e installare l'app sul display del tuo telefono:\n\n🍏 IPHONE (SAFARI):\n1. Apri con SAFARI: https://area46-app.vercel.app\n2. Tocca l'icona Condividi in basso (quadrato con freccetta ⎋)\n3. Scegli "Aggiungi alla schermata Home" (+)\n4. Tocca "Aggiungi"\n\n🤖 ANDROID (CHROME):\n1. Apri con GOOGLE CHROME: https://area46-app.vercel.app\n2. Tocca i tre puntini in alto a destra (⋮)\n3. Tocca "Installa app" o "Aggiungi a schermata Home"\n\n🔑 ACCESSO RAPIDO:\n1. Apri l'app dal tuo telefono\n2. Inserisci la tua email: ${welcomeAtletaData.atleta.email}\n3. Clicca su "Ricevi Codice di Accesso (OTP)" per entrare subito in sicurezza senza password complesse!`;
+                    navigator.clipboard.writeText(text);
+                    toast.success("Istruzioni copiate negli appunti!");
+                  }}
+                  className="w-full h-10 rounded-xl border-zinc-200 text-zinc-800 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Copy className="size-3.5" />
+                  Copia Testo per SMS o Messaggio
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="mt-2">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setWelcomeModalOpen(false);
+                setWelcomeAtletaData(null);
               }}
               className="w-full rounded-xl"
             >
