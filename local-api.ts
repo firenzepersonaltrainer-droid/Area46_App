@@ -79,6 +79,20 @@ function saveData(data: any) {
   }
 }
 
+const FALLBACK_SERVICE_ACCOUNT = {
+  type: "service_account",
+  project_id: "landmine-lab-level-pro",
+  private_key_id: "f12a0fb3f48bd15c458740288a8ca0762caf0617",
+  private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDpPC+nKFWPGxvF\nFRpBUCYWNruYlikCCB4dNVFifVTkof847hde7XzLDa8s+PAfhrxbX/vxjMlI+R9i\nogLrG5p46+S1eoflGNCwedeuNgGVqW4rqw+Hs5x3RetXPHPzq0coua3IQNI6x81g\nJjXTAhM5rTa+5L0bfCu4F/tYYAuJCiNGP+amrFw+iPnZsfwowgeOJaZ07bTgifMJ\n8rDTTBomPBDfzY8oHdv4SeDYGbywIvCjgiuXkF+649RpLLuRtk7rLL/9w7tXi35w\n1LdFbilaHA6bq4c4OJLZKT1j5T39EKshmuXLRzT2VZ1otv/RA4sZW27vmZTw+JNj\n0kj60G3/AgMBAAECggEACIX9i9NKhSdNdX9W7UobijZH1sSuDPf0+cZIChxgbNaK\nuC7jRcHSDK2cWD1ksRJAceppD6PAe103S2h2SNdCZubf/c3Th4jHn5tkSWaJ2klN\n0GS49ZGXxzgT6KU564631AItGqNby3AfzkK3NtXdk/8DgChlzMpV4q1lrw4bfc+C\nKPdIXYLP8M+MvjjoFpo+IIIGbL5Y1r+etmjLaOcJ6M23fPZ0vuS3RBcQoSltOpZi\nyXLegBuQrq+3W+3VOWzaPyh2VxmBkzvkmEGSb3nITzlCjC6qu1HFZIydH4T6IR19\npeIKqFm5HfG3wsS60iVNl8pjUuzBBfYLb27+eosISQKBgQD+Drnuv6w2R4Vk+Z1C\nb0THh8i65HDDyVL6DFR7tQ+T6s8K4g0VRsUSspS7JoIvfs6DlBDuAxLtxn5knsZG\nr/U0o6Nh7/GhaNkicuD4hKItSqWZURo1tnTqP2ZL+MQczpUEHlA+tgoHtEaYTPr1\n2ZWdjXYk9KxXnNDmT9F2amxg/QKBgQDrBLQb8jR5znNUH+5tB83ERg2CMjxs27w2\n4GIMUZot9Viu6SDQh7llrBJ92mrv2Z1kNMiTGBBVY2ljAHc4yE5yCNLaoH1EExiQ\nWhKrS01X/A4NPZxxrpqk00RryuQ9f1T719IhbeqbtdZmbrwwkR9/wta9YyKwlf3X\nCNdAfunJqwKBgC6gjUdgLj8YCUdq+I3E1h64sQJ8AqYsQOpbcPXzWRSQt8cLjdMl\n1e2EkP94JdSJtWU4u5KzRboWAAR/j2xRxvMORWIoI3S4RYGpC9kQnqMpXBMza1gI\nUJTdZezzjyqqT3ceCSQ5TMX1NC+nkTel42uzFsfZj/fUdBKQ+6R8C8ARAoGBAJ7z\nhnFkRhOgCyZ5lkONxKCcFKTbHz0s/MZMymO0iUfOKZXbPQNs2Hqof7U5FZx1HVtZ\ny9KYsutdmjiIZxozd8LurtWJOE/jbnirQvcxrfT1F/filL3aruMNtLgG+ImTZkIS\n/R74/XUk7gZHnOZoMNqzR5O9ygeO2qkmZJdNfweTAoGASpJvdiWY0OBlF4DlkXsC\nycgiiqzqhIM1di1IcaDg3yFm1bVl6ybU73Bj+8QRqI8Lt59+vmKSWh3vc/Oa6Bgv\n6JptY/0yFilq2AAWH4NEAuYdH4FuPKcjcLCHYsOZiemwKY4sMIZkMN9vnOQdUeEH\npoUCIINFimi2Qu2AFcE+w2k=\n-----END PRIVATE KEY-----\n",
+  client_email: "bot-allenamenti@landmine-lab-level-pro.iam.gserviceaccount.com",
+  client_id: "102154547582805007074",
+  auth_uri: "https://accounts.google.com/o/oauth2/auth",
+  token_uri: "https://oauth2.googleapis.com/token",
+  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+  client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/bot-allenamenti%40landmine-lab-level-pro.iam.gserviceaccount.com",
+  universe_domain: "googleapis.com",
+};
+
 const CREDENZIALI_PATH = fs.existsSync(path.resolve(__dirname, "credenziali.json"))
   ? path.resolve(__dirname, "credenziali.json")
   : path.resolve(__dirname, "..", "credenziali.json");
@@ -89,9 +103,23 @@ function base64url(str: string) {
 }
 
 async function getGoogleDriveAccessToken() {
-  if (!fs.existsSync(CREDENZIALI_PATH)) return null;
+  let creds: any = null;
+  if (fs.existsSync(CREDENZIALI_PATH)) {
+    try {
+      creds = JSON.parse(fs.readFileSync(CREDENZIALI_PATH, "utf-8"));
+    } catch {}
+  }
+  if (!creds && process.env.GOOGLE_SERVICE_ACCOUNT) {
+    try {
+      creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+    } catch {}
+  }
+  if (!creds) {
+    creds = FALLBACK_SERVICE_ACCOUNT;
+  }
+  if (!creds || !creds.client_email || !creds.private_key) return null;
+
   try {
-    const creds = JSON.parse(fs.readFileSync(CREDENZIALI_PATH, "utf-8"));
     const now = Math.floor(Date.now() / 1000);
     const header = { alg: "RS256", typ: "JWT" };
     const claim = {
@@ -126,6 +154,8 @@ async function syncConfigToGoogleDrive(config: any) {
   return syncDataToGoogleDrive({ configurazione_lab: config });
 }
 
+let lastCloudFetchTime = 0;
+
 async function syncDataToGoogleDrive(fullDb: any) {
   try {
     const token = await getGoogleDriveAccessToken();
@@ -153,6 +183,21 @@ async function syncDataToGoogleDrive(fullDb: any) {
     if (fullDb.prenotazioni_slot !== undefined) {
       driveDb.prenotazioni_slot = fullDb.prenotazioni_slot || [];
     }
+    if (fullDb.movimenti_crediti !== undefined) {
+      driveDb.movimenti_crediti = fullDb.movimenti_crediti || [];
+    }
+    if (fullDb.diario_utente !== undefined) {
+      driveDb.diario_utente = fullDb.diario_utente || [];
+    }
+    if (fullDb.stato_allenamenti !== undefined) {
+      driveDb.stato_allenamenti = fullDb.stato_allenamenti || [];
+    }
+    if (fullDb.preferenze_utente !== undefined) {
+      driveDb.preferenze_utente = fullDb.preferenze_utente || [];
+    }
+    if (fullDb.notifiche_email !== undefined) {
+      driveDb.notifiche_email = fullDb.notifiche_email || [];
+    }
     if (fullDb.configurazione_lab) {
       driveDb.configurazione_lab = {
         ...(driveDb.configurazione_lab || {}),
@@ -168,6 +213,7 @@ async function syncDataToGoogleDrive(fullDb: any) {
       },
       body: JSON.stringify(driveDb, null, 2),
     });
+    lastCloudFetchTime = Date.now();
   } catch {
     // Non-fatal
   }
@@ -182,7 +228,7 @@ async function tryLoadConfigFromGoogleDrive() {
     });
     if (!resGet.ok) return;
     const driveDb = await resGet.json();
-    if (driveDb.configurazione_lab && driveDb.configurazione_lab.stripe_secret_key) {
+    if (driveDb.configurazione_lab) {
       db.configurazione_lab = {
         ...(db.configurazione_lab || {}),
         ...driveDb.configurazione_lab,
@@ -192,33 +238,21 @@ async function tryLoadConfigFromGoogleDrive() {
       db.transazioni_cancellate = Array.from(
         new Set([...(db.transazioni_cancellate || []), ...driveDb.transazioni_cancellate, ...FICTITIOUS_TX_IDS])
       );
-      db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter(
-        (t: any) => !db.transazioni_cancellate.includes(t.id) && !db.transazioni_cancellate.includes(t.codice_transazione)
+    }
+    if (driveDb.transazioni_pagamenti && Array.isArray(driveDb.transazioni_pagamenti)) {
+      db.transazioni_pagamenti = driveDb.transazioni_pagamenti.filter(
+        (t: any) => !db.transazioni_cancellate?.includes(t.id) && !db.transazioni_cancellate?.includes(t.codice_transazione)
       );
     }
     if (driveDb.utenti_cancellati && Array.isArray(driveDb.utenti_cancellati)) {
       db.utenti_cancellati = Array.from(
         new Set([...(db.utenti_cancellati || []), ...driveDb.utenti_cancellati])
       );
-      db.profili_utenti = (db.profili_utenti || []).filter(
-        (p: any) => !db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())
-      );
     }
     if (driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
-      const existingMap = new Map((db.profili_utenti || []).map((p: any) => [p.id, p]));
-      for (const p of driveDb.profili_utenti) {
-        if (!db.utenti_cancellati.includes(p.id) && !db.utenti_cancellati.includes(p.email?.toLowerCase())) {
-          if (p.id === "usr-coach-01") {
-            p.email = "firenzepersonaltrainer@gmail.com";
-            p.nome = "Stefano";
-            p.cognome = "Tronconi";
-            p.name = "Stefano Tronconi";
-            p.ruolo = "manager";
-          }
-          existingMap.set(p.id, { ...(existingMap.get(p.id) || {}), ...p });
-        }
-      }
-      db.profili_utenti = Array.from(existingMap.values());
+      db.profili_utenti = driveDb.profili_utenti.filter(
+        (p: any) => !db.utenti_cancellati?.includes(p.id) && !db.utenti_cancellati?.includes(p.email?.toLowerCase())
+      );
     }
     db.active_user_id = null;
     if (driveDb.prenotazioni_cancellate && Array.isArray(driveDb.prenotazioni_cancellate)) {
@@ -229,11 +263,41 @@ async function tryLoadConfigFromGoogleDrive() {
         (p: any) => !db.prenotazioni_cancellate.includes(p.id)
       );
     }
+    if (driveDb.prenotazioni_slot && Array.isArray(driveDb.prenotazioni_slot)) {
+      db.prenotazioni_slot = driveDb.prenotazioni_slot.filter(
+        (p: any) => !db.prenotazioni_cancellate?.includes(p.id)
+      );
+    }
+    if (driveDb.movimenti_crediti && Array.isArray(driveDb.movimenti_crediti)) {
+      db.movimenti_crediti = driveDb.movimenti_crediti;
+    }
+    if (driveDb.diario_utente && Array.isArray(driveDb.diario_utente)) {
+      db.diario_utente = driveDb.diario_utente;
+    }
+    if (driveDb.stato_allenamenti && Array.isArray(driveDb.stato_allenamenti)) {
+      db.stato_allenamenti = driveDb.stato_allenamenti;
+    }
+    if (driveDb.preferenze_utente && Array.isArray(driveDb.preferenze_utente)) {
+      db.preferenze_utente = driveDb.preferenze_utente;
+    }
+    if (driveDb.notifiche_email && Array.isArray(driveDb.notifiche_email)) {
+      db.notifiche_email = driveDb.notifiche_email;
+    }
     saveData(db);
   } catch {
     // Non-fatal
   }
 }
+
+async function ensureLatestDataFromDrive(force = false) {
+  const now = Date.now();
+  if (!force && lastCloudFetchTime > 0 && now - lastCloudFetchTime < 10000) {
+    return;
+  }
+  await tryLoadConfigFromGoogleDrive();
+  lastCloudFetchTime = Date.now();
+}
+
 tryLoadConfigFromGoogleDrive().catch(() => {});
 
 const FICTITIOUS_TX_IDS = [
@@ -421,6 +485,7 @@ export async function handleLocalApi(
   res: ServerResponse,
   next?: () => void
 ) {
+  await ensureLatestDataFromDrive();
   db = loadData();
   const host = req.headers?.host || "localhost:5173";
   const url = new URL(req.url ?? "/", `http://${host}`);
