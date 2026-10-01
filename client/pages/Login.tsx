@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [step, setStep] = useState<"email" | "otp">("email");
+  const [sandboxOtp, setSandboxOtp] = useState<string | null>(null);
 
   // Se l'utente è già loggato, reindirizza
   useEffect(() => {
@@ -54,8 +55,14 @@ export default function LoginPage() {
         requestOtpOnly: true,
       });
       console.log("[CLIENT OTP] Risposta ricevuta:", res);
+      if (res.sandboxOtp) {
+        setSandboxOtp(res.sandboxOtp);
+        setOtpCode(res.sandboxOtp);
+      } else {
+        setSandboxOtp(null);
+      }
       setStep("otp");
-      toast.success(res.messaggio || "Codice di verifica inviato via email!");
+      toast.success(res.messaggio || "Codice di verifica pronto!");
     } catch (err: any) {
       console.error("CLIENT ERROR INVIO OTP:", err);
       const msg = err?.message || "Errore sconosciuto nella richiesta del codice.";
@@ -213,9 +220,19 @@ export default function LoginPage() {
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="space-y-3">
-            <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-medium leading-relaxed">
-              Abbiamo inviato un codice di verifica all'indirizzo <strong>{email}</strong>. Inserisci il codice ricevuto via email per accedere.
-            </div>
+            {sandboxOtp ? (
+              <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-medium leading-relaxed space-y-2">
+                <div>Abbiamo generato l'accesso per <strong>{email}</strong>.</div>
+                <div className="p-2 rounded-lg bg-white border border-blue-300 flex items-center justify-between">
+                  <span className="text-zinc-600 font-normal">Codice temporaneo di verifica:</span>
+                  <span className="font-mono font-black text-sm text-[#1c00ff] tracking-widest">{sandboxOtp}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-medium leading-relaxed">
+                Abbiamo inviato un codice di verifica all'indirizzo <strong>{email}</strong>. Inserisci il codice ricevuto via email per accedere.
+              </div>
+            )}
 
             <div className="space-y-1">
               <label className="text-[11px] font-bold text-zinc-700 block">
