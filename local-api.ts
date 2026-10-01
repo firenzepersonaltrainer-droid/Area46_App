@@ -369,19 +369,22 @@ function parseCookies(cookieHeader: string | undefined): Record<string, string> 
   return list;
 }
 
-export async function sendEmailNotification(params: {
-  to: string;
-  subject: string;
-  body: string;
-  html?: string;
-  tipo?: string;
-}) {
+export async function sendEmailNotification(
+  arg1: any,
+  arg2?: any
+) {
+  const params = (arg2 && typeof arg2 === "object" ? arg2 : arg1) || {};
+  const recipient = (params.to || "").trim();
+  const subject = (params.subject || "Notifica Area46 Landmine Lab").trim();
+  const bodyText = (params.body || "").toString();
+  const htmlBody = params.html || (bodyText ? `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">${bodyText.split("\n").join("<br>")}</p>` : "<p>Notifica Area46 Landmine Lab</p>");
+
   const emailRecord = {
     id: `email-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-    destinatario: params.to,
-    oggetto: params.subject,
-    corpo: params.body,
-    html: params.html || params.body.replace(/\n/g, "<br>"),
+    destinatario: recipient,
+    oggetto: subject,
+    corpo: bodyText,
+    html: htmlBody,
     inviato_il: new Date().toISOString(),
     tipo: params.tipo || "sistema",
     stato: "inviata",
@@ -392,28 +395,33 @@ export async function sendEmailNotification(params: {
 
   // Tentativo di invio reale via API Resend se chiave configurata
   const resendApiKey = db.configurazione_lab?.resend_api_key || process.env.RESEND_API_KEY;
-  if (resendApiKey) {
+  if (resendApiKey && recipient) {
     try {
-      await fetch("https://api.resend.com/emails", {
+      const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${resendApiKey}`,
+          Authorization: `Bearer ${resendApiKey.trim()}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Area46 Landmine Lab <notifiche@area46lab.it>",
-          to: [params.to],
-          subject: params.subject,
-          text: params.body,
-          html: emailRecord.html,
+          from: "Area46 Landmine Lab <onboarding@resend.dev>",
+          to: [recipient],
+          subject: subject,
+          text: bodyText,
+          html: htmlBody,
         }),
       });
-      console.log(`[EMAIL DISPATCH] Inviata con successo via Resend a ${params.to}`);
+      if (!response.ok) {
+        const errText = await response.text();
+        console.warn(`[RESEND API REJECTION] Status: ${response.status} - ${errText}`);
+      } else {
+        console.log(`[EMAIL DISPATCH] Inviata con successo via Resend a ${recipient}`);
+      }
     } catch (err) {
       console.warn(`[EMAIL DISPATCH ERROR]`, err);
     }
   } else {
-    console.log(`[NOTIFICA EMAIL REGISTRATA] A: ${params.to} | Oggetto: ${params.subject}`);
+    console.log(`[NOTIFICA EMAIL REGISTRATA] A: ${recipient} | Oggetto: ${subject}`);
   }
 
   saveData(db);
