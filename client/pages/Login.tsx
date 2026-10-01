@@ -26,7 +26,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [step, setStep] = useState<"email" | "otp">("email");
-  const [generatedOtp, setGeneratedOtp] = useState<string | null>(null);
 
   // Se l'utente è già loggato, reindirizza
   useEffect(() => {
@@ -52,9 +51,8 @@ export default function LoginPage() {
         email,
         requestOtpOnly: true,
       });
-      setGeneratedOtp(res.demoOtp || "464646");
       setStep("otp");
-      toast.success(res.messaggio || "Codice di verifica generato!");
+      toast.success(res.messaggio || "Codice di verifica inviato via email!");
     } catch (err: any) {
       toast.error(err.message || "Errore nella richiesta del codice.");
     }
@@ -209,13 +207,8 @@ export default function LoginPage() {
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="space-y-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px]">
-              Abbiamo generato il tuo codice per <strong>{email}</strong>.
-              {generatedOtp && (
-                <div className="mt-1 font-mono font-bold text-xs text-[#1c00ff]">
-                  Codice Demo di verifica: {generatedOtp}
-                </div>
-              )}
+            <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-medium leading-relaxed">
+              Abbiamo inviato un codice di verifica all'indirizzo <strong>{email}</strong>. Inserisci il codice ricevuto via email per accedere.
             </div>
 
             <div className="space-y-1">
@@ -224,7 +217,7 @@ export default function LoginPage() {
               </label>
               <Input
                 type="text"
-                placeholder="464646"
+                placeholder="123456"
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
                 maxLength={6}

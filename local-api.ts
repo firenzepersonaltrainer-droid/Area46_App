@@ -608,11 +608,26 @@ export async function handleLocalApi(
       }
 
       if (requestOtpOnly) {
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        await sendEmailNotification(db, {
+          to: email,
+          subject: "Codice di Accesso - Area46 Landmine Lab",
+          body: `Il tuo codice OTP di verifica per accedere ad Area46 Landmine Lab è: ${otpCode}`,
+          html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+            <h2 style="color: #09090b; margin-top: 0;">Area46 Landmine Lab</h2>
+            <p style="color: #3f3f46; font-size: 14px;">Inserisci il seguente codice di verifica nell'applicazione per accedere al tuo account:</p>
+            <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+              <span style="font-family: monospace; font-size: 32px; font-weight: 900; letter-spacing: 6px; color: #1c00ff;">${otpCode}</span>
+            </div>
+            <p style="color: #71717a; font-size: 12px;">Se non hai richiesto tu questo codice, puoi ignorare questa email.</p>
+          </div>`,
+          tipo: "sistema"
+        });
+
         return res.end(
           JSON.stringify({
             ok: true,
-            messaggio: `Codice OTP generato per ${email}`,
-            demoOtp: "464646",
+            messaggio: `Codice OTP inviato a ${email}`,
           })
         );
       }
