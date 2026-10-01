@@ -15000,8 +15000,20 @@ async function handleLocalApi(req, res, next) {
       res.statusCode = 400;
       return res.end(JSON.stringify({ error: "Inserisci un indirizzo email valido." }));
     }
+    const isCoachEmail = email === "firenzepersonaltrainer@gmail.com";
+    let found = (db.profili_utenti || []).find(
+      (u) => u.email?.toLowerCase() === email
+    );
+    if (!found && !isCoachEmail) {
+      res.statusCode = 403;
+      return res.end(
+        JSON.stringify({
+          error: "Email non abilitata. L'accesso ad Area46 \xE8 riservato agli atleti censiti dal Coach Stefano Tronconi. Contatta il Lab per richiedere l'abilitazione."
+        })
+      );
+    }
     if (requestOtpOnly) {
-      console.log(`[AUTH] Richiesta invio OTP per email: "${email}"`);
+      console.log(`[AUTH] Richiesta invio OTP per email abilitata: "${email}"`);
       const otpCode = Math.floor(1e5 + Math.random() * 9e5).toString();
       try {
         await sendEmailNotification({
@@ -15037,9 +15049,6 @@ async function handleLocalApi(req, res, next) {
         );
       }
     }
-    const found = (db.profili_utenti || []).find(
-      (u) => u.email?.toLowerCase() === email
-    );
     if (found) {
       if (db.utenti_cancellati && Array.isArray(db.utenti_cancellati)) {
         db.utenti_cancellati = db.utenti_cancellati.filter(
@@ -15047,7 +15056,28 @@ async function handleLocalApi(req, res, next) {
         );
       }
       found.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-      saveData(db);
+      if (!found.primo_accesso_notificato && !isCoachEmail) {
+        found.primo_accesso_notificato = (/* @__PURE__ */ new Date()).toISOString();
+        saveData(db);
+        try {
+          await sendEmailNotification({
+            to: "firenzepersonaltrainer@gmail.com",
+            subject: `Alert Primo Accesso Atleta - ${found.nome} ${found.cognome}`,
+            body: `L'atleta ${found.nome} ${found.cognome} (${found.email}) ha appena effettuato il suo primo accesso alla Web App Area46 Landmine Lab.`,
+            html: `<div style="font-family: sans-serif; padding: 20px; background-color: #f8f9fa; border-radius: 12px;">
+                <h3 style="color: #09090b; margin-top: 0;">Alert Primo Accesso Atleta</h3>
+                <p style="font-size: 14px; color: #3f3f46;">L'atleta <strong>${found.nome} ${found.cognome}</strong> (<code>${found.email}</code>) si \xE8 appena collegato per la prima volta alla Web App Area46 Landmine Lab.</p>
+                <p style="font-size: 12px; color: #71717a;">Data e ora: ${(/* @__PURE__ */ new Date()).toLocaleString("it-IT")}</p>
+              </div>`,
+            tipo: "notifica_coach"
+          });
+          console.log(`[ALERT COACH] Notificato primo accesso per ${found.email}`);
+        } catch (err) {
+          console.warn("[ALERT COACH WARNING]", err);
+        }
+      } else {
+        saveData(db);
+      }
       res.setHeader(
         "Set-Cookie",
         `area46_user_id=${encodeURIComponent(found.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
@@ -15407,6 +15437,35 @@ direttamente dal Pannello Manager Atleti.
       db.profili_utenti[existingIndex] = nuovo;
     } else {
       db.profili_utenti.push(nuovo);
+      if (nuovo.email && nuovo.email.includes("@")) {
+        try {
+          await sendEmailNotification({
+            to: nuovo.email,
+            subject: "Invito ad Area46 Landmine Lab - Profilo Atleta Attivato",
+            body: `Ciao ${nuovo.nome} ${nuovo.cognome}!
+
+Il tuo profilo atleta su Area46 Landmine Lab \xE8 stato attivato dal Coach Stefano Tronconi.
+
+Accedi alla Web App dal link:
+https://area46-app.vercel.app
+
+Puoi salvare l'applicazione direttamente sulla schermata Home del tuo smartphone per consultare i tuoi allenamenti, il diario ed i crediti.`,
+            html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+                <h2 style="color: #09090b; margin-top: 0;">Benvenuto in Area46 Landmine Lab!</h2>
+                <p style="color: #3f3f46; font-size: 15px;">Ciao <strong>${nuovo.nome} ${nuovo.cognome}</strong>,</p>
+                <p style="color: #3f3f46; font-size: 14px;">Il tuo profilo atleta \xE8 stato attivato dal Coach Stefano Tronconi su Area46 Landmine Lab.</p>
+                <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+                  <a href="https://area46-app.vercel.app" style="font-weight: 900; font-size: 16px; color: #1c00ff; text-decoration: none;">Apri Area46 Web App &rarr;</a>
+                </div>
+                <p style="color: #71717a; font-size: 12px; margin-top: 16px;">\u{1F4F1} <strong>Istruzioni Smartphone:</strong> Apri il link dal tuo browser mobile (Safari su iPhone o Chrome su Android) e seleziona "Aggiungi a Home" per salvare l'App sullo schermo del telefono.</p>
+              </div>`,
+            tipo: "invito_atleta"
+          });
+          console.log(`[INVITO AUTOMATICO] Inviata mail di benvenuto a ${nuovo.email}`);
+        } catch (err) {
+          console.warn("[INVITO AUTOMATICO WARNING]", err?.message || err);
+        }
+      }
     }
     if (creditiIniziali !== 0) {
       addMovimentoCrediti(db, {
