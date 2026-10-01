@@ -395,33 +395,44 @@ export async function sendEmailNotification(
 
   // Tentativo di invio reale via API Resend se chiave configurata
   const resendApiKey = db.configurazione_lab?.resend_api_key || process.env.RESEND_API_KEY;
-  if (resendApiKey && recipient) {
-    try {
-      const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendApiKey.trim()}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "Area46 Landmine Lab <onboarding@resend.dev>",
-          to: [recipient],
-          subject: subject,
-          text: bodyText,
-          html: htmlBody,
-        }),
-      });
-      if (!response.ok) {
-        const errText = await response.text();
-        console.warn(`[RESEND API REJECTION] Status: ${response.status} - ${errText}`);
-      } else {
-        console.log(`[EMAIL DISPATCH] Inviata con successo via Resend a ${recipient}`);
-      }
-    } catch (err) {
-      console.warn(`[EMAIL DISPATCH ERROR]`, err);
+  if (!resendApiKey) {
+    console.error(`ERRORE INVIO OTP: RESEND_API_KEY non è configurata nelle variabili d'ambiente Vercel.`);
+    throw new Error("Variabile d'ambiente RESEND_API_KEY non configurata su Vercel. Inseriscila in Settings -> Environment Variables e fai il redeploy.");
+  }
+
+  if (!recipient) {
+    console.error(`ERRORE INVIO OTP: Indirizzo email destinatario mancante o non valido.`);
+    throw new Error("Indirizzo email destinatario non valido.");
+  }
+
+  try {
+    console.log(`[RESEND ATTEMPT] Invio email da "Area46 Landmine Lab <onboarding@resend.dev>" a "${recipient}"...`);
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendApiKey.trim()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Area46 Landmine Lab <onboarding@resend.dev>",
+        to: [recipient],
+        subject: subject,
+        text: bodyText,
+        html: htmlBody,
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(`ERRORE INVIO OTP (Resend HTTP ${response.status}):`, errText);
+      throw new Error(`Resend ha rifiutato l'invio (${response.status}): ${errText}`);
     }
-  } else {
-    console.log(`[NOTIFICA EMAIL REGISTRATA] A: ${recipient} | Oggetto: ${subject}`);
+
+    const resData = await response.json().catch(() => ({}));
+    console.log(`[EMAIL DISPATCH SUCCESS] Inviata con successo via Resend a ${recipient}. ID:`, resData?.id);
+  } catch (err: any) {
+    console.error("ERRORE INVIO OTP:", err?.message || err);
+    throw err;
   }
 
   saveData(db);
@@ -616,28 +627,40 @@ export async function handleLocalApi(
       }
 
       if (requestOtpOnly) {
+        console.log(`[AUTH] Richiesta invio OTP per email: "${email}"`);
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        await sendEmailNotification(db, {
-          to: email,
-          subject: "Codice di Accesso - Area46 Landmine Lab",
-          body: `Il tuo codice OTP di verifica per accedere ad Area46 Landmine Lab è: ${otpCode}`,
-          html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
-            <h2 style="color: #09090b; margin-top: 0;">Area46 Landmine Lab</h2>
-            <p style="color: #3f3f46; font-size: 14px;">Inserisci il seguente codice di verifica nell'applicazione per accedere al tuo account:</p>
-            <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
-              <span style="font-family: monospace; font-size: 32px; font-weight: 900; letter-spacing: 6px; color: #1c00ff;">${otpCode}</span>
-            </div>
-            <p style="color: #71717a; font-size: 12px;">Se non hai richiesto tu questo codice, puoi ignorare questa email.</p>
-          </div>`,
-          tipo: "sistema"
-        });
+        try {
+          await sendEmailNotification({
+            to: email,
+            subject: "Codice di Accesso - Area46 Landmine Lab",
+            body: `Il tuo codice OTP di verifica per accedere ad Area46 Landmine Lab è: ${otpCode}`,
+            html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+              <h2 style="color: #09090b; margin-top: 0;">Area46 Landmine Lab</h2>
+              <p style="color: #3f3f46; font-size: 14px;">Inserisci il seguente codice di verifica nell'applicazione per accedere al tuo account:</p>
+              <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+                <span style="font-family: monospace; font-size: 32px; font-weight: 900; letter-spacing: 6px; color: #1c00ff;">${otpCode}</span>
+              </div>
+              <p style="color: #71717a; font-size: 12px;">Se non hai richiesto tu questo codice, puoi ignorare questa email.</p>
+            </div>`,
+            tipo: "sistema"
+          });
 
-        return res.end(
-          JSON.stringify({
-            ok: true,
-            messaggio: `Codice OTP inviato a ${email}`,
-          })
-        );
+          console.log(`[AUTH] Codice OTP inviato con successo a "${email}"`);
+          return res.end(
+            JSON.stringify({
+              ok: true,
+              messaggio: `Codice OTP inviato a ${email}`,
+            })
+          );
+        } catch (err: any) {
+          console.error("ERRORE INVIO OTP:", err?.message || err);
+          res.statusCode = 500;
+          return res.end(
+            JSON.stringify({
+              error: err?.message || "Impossibile inviare l'email con il codice OTP. Verifica la configurazione Resend.",
+            })
+          );
+        }
       }
 
       const found = (db.profili_utenti || []).find(

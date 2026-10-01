@@ -236,15 +236,22 @@ export function useCurrentUser() {
       code?: string;
       requestOtpOnly?: boolean;
     }) => {
-      const res = await fetch("/app-api/auth/login-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, code, requestOtpOnly }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Errore durante l'accesso");
-      return data;
+      try {
+        const res = await fetch("/app-api/auth/login-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email, code, requestOtpOnly }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.error || `Errore server (${res.status})`);
+        }
+        return data;
+      } catch (err: any) {
+        console.error("Fetch login-email error:", err);
+        throw err;
+      }
     },
     onSuccess: (data) => {
       if (data.user) {

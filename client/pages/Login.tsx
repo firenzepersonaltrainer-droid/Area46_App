@@ -41,20 +41,26 @@ export default function LoginPage() {
   // 1. Invio Richiesta OTP via Email (Opzione A)
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes("@")) {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
       toast.error("Inserisci un indirizzo email valido.");
       return;
     }
 
     try {
+      console.log("[CLIENT OTP] Inoltro richiesta codice per:", cleanEmail);
       const res = await loginEmailMutation.mutateAsync({
-        email,
+        email: cleanEmail,
         requestOtpOnly: true,
       });
+      console.log("[CLIENT OTP] Risposta ricevuta:", res);
       setStep("otp");
       toast.success(res.messaggio || "Codice di verifica inviato via email!");
     } catch (err: any) {
-      toast.error(err.message || "Errore nella richiesta del codice.");
+      console.error("CLIENT ERROR INVIO OTP:", err);
+      const msg = err?.message || "Errore sconosciuto nella richiesta del codice.";
+      toast.error(msg);
+      alert(`⚠️ Errore invio codice:\n${msg}`);
     }
   };
 
