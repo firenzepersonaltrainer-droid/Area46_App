@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Link, Navigate } from "react-router-dom";
 import {
   Dumbbell,
   BookOpen,
@@ -38,6 +38,15 @@ import DesktopControlPanel from "./pages/DesktopControlPanel";
 import LoginPage from "./pages/Login";
 import FloatingTimer from "./components/FloatingTimer";
 import { InstallPrompt } from "./components/InstallPrompt";
+
+function RequireManager({ children }: { children: React.ReactNode }) {
+  const { user, isManager, isLoading } = useCurrentUser();
+  if (isLoading) return null;
+  if (!user || !isManager) {
+    return <Navigate to="/" replace />;
+  }
+  return <>{children}</>;
+}
 
 function MobileStatusBar() {
   const [time, setTime] = useState("");
@@ -129,13 +138,12 @@ function AppHeader({
         )}
 
         {!user ? (
-          <button
-            type="button"
-            onClick={onOpenSwitcher}
-            className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs bg-zinc-100 text-zinc-700 border border-zinc-200 hover:bg-zinc-200 cursor-pointer"
+          <Link
+            to="/login"
+            className="text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-xs bg-[#1c00ff] text-white hover:bg-[#1600cc] transition-colors cursor-pointer"
           >
-            ACCESSO LAB
-          </button>
+            Accedi
+          </Link>
         ) : isManager ? (
           <button
             type="button"
@@ -155,10 +163,10 @@ function AppHeader({
               background: "#1c00ff",
               color: "#e3ff00",
             }}
-            title="Tocca per cambiare profilo o accedere come Coach"
+            title="Tocca per accedere come Coach (richiede PIN)"
           >
             <span className="size-2 rounded-full bg-[#e3ff00] animate-pulse" />
-            MODE SWITCH
+            COACH PIN
           </button>
         )}
       </div>
@@ -232,14 +240,13 @@ function AppContent() {
         <MobileStatusBar />
         <AppHeader
           onOpenManual={() => setShowManualModal(true)}
-          onOpenSwitcher={() => setShowRoleSwitcher(true)}
         />
         <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
-        <RoleSwitcherModal open={showRoleSwitcher} onOpenChange={setShowRoleSwitcher} />
 
         <main className="w-full flex-1 overflow-y-auto px-4 pb-8 pt-2 select-text [scrollbar-width:thin]">
           <Routes>
             <Route path="/tariffario" element={<TariffarioPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<LoginPage />} />
           </Routes>
         </main>
@@ -316,13 +323,34 @@ function AppContent() {
           <Route path="/archivio" element={<ArchivioPage />} />
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Rotte Desktop & Manager Coach */}
+          {/* Rotte Desktop & Manager Coach Protette */}
           <Route path="/desktop" element={<DesktopControlPanel />} />
           <Route path="/control-panel" element={<DesktopControlPanel />} />
           <Route path="/manager/desktop" element={<DesktopControlPanel />} />
-          <Route path="/manager/calendario" element={<ManagerCalendarPage />} />
-          <Route path="/manager/atleti" element={<ManagerAtletiPage />} />
-          <Route path="/manager/fisco" element={<ManagerFiscoPage />} />
+          <Route
+            path="/manager/calendario"
+            element={
+              <RequireManager>
+                <ManagerCalendarPage />
+              </RequireManager>
+            }
+          />
+          <Route
+            path="/manager/atleti"
+            element={
+              <RequireManager>
+                <ManagerAtletiPage />
+              </RequireManager>
+            }
+          />
+          <Route
+            path="/manager/fisco"
+            element={
+              <RequireManager>
+                <ManagerFiscoPage />
+              </RequireManager>
+            }
+          />
         </Routes>
       </main>
 

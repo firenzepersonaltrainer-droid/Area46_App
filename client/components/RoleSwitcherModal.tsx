@@ -24,14 +24,34 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
   };
 
   const athleteProfiles = profili.filter((p) => p.ruolo === "atleta");
+  const [showPinInput, setShowPinInput] = useState(false);
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState("");
 
   const handleSelectCoach = () => {
-    switchUser(coachProfile.id);
+    if (currentUser?.ruolo === "manager") {
+      switchUser({ userId: coachProfile.id });
+      onOpenChange(false);
+      return;
+    }
+    setShowPinInput(true);
+    setPin("");
+    setPinError("");
+  };
+
+  const handleConfirmPin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pin.trim() !== "4646") {
+      setPinError("PIN errato. Inserisci il PIN corretto.");
+      return;
+    }
+    switchUser({ userId: coachProfile.id, pin: pin.trim() });
+    setShowPinInput(false);
     onOpenChange(false);
   };
 
   const handleSelectAthlete = (id: string) => {
-    switchUser(id);
+    switchUser({ userId: id });
     onOpenChange(false);
   };
 
@@ -49,7 +69,7 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
                   Selettore Profilo & Ruolo
                 </DialogTitle>
                 <DialogDescription className="text-xs text-zinc-500">
-                  Alterna istantaneamente tra Atleta e Coach/Manager.
+                  Alterna tra profilo Atleta e Coach (richiede PIN).
                 </DialogDescription>
               </div>
             </div>
@@ -65,42 +85,83 @@ export function RoleSwitcherModal({ open, onOpenChange }: RoleSwitcherModalProps
           {/* SEZIONE COACH / MANAGER */}
           <div>
             <div className="text-[11px] font-black uppercase tracking-wider text-zinc-400 mb-2">
-              Amministrazione & Coach
+              Amministrazione & Coach (PIN Protetto)
             </div>
-            <button
-              type="button"
-              onClick={handleSelectCoach}
-              disabled={isSwitching}
-              className={`w-full text-left p-3.5 rounded-2xl border-2 transition-all flex items-center justify-between cursor-pointer ${
-                currentUser?.ruolo === "manager"
-                  ? "border-[#1c00ff] bg-[#1c00ff]/5 shadow-sm"
-                  : "border-zinc-200 hover:border-zinc-300 bg-white"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className="size-10 rounded-xl bg-[#09090b] text-[#e3ff00] flex items-center justify-center font-black shadow-xs">
-                  <ShieldCheck className="size-5" />
+            {showPinInput ? (
+              <form onSubmit={handleConfirmPin} className="p-3.5 rounded-2xl border-2 border-[#1c00ff] bg-zinc-50 space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900">
+                  <Key className="size-4 text-[#1c00ff]" />
+                  <span>Inserisci PIN Coach per accedere</span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-black text-zinc-900">
-                      {coachProfile.nome} {coachProfile.cognome}
-                    </span>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#e3ff00] text-zinc-900 border border-zinc-900">
-                      COACH / MANAGER
-                    </span>
+                <Input
+                  type="password"
+                  maxLength={6}
+                  placeholder="PIN Coach"
+                  value={pin}
+                  onChange={(e) => {
+                    setPin(e.target.value);
+                    setPinError("");
+                  }}
+                  autoFocus
+                  className="h-10 text-center tracking-widest text-base font-mono bg-white"
+                />
+                {pinError && <p className="text-[11px] font-semibold text-red-600">{pinError}</p>}
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowPinInput(false)}
+                    className="flex-1 h-9 rounded-xl text-xs"
+                  >
+                    Annulla
+                  </Button>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={isSwitching || !pin}
+                    className="flex-1 h-9 rounded-xl bg-[#1c00ff] hover:bg-[#1600cc] text-white text-xs font-bold"
+                  >
+                    {isSwitching ? "Verifica..." : "Conferma"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSelectCoach}
+                disabled={isSwitching}
+                className={`w-full text-left p-3.5 rounded-2xl border-2 transition-all flex items-center justify-between cursor-pointer ${
+                  currentUser?.ruolo === "manager"
+                    ? "border-[#1c00ff] bg-[#1c00ff]/5 shadow-sm"
+                    : "border-zinc-200 hover:border-zinc-300 bg-white"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-xl bg-[#09090b] text-[#e3ff00] flex items-center justify-center font-black shadow-xs">
+                    <ShieldCheck className="size-5" />
                   </div>
-                  <div className="text-xs text-zinc-500 mt-0.5">
-                    Accesso a Calendario Lab, Atleti, Debiti e Fisco
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-black text-zinc-900">
+                        {coachProfile.nome} {coachProfile.cognome}
+                      </span>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#e3ff00] text-zinc-900 border border-zinc-900">
+                        COACH / MANAGER
+                      </span>
+                    </div>
+                    <div className="text-xs text-zinc-500 mt-0.5">
+                      Accesso riservato (richiede PIN)
+                    </div>
                   </div>
                 </div>
-              </div>
-              {currentUser?.ruolo === "manager" && (
-                <div className="size-6 rounded-full bg-[#1c00ff] text-white flex items-center justify-center">
-                  <Check className="size-3.5 stroke-[3]" />
-                </div>
-              )}
-            </button>
+                {currentUser?.ruolo === "manager" && (
+                  <div className="size-6 rounded-full bg-[#1c00ff] text-white flex items-center justify-center">
+                    <Check className="size-3.5 stroke-[3]" />
+                  </div>
+                )}
+              </button>
+            )}
           </div>
 
           {/* SEZIONE ATLETI DEMO */}

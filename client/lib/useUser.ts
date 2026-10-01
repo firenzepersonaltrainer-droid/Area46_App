@@ -100,9 +100,13 @@ export function setActiveUserId(id: string | null) {
     localStorage.setItem("area46_active_user_id_v1", id);
     document.cookie = `area46_user_id=${encodeURIComponent(id)}; path=/; max-age=31536000; SameSite=Lax`;
   } else {
-    localStorage.removeItem("area46_active_user_id_v1");
-    localStorage.removeItem("area46_active_user_email_v1");
-    document.cookie = `area46_user_id=; path=/; max-age=0; SameSite=Lax`;
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch {
+      // ignore
+    }
+    document.cookie = `area46_user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; SameSite=Lax`;
   }
 }
 
@@ -122,23 +126,25 @@ export function useCurrentUser() {
           headers,
           credentials: "include",
         });
-        if (!res.ok) return null;
+        if (!res.ok) {
+          return null;
+        }
         const ct = res.headers.get("content-type") || "";
         if (!ct.includes("json")) {
           return null;
         }
         const data = await res.json();
         if (data && data.id) {
-          setActiveUserId(data.id);
+          localStorage.setItem("area46_active_user_id_v1", data.id);
           return data;
         }
-        setActiveUserId(null);
         return null;
       } catch {
         return null;
       }
     },
     staleTime: 1000 * 30, // 30 sec
+    retry: false,
   });
 
   const isManager = user?.ruolo === "manager";
@@ -153,14 +159,18 @@ export function useCurrentUser() {
 
   // Switch utente
   const switchMutation = useMutation({
-    mutationFn: async (userId: string) => {
+    mutationFn: async (args: string | { userId: string; pin?: string }) => {
+      const payload = typeof args === "string" ? { userId: args } : args;
       const res = await fetch("/app-api/auth/switch-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Errore durante il cambio utente");
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Errore durante il cambio utente");
+      }
       return res.json();
     },
     onSuccess: (updatedUser) => {
@@ -175,37 +185,41 @@ export function useCurrentUser() {
       queryClient.invalidateQueries({ queryKey: ["stati"] });
       queryClient.invalidateQueries({ queryKey: ["preferenze"] });
       toast.success(
-        `Sessione attiva: ${updatedUser.name} (${updatedUser.ruolo === "manager" ? "Coach / Manager" : "Atleta"})`
+        `Sessione attiva: ${updatedUser.nome || updatedUser.name} (${updatedUser.ruolo === "manager" ? "Coach / Manager" : "Atleta"})`
       );
     },
-    onError: () => {
-      toast.error("Impossibile cambiare profilo utente.");
+    onError: (err: any) => {
+      toast.error(err?.message || "Impossibile cambiare profilo utente.");
     },
   });
 
   const switchUser = useCallback(
-    (userId: string) => switchMutation.mutate(userId),
+    (args: string | { userId: string; pin?: string }) => switchMutation.mutate(args),
     [switchMutation]
   );
 
   // Logout
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/app-api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Errore durante il logout");
-      return res.json();
+      try {
+        await fetch("/app-api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+        });
+      } catch {
+        // procedere comunque alla pulizia locale
+      }
+      return { ok: true };
     },
     onSuccess: () => {
       setActiveUserId(null);
-      queryClient.setQueryData(["current-user"], null);
-      queryClient.invalidateQueries();
-      toast.info("Sessione terminata. A presto!");
+      queryClient.clear();
+      window.location.replace("/login");
     },
     onError: () => {
-      toast.error("Errore durante la disconnessione.");
+      setActiveUserId(null);
+      queryClient.clear();
+      window.location.replace("/login");
     },
   });
 

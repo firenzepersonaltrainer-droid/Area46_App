@@ -59,7 +59,7 @@ function loadData() {
   return loaded;
 }
 
-function saveData(data: any) {
+function saveData(data: any, skipCloudSync = false) {
   db = data;
   try {
     fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
@@ -76,6 +76,11 @@ function saveData(data: any) {
     }
   } catch {
     // Read-only filesystem on Vercel lambda, expected
+  }
+
+  // Sincronizzazione cloud automatica su Google Drive
+  if (!skipCloudSync) {
+    syncDataToGoogleDrive(data).catch(() => {});
   }
 }
 
@@ -198,6 +203,18 @@ async function syncDataToGoogleDrive(fullDb: any) {
     if (fullDb.notifiche_email !== undefined) {
       driveDb.notifiche_email = fullDb.notifiche_email || [];
     }
+    if (fullDb.eccezioni_calendario !== undefined) {
+      driveDb.eccezioni_calendario = fullDb.eccezioni_calendario || [];
+    }
+    if (fullDb.regole_palinsesto !== undefined) {
+      driveDb.regole_palinsesto = fullDb.regole_palinsesto || [];
+    }
+    if (fullDb.tariffario_pacchetti !== undefined) {
+      driveDb.tariffario_pacchetti = fullDb.tariffario_pacchetti || [];
+    }
+    if (fullDb.attivita_lab !== undefined) {
+      driveDb.attivita_lab = fullDb.attivita_lab || [];
+    }
     if (fullDb.configurazione_lab) {
       driveDb.configurazione_lab = {
         ...(driveDb.configurazione_lab || {}),
@@ -283,7 +300,19 @@ async function tryLoadConfigFromGoogleDrive() {
     if (driveDb.notifiche_email && Array.isArray(driveDb.notifiche_email)) {
       db.notifiche_email = driveDb.notifiche_email;
     }
-    saveData(db);
+    if (driveDb.eccezioni_calendario && Array.isArray(driveDb.eccezioni_calendario)) {
+      db.eccezioni_calendario = driveDb.eccezioni_calendario;
+    }
+    if (driveDb.regole_palinsesto && Array.isArray(driveDb.regole_palinsesto)) {
+      db.regole_palinsesto = driveDb.regole_palinsesto;
+    }
+    if (driveDb.tariffario_pacchetti && Array.isArray(driveDb.tariffario_pacchetti)) {
+      db.tariffario_pacchetti = driveDb.tariffario_pacchetti;
+    }
+    if (driveDb.attivita_lab && Array.isArray(driveDb.attivita_lab)) {
+      db.attivita_lab = driveDb.attivita_lab;
+    }
+    saveData(db, true);
   } catch {
     // Non-fatal
   }
@@ -562,7 +591,7 @@ export async function handleLocalApi(
     if (pathname === "/app-api/auth/logout" && method === "POST") {
       res.setHeader(
         "Set-Cookie",
-        "area46_user_id=; Path=/; Max-Age=0; SameSite=Lax"
+        "area46_user_id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; SameSite=Lax; HttpOnly"
       );
       return res.end(JSON.stringify({ ok: true, messaggio: "Disconnessione effettuata." }));
     }
@@ -785,13 +814,20 @@ direttamente dal Pannello Manager Atleti.
       return res.end(JSON.stringify({ ok: true, user: getHydratedUser(found, db), isNew: isNewOauth }));
     }
 
-    // POST /app-api/auth/switch-user (Per switch rapido Coach / Atleta in test)
+    // POST /app-api/auth/switch-user (Switch Ruolo protetto da PIN per Coach)
     if (pathname === "/app-api/auth/switch-user" && method === "POST") {
       const targetId = parsedBody.userId;
+      const pin = (parsedBody.pin || "").trim();
       const found = (db.profili_utenti || []).find(
         (u: any) => u.id === targetId || u.email?.toLowerCase() === targetId?.toLowerCase()
       );
       if (found) {
+        if (found.ruolo === "manager" && currentUser?.ruolo !== "manager") {
+          if (pin !== "4646") {
+            res.statusCode = 401;
+            return res.end(JSON.stringify({ error: "PIN Coach errato o mancante." }));
+          }
+        }
         found.data_ultimo_accesso = new Date().toISOString();
         saveData(db);
         res.setHeader(
@@ -1869,6 +1905,7 @@ CALENDARIO E PRENOTAZIONI:
     if (pathname === "/app-api/prenotazioni" && method === "GET") {
       const dataFilter = url.searchParams.get("data");
       const emailFilter = url.searchParams.get("email");
+      const atletaIdFilter = url.searchParams.get("atleta_id");
       const delBks = db.prenotazioni_cancellate || [];
       let prenotazioni = (db.prenotazioni_slot || []).filter(
         (p: any) =>
@@ -1880,21 +1917,36 @@ CALENDARIO E PRENOTAZIONI:
         prenotazioni = prenotazioni.filter((p: any) => p.data === dataFilter);
       }
       if (emailFilter) {
-        prenotazioni = prenotazioni.filter((p: any) => p.email_cliente === emailFilter);
+        const ef = emailFilter.toLowerCase();
+        prenotazioni = prenotazioni.filter(
+          (p: any) => p.email_cliente?.toLowerCase() === ef || p.atleta_id === emailFilter
+        );
+      }
+      if (atletaIdFilter) {
+        prenotazioni = prenotazioni.filter((p: any) => p.atleta_id === atletaIdFilter);
       }
       return res.end(JSON.stringify(prenotazioni));
     }
 
     // POST /app-api/prenotazioni/batch (Prenotazione Multipla Rapida a blocchi)
     if (pathname === "/app-api/prenotazioni/batch" && method === "POST") {
-      const atletaId = parsedBody.atleta_id || parsedBody.email_cliente || currentUser.id;
+      const atletaId = parsedBody.atleta_id || parsedBody.email_cliente || currentUser?.id;
+      if (!atletaId) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Atleta non specificato o sessione non valida." }));
+      }
       const atleta =
         (db.profili_utenti || []).find(
           (p: any) =>
             p.id === atletaId ||
             p.email?.toLowerCase() === atletaId?.toLowerCase() ||
             p.email?.toLowerCase() === parsedBody.email_cliente?.toLowerCase()
-        ) || currentUser;
+        ) || (currentUser && (currentUser.id === atletaId || currentUser.email?.toLowerCase() === atletaId?.toLowerCase()) ? currentUser : null);
+
+      if (!atleta) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: `Atleta "${atletaId}" non trovato nel database.` }));
+      }
       const requestedSlots: Array<{ data: string; orario: string; note?: string }> =
         parsedBody.slots || [];
 
@@ -1903,9 +1955,9 @@ CALENDARIO E PRENOTAZIONI:
         return res.end(JSON.stringify({ error: "Nessuno slot specificato per la prenotazione multipla." }));
       }
 
-      const isManager = currentUser.ruolo === "manager";
+      const isManager = currentUser?.ruolo === "manager";
       const totalCost = requestedSlots.length;
-      const walletOwner = getWalletOwner(atleta, db);
+      const walletOwner = getWalletOwner(atleta, db) || atleta;
       const isShared = walletOwner && walletOwner.id !== atleta.id;
 
       if (!isManager) {
@@ -1994,7 +2046,7 @@ CALENDARIO E PRENOTAZIONI:
       }
 
       // Tutto verificato: applica le prenotazioni
-      walletOwner.crediti = (walletOwner.crediti ?? 0) - totalCost;
+      walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - totalCost);
       atleta.data_ultimo_accesso = new Date().toISOString();
       if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
 
@@ -2036,6 +2088,7 @@ CALENDARIO E PRENOTAZIONI:
       });
 
       saveData(db);
+      await syncDataToGoogleDrive(db);
 
       res.statusCode = 201;
       return res.end(
@@ -2051,14 +2104,24 @@ CALENDARIO E PRENOTAZIONI:
 
     // POST /app-api/prenotazioni
     if (pathname === "/app-api/prenotazioni" && method === "POST") {
-      const atletaId = parsedBody.atleta_id || parsedBody.email_cliente || currentUser.id;
+      const isManager = currentUser?.ruolo === "manager";
+      const atletaId = parsedBody.atleta_id || parsedBody.email_cliente || currentUser?.id;
+      if (!atletaId) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Atleta non specificato o sessione non valida." }));
+      }
       const atleta =
         (db.profili_utenti || []).find(
           (p: any) =>
             p.id === atletaId ||
             p.email?.toLowerCase() === atletaId?.toLowerCase() ||
             p.email?.toLowerCase() === parsedBody.email_cliente?.toLowerCase()
-        ) || currentUser;
+        ) || (currentUser && (currentUser.id === atletaId || currentUser.email?.toLowerCase() === atletaId?.toLowerCase()) ? currentUser : null);
+
+      if (!atleta) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: `Atleta non trovato con identificativo "${atletaId}".` }));
+      }
       const dataSlot = parsedBody.data;
       const orarioSlot = parsedBody.orario;
 
@@ -2089,20 +2152,19 @@ CALENDARIO E PRENOTAZIONI:
 
       // 1. Controllo Capienza Rigorosa 1:1
       const slotGiaOccupato = db.prenotazioni_slot.find(
-        (p: any) => p.data === dataSlot && p.orario === orarioSlot && p.stato === "confermata"
+        (p: any) => p.data === dataSlot && p.orario === orarioSlot && (p.stato === "confermata" || !p.stato || p.stato === "attiva")
       );
       if (slotGiaOccupato) {
         res.statusCode = 409;
         return res.end(
           JSON.stringify({
-            error: `Lo slot del ${dataSlot} alle ${orarioSlot} è già stato prenotato da un altro atleta. Capienza massima raggiunta per questa postazione.`,
+            error: `Lo slot del ${dataSlot} alle ${orarioSlot} è già stato prenotato da ${slotGiaOccupato.nome_cliente}. Capienza massima raggiunta per questa postazione.`,
           })
         );
       }
 
       // 2. Controllo Crediti e Scadenza
-      const isManager = currentUser.ruolo === "manager";
-      const walletOwner = getWalletOwner(atleta, db);
+      const walletOwner = getWalletOwner(atleta, db) || atleta;
       const isShared = walletOwner && walletOwner.id !== atleta.id;
 
       if (!isManager) {
@@ -2156,7 +2218,7 @@ CALENDARIO E PRENOTAZIONI:
       }
 
       // 3. Scalamento del credito (1 credito = 1 sessione)
-      walletOwner.crediti = (walletOwner.crediti ?? 0) - 1;
+      walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
       atleta.data_ultimo_accesso = new Date().toISOString();
       if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
 
@@ -2171,7 +2233,7 @@ CALENDARIO E PRENOTAZIONI:
         telefono_cliente: atleta.telefono || "",
         stato: "confermata",
         credito_scalato: true,
-        note: parsedBody.note || "",
+        note: parsedBody.note || (isManager ? "Assegnazione diretta dal Coach" : ""),
         created_at: new Date().toISOString(),
       };
 
@@ -2192,6 +2254,7 @@ CALENDARIO E PRENOTAZIONI:
       });
 
       saveData(db);
+      await syncDataToGoogleDrive(db);
 
       if (isManager) {
         console.log(`[NOTIFICA AUTOMATICA EMAIL] A: ${atleta.email} - Conferma Prenotazione Area46: ${dataSlot} ore ${orarioSlot}`);

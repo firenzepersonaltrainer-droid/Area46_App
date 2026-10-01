@@ -148,7 +148,13 @@ export default function PrenotaSlotPage() {
   const miePrenotazioniAttive = useMemo(() => {
     if (!user) return [];
     return prenotazioni
-      .filter((p) => !isBookingDeleted(p.id) && p.email_cliente === user.email && (p.stato === "confermata" || !p.stato || p.stato === "attiva"))
+      .filter(
+        (p) =>
+          !isBookingDeleted(p.id) &&
+          (p.email_cliente?.toLowerCase() === user.email?.toLowerCase() ||
+            (p.atleta_id && p.atleta_id === user.id)) &&
+          (p.stato === "confermata" || !p.stato || p.stato === "attiva")
+      )
       .sort((a, b) => (a.data + a.orario).localeCompare(b.data + b.orario));
   }, [prenotazioni, user]);
 
@@ -514,7 +520,10 @@ export default function PrenotaSlotPage() {
           {orariDisponibili.map((orario) => {
             const booking = prenotazioniGiorno.find((p) => p.orario === orario);
             const isOccupato = !!booking;
-            const isMio = booking?.email_cliente === user?.email;
+            const isMio =
+              !!booking &&
+              (booking.email_cliente?.toLowerCase() === user?.email?.toLowerCase() ||
+                (booking.atleta_id && booking.atleta_id === user?.id));
 
             if (isMio) {
               return (

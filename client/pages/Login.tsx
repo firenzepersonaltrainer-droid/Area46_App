@@ -254,74 +254,7 @@ export default function LoginPage() {
         )}
       </div>
 
-      {/* ACCESSO RAPIDO TESTER / DEMO (DISCRETO E COMODO) */}
-      <div className="mt-6 p-4 rounded-3xl bg-zinc-50 border border-zinc-200/80 shadow-2xs space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-black uppercase tracking-wider text-zinc-500">
-            Accesso Rapido Tester & Gestore
-          </span>
-          <span className="text-[9px] bg-zinc-200 text-zinc-700 font-bold px-1.5 py-0.5 rounded">
-            Fase di Test
-          </span>
-        </div>
 
-        <div className="space-y-1.5">
-          {/* Coach Tronconi */}
-          <button
-            type="button"
-            onClick={() => handleSocialLogin("google", "firenzepersonaltrainer@gmail.com", "Stefano Tronconi")}
-            className="w-full p-2.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-left transition-all flex items-center justify-between cursor-pointer"
-          >
-            <div className="flex items-center gap-2">
-              <div className="size-6 rounded-lg bg-zinc-900 text-[#e3ff00] flex items-center justify-center font-black text-xs">
-                <ShieldCheck className="size-3.5" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-zinc-900 leading-none">
-                  Stefano Tronconi (Coach)
-                </div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">
-                  firenzepersonaltrainer@gmail.com
-                </div>
-              </div>
-            </div>
-            <span className="text-[10px] font-bold text-[#1c00ff]">&rarr;</span>
-          </button>
-
-          {/* Atleti Censiti Dinamicamente dall'Anagrafica (se presenti) */}
-          {profili
-            .filter((p) => p.ruolo === "atleta")
-            .map((atleta) => (
-              <button
-                key={atleta.id}
-                type="button"
-                onClick={() =>
-                  handleSocialLogin(
-                    "google",
-                    atleta.email,
-                    `${atleta.nome} ${atleta.cognome}`.trim()
-                  )
-                }
-                className="w-full p-2.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-left transition-all flex items-center justify-between cursor-pointer"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="size-6 rounded-lg bg-[#1c00ff]/10 text-[#1c00ff] flex items-center justify-center font-black text-xs border border-[#1c00ff]/20">
-                    <User className="size-3.5 text-[#1c00ff]" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-zinc-900 leading-none">
-                      {atleta.nome} {atleta.cognome} (Atleta)
-                    </div>
-                    <div className="text-[10px] text-zinc-500 mt-0.5">
-                      {atleta.email}
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-[#1c00ff]">&rarr;</span>
-              </button>
-            ))}
-        </div>
-      </div>
 
       {/* FOOTER LINK VISITATORI */}
       <div className="mt-4 text-center">

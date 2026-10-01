@@ -9,6 +9,7 @@ import {
   useRegolePalinsesto,
   saveDeletedBookingId,
   isBookingDeleted,
+  getActiveUserId,
 } from "../lib/useUser";
 import { calcolaSlotPerGiorno } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
@@ -169,9 +170,13 @@ export default function ManagerCalendarPage() {
   // Mutation Nuova Prenotazione Manuale Coach
   const prenotaManualeMutation = useMutation({
     mutationFn: async ({ data, orario, atleta_id, note }: any) => {
+      const storedId = getActiveUserId();
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (storedId) headers["x-area46-user"] = storedId;
       const res = await fetch("/app-api/prenotazioni", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
+        credentials: "include",
         body: JSON.stringify({ data, orario, atleta_id, note }),
       });
       const json = await res.json();
@@ -869,9 +874,10 @@ export default function ManagerCalendarPage() {
                 onChange={(e) => setSelectedAtletaId(e.target.value)}
                 className="w-full p-2.5 rounded-xl border border-zinc-300 bg-white font-bold text-xs"
               >
+                <option value="">-- Seleziona un Atleta --</option>
                 {atleti.map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.nome} {a.cognome} (Crediti: {a.crediti} • Policy: {a.tempo_cancellazione_ore || 24}h)
+                    {a.nome} {a.cognome} ({a.is_shared_wallet ? `Borsellino ${a.shared_master_nome || "condiviso"}: ${a.crediti} crediti` : `Crediti: ${a.crediti}`} • Policy: {a.tempo_cancellazione_ore || 24}h)
                   </option>
                 ))}
               </select>

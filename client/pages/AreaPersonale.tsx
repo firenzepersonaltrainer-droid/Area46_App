@@ -167,7 +167,6 @@ export default function AreaPersonalePage() {
   const [bookingMode, setBookingMode] = useState<"singola" | "multipla">("singola");
   const [batchGiorni, setBatchGiorni] = useState<number[]>([3, 5]); // Mercoledì e Venerdì di default
   const [batchOraInizio, setBatchOraInizio] = useState("17:00");
-  const [batchOraFine, setBatchOraFine] = useState("17:45");
   const [batchSettimane, setBatchSettimane] = useState(4); // 4 settimane di orizzonte (1 mese)
   const [selectedBatchSlots, setSelectedBatchSlots] = useState<Array<{ data: string; orario: string }>>([]);
   const [showBatchConfirmModal, setShowBatchConfirmModal] = useState(false);
@@ -279,7 +278,13 @@ export default function AreaPersonalePage() {
   const miePrenotazioniAttive = useMemo(() => {
     if (!user) return [];
     return prenotazioni
-      .filter((p) => !isBookingDeleted(p.id) && p.email_cliente === user.email && (p.stato === "confermata" || !p.stato || p.stato === "attiva"))
+      .filter(
+        (p) =>
+          !isBookingDeleted(p.id) &&
+          (p.email_cliente?.toLowerCase() === user.email?.toLowerCase() ||
+            (p.atleta_id && p.atleta_id === user.id)) &&
+          (p.stato === "confermata" || !p.stato || p.stato === "attiva")
+      )
       .sort((a, b) => (a.data + a.orario).localeCompare(b.data + b.orario));
   }, [prenotazioni, user]);
 
@@ -358,8 +363,6 @@ export default function AreaPersonalePage() {
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
     const totalDays = batchSettimane * 7;
-    const startMin = timeToMinutes(batchOraInizio);
-    const endMin = timeToMinutes(batchOraFine);
 
     for (let offset = 0; offset <= totalDays; offset++) {
       const [y, m, d] = todayISO.split("-").map(Number);
@@ -382,13 +385,16 @@ export default function AreaPersonalePage() {
       );
 
       for (const slot of slots) {
-        const slotMin = timeToMinutes(slot.orario);
-        if (slotMin < startMin || slotMin > endMin) continue;
+        if (slot.orario !== batchOraInizio) continue;
 
+        const slotMin = timeToMinutes(slot.orario);
         if (dateStr === todayISO && slotMin <= currentMinutes) continue;
 
         const booking = dayBookings.find((p) => p.orario === slot.orario);
-        const isMio = booking?.email_cliente === user?.email;
+        const isMio =
+          !!booking &&
+          (booking.email_cliente?.toLowerCase() === user?.email?.toLowerCase() ||
+            (booking.atleta_id && booking.atleta_id === user?.id));
         const isOccupato = !!booking && !isMio;
         const isBloccato = bloccati.has(slot.orario);
 
@@ -418,12 +424,13 @@ export default function AreaPersonalePage() {
     batchSettimane,
     batchGiorni,
     batchOraInizio,
-    batchOraFine,
     regole,
     eccezioni,
     attivita,
     prenotazioni,
     user?.email,
+    user?.id,
+    policyAnticipoOre,
   ]);
 
   const handleToggleBatchSlot = (data: string, orario: string) => {
@@ -858,7 +865,10 @@ export default function AreaPersonalePage() {
                       const slotInfo = slotDinamici.find((s) => s.orario === orario);
                       const booking = prenotazioniGiorno.find((p) => p.orario === orario);
                       const isOccupato = !!booking;
-                      const isMio = booking?.email_cliente === user?.email;
+                      const isMio =
+                        !!booking &&
+                        (booking.email_cliente?.toLowerCase() === user?.email?.toLowerCase() ||
+                          (booking.atleta_id && booking.atleta_id === user?.id));
 
                       if (isMio) {
                         return (
@@ -994,24 +1004,22 @@ export default function AreaPersonalePage() {
                       onClick={() => {
                         setBatchGiorni([3, 5]);
                         setBatchOraInizio("17:00");
-                        setBatchOraFine("17:45");
                         setSelectedBatchSlots([]);
                       }}
                       className="text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-zinc-300 hover:border-[#1c00ff] text-zinc-700 hover:text-[#1c00ff] transition-all cursor-pointer"
                     >
-                      ⚡ Mer + Ven (17:00-17:45)
+                      ⚡ Mer + Ven (ore 17:00)
                     </button>
                     <button
                       type="button"
                       onClick={() => {
                         setBatchGiorni([1, 3, 5]);
                         setBatchOraInizio("09:00");
-                        setBatchOraFine("11:00");
                         setSelectedBatchSlots([]);
                       }}
                       className="text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-zinc-300 hover:border-[#1c00ff] text-zinc-700 hover:text-[#1c00ff] transition-all cursor-pointer"
                     >
-                      ⚡ Mattine (Lun-Mer-Ven)
+                      ⚡ Mattine (ore 09:00)
                     </button>
                   </div>
                 </div>
@@ -1078,53 +1086,31 @@ export default function AreaPersonalePage() {
                   </div>
                 </div>
 
-                {/* FILTRO 2: FASCIA ORARIA */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
-                      2. Orario Inizio (Dalle ore)
-                    </label>
-                    <select
-                      value={batchOraInizio}
-                      onChange={(e) => {
-                        setBatchOraInizio(e.target.value);
-                        setSelectedBatchSlots([]);
-                      }}
-                      className="w-full h-9 px-3 rounded-xl border border-zinc-300 bg-white font-bold text-xs text-zinc-900 cursor-pointer shadow-2xs"
-                    >
-                      {ORARI_DISPONIBILI_BATCH.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
-                      3. Orario Fine (Fino alle ore)
-                    </label>
-                    <select
-                      value={batchOraFine}
-                      onChange={(e) => {
-                        setBatchOraFine(e.target.value);
-                        setSelectedBatchSlots([]);
-                      }}
-                      className="w-full h-9 px-3 rounded-xl border border-zinc-300 bg-white font-bold text-xs text-zinc-900 cursor-pointer shadow-2xs"
-                    >
-                      {ORARI_DISPONIBILI_BATCH.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                {/* FILTRO 2: ORARIO INIZIALE DELLA SEDUTA */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
+                    2. Orario Iniziale della Seduta
+                  </label>
+                  <select
+                    value={batchOraInizio}
+                    onChange={(e) => {
+                      setBatchOraInizio(e.target.value);
+                      setSelectedBatchSlots([]);
+                    }}
+                    className="w-full h-9 px-3 rounded-xl border border-zinc-300 bg-white font-bold text-xs text-zinc-900 cursor-pointer shadow-2xs"
+                  >
+                    {ORARI_DISPONIBILI_BATCH.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* FILTRO 3: ORIZZONTE TEMPORALE */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black uppercase tracking-wider text-zinc-600">
-                    4. Orizzonte Temporale di Prenotazione
+                    3. Orizzonte Temporale di Prenotazione
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                     {[

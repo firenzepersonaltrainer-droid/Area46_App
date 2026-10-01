@@ -83,7 +83,22 @@ export default function DesktopControlPanel() {
   ).length;
   const atletiInDebito = profili.filter((p) => p.ruolo === "atleta" && p.crediti < 0).length;
 
-  // Se l'utente NON è autenticato o non è manager, schermata di accesso Coach desktop
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleCoachLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pin.trim() !== "4646") {
+      setPinError("PIN errato. Inserisci il PIN Coach autorizzato.");
+      return;
+    }
+    setIsVerifying(true);
+    switchUser({ userId: "usr-coach-01", pin: pin.trim() });
+    setIsVerifying(false);
+  };
+
+  // Se l'utente NON è autenticato o non è manager, schermata di accesso Coach desktop protetta da PIN
   if (!user || !isManager) {
     return (
       <div className="min-h-screen w-full bg-[#09090b] flex flex-col items-center justify-center p-4 selection:bg-[#1c00ff] selection:text-white">
@@ -106,42 +121,45 @@ export default function DesktopControlPanel() {
               Area46 Landmine Lab
             </h1>
             <p className="text-xs text-zinc-400">
-              Accesso riservato al Coach per la gestione panoramica di Calendario, Atleti, Performance e Fisco su grande schermo.
+              Accesso protetto riservato al Coach per la gestione di Calendario, Atleti e Fisco.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-zinc-800/50 border border-zinc-700/60 text-left space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-zinc-400">Account Manager:</span>
-              <strong className="text-white font-mono">firenzepersonaltrainer@gmail.com</strong>
+          <form onSubmit={handleCoachLogin} className="space-y-4 pt-2">
+            <div className="space-y-1.5 text-left">
+              <label className="text-[11px] font-black uppercase tracking-wider text-zinc-400">
+                Inserisci PIN Coach per sbloccare:
+              </label>
+              <input
+                type="password"
+                maxLength={6}
+                placeholder="PIN Coach"
+                value={pin}
+                onChange={(e) => {
+                  setPin(e.target.value);
+                  setPinError("");
+                }}
+                className="w-full h-12 rounded-xl bg-zinc-800 border border-zinc-700 px-4 text-center tracking-widest text-lg font-mono text-white focus:outline-none focus:border-[#1c00ff]"
+                autoFocus
+              />
+              {pinError && <p className="text-xs font-bold text-red-400 mt-1">{pinError}</p>}
             </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-zinc-400">Coach Titolare:</span>
-              <span className="text-emerald-400 font-bold">Stefano Tronconi</span>
-            </div>
-            <div className="flex items-center justify-between text-xs border-t border-zinc-700/50 pt-2">
-              <span className="text-zinc-400">Ambiente:</span>
-              <span className="text-zinc-300 font-medium">Desktop Panoramico (No Frame)</span>
-            </div>
-          </div>
 
-          <div className="space-y-3 pt-2">
             <Button
-              onClick={() => {
-                switchUser("usr-coach-01");
-              }}
+              type="submit"
+              disabled={isVerifying || !pin}
               className="w-full h-12 rounded-2xl bg-[#1c00ff] hover:bg-[#1600cc] text-white font-black text-sm shadow-lg shadow-[#1c00ff]/20 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <ShieldCheck className="size-4" /> Entra come Coach Stefano Tronconi
+              <ShieldCheck className="size-4" /> {isVerifying ? "Verifica in corso..." : "Sblocca Pannello Coach"}
             </Button>
 
             <Link
               to="/"
               className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition-colors cursor-pointer"
             >
-              <Smartphone className="size-3.5" /> Vai all'App Mobile per Atleti
+              <Smartphone className="size-3.5" /> Torna all'App Mobile
             </Link>
-          </div>
+          </form>
         </div>
       </div>
     );
