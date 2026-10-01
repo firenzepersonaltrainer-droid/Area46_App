@@ -40,6 +40,7 @@ export interface UserProfile {
   is_wallet_master?: boolean;
   shared_partners_count?: number;
   shared_partner_names?: string[];
+  anticipi_da_scontare?: number;
 }
 
 export interface MovimentoCrediti {
@@ -350,6 +351,8 @@ export function useProfili() {
       tipo,
       motivazione,
       data_scadenza_crediti,
+      anticipi_da_scontare,
+      e_anticipo,
     }: {
       id: string;
       crediti?: number;
@@ -357,11 +360,21 @@ export function useProfili() {
       tipo?: string;
       motivazione?: string;
       data_scadenza_crediti?: string;
+      anticipi_da_scontare?: number;
+      e_anticipo?: boolean;
     }) => {
       const res = await fetch(`/app-api/profili/${id}/modifica-crediti`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ crediti, delta, tipo, motivazione, data_scadenza_crediti }),
+        body: JSON.stringify({
+          crediti,
+          delta,
+          tipo,
+          motivazione,
+          data_scadenza_crediti,
+          anticipi_da_scontare,
+          e_anticipo,
+        }),
       });
       if (!res.ok) throw new Error("Errore modifica crediti");
       return res.json();

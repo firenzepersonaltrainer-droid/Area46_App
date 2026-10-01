@@ -25851,6 +25851,86 @@ var demo_data_default = {
       note_coach: "",
       created_at: "2026-09-30T14:20:20.748Z",
       updated_at: "2026-09-30T14:21:01.220Z"
+    },
+    {
+      id: "usr-test-anticipo-1790874767836",
+      nome: "Marco",
+      cognome: "TestAnticipo",
+      email: "test_anticipo_1790874767836@area46.test",
+      telefono: "",
+      codice_fiscale: "",
+      indirizzo: "",
+      ruolo: "atleta",
+      crediti: 5,
+      anticipi_da_scontare: 8,
+      shared_wallet_with: null,
+      tempo_cancellazione_ore: 24,
+      tempo_anticipo_prenotazione_ore: 24,
+      data_scadenza_crediti: "2026-11-30",
+      data_ultimo_accesso: "2026-10-01T17:12:48.187Z",
+      note_coach: "",
+      created_at: "2026-10-01T17:12:47.945Z",
+      updated_at: "2026-10-01T17:12:48.056Z"
+    },
+    {
+      id: "usr-test-anticipo-1790874843736",
+      nome: "Marco",
+      cognome: "TestAnticipo",
+      email: "test_anticipo_1790874843736@area46.test",
+      telefono: "",
+      codice_fiscale: "",
+      indirizzo: "",
+      ruolo: "atleta",
+      crediti: 8,
+      anticipi_da_scontare: 8,
+      shared_wallet_with: null,
+      tempo_cancellazione_ore: 24,
+      tempo_anticipo_prenotazione_ore: 24,
+      data_scadenza_crediti: "2026-11-30",
+      data_ultimo_accesso: "2026-10-01T17:14:04.139Z",
+      note_coach: "",
+      created_at: "2026-10-01T17:14:04.139Z",
+      updated_at: "2026-10-01T17:14:04.655Z"
+    },
+    {
+      id: "usr-test-anticipo-1790874872421",
+      nome: "Marco",
+      cognome: "TestAnticipo",
+      email: "test_anticipo_1790874872421@area46.test",
+      telefono: "",
+      codice_fiscale: "",
+      indirizzo: "",
+      ruolo: "atleta",
+      crediti: 24,
+      anticipi_da_scontare: 0,
+      shared_wallet_with: null,
+      tempo_cancellazione_ore: 24,
+      tempo_anticipo_prenotazione_ore: 24,
+      data_scadenza_crediti: "2026-12-24",
+      data_ultimo_accesso: "2026-10-01T17:14:33.058Z",
+      note_coach: "",
+      created_at: "2026-10-01T17:14:32.798Z",
+      updated_at: "2026-10-01T17:14:32.934Z"
+    },
+    {
+      id: "usr-test-anticipo-1790874899312",
+      nome: "Marco",
+      cognome: "TestAnticipo",
+      email: "test_anticipo_1790874899312@area46.test",
+      telefono: "",
+      codice_fiscale: "",
+      indirizzo: "",
+      ruolo: "atleta",
+      crediti: 24,
+      anticipi_da_scontare: 0,
+      shared_wallet_with: null,
+      tempo_cancellazione_ore: 24,
+      tempo_anticipo_prenotazione_ore: 24,
+      data_scadenza_crediti: "2026-12-31",
+      data_ultimo_accesso: "2026-10-01T17:14:59.682Z",
+      note_coach: "",
+      created_at: "2026-10-01T17:14:59.440Z",
+      updated_at: "2026-10-01T17:14:59.554Z"
     }
   ],
   configurazione_lab: {
@@ -25981,8 +26061,108 @@ var demo_data_default = {
       badge: "\u{1F451} PREMIO 12 MESI (156 slot)"
     }
   ],
-  prenotazioni_slot: [],
+  prenotazioni_slot: [
+    {
+      id: "bk-1790874768103",
+      data: "2026-10-11",
+      orario: "10:30",
+      atleta_id: "usr-test-anticipo-1790874767836",
+      email_cliente: "test_anticipo_1790874767836@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-01T17:12:48.103Z"
+    },
+    {
+      id: "bk-1790874768153",
+      data: "2026-10-12",
+      orario: "10:30",
+      atleta_id: "usr-test-anticipo-1790874767836",
+      email_cliente: "test_anticipo_1790874767836@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-01T17:12:48.153Z"
+    },
+    {
+      id: "bk-1790874768187",
+      data: "2026-10-13",
+      orario: "10:30",
+      atleta_id: "usr-test-anticipo-1790874767836",
+      email_cliente: "test_anticipo_1790874767836@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-01T17:12:48.187Z"
+    }
+  ],
   transazioni_pagamenti: [
+    {
+      codice_transazione: "TX-46-914894",
+      atleta_id: "usr-test-anticipo-1790874914304",
+      email_cliente: "test_anticipo_1790874914304@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-24",
+      nome_pacchetto: "Pacchetto Lab 24",
+      importo_euro: 690,
+      metodo: "carta",
+      crediti_acquistati: 24,
+      debiti_decurtati: 0,
+      anticipi_decurtati: 8,
+      crediti_effettivi_aggiunti: 16,
+      causale_bonifico: null,
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-10-01T17:15:14.894Z"
+    },
+    {
+      codice_transazione: "TX-46-899682",
+      atleta_id: "usr-test-anticipo-1790874899312",
+      email_cliente: "test_anticipo_1790874899312@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-24",
+      nome_pacchetto: "Pacchetto Lab 24",
+      importo_euro: 690,
+      metodo: "carta",
+      crediti_acquistati: 24,
+      debiti_decurtati: 0,
+      anticipi_decurtati: 8,
+      crediti_effettivi_aggiunti: 16,
+      causale_bonifico: null,
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-10-01T17:14:59.682Z"
+    },
+    {
+      codice_transazione: "TX-46-873058",
+      atleta_id: "usr-test-anticipo-1790874872421",
+      email_cliente: "test_anticipo_1790874872421@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-24",
+      nome_pacchetto: "Pacchetto Lab 24",
+      importo_euro: 690,
+      metodo: "carta",
+      crediti_acquistati: 24,
+      debiti_decurtati: 0,
+      anticipi_decurtati: 8,
+      crediti_effettivi_aggiunti: 16,
+      causale_bonifico: null,
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-10-01T17:14:33.058Z"
+    },
     {
       id: "tx-man-1790778290078",
       codice_transazione: "TX-MAN-46-290075",
@@ -26020,6 +26200,114 @@ var demo_data_default = {
   ],
   active_user_id: null,
   movimenti_crediti: [
+    {
+      id: "mov-1790874899682-418",
+      atleta_id: "usr-test-anticipo-1790874899312",
+      email_cliente: "test_anticipo_1790874899312@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:14:59.682Z",
+      tipo: "acquisto_carnet",
+      delta_crediti: 16,
+      saldo_risultante: 24,
+      motivazione: "Acquisto Pacchetto Lab 24 (scontati 8 crediti concessi in anticipo)",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1790874899554-481",
+      atleta_id: "usr-test-anticipo-1790874899312",
+      email_cliente: "test_anticipo_1790874899312@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:14:59.554Z",
+      tipo: "modifica_manuale",
+      delta_crediti: 8,
+      saldo_risultante: 8,
+      motivazione: "Anticipo di 8 crediti concesso dal Coach (da scalare al prossimo acquisto pacchetto)",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790874873058-346",
+      atleta_id: "usr-test-anticipo-1790874872421",
+      email_cliente: "test_anticipo_1790874872421@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:14:33.058Z",
+      tipo: "acquisto_carnet",
+      delta_crediti: 16,
+      saldo_risultante: 24,
+      motivazione: "Acquisto Pacchetto Lab 24 (scontati 8 crediti concessi in anticipo)",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1790874872934-983",
+      atleta_id: "usr-test-anticipo-1790874872421",
+      email_cliente: "test_anticipo_1790874872421@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:14:32.934Z",
+      tipo: "modifica_manuale",
+      delta_crediti: 8,
+      saldo_risultante: 8,
+      motivazione: "Anticipo di 8 crediti concesso dal Coach (da scalare al prossimo acquisto pacchetto)",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790874844655-863",
+      atleta_id: "usr-test-anticipo-1790874843736",
+      email_cliente: "test_anticipo_1790874843736@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:14:04.655Z",
+      tipo: "modifica_manuale",
+      delta_crediti: 8,
+      saldo_risultante: 8,
+      motivazione: "Anticipo di 8 crediti concesso dal Coach (da scalare al prossimo acquisto pacchetto)",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1790874768187-834",
+      atleta_id: "usr-test-anticipo-1790874767836",
+      email_cliente: "test_anticipo_1790874767836@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:12:48.187Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 5,
+      motivazione: "Prenotazione slot del 2026-10-13 ore 10:30",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1790874768153-194",
+      atleta_id: "usr-test-anticipo-1790874767836",
+      email_cliente: "test_anticipo_1790874767836@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:12:48.153Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 6,
+      motivazione: "Prenotazione slot del 2026-10-12 ore 10:30",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1790874768103-735",
+      atleta_id: "usr-test-anticipo-1790874767836",
+      email_cliente: "test_anticipo_1790874767836@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:12:48.103Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 7,
+      motivazione: "Prenotazione slot del 2026-10-11 ore 10:30",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1790874768056-929",
+      atleta_id: "usr-test-anticipo-1790874767836",
+      email_cliente: "test_anticipo_1790874767836@area46.test",
+      nome_cliente: "Marco TestAnticipo",
+      data_ora: "2026-10-01T17:12:48.056Z",
+      tipo: "modifica_manuale",
+      delta_crediti: 8,
+      saldo_risultante: 8,
+      motivazione: "Anticipo di 8 crediti concesso dal Coach (da scalare al prossimo acquisto pacchetto)",
+      operatore: "coach"
+    },
     {
       id: "mov-1790779467659-35",
       atleta_id: "usr-atleta-1790777073318",
@@ -26137,10 +26425,336 @@ var demo_data_default = {
     }
   ],
   prenotazioni_cancellate: [
-    "bk-1790779463601"
+    "bk-1790779463601",
+    "bk-1790874914722",
+    "bk-1790874914783",
+    "bk-1790874914844"
   ],
-  utenti_cancellati: [],
+  utenti_cancellati: [
+    "usr-test-anticipo-1790874914304",
+    "test_anticipo_1790874914304@area46.test"
+  ],
   notifiche_email: [
+    {
+      id: "email-1790874914574-778",
+      destinatario: "test_anticipo_1790874914304@area46.test",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: test_anticipo_1790874914304@area46.test
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: test_anticipo_1790874914304@area46.test<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com</p>`,
+      inviato_il: "2026-10-01T17:15:14.574Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874914531-429",
+      destinatario: "test_anticipo_1790874914304@area46.test",
+      oggetto: "Invito ad Area46 Landmine Lab - Profilo Atleta Attivato",
+      corpo: "Ciao Marco TestAnticipo!\n\nIl tuo profilo atleta su Area46 Landmine Lab \xE8 stato attivato dal Coach Stefano Tronconi.\n\nAccedi alla Web App dal link:\nhttps://area46-app.vercel.app\n\nPuoi salvare l'applicazione direttamente sulla schermata Home del tuo smartphone per consultare i tuoi allenamenti, il diario ed i crediti.",
+      html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+                <h2 style="color: #09090b; margin-top: 0;">Benvenuto in Area46 Landmine Lab!</h2>
+                <p style="color: #3f3f46; font-size: 15px;">Ciao <strong>Marco TestAnticipo</strong>,</p>
+                <p style="color: #3f3f46; font-size: 14px;">Il tuo profilo atleta \xE8 stato attivato dal Coach Stefano Tronconi su Area46 Landmine Lab.</p>
+                <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+                  <a href="https://area46-app.vercel.app" style="font-weight: 900; font-size: 16px; color: #1c00ff; text-decoration: none;">Apri Area46 Web App &rarr;</a>
+                </div>
+                <p style="color: #71717a; font-size: 12px; margin-top: 16px;">\u{1F4F1} <strong>Istruzioni Smartphone:</strong> Apri il link dal tuo browser mobile (Safari su iPhone o Chrome su Android) e seleziona "Aggiungi a Home" per salvare l'App sullo schermo del telefono.</p>
+              </div>`,
+      inviato_il: "2026-10-01T17:15:14.531Z",
+      tipo: "invito_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874899464-706",
+      destinatario: "test_anticipo_1790874899312@area46.test",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: test_anticipo_1790874899312@area46.test
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: test_anticipo_1790874899312@area46.test<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com</p>`,
+      inviato_il: "2026-10-01T17:14:59.464Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874899440-523",
+      destinatario: "test_anticipo_1790874899312@area46.test",
+      oggetto: "Invito ad Area46 Landmine Lab - Profilo Atleta Attivato",
+      corpo: "Ciao Marco TestAnticipo!\n\nIl tuo profilo atleta su Area46 Landmine Lab \xE8 stato attivato dal Coach Stefano Tronconi.\n\nAccedi alla Web App dal link:\nhttps://area46-app.vercel.app\n\nPuoi salvare l'applicazione direttamente sulla schermata Home del tuo smartphone per consultare i tuoi allenamenti, il diario ed i crediti.",
+      html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+                <h2 style="color: #09090b; margin-top: 0;">Benvenuto in Area46 Landmine Lab!</h2>
+                <p style="color: #3f3f46; font-size: 15px;">Ciao <strong>Marco TestAnticipo</strong>,</p>
+                <p style="color: #3f3f46; font-size: 14px;">Il tuo profilo atleta \xE8 stato attivato dal Coach Stefano Tronconi su Area46 Landmine Lab.</p>
+                <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+                  <a href="https://area46-app.vercel.app" style="font-weight: 900; font-size: 16px; color: #1c00ff; text-decoration: none;">Apri Area46 Web App &rarr;</a>
+                </div>
+                <p style="color: #71717a; font-size: 12px; margin-top: 16px;">\u{1F4F1} <strong>Istruzioni Smartphone:</strong> Apri il link dal tuo browser mobile (Safari su iPhone o Chrome su Android) e seleziona "Aggiungi a Home" per salvare l'App sullo schermo del telefono.</p>
+              </div>`,
+      inviato_il: "2026-10-01T17:14:59.440Z",
+      tipo: "invito_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874872834-983",
+      destinatario: "test_anticipo_1790874872421@area46.test",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: test_anticipo_1790874872421@area46.test
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: test_anticipo_1790874872421@area46.test<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com</p>`,
+      inviato_il: "2026-10-01T17:14:32.834Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874872799-36",
+      destinatario: "test_anticipo_1790874872421@area46.test",
+      oggetto: "Invito ad Area46 Landmine Lab - Profilo Atleta Attivato",
+      corpo: "Ciao Marco TestAnticipo!\n\nIl tuo profilo atleta su Area46 Landmine Lab \xE8 stato attivato dal Coach Stefano Tronconi.\n\nAccedi alla Web App dal link:\nhttps://area46-app.vercel.app\n\nPuoi salvare l'applicazione direttamente sulla schermata Home del tuo smartphone per consultare i tuoi allenamenti, il diario ed i crediti.",
+      html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+                <h2 style="color: #09090b; margin-top: 0;">Benvenuto in Area46 Landmine Lab!</h2>
+                <p style="color: #3f3f46; font-size: 15px;">Ciao <strong>Marco TestAnticipo</strong>,</p>
+                <p style="color: #3f3f46; font-size: 14px;">Il tuo profilo atleta \xE8 stato attivato dal Coach Stefano Tronconi su Area46 Landmine Lab.</p>
+                <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+                  <a href="https://area46-app.vercel.app" style="font-weight: 900; font-size: 16px; color: #1c00ff; text-decoration: none;">Apri Area46 Web App &rarr;</a>
+                </div>
+                <p style="color: #71717a; font-size: 12px; margin-top: 16px;">\u{1F4F1} <strong>Istruzioni Smartphone:</strong> Apri il link dal tuo browser mobile (Safari su iPhone o Chrome su Android) e seleziona "Aggiungi a Home" per salvare l'App sullo schermo del telefono.</p>
+              </div>`,
+      inviato_il: "2026-10-01T17:14:32.799Z",
+      tipo: "invito_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874844342-83",
+      destinatario: "test_anticipo_1790874843736@area46.test",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: test_anticipo_1790874843736@area46.test
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: test_anticipo_1790874843736@area46.test<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com</p>`,
+      inviato_il: "2026-10-01T17:14:04.342Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874844141-8",
+      destinatario: "test_anticipo_1790874843736@area46.test",
+      oggetto: "Invito ad Area46 Landmine Lab - Profilo Atleta Attivato",
+      corpo: "Ciao Marco TestAnticipo!\n\nIl tuo profilo atleta su Area46 Landmine Lab \xE8 stato attivato dal Coach Stefano Tronconi.\n\nAccedi alla Web App dal link:\nhttps://area46-app.vercel.app\n\nPuoi salvare l'applicazione direttamente sulla schermata Home del tuo smartphone per consultare i tuoi allenamenti, il diario ed i crediti.",
+      html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+                <h2 style="color: #09090b; margin-top: 0;">Benvenuto in Area46 Landmine Lab!</h2>
+                <p style="color: #3f3f46; font-size: 15px;">Ciao <strong>Marco TestAnticipo</strong>,</p>
+                <p style="color: #3f3f46; font-size: 14px;">Il tuo profilo atleta \xE8 stato attivato dal Coach Stefano Tronconi su Area46 Landmine Lab.</p>
+                <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+                  <a href="https://area46-app.vercel.app" style="font-weight: 900; font-size: 16px; color: #1c00ff; text-decoration: none;">Apri Area46 Web App &rarr;</a>
+                </div>
+                <p style="color: #71717a; font-size: 12px; margin-top: 16px;">\u{1F4F1} <strong>Istruzioni Smartphone:</strong> Apri il link dal tuo browser mobile (Safari su iPhone o Chrome su Android) e seleziona "Aggiungi a Home" per salvare l'App sullo schermo del telefono.</p>
+              </div>`,
+      inviato_il: "2026-10-01T17:14:04.141Z",
+      tipo: "invito_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874767972-206",
+      destinatario: "test_anticipo_1790874767836@area46.test",
+      oggetto: "Benvenuto in Area46 Landmine Lab \u2014 Il tuo profilo atleta \xE8 attivo! \u{1F3CB}\uFE0F\u200D\u2642\uFE0F",
+      corpo: `Ciao Marco!
+
+Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!
+Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.
+
+=============================================================================
+\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)
+=============================================================================
+
+Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:
+
+\u{1F34F} SE USI IPHONE (APPLE):
+1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app
+2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).
+3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).
+4. In alto a destra tocca "Aggiungi".
+Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.
+
+\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):
+1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app
+2. In alto a destra, tocca i tre puntini verticali (\u22EE).
+3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".
+4. Conferma toccando "Installa".
+Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.
+
+=============================================================================
+\u{1F511} COME ACCEDERE AL TUO PROFILO
+=============================================================================
+1. Apri l'app Area46 dal display del telefono.
+2. Inserisci la tua email: test_anticipo_1790874767836@area46.test
+3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.
+
+Buon allenamento con Landmine Lab!
+Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.
+
+\u2014 Area46 Landmine Lab Firenze
+firenzepersonaltrainer@gmail.com`,
+      html: `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">Ciao Marco!<br><br>Il Coach Stefano Tronconi ha creato il tuo profilo atleta ufficiale nell'applicazione di Area46 Landmine Lab!<br>Da adesso puoi consultare tutti i tuoi programmi di allenamento, guardare i video tecnici e seguire le sessioni direttamente dal tuo smartphone.<br><br>=============================================================================<br>\u{1F4F1} COME SALVARE E INSTALLARE L'APP SUL TUO TELEFONO (COME UNA VERA APP)<br>=============================================================================<br><br>Per avere l'app sempre a portata di mano sul display del tuo smartphone, segui questa velocissima procedura in base al tuo telefono:<br><br>\u{1F34F} SE USI IPHONE (APPLE):<br>1. Apri questo link con il browser SAFARI: https://area46-app.vercel.app<br>2. In basso al centro dello schermo, tocca l'icona di Condivisione (il quadrato con la freccetta verso l'alto \u238B).<br>3. Scorri le opzioni verso il basso e tocca "Aggiungi alla schermata Home" (+).<br>4. In alto a destra tocca "Aggiungi".<br>Fatto! L'icona di Area46 apparir\xE0 sul tuo schermo: toccandola, l'app si aprir\xE0 a schermo intero come una vera applicazione di sistema.<br><br>\u{1F916} SE USI ANDROID (SAMSUNG, XIAOMI, GOOGLE PIXEL, MOTOROLA, ECC.):<br>1. Apri questo link con il browser GOOGLE CHROME: https://area46-app.vercel.app<br>2. In alto a destra, tocca i tre puntini verticali (\u22EE).<br>3. Tocca la voce "Installa app" oppure "Aggiungi a schermata Home".<br>4. Conferma toccando "Installa".<br>Fatto! Troverai l'app Area46 tra le tue applicazioni e sulla tua schermata principale.<br><br>=============================================================================<br>\u{1F511} COME ACCEDERE AL TUO PROFILO<br>=============================================================================<br>1. Apri l'app Area46 dal display del telefono.<br>2. Inserisci la tua email: test_anticipo_1790874767836@area46.test<br>3. Clicca su "Ricevi Codice di Accesso (OTP)": non hai bisogno di password complesse, riceverai un comodo codice numerico per accedere in sicurezza istantaneamente.<br><br>Buon allenamento con Landmine Lab!<br>Per qualsiasi dubbio o supporto, chiedi pure a Stefano al Lab.<br><br>\u2014 Area46 Landmine Lab Firenze<br>firenzepersonaltrainer@gmail.com</p>`,
+      inviato_il: "2026-10-01T17:12:47.972Z",
+      tipo: "benvenuto_nuovo_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1790874767945-144",
+      destinatario: "test_anticipo_1790874767836@area46.test",
+      oggetto: "Invito ad Area46 Landmine Lab - Profilo Atleta Attivato",
+      corpo: "Ciao Marco TestAnticipo!\n\nIl tuo profilo atleta su Area46 Landmine Lab \xE8 stato attivato dal Coach Stefano Tronconi.\n\nAccedi alla Web App dal link:\nhttps://area46-app.vercel.app\n\nPuoi salvare l'applicazione direttamente sulla schermata Home del tuo smartphone per consultare i tuoi allenamenti, il diario ed i crediti.",
+      html: `<div style="font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;">
+                <h2 style="color: #09090b; margin-top: 0;">Benvenuto in Area46 Landmine Lab!</h2>
+                <p style="color: #3f3f46; font-size: 15px;">Ciao <strong>Marco TestAnticipo</strong>,</p>
+                <p style="color: #3f3f46; font-size: 14px;">Il tuo profilo atleta \xE8 stato attivato dal Coach Stefano Tronconi su Area46 Landmine Lab.</p>
+                <div style="background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;">
+                  <a href="https://area46-app.vercel.app" style="font-weight: 900; font-size: 16px; color: #1c00ff; text-decoration: none;">Apri Area46 Web App &rarr;</a>
+                </div>
+                <p style="color: #71717a; font-size: 12px; margin-top: 16px;">\u{1F4F1} <strong>Istruzioni Smartphone:</strong> Apri il link dal tuo browser mobile (Safari su iPhone o Chrome su Android) e seleziona "Aggiungi a Home" per salvare l'App sullo schermo del telefono.</p>
+              </div>`,
+      inviato_il: "2026-10-01T17:12:47.945Z",
+      tipo: "invito_atleta",
+      stato: "inviata"
+    },
     {
       id: "email-1790778020748-915",
       destinatario: "daniele.casci@gmail.com",
@@ -26742,7 +27356,8 @@ function getHydratedUser(user, database) {
     shared_master_nome: isShared ? `${walletOwner.nome} ${walletOwner.cognome}`.trim() : void 0,
     is_wallet_master: partners.length > 0,
     shared_partners_count: partners.length,
-    shared_partner_names: partners.map((x) => `${x.nome} ${x.cognome}`.trim())
+    shared_partner_names: partners.map((x) => `${x.nome} ${x.cognome}`.trim()),
+    anticipi_da_scontare: isShared ? Number(walletOwner.anticipi_da_scontare || 0) : Number(user.anticipi_da_scontare || 0)
   };
 }
 function getCurrentUser(reqOrDb, maybeDb) {
@@ -27250,6 +27865,7 @@ direttamente dal Pannello Manager Atleti.
         shared_partner_names: partners.map((x) => `${x.nome} ${x.cognome}`.trim()),
         tempo_cancellazione_ore: p.tempo_cancellazione_ore || 24,
         tempo_anticipo_prenotazione_ore: p.tempo_anticipo_prenotazione_ore || 24,
+        anticipi_da_scontare: isShared ? Number(walletOwner.anticipi_da_scontare || 0) : Number(p.anticipi_da_scontare || 0),
         giorni_a_scadenza,
         avviso_scadenza,
         mesi_inattivita,
@@ -27282,6 +27898,7 @@ direttamente dal Pannello Manager Atleti.
       indirizzo: (parsedBody.indirizzo || "").trim(),
       ruolo: parsedBody.ruolo || "atleta",
       crediti: creditiIniziali,
+      anticipi_da_scontare: Number(parsedBody.anticipi_da_scontare || 0),
       shared_wallet_with: parsedBody.shared_wallet_with?.trim() || null,
       tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
       tempo_anticipo_prenotazione_ore: Number(parsedBody.tempo_anticipo_prenotazione_ore || 24),
@@ -27411,20 +28028,31 @@ firenzepersonaltrainer@gmail.com
     if (parsedBody.data_scadenza_crediti) {
       profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
     }
+    if (parsedBody.anticipi_da_scontare !== void 0) {
+      profilo.anticipi_da_scontare = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+    } else if (parsedBody.e_anticipo) {
+      const deltaPos = delta > 0 ? delta : Number(parsedBody.crediti ?? 0) - saldoPrecedente;
+      if (deltaPos > 0) {
+        profilo.anticipi_da_scontare = (profilo.anticipi_da_scontare || 0) + deltaPos;
+      }
+    }
     if (delta !== 0) {
+      const isAnticipo = parsedBody.e_anticipo || parsedBody.tipo === "anticipo_crediti";
       addMovimentoCrediti(db, {
         atleta_id: profilo.id,
         email_cliente: profilo.email,
         nome_cliente: `${profilo.nome} ${profilo.cognome}`,
-        tipo: parsedBody.tipo || (delta > 0 ? "bonus_regalo" : delta < 0 ? "penalty" : "modifica_manuale"),
+        tipo: parsedBody.tipo || (isAnticipo ? "modifica_manuale" : delta > 0 ? "bonus_regalo" : delta < 0 ? "penalty" : "modifica_manuale"),
         delta_crediti: delta,
         saldo_risultante: profilo.crediti,
-        motivazione: parsedBody.motivazione || (delta > 0 ? "Bonus/Regalo assegnato dal Coach" : "Rettifica/Penalty manuale Coach"),
+        motivazione: parsedBody.motivazione || (isAnticipo ? `Anticipo di ${delta} crediti concesso dal Coach (da scalare al prossimo acquisto pacchetto)` : delta > 0 ? "Bonus/Regalo assegnato dal Coach" : "Rettifica/Penalty manuale Coach"),
         operatore: "coach"
       });
     }
     profilo.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     saveData(db);
+    await syncDataToGoogleDrive(db).catch(() => {
+    });
     return res.end(JSON.stringify(profilo));
   }
   const profiliPutMatch = pathname.match(/^\/app-api\/profili\/([a-zA-Z0-9_-]+)$/);
@@ -27442,6 +28070,9 @@ firenzepersonaltrainer@gmail.com
     if (parsedBody.codice_fiscale !== void 0) profilo.codice_fiscale = parsedBody.codice_fiscale;
     if (parsedBody.indirizzo !== void 0) profilo.indirizzo = parsedBody.indirizzo;
     if (parsedBody.crediti !== void 0) profilo.crediti = Number(parsedBody.crediti);
+    if (parsedBody.anticipi_da_scontare !== void 0) {
+      profilo.anticipi_da_scontare = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+    }
     if (parsedBody.tempo_cancellazione_ore !== void 0) {
       profilo.tempo_cancellazione_ore = Number(parsedBody.tempo_cancellazione_ore);
     }
@@ -28712,14 +29343,21 @@ CALENDARIO E PRENOTAZIONI:
       const atleta = (db.profili_utenti || []).find(
         (p) => p.email === atletaEmail || p.id === meta.atleta_id
       ) || currentUser;
-      const currentCrediti = Number(atleta.crediti) || 0;
+      const walletOwner = getWalletOwner(atleta, db) || atleta;
+      const currentCrediti = Number(walletOwner.crediti) || 0;
       const packCrediti = Number(pacchetto.crediti) || 0;
+      const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
       let debitiDecurtati = 0;
-      let creditiEffettivi = packCrediti;
+      let anticipiScontati = 0;
       if (currentCrediti < 0) {
-        debitiDecurtati = Math.abs(currentCrediti);
-        creditiEffettivi = packCrediti - debitiDecurtati;
+        debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
       }
+      const creditiRimanentiDopoDebito = packCrediti - debitiDecurtati;
+      if (anticipiAttuali > 0) {
+        anticipiScontati = Math.min(anticipiAttuali, creditiRimanentiDopoDebito);
+        walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+      }
+      const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
       const nuovaTransazione = {
         codice_transazione: `TX-ST-${Date.now().toString().slice(-6)}`,
         stripe_session_id: session.id,
@@ -28735,6 +29373,7 @@ CALENDARIO E PRENOTAZIONI:
         metodo: "stripe_card",
         crediti_acquistati: packCrediti,
         debiti_decurtati: debitiDecurtati,
+        anticipi_decurtati: anticipiScontati,
         crediti_effettivi_aggiunti: creditiEffettivi,
         causale_bonifico: null,
         stato: "completato",
@@ -28742,34 +29381,45 @@ CALENDARIO E PRENOTAZIONI:
         created_at: (/* @__PURE__ */ new Date()).toISOString()
       };
       if (currentCrediti < 0) {
-        atleta.crediti = creditiEffettivi;
+        walletOwner.crediti = currentCrediti + debitiDecurtati + creditiEffettivi;
       } else {
-        atleta.crediti = currentCrediti + packCrediti;
+        walletOwner.crediti = currentCrediti + creditiEffettivi;
       }
       const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 864e5).toISOString().slice(0, 10);
-      if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-        atleta.data_scadenza_crediti = nuovaScadenza;
+      if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+        walletOwner.data_scadenza_crediti = nuovaScadenza;
       }
-      atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      let motivazioneExtra = "";
+      if (debitiDecurtati > 0 && anticipiScontati > 0) {
+        motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
+      } else if (debitiDecurtati > 0) {
+        motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito)`;
+      } else if (anticipiScontati > 0) {
+        motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+      }
       addMovimentoCrediti(db, {
-        atleta_id: atleta.id,
-        email_cliente: atleta.email,
+        atleta_id: walletOwner.id,
+        email_cliente: walletOwner.email,
         nome_cliente: nuovaTransazione.nome_cliente,
         tipo: "acquisto_carnet",
         delta_crediti: creditiEffettivi,
-        saldo_risultante: atleta.crediti,
-        motivazione: `Acquisto Stripe ${pacchetto.nome}${debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""}`,
+        saldo_risultante: walletOwner.crediti,
+        motivazione: `Acquisto Stripe ${pacchetto.nome}${motivazioneExtra}`,
         operatore: "stripe"
       });
       db.transazioni_pagamenti = db.transazioni_pagamenti || [];
       db.transazioni_pagamenti.unshift(nuovaTransazione);
       saveData(db);
+      await syncDataToGoogleDrive(db).catch(() => {
+      });
       return res.end(
         JSON.stringify({
           ok: true,
           verified: true,
           transazione: nuovaTransazione,
-          crediti_attuali: atleta.crediti,
+          crediti_attuali: walletOwner.crediti,
           messaggio: "Pagamento Stripe confermato con successo! Crediti accreditati nel wallet."
         })
       );
@@ -28821,14 +29471,21 @@ CALENDARIO E PRENOTAZIONI:
           const atleta = (db.profili_utenti || []).find(
             (p) => p.email === atletaEmail || p.id === meta.atleta_id
           ) || currentUser;
-          const currentCrediti = Number(atleta.crediti) || 0;
+          const walletOwner = getWalletOwner(atleta, db) || atleta;
+          const currentCrediti = Number(walletOwner.crediti) || 0;
           const packCrediti = Number(pacchetto.crediti) || 0;
+          const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
           let debitiDecurtati = 0;
-          let creditiEffettivi = packCrediti;
+          let anticipiScontati = 0;
           if (currentCrediti < 0) {
-            debitiDecurtati = Math.abs(currentCrediti);
-            creditiEffettivi = packCrediti - debitiDecurtati;
+            debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
           }
+          const creditiRimanentiDopoDebito = packCrediti - debitiDecurtati;
+          if (anticipiAttuali > 0) {
+            anticipiScontati = Math.min(anticipiAttuali, creditiRimanentiDopoDebito);
+            walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+          }
+          const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
           const nuovaTransazione = {
             codice_transazione: `TX-ST-${Date.now().toString().slice(-6)}`,
             stripe_session_id: session.id,
@@ -28844,6 +29501,7 @@ CALENDARIO E PRENOTAZIONI:
             metodo: "stripe_card",
             crediti_acquistati: packCrediti,
             debiti_decurtati: debitiDecurtati,
+            anticipi_decurtati: anticipiScontati,
             crediti_effettivi_aggiunti: creditiEffettivi,
             causale_bonifico: null,
             stato: "completato",
@@ -28851,28 +29509,39 @@ CALENDARIO E PRENOTAZIONI:
             created_at: (/* @__PURE__ */ new Date()).toISOString()
           };
           if (currentCrediti < 0) {
-            atleta.crediti = creditiEffettivi;
+            walletOwner.crediti = currentCrediti + debitiDecurtati + creditiEffettivi;
           } else {
-            atleta.crediti = currentCrediti + packCrediti;
+            walletOwner.crediti = currentCrediti + creditiEffettivi;
           }
           const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 864e5).toISOString().slice(0, 10);
-          if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-            atleta.data_scadenza_crediti = nuovaScadenza;
+          if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+            walletOwner.data_scadenza_crediti = nuovaScadenza;
           }
-          atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+          walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+          if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+          let motivazioneExtra = "";
+          if (debitiDecurtati > 0 && anticipiScontati > 0) {
+            motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
+          } else if (debitiDecurtati > 0) {
+            motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito)`;
+          } else if (anticipiScontati > 0) {
+            motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+          }
           addMovimentoCrediti(db, {
-            atleta_id: atleta.id,
-            email_cliente: atleta.email,
+            atleta_id: walletOwner.id,
+            email_cliente: walletOwner.email,
             nome_cliente: nuovaTransazione.nome_cliente,
             tipo: "acquisto_carnet",
             delta_crediti: creditiEffettivi,
-            saldo_risultante: atleta.crediti,
-            motivazione: `Webhook Stripe ${pacchetto.nome}${debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""}`,
+            saldo_risultante: walletOwner.crediti,
+            motivazione: `Webhook Stripe ${pacchetto.nome}${motivazioneExtra}`,
             operatore: "stripe_webhook"
           });
           db.transazioni_pagamenti = db.transazioni_pagamenti || [];
           db.transazioni_pagamenti.unshift(nuovaTransazione);
           saveData(db);
+          await syncDataToGoogleDrive(db).catch(() => {
+          });
         }
       }
     }
@@ -28907,6 +29576,14 @@ CALENDARIO E PRENOTAZIONI:
     const txCode = `TX-MAN-46-${Date.now().toString().slice(-6)}`;
     const causaleBonifico = parsedBody.causale_bonifico || (metodo === "bonifico" ? `AREA46-${(atleta.cognome || "ATLETA").toUpperCase()}-${txCode.slice(-4)}` : null);
     const walletOwner = getWalletOwner(atleta, db) || atleta;
+    const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
+    let anticipiScontati = 0;
+    let creditiEffettivi = creditiDaAccreditare;
+    if (creditiDaAccreditare > 0 && anticipiAttuali > 0 && parsedBody.sconta_anticipi !== false) {
+      anticipiScontati = Math.min(anticipiAttuali, creditiDaAccreditare);
+      walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+      creditiEffettivi = creditiDaAccreditare - anticipiScontati;
+    }
     const nuovaTransazione = {
       id: `tx-man-${Date.now()}`,
       codice_transazione: txCode,
@@ -28921,7 +29598,8 @@ CALENDARIO E PRENOTAZIONI:
       metodo,
       crediti_acquistati: creditiDaAccreditare,
       debiti_decurtati: 0,
-      crediti_effettivi_aggiunti: creditiDaAccreditare,
+      anticipi_decurtati: anticipiScontati,
+      crediti_effettivi_aggiunti: creditiEffettivi,
       causale_bonifico: causaleBonifico,
       stato: "completato",
       stato_fattura: "da_emettere",
@@ -28931,7 +29609,7 @@ CALENDARIO E PRENOTAZIONI:
     };
     if (creditiDaAccreditare > 0) {
       const currentCrediti = Number(walletOwner.crediti) || 0;
-      walletOwner.crediti = currentCrediti + creditiDaAccreditare;
+      walletOwner.crediti = currentCrediti + creditiEffettivi;
       if (parsedBody.data_scadenza_crediti) {
         walletOwner.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
       } else if (parsedBody.giorni_validita || pacchettoTrovato?.giorni_validita) {
@@ -28942,14 +29620,18 @@ CALENDARIO E PRENOTAZIONI:
         }
       }
       walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      let motivazioneExtra = "";
+      if (anticipiScontati > 0) {
+        motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+      }
       addMovimentoCrediti(db, {
         atleta_id: walletOwner.id,
         email_cliente: walletOwner.email,
         nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
         tipo: "versamento_manuale",
-        delta_crediti: creditiDaAccreditare,
+        delta_crediti: creditiEffettivi,
         saldo_risultante: walletOwner.crediti,
-        motivazione: `Versamento manuale ${nomePacchetto} (\u20AC ${importoEuro.toFixed(2)}) registrato dal Coach`,
+        motivazione: `Versamento manuale ${nomePacchetto} (\u20AC ${importoEuro.toFixed(2)}) registrato dal Coach${motivazioneExtra}`,
         operatore: "coach"
       });
     }
@@ -28984,15 +29666,22 @@ CALENDARIO E PRENOTAZIONI:
       return res.end(JSON.stringify({ error: "Pacchetto selezionato non valido" }));
     }
     const metodo = parsedBody.metodo || "carta";
-    const currentCrediti = Number(atleta.crediti) || 0;
-    const packCrediti = Number(pacchetto.crediti) || 0;
-    let debitiDecurtati = 0;
-    let creditiEffettivi = packCrediti;
-    if (currentCrediti < 0) {
-      debitiDecurtati = Math.abs(currentCrediti);
-      creditiEffettivi = packCrediti - debitiDecurtati;
-    }
     const isBonifico = metodo === "bonifico";
+    const walletOwner = getWalletOwner(atleta, db) || atleta;
+    const currentCrediti = Number(walletOwner.crediti) || 0;
+    const packCrediti = Number(pacchetto.crediti) || 0;
+    const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
+    let debitiDecurtati = 0;
+    let anticipiScontati = 0;
+    if (currentCrediti < 0) {
+      debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
+    }
+    const creditiRimanentiDopoDebito = packCrediti - debitiDecurtati;
+    if (anticipiAttuali > 0 && !isBonifico) {
+      anticipiScontati = Math.min(anticipiAttuali, creditiRimanentiDopoDebito);
+      walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+    }
+    const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
     const txCode = `TX-46-${Date.now().toString().slice(-6)}`;
     const causaleBonifico = `AREA46-${(atleta.cognome || "ATLETA").toUpperCase()}-${pacchetto.id.toUpperCase()}-${txCode.slice(-4)}`;
     const nuovaTransazione = {
@@ -29008,6 +29697,7 @@ CALENDARIO E PRENOTAZIONI:
       metodo,
       crediti_acquistati: packCrediti,
       debiti_decurtati: debitiDecurtati,
+      anticipi_decurtati: anticipiScontati,
       crediti_effettivi_aggiunti: creditiEffettivi,
       causale_bonifico: isBonifico ? causaleBonifico : null,
       stato: isBonifico ? "in_attesa_bonifico" : "completato",
@@ -29016,37 +29706,49 @@ CALENDARIO E PRENOTAZIONI:
     };
     if (!isBonifico) {
       if (currentCrediti < 0) {
-        atleta.crediti = creditiEffettivi;
+        walletOwner.crediti = currentCrediti + debitiDecurtati + creditiEffettivi;
       } else {
-        atleta.crediti = currentCrediti + packCrediti;
+        walletOwner.crediti = currentCrediti + creditiEffettivi;
       }
       const nuovaScadenza = new Date(Date.now() + pacchetto.giorni_validita * 864e5).toISOString().slice(0, 10);
-      if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-        atleta.data_scadenza_crediti = nuovaScadenza;
+      if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+        walletOwner.data_scadenza_crediti = nuovaScadenza;
       }
-      atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      let motivazioneExtra = "";
+      if (debitiDecurtati > 0 && anticipiScontati > 0) {
+        motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
+      } else if (debitiDecurtati > 0) {
+        motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito)`;
+      } else if (anticipiScontati > 0) {
+        motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+      }
       addMovimentoCrediti(db, {
-        atleta_id: atleta.id,
-        email_cliente: atleta.email,
+        atleta_id: walletOwner.id,
+        email_cliente: walletOwner.email,
         nome_cliente: nuovaTransazione.nome_cliente,
         tipo: "acquisto_carnet",
         delta_crediti: creditiEffettivi,
-        saldo_risultante: atleta.crediti,
-        motivazione: `Acquisto ${pacchetto.nome}${debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""}`,
+        saldo_risultante: walletOwner.crediti,
+        motivazione: `Acquisto ${pacchetto.nome}${motivazioneExtra}`,
         operatore: "atleta"
       });
     }
     db.transazioni_pagamenti = db.transazioni_pagamenti || [];
     db.transazioni_pagamenti.unshift(nuovaTransazione);
     saveData(db);
+    await syncDataToGoogleDrive(db).catch(() => {
+    });
     res.statusCode = 201;
     return res.end(
       JSON.stringify({
         ok: true,
         transazione: nuovaTransazione,
-        crediti_attuali: atleta.crediti,
-        data_scadenza_crediti: atleta.data_scadenza_crediti,
+        crediti_attuali: walletOwner.crediti,
+        data_scadenza_crediti: walletOwner.data_scadenza_crediti,
         debiti_estinti: debitiDecurtati,
+        anticipi_scontati: anticipiScontati,
         ricevuta: {
           titolo: "RICEVUTA DI PAGAMENTO \u2014 AREA46 TRAINING LAB",
           codice: txCode,

@@ -513,6 +513,9 @@ export function getHydratedUser(user: any, database: any) {
     is_wallet_master: partners.length > 0,
     shared_partners_count: partners.length,
     shared_partner_names: partners.map((x: any) => `${x.nome} ${x.cognome}`.trim()),
+    anticipi_da_scontare: isShared
+      ? Number(walletOwner.anticipi_da_scontare || 0)
+      : Number(user.anticipi_da_scontare || 0),
   };
 }
 
@@ -1122,6 +1125,9 @@ direttamente dal Pannello Manager Atleti.
           shared_partner_names: partners.map((x: any) => `${x.nome} ${x.cognome}`.trim()),
           tempo_cancellazione_ore: p.tempo_cancellazione_ore || 24,
           tempo_anticipo_prenotazione_ore: p.tempo_anticipo_prenotazione_ore || 24,
+          anticipi_da_scontare: isShared
+            ? Number(walletOwner.anticipi_da_scontare || 0)
+            : Number(p.anticipi_da_scontare || 0),
           giorni_a_scadenza,
           avviso_scadenza,
           mesi_inattivita,
@@ -1160,6 +1166,7 @@ direttamente dal Pannello Manager Atleti.
         indirizzo: (parsedBody.indirizzo || "").trim(),
         ruolo: parsedBody.ruolo || "atleta",
         crediti: creditiIniziali,
+        anticipi_da_scontare: Number(parsedBody.anticipi_da_scontare || 0),
         shared_wallet_with: parsedBody.shared_wallet_with?.trim() || null,
         tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
         tempo_anticipo_prenotazione_ore: Number(parsedBody.tempo_anticipo_prenotazione_ore || 24),
@@ -1301,26 +1308,47 @@ firenzepersonaltrainer@gmail.com
         profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
       }
 
+      if (parsedBody.anticipi_da_scontare !== undefined) {
+        profilo.anticipi_da_scontare = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+      } else if (parsedBody.e_anticipo) {
+        const deltaPos = delta > 0 ? delta : (Number(parsedBody.crediti ?? 0) - saldoPrecedente);
+        if (deltaPos > 0) {
+          profilo.anticipi_da_scontare = (profilo.anticipi_da_scontare || 0) + deltaPos;
+        }
+      }
+
       // Registra nel ledger movimenti crediti
       if (delta !== 0) {
+        const isAnticipo = parsedBody.e_anticipo || (parsedBody.tipo === "anticipo_crediti");
         addMovimentoCrediti(db, {
           atleta_id: profilo.id,
           email_cliente: profilo.email,
           nome_cliente: `${profilo.nome} ${profilo.cognome}`,
           tipo:
             parsedBody.tipo ||
-            (delta > 0 ? "bonus_regalo" : delta < 0 ? "penalty" : "modifica_manuale"),
+            (isAnticipo
+              ? "modifica_manuale"
+              : delta > 0
+              ? "bonus_regalo"
+              : delta < 0
+              ? "penalty"
+              : "modifica_manuale"),
           delta_crediti: delta,
           saldo_risultante: profilo.crediti,
           motivazione:
             parsedBody.motivazione ||
-            (delta > 0 ? "Bonus/Regalo assegnato dal Coach" : "Rettifica/Penalty manuale Coach"),
+            (isAnticipo
+              ? `Anticipo di ${delta} crediti concesso dal Coach (da scalare al prossimo acquisto pacchetto)`
+              : delta > 0
+              ? "Bonus/Regalo assegnato dal Coach"
+              : "Rettifica/Penalty manuale Coach"),
           operatore: "coach",
         });
       }
 
       profilo.updated_at = new Date().toISOString();
       saveData(db);
+      await syncDataToGoogleDrive(db).catch(() => {});
       return res.end(JSON.stringify(profilo));
     }
 
@@ -1340,6 +1368,9 @@ firenzepersonaltrainer@gmail.com
       if (parsedBody.codice_fiscale !== undefined) profilo.codice_fiscale = parsedBody.codice_fiscale;
       if (parsedBody.indirizzo !== undefined) profilo.indirizzo = parsedBody.indirizzo;
       if (parsedBody.crediti !== undefined) profilo.crediti = Number(parsedBody.crediti);
+      if (parsedBody.anticipi_da_scontare !== undefined) {
+        profilo.anticipi_da_scontare = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+      }
       if (parsedBody.tempo_cancellazione_ore !== undefined) {
         profilo.tempo_cancellazione_ore = Number(parsedBody.tempo_cancellazione_ore);
       }
@@ -2946,14 +2977,25 @@ CALENDARIO E PRENOTAZIONI:
             (p: any) => p.email === atletaEmail || p.id === meta.atleta_id
           ) || currentUser;
 
-        const currentCrediti = Number(atleta.crediti) || 0;
+        const walletOwner = getWalletOwner(atleta, db) || atleta;
+        const currentCrediti = Number(walletOwner.crediti) || 0;
         const packCrediti = Number(pacchetto.crediti) || 0;
+        const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
+
         let debitiDecurtati = 0;
-        let creditiEffettivi = packCrediti;
+        let anticipiScontati = 0;
+
         if (currentCrediti < 0) {
-          debitiDecurtati = Math.abs(currentCrediti);
-          creditiEffettivi = packCrediti - debitiDecurtati;
+          debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
         }
+
+        const creditiRimanentiDopoDebito = packCrediti - debitiDecurtati;
+        if (anticipiAttuali > 0) {
+          anticipiScontati = Math.min(anticipiAttuali, creditiRimanentiDopoDebito);
+          walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+        }
+
+        const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
 
         const nuovaTransazione = {
           codice_transazione: `TX-ST-${Date.now().toString().slice(-6)}`,
@@ -2970,6 +3012,7 @@ CALENDARIO E PRENOTAZIONI:
           metodo: "stripe_card",
           crediti_acquistati: packCrediti,
           debiti_decurtati: debitiDecurtati,
+          anticipi_decurtati: anticipiScontati,
           crediti_effettivi_aggiunti: creditiEffettivi,
           causale_bonifico: null,
           stato: "completato",
@@ -2978,41 +3021,50 @@ CALENDARIO E PRENOTAZIONI:
         };
 
         if (currentCrediti < 0) {
-          atleta.crediti = creditiEffettivi;
+          walletOwner.crediti = currentCrediti + debitiDecurtati + creditiEffettivi;
         } else {
-          atleta.crediti = currentCrediti + packCrediti;
+          walletOwner.crediti = currentCrediti + creditiEffettivi;
         }
         const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 86400000)
           .toISOString()
           .slice(0, 10);
-        if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-          atleta.data_scadenza_crediti = nuovaScadenza;
+        if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+          walletOwner.data_scadenza_crediti = nuovaScadenza;
         }
-        atleta.data_ultimo_accesso = new Date().toISOString();
+        walletOwner.data_ultimo_accesso = new Date().toISOString();
+        if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = new Date().toISOString();
+
+        let motivazioneExtra = "";
+        if (debitiDecurtati > 0 && anticipiScontati > 0) {
+          motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
+        } else if (debitiDecurtati > 0) {
+          motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito)`;
+        } else if (anticipiScontati > 0) {
+          motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+        }
 
         addMovimentoCrediti(db, {
-          atleta_id: atleta.id,
-          email_cliente: atleta.email,
+          atleta_id: walletOwner.id,
+          email_cliente: walletOwner.email,
           nome_cliente: nuovaTransazione.nome_cliente,
           tipo: "acquisto_carnet",
           delta_crediti: creditiEffettivi,
-          saldo_risultante: atleta.crediti,
-          motivazione: `Acquisto Stripe ${pacchetto.nome}${
-            debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""
-          }`,
+          saldo_risultante: walletOwner.crediti,
+          motivazione: `Acquisto Stripe ${pacchetto.nome}${motivazioneExtra}`,
           operatore: "stripe",
         });
 
         db.transazioni_pagamenti = db.transazioni_pagamenti || [];
         db.transazioni_pagamenti.unshift(nuovaTransazione);
         saveData(db);
+        await syncDataToGoogleDrive(db).catch(() => {});
 
         return res.end(
           JSON.stringify({
             ok: true,
             verified: true,
             transazione: nuovaTransazione,
-            crediti_attuali: atleta.crediti,
+            crediti_attuali: walletOwner.crediti,
             messaggio: "Pagamento Stripe confermato con successo! Crediti accreditati nel wallet.",
           })
         );
@@ -3084,14 +3136,25 @@ CALENDARIO E PRENOTAZIONI:
                 (p: any) => p.email === atletaEmail || p.id === meta.atleta_id
               ) || currentUser;
 
-            const currentCrediti = Number(atleta.crediti) || 0;
+            const walletOwner = getWalletOwner(atleta, db) || atleta;
+            const currentCrediti = Number(walletOwner.crediti) || 0;
             const packCrediti = Number(pacchetto.crediti) || 0;
+            const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
+
             let debitiDecurtati = 0;
-            let creditiEffettivi = packCrediti;
+            let anticipiScontati = 0;
+
             if (currentCrediti < 0) {
-              debitiDecurtati = Math.abs(currentCrediti);
-              creditiEffettivi = packCrediti - debitiDecurtati;
+              debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
             }
+
+            const creditiRimanentiDopoDebito = packCrediti - debitiDecurtati;
+            if (anticipiAttuali > 0) {
+              anticipiScontati = Math.min(anticipiAttuali, creditiRimanentiDopoDebito);
+              walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+            }
+
+            const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
 
             const nuovaTransazione = {
               codice_transazione: `TX-ST-${Date.now().toString().slice(-6)}`,
@@ -3109,6 +3172,7 @@ CALENDARIO E PRENOTAZIONI:
               metodo: "stripe_card",
               crediti_acquistati: packCrediti,
               debiti_decurtati: debitiDecurtati,
+              anticipi_decurtati: anticipiScontati,
               crediti_effettivi_aggiunti: creditiEffettivi,
               causale_bonifico: null,
               stato: "completato",
@@ -3117,34 +3181,43 @@ CALENDARIO E PRENOTAZIONI:
             };
 
             if (currentCrediti < 0) {
-              atleta.crediti = creditiEffettivi;
+              walletOwner.crediti = currentCrediti + debitiDecurtati + creditiEffettivi;
             } else {
-              atleta.crediti = currentCrediti + packCrediti;
+              walletOwner.crediti = currentCrediti + creditiEffettivi;
             }
             const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 86400000)
               .toISOString()
               .slice(0, 10);
-            if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-              atleta.data_scadenza_crediti = nuovaScadenza;
+            if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+              walletOwner.data_scadenza_crediti = nuovaScadenza;
             }
-            atleta.data_ultimo_accesso = new Date().toISOString();
+            walletOwner.data_ultimo_accesso = new Date().toISOString();
+            if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = new Date().toISOString();
+
+            let motivazioneExtra = "";
+            if (debitiDecurtati > 0 && anticipiScontati > 0) {
+              motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
+            } else if (debitiDecurtati > 0) {
+              motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito)`;
+            } else if (anticipiScontati > 0) {
+              motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+            }
 
             addMovimentoCrediti(db, {
-              atleta_id: atleta.id,
-              email_cliente: atleta.email,
+              atleta_id: walletOwner.id,
+              email_cliente: walletOwner.email,
               nome_cliente: nuovaTransazione.nome_cliente,
               tipo: "acquisto_carnet",
               delta_crediti: creditiEffettivi,
-              saldo_risultante: atleta.crediti,
-              motivazione: `Webhook Stripe ${pacchetto.nome}${
-                debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""
-              }`,
+              saldo_risultante: walletOwner.crediti,
+              motivazione: `Webhook Stripe ${pacchetto.nome}${motivazioneExtra}`,
               operatore: "stripe_webhook",
             });
 
             db.transazioni_pagamenti = db.transazioni_pagamenti || [];
             db.transazioni_pagamenti.unshift(nuovaTransazione);
             saveData(db);
+            await syncDataToGoogleDrive(db).catch(() => {});
           }
         }
       }
@@ -3199,6 +3272,15 @@ CALENDARIO E PRENOTAZIONI:
           : null);
 
       const walletOwner = getWalletOwner(atleta, db) || atleta;
+      const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
+      let anticipiScontati = 0;
+      let creditiEffettivi = creditiDaAccreditare;
+
+      if (creditiDaAccreditare > 0 && anticipiAttuali > 0 && parsedBody.sconta_anticipi !== false) {
+        anticipiScontati = Math.min(anticipiAttuali, creditiDaAccreditare);
+        walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+        creditiEffettivi = creditiDaAccreditare - anticipiScontati;
+      }
 
       const nuovaTransazione = {
         id: `tx-man-${Date.now()}`,
@@ -3215,7 +3297,8 @@ CALENDARIO E PRENOTAZIONI:
         metodo: metodo,
         crediti_acquistati: creditiDaAccreditare,
         debiti_decurtati: 0,
-        crediti_effettivi_aggiunti: creditiDaAccreditare,
+        anticipi_decurtati: anticipiScontati,
+        crediti_effettivi_aggiunti: creditiEffettivi,
         causale_bonifico: causaleBonifico,
         stato: "completato",
         stato_fattura: "da_emettere",
@@ -3226,7 +3309,7 @@ CALENDARIO E PRENOTAZIONI:
 
       if (creditiDaAccreditare > 0) {
         const currentCrediti = Number(walletOwner.crediti) || 0;
-        walletOwner.crediti = currentCrediti + creditiDaAccreditare;
+        walletOwner.crediti = currentCrediti + creditiEffettivi;
 
         if (parsedBody.data_scadenza_crediti) {
           walletOwner.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
@@ -3241,6 +3324,11 @@ CALENDARIO E PRENOTAZIONI:
         }
         walletOwner.data_ultimo_accesso = new Date().toISOString();
 
+        let motivazioneExtra = "";
+        if (anticipiScontati > 0) {
+          motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+        }
+
         addMovimentoCrediti(db, {
           atleta_id: walletOwner.id,
           email_cliente: walletOwner.email,
@@ -3249,9 +3337,9 @@ CALENDARIO E PRENOTAZIONI:
             walletOwner.name ||
             "Atleta",
           tipo: "versamento_manuale",
-          delta_crediti: creditiDaAccreditare,
+          delta_crediti: creditiEffettivi,
           saldo_risultante: walletOwner.crediti,
-          motivazione: `Versamento manuale ${nomePacchetto} (€ ${importoEuro.toFixed(2)}) registrato dal Coach`,
+          motivazione: `Versamento manuale ${nomePacchetto} (€ ${importoEuro.toFixed(2)}) registrato dal Coach${motivazioneExtra}`,
           operatore: "coach",
         });
       }
@@ -3293,18 +3381,28 @@ CALENDARIO E PRENOTAZIONI:
       }
 
       const metodo = parsedBody.metodo || "carta";
-      const currentCrediti = Number(atleta.crediti) || 0;
+      const isBonifico = metodo === "bonifico";
+      const walletOwner = getWalletOwner(atleta, db) || atleta;
+      const currentCrediti = Number(walletOwner.crediti) || 0;
       const packCrediti = Number(pacchetto.crediti) || 0;
+      const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
 
-      // FORMULA DETRAZIONE DEBITI
+      // FORMULA DETRAZIONE DEBITI E ANTICIPI
       let debitiDecurtati = 0;
-      let creditiEffettivi = packCrediti;
+      let anticipiScontati = 0;
+
       if (currentCrediti < 0) {
-        debitiDecurtati = Math.abs(currentCrediti);
-        creditiEffettivi = packCrediti - debitiDecurtati;
+        debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
       }
 
-      const isBonifico = metodo === "bonifico";
+      const creditiRimanentiDopoDebito = packCrediti - debitiDecurtati;
+      if (anticipiAttuali > 0 && !isBonifico) {
+        anticipiScontati = Math.min(anticipiAttuali, creditiRimanentiDopoDebito);
+        walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+      }
+
+      const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
+
       const txCode = `TX-46-${Date.now().toString().slice(-6)}`;
       const causaleBonifico = `AREA46-${(atleta.cognome || "ATLETA").toUpperCase()}-${pacchetto.id.toUpperCase()}-${txCode.slice(-4)}`;
 
@@ -3322,6 +3420,7 @@ CALENDARIO E PRENOTAZIONI:
         metodo,
         crediti_acquistati: packCrediti,
         debiti_decurtati: debitiDecurtati,
+        anticipi_decurtati: anticipiScontati,
         crediti_effettivi_aggiunti: creditiEffettivi,
         causale_bonifico: isBonifico ? causaleBonifico : null,
         stato: isBonifico ? "in_attesa_bonifico" : "completato",
@@ -3331,28 +3430,36 @@ CALENDARIO E PRENOTAZIONI:
 
       if (!isBonifico) {
         if (currentCrediti < 0) {
-          atleta.crediti = creditiEffettivi;
+          walletOwner.crediti = currentCrediti + debitiDecurtati + creditiEffettivi;
         } else {
-          atleta.crediti = currentCrediti + packCrediti;
+          walletOwner.crediti = currentCrediti + creditiEffettivi;
         }
         const nuovaScadenza = new Date(Date.now() + pacchetto.giorni_validita * 86400000)
           .toISOString()
           .slice(0, 10);
-        if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-          atleta.data_scadenza_crediti = nuovaScadenza;
+        if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+          walletOwner.data_scadenza_crediti = nuovaScadenza;
         }
-        atleta.data_ultimo_accesso = new Date().toISOString();
+        walletOwner.data_ultimo_accesso = new Date().toISOString();
+        if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = new Date().toISOString();
+
+        let motivazioneExtra = "";
+        if (debitiDecurtati > 0 && anticipiScontati > 0) {
+          motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
+        } else if (debitiDecurtati > 0) {
+          motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito)`;
+        } else if (anticipiScontati > 0) {
+          motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+        }
 
         addMovimentoCrediti(db, {
-          atleta_id: atleta.id,
-          email_cliente: atleta.email,
+          atleta_id: walletOwner.id,
+          email_cliente: walletOwner.email,
           nome_cliente: nuovaTransazione.nome_cliente,
           tipo: "acquisto_carnet",
           delta_crediti: creditiEffettivi,
-          saldo_risultante: atleta.crediti,
-          motivazione: `Acquisto ${pacchetto.nome}${
-            debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""
-          }`,
+          saldo_risultante: walletOwner.crediti,
+          motivazione: `Acquisto ${pacchetto.nome}${motivazioneExtra}`,
           operatore: "atleta",
         });
       }
@@ -3360,15 +3467,17 @@ CALENDARIO E PRENOTAZIONI:
       db.transazioni_pagamenti = db.transazioni_pagamenti || [];
       db.transazioni_pagamenti.unshift(nuovaTransazione);
       saveData(db);
+      await syncDataToGoogleDrive(db).catch(() => {});
 
       res.statusCode = 201;
       return res.end(
         JSON.stringify({
           ok: true,
           transazione: nuovaTransazione,
-          crediti_attuali: atleta.crediti,
-          data_scadenza_crediti: atleta.data_scadenza_crediti,
+          crediti_attuali: walletOwner.crediti,
+          data_scadenza_crediti: walletOwner.data_scadenza_crediti,
           debiti_estinti: debitiDecurtati,
+          anticipi_scontati: anticipiScontati,
           ricevuta: {
             titolo: "RICEVUTA DI PAGAMENTO — AREA46 TRAINING LAB",
             codice: txCode,

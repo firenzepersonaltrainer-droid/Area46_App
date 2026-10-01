@@ -76,6 +76,7 @@ export default function ManagerAtletiPage() {
   // Modale Modifica Crediti / Debiti
   const [creditiModalOpen, setCreditiModalOpen] = useState(false);
   const [nuoviCrediti, setNuoviCrediti] = useState<number>(0);
+  const [nuoviAnticipi, setNuoviAnticipi] = useState<number>(0);
   const [nuovaScadenza, setNuovaScadenza] = useState<string>("");
 
   // Modale Anagrafica / Nuovo Atleta
@@ -240,6 +241,7 @@ export default function ManagerAtletiPage() {
   const handleOpenCrediti = (atleta: UserProfile) => {
     setSelectedAtleta(atleta);
     setNuoviCrediti(atleta.crediti);
+    setNuoviAnticipi(atleta.anticipi_da_scontare || 0);
     setNuovaScadenza(atleta.data_scadenza_crediti || "");
     setCreditiModalOpen(true);
   };
@@ -250,6 +252,7 @@ export default function ManagerAtletiPage() {
       await modificaCrediti({
         id: selectedAtleta.id,
         crediti: Number(nuoviCrediti),
+        anticipi_da_scontare: Number(nuoviAnticipi) || 0,
         data_scadenza_crediti: nuovaScadenza || undefined,
       });
       setCreditiModalOpen(false);
@@ -540,6 +543,11 @@ export default function ManagerAtletiPage() {
                       Monte crediti comune
                     </div>
                   )}
+                  {Number(atleta.anticipi_da_scontare || 0) > 0 && (
+                    <div className="text-[9.5px] font-black text-amber-900 bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded-md mt-1 inline-flex items-center gap-1">
+                      <span>⏳ {atleta.anticipi_da_scontare} da recuperare</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -760,6 +768,44 @@ export default function ManagerAtletiPage() {
               </div>
             </div>
 
+            {/* BOX GESTIONE ANTICIPI CREDITI */}
+            <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                  <Coins className="size-3.5 text-amber-600" />
+                  Anticipi da scalare su prox acquisto
+                </label>
+                <span className="text-xs font-black text-amber-800 tabular-nums">
+                  {nuoviAnticipi} crediti
+                </span>
+              </div>
+              <p className="text-[10.5px] text-amber-800/90 leading-relaxed">
+                Se concedi crediti in anticipo all&apos;atleta per farlo prenotare prima del pagamento, indica qui i crediti che l&apos;app <strong>scalerà in automatico</strong> al suo prossimo acquisto con Stripe o bonifico.
+              </p>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min={0}
+                  value={nuoviAnticipi}
+                  onChange={(e) => setNuoviAnticipi(Math.max(0, Number(e.target.value)))}
+                  className="text-xs font-black tabular-nums bg-white border-amber-300 h-8"
+                  placeholder="0"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setNuoviCrediti((prev) => prev + 8);
+                    setNuoviAnticipi((prev) => prev + 8);
+                  }}
+                  className="text-[11px] h-8 px-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold whitespace-nowrap"
+                >
+                  +8 Anticipo rapido
+                </Button>
+              </div>
+            </div>
+
             <div>
               <label className="text-[11px] font-black uppercase tracking-wider text-zinc-600 block mb-1">
                 Data di Scadenza Crediti
@@ -879,7 +925,7 @@ export default function ManagerAtletiPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <div>
                 <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
                   Codice Fiscale
@@ -894,13 +940,31 @@ export default function ManagerAtletiPage() {
               </div>
               <div>
                 <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                  Crediti Iniziali
+                  Saldo Crediti
                 </label>
                 <Input
                   type="number"
                   value={editForm.crediti ?? 0}
                   onChange={(e) => setEditForm({ ...editForm, crediti: Number(e.target.value) })}
                   placeholder="0"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-amber-800 block mb-1">
+                  Anticipi da scalare
+                </label>
+                <Input
+                  type="number"
+                  min={0}
+                  value={editForm.anticipi_da_scontare ?? 0}
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      anticipi_da_scontare: Math.max(0, Number(e.target.value)),
+                    })
+                  }
+                  placeholder="0"
+                  className="border-amber-300 focus:border-amber-500"
                 />
               </div>
             </div>
