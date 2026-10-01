@@ -3,6 +3,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { fileURLToPath } from "node:url";
+import nodemailer from "nodemailer";
 import defaultData from "./demo-data.json";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -393,13 +394,47 @@ export async function sendEmailNotification(
   db.notifiche_email = db.notifiche_email || [];
   db.notifiche_email.unshift(emailRecord);
 
-  // Tentativo di invio reale via API Resend se chiave configurata
+  // 1. TENTATIVO DI INVIO REALE VIA GMAIL SMTP (Se configurata GMAIL_APP_PASSWORD)
+  const gmailUser = "firenzepersonaltrainer@gmail.com";
+  const gmailPass = (process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD || db.configurazione_lab?.gmail_app_password || "").replace(/\s+/g, "");
+
+  if (gmailPass && recipient) {
+    try {
+      console.log(`[GMAIL SMTP ATTEMPT] Invio email a "${recipient}" da "${gmailUser}"...`);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: gmailUser,
+          pass: gmailPass,
+        },
+      });
+
+      await transporter.sendMail({
+        from: `Area46 Landmine Lab <${gmailUser}>`,
+        to: recipient,
+        subject: subject,
+        text: bodyText,
+        html: htmlBody,
+      });
+
+      console.log(`[GMAIL SMTP SUCCESS] Email inviata con successo via Gmail a ${recipient}`);
+      saveData(db);
+      return emailRecord;
+    } catch (err: any) {
+      console.error("[GMAIL SMTP ERROR]", err?.message || err);
+      if (params.throwOnError) {
+        throw new Error(`Errore invio Gmail SMTP: ${err?.message || err}`);
+      }
+    }
+  }
+
+  // 2. TENTATIVO DI INVIO VIA RESEND (Fallback)
   const resendApiKey = db.configurazione_lab?.resend_api_key || process.env.RESEND_API_KEY;
   if (!resendApiKey) {
-    console.warn(`[NOTIFICA EMAIL WARNING] RESEND_API_KEY non configurata. Email registrata nel diario locale.`);
+    console.warn(`[NOTIFICA EMAIL WARNING] RESEND_API_KEY / GMAIL_APP_PASSWORD non configurate. Email registrata nel diario locale.`);
     saveData(db);
     if (params.throwOnError) {
-      throw new Error("Variabile d'ambiente RESEND_API_KEY non configurata su Vercel.");
+      throw new Error("Variabile d'ambiente GMAIL_APP_PASSWORD o RESEND_API_KEY non configurata su Vercel.");
     }
     return emailRecord;
   }
