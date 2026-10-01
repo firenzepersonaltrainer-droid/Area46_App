@@ -396,17 +396,25 @@ export async function sendEmailNotification(
   // Tentativo di invio reale via API Resend se chiave configurata
   const resendApiKey = db.configurazione_lab?.resend_api_key || process.env.RESEND_API_KEY;
   if (!resendApiKey) {
-    console.error(`ERRORE INVIO OTP: RESEND_API_KEY non è configurata nelle variabili d'ambiente Vercel.`);
-    throw new Error("Variabile d'ambiente RESEND_API_KEY non configurata su Vercel. Inseriscila in Settings -> Environment Variables e fai il redeploy.");
+    console.warn(`[NOTIFICA EMAIL WARNING] RESEND_API_KEY non configurata. Email registrata nel diario locale.`);
+    saveData(db);
+    if (params.throwOnError) {
+      throw new Error("Variabile d'ambiente RESEND_API_KEY non configurata su Vercel.");
+    }
+    return emailRecord;
   }
 
   if (!recipient) {
-    console.error(`ERRORE INVIO OTP: Indirizzo email destinatario mancante o non valido.`);
-    throw new Error("Indirizzo email destinatario non valido.");
+    console.warn(`[NOTIFICA EMAIL WARNING] Indirizzo email destinatario vuoto.`);
+    saveData(db);
+    if (params.throwOnError) {
+      throw new Error("Indirizzo email destinatario non valido.");
+    }
+    return emailRecord;
   }
 
   try {
-    console.log(`[RESEND ATTEMPT] Invio email da "Area46 Landmine Lab <onboarding@resend.dev>" a "${recipient}"...`);
+    console.log(`[RESEND ATTEMPT] Invio email a "${recipient}" (Oggetto: ${subject})...`);
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -424,15 +432,19 @@ export async function sendEmailNotification(
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error(`ERRORE INVIO OTP (Resend HTTP ${response.status}):`, errText);
-      throw new Error(`Resend ha rifiutato l'invio (${response.status}): ${errText}`);
+      console.warn(`[RESEND API REJECTION] HTTP ${response.status}: ${errText}`);
+      if (params.throwOnError) {
+        throw new Error(`Resend ha rifiutato l'invio (${response.status}): ${errText}`);
+      }
+    } else {
+      const resData = await response.json().catch(() => ({}));
+      console.log(`[EMAIL DISPATCH SUCCESS] Inviata via Resend a ${recipient}. ID:`, resData?.id);
     }
-
-    const resData = await response.json().catch(() => ({}));
-    console.log(`[EMAIL DISPATCH SUCCESS] Inviata con successo via Resend a ${recipient}. ID:`, resData?.id);
   } catch (err: any) {
-    console.error("ERRORE INVIO OTP:", err?.message || err);
-    throw err;
+    console.warn("[NOTIFICA EMAIL ERROR]", err?.message || err);
+    if (params.throwOnError) {
+      throw err;
+    }
   }
 
   saveData(db);
@@ -657,7 +669,8 @@ export async function handleLocalApi(
               </div>
               <p style="color: #71717a; font-size: 12px;">Se non hai richiesto tu questo codice, puoi ignorare questa email.</p>
             </div>`,
-            tipo: "sistema"
+            tipo: "sistema",
+            throwOnError: true,
           });
 
           console.log(`[AUTH] Email OTP inviata realmente via Resend a "${email}"`);
