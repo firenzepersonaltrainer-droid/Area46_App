@@ -268,6 +268,13 @@ async function tryLoadConfigFromGoogleDrive() {
       );
     }
     if (driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
+      // Garantire che le email e gli ID degli atleti attivi presenti su Drive non vengano filtrati da utenti_cancellati
+      const activeKeys = new Set(
+        driveDb.profili_utenti.flatMap((p: any) => [p.id, p.email?.toLowerCase()]).filter(Boolean)
+      );
+      if (db.utenti_cancellati) {
+        db.utenti_cancellati = db.utenti_cancellati.filter((key: string) => !activeKeys.has(key));
+      }
       db.profili_utenti = driveDb.profili_utenti.filter(
         (p: any) => !db.utenti_cancellati?.includes(p.id) && !db.utenti_cancellati?.includes(p.email?.toLowerCase())
       );

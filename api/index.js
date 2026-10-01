@@ -26528,6 +26528,12 @@ async function tryLoadConfigFromGoogleDrive() {
       );
     }
     if (driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
+      const activeKeys = new Set(
+        driveDb.profili_utenti.flatMap((p) => [p.id, p.email?.toLowerCase()]).filter(Boolean)
+      );
+      if (db.utenti_cancellati) {
+        db.utenti_cancellati = db.utenti_cancellati.filter((key) => !activeKeys.has(key));
+      }
       db.profili_utenti = driveDb.profili_utenti.filter(
         (p) => !db.utenti_cancellati?.includes(p.id) && !db.utenti_cancellati?.includes(p.email?.toLowerCase())
       );
