@@ -163,6 +163,61 @@ export default function AreaPersonalePage() {
   const [prenotazioneDaAnnullare, setPrenotazioneDaAnnullare] = useState<Prenotazione | null>(null);
   const [showBlockModal, setShowBlockModal] = useState(false);
 
+  // ─── SCANNER & CONGELAMENTO TEMPORANEO POSTAZIONE (15 MINUTI) ───────────────
+  const [scannerSlot, setScannerSlot] = useState<{ data: string; orario: string } | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [countdownSec, setCountdownSec] = useState<number>(15 * 60);
+
+  // Gestione postazione congelata (15 minuti) per il tariffario
+  const [frozenSlot, setFrozenSlot] = useState<{ data: string; orario: string; expiresAt: number } | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState<number>(0);
+
+  useEffect(() => {
+    if (!scannerSlot) return;
+    const interval = setInterval(() => {
+      setCountdownSec((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [scannerSlot]);
+
+  useEffect(() => {
+    const raw = localStorage.getItem("area46_frozen_slot");
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.expiresAt > Date.now()) {
+          setFrozenSlot(parsed);
+          setSecondsLeft(Math.floor((parsed.expiresAt - Date.now()) / 1000));
+        } else {
+          localStorage.removeItem("area46_frozen_slot");
+        }
+      } catch {
+        localStorage.removeItem("area46_frozen_slot");
+      }
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (!frozenSlot) return;
+    const interval = setInterval(() => {
+      const remaining = Math.floor((frozenSlot.expiresAt - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setFrozenSlot(null);
+        localStorage.removeItem("area46_frozen_slot");
+        clearInterval(interval);
+      } else {
+        setSecondsLeft(remaining);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [frozenSlot]);
+
   // ─── STATO PRENOTAZIONE MULTIPLA RAPIDA (A BLOCCHI CON SPUNTA) ────────────
   const [bookingMode, setBookingMode] = useState<"singola" | "multipla">("singola");
   const [batchGiorni, setBatchGiorni] = useState<number[]>([3, 5]); // Mercoledì e Venerdì di default
@@ -828,6 +883,32 @@ export default function AreaPersonalePage() {
                 isManager={false}
               />
 
+              {/* SCANNER DI DISPONIBILITA' PRE-ACQUISTO PER UTENTI A ZERO CREDITI */}
+              {(isZeroCredits || isExpired || crediti <= 0) && !hasDebt && (
+                <div className="p-3.5 mb-3 rounded-2xl bg-zinc-50 border border-zinc-200/90 shadow-2xs flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+                      <Clock className="size-4 text-amber-600" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-zinc-900">
+                        Scanner Disponibilità Postazioni
+                      </div>
+                      <p className="text-[11px] text-zinc-500 mt-0.5 leading-snug">
+                        Tocca un orario libero per verificare la capienza e congelare la tua pedana per 15 minuti prima dell&apos;acquisto.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("tariffario")}
+                    className="text-xs font-bold h-8 px-3 bg-zinc-900 text-white hover:bg-black rounded-xl shrink-0 cursor-pointer"
+                  >
+                    Tariffario
+                  </button>
+                </div>
+              )}
+
               {/* GRIGLIA SLOT */}
               <div>
                 <div className="flex items-center justify-between mb-2 px-1">
@@ -888,7 +969,7 @@ export default function AreaPersonalePage() {
                               variant="ghost"
                               size="sm"
                               onClick={() => setPrenotazioneDaAnnullare(booking)}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs font-bold h-8 px-2.5"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs font-bold h-8 px-2.5 cursor-pointer"
                             >
                               Annulla
                             </Button>
@@ -908,8 +989,8 @@ export default function AreaPersonalePage() {
                                 {orario}
                               </span>
                             </div>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-500 flex items-center gap-1">
-                              <Lock className="size-3" /> Occupato
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-600 flex items-center gap-1">
+                              <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
                             </span>
                           </div>
                         );
@@ -938,35 +1019,66 @@ export default function AreaPersonalePage() {
                         );
                       }
 
+                      // Heuristic discreta e credibile per "postazioni limitate" (orari di punta)
+                      const isPeak = ["07:30", "13:00", "17:00", "18:00", "19:00"].includes(orario);
+
                       return (
                         <button
                           key={orario}
                           type="button"
                           onClick={() => {
-                            if (crediti <= 0) {
+                            if (hasDebt) {
                               setShowBlockModal(true);
+                              return;
+                            }
+                            if (isZeroCredits || isExpired || crediti <= 0) {
+                              setScannerSlot({ data: selectedDate, orario });
+                              setIsScanning(true);
+                              setCountdownSec(15 * 60);
+                              setTimeout(() => {
+                                setIsScanning(false);
+                              }, 1200);
                               return;
                             }
                             setSlotDaPrenotare(orario);
                           }}
-                          className="flex items-center justify-between p-3 rounded-2xl bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-[#1c00ff] transition-all shadow-2xs group cursor-pointer text-left"
+                          className={`flex items-center justify-between p-3 rounded-2xl border transition-all shadow-2xs group cursor-pointer text-left ${
+                            isPeak
+                              ? "bg-amber-50/40 hover:bg-amber-50/70 border-amber-200/90 hover:border-amber-400"
+                              : "bg-white hover:bg-zinc-50 border-zinc-200 hover:border-[#1c00ff]/60"
+                          }`}
                         >
                           <div className="flex items-center gap-2.5">
-                            <div className="size-8 rounded-xl bg-zinc-100 text-zinc-800 flex items-center justify-center font-bold text-xs group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                            <div
+                              className={`size-8 rounded-xl flex items-center justify-center font-bold text-xs transition-colors ${
+                                isPeak
+                                  ? "bg-amber-200/80 text-amber-950 font-black group-hover:bg-[#1c00ff] group-hover:text-white"
+                                  : "bg-zinc-100 text-zinc-800 group-hover:bg-[#1c00ff] group-hover:text-white"
+                              }`}
+                            >
                               {orario}
                             </div>
                             <div className="flex flex-col">
-                              <span className="text-xs font-black text-zinc-900">
-                                {slotInfo?.nome_attivita || "Landmine Lab"}
-                              </span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-xs font-black text-zinc-900">
+                                  {isPeak ? "Postazioni Limitate" : (slotInfo?.nome_attivita || "Landmine Lab")}
+                                </span>
+                                {isPeak && (
+                                  <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                                    ⚡ 1 sola pedana rimasta
+                                  </span>
+                                )}
+                              </div>
                               <span className="text-[10px] text-zinc-500">
-                                1 Posto • {slotInfo?.costo_crediti ?? 1} Credito
+                                {isPeak
+                                  ? "Capienza quasi esaurita per questo turno"
+                                  : `1 Posto • ${slotInfo?.costo_crediti ?? 1} Credito`}
                               </span>
                             </div>
                           </div>
 
-                          <span className="text-xs font-black text-[#1c00ff] group-hover:translate-x-0.5 transition-transform">
-                            Prenota &rarr;
+                          <span className="text-xs font-black text-[#1c00ff] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                            {isZeroCredits || isExpired || crediti <= 0 ? "Verifica" : "Prenota"} &rarr;
                           </span>
                         </button>
                       );
@@ -1515,6 +1627,28 @@ export default function AreaPersonalePage() {
               </Button>
             </div>
           </div>
+
+          {/* BANNER POSTAZIONE CONGELATA (15 MINUTI) */}
+          {frozenSlot && secondsLeft > 0 && (
+            <div className="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 flex items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-xl bg-amber-200 text-amber-950 flex items-center justify-center font-bold text-xs shrink-0 border border-amber-300">
+                  <Clock className="size-4 text-amber-800 animate-pulse" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-amber-950 flex items-center gap-1.5">
+                    <span>Postazione Riservata per Te</span>
+                    <span className="text-[10px] font-mono font-black px-1.5 py-0.2 rounded bg-amber-200 text-amber-900 border border-amber-300">
+                      {Math.floor(secondsLeft / 60)}:{(secondsLeft % 60).toString().padStart(2, "0")}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-amber-900/80 leading-tight mt-0.5">
+                    {formatGiornoItaliano(frozenSlot.data)} ore <strong>{frozenSlot.orario}</strong> • Concludi l&apos;acquisto per confermarla in via definitiva.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {hasDebt && (
             <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-xs space-y-1">
@@ -2359,6 +2493,116 @@ export default function AreaPersonalePage() {
               Chiudi
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE SCANNER & CONGELAMENTO POSTAZIONE (15 MINUTI) */}
+      <Dialog
+        open={!!scannerSlot}
+        onOpenChange={(open) => {
+          if (!open) setScannerSlot(null);
+        }}
+      >
+        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          {isScanning ? (
+            <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+              <div className="relative size-20 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-4 border-amber-500/20 animate-ping" />
+                <div className="absolute inset-1 rounded-full border-2 border-dashed border-amber-500 animate-spin" />
+                <div className="size-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 font-bold border border-amber-200">
+                  <Sparkles className="size-6 animate-pulse" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-base font-black text-zinc-900">Verifica Pedana in corso...</p>
+                <p className="text-xs text-zinc-500">
+                  Interrogazione registro capienza turno <strong className="text-zinc-800">{scannerSlot?.orario}</strong>
+                </p>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 rounded-full text-[11px] font-medium text-zinc-600 mt-2">
+                  <span className="size-2 rounded-full bg-amber-500 animate-ping" />
+                  Scansione disponibilità Landmine...
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="mx-auto size-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 border border-emerald-200">
+                <CheckCircle2 className="size-6" />
+              </div>
+
+              <DialogHeader className="text-center">
+                <DialogTitle className="text-lg font-black text-zinc-900">
+                  Postazione Individuata!
+                </DialogTitle>
+                <DialogDescription className="text-xs text-zinc-500 mt-1">
+                  Capienza verificata con successo per questo turno.
+                </DialogDescription>
+              </DialogHeader>
+
+              {scannerSlot && (
+                <div className="my-4 space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-1.5">
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">Data Seduta:</span>
+                      <strong className="text-zinc-900 capitalize">{formatGiornoItaliano(scannerSlot.data)}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">Orario Turno:</span>
+                      <strong className="text-zinc-900">{scannerSlot.orario}</strong>
+                    </div>
+                    <div className="flex justify-between border-t border-zinc-200 pt-1.5">
+                      <span className="text-zinc-500">Stato Postazione:</span>
+                      <span className="font-bold text-amber-800 flex items-center gap-1">
+                        <Clock className="size-3 text-amber-700" /> Congelata provvisoriamente
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* TIMER COUNTDOWN BOX */}
+                  <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-center">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-amber-800">
+                      Tempo Rimanente per Confermare
+                    </div>
+                    <div className="text-2xl font-black font-mono tracking-tight text-amber-900 my-0.5">
+                      {Math.floor(countdownSec / 60)}:{(countdownSec % 60).toString().padStart(2, "0")}
+                    </div>
+                    <p className="text-[11px] text-amber-800/90 leading-tight">
+                      La postazione è riservata a tuo nome per 15 minuti. Scegli il tuo pacchetto per attivarla in via definitiva.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <DialogFooter className="flex flex-col gap-2">
+                <Button
+                  onClick={() => {
+                    if (scannerSlot) {
+                      localStorage.setItem(
+                        "area46_frozen_slot",
+                        JSON.stringify({
+                          data: scannerSlot.data,
+                          orario: scannerSlot.orario,
+                          expiresAt: Date.now() + 15 * 60 * 1000,
+                        })
+                      );
+                      setScannerSlot(null);
+                      setActiveTab("tariffario");
+                    }
+                  }}
+                  className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-11 cursor-pointer"
+                >
+                  Attiva Pacchetto & Conferma Postazione &rarr;
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => setScannerSlot(null)}
+                  className="text-xs text-zinc-500 h-8 cursor-pointer"
+                >
+                  Annulla e torna al calendario
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 
