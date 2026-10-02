@@ -313,11 +313,11 @@ export default function AreaPersonalePage() {
     return [];
   });
 
-  const aggiungiCodaPrioritaria = (data: string, orario: string) => {
+  const aggiungiCodaPrioritaria = (data: string, orario: string, remainingSec: number = 15 * 60) => {
     const nuova = {
       data,
       orario,
-      expiresAt: Date.now() + 15 * 60 * 1000,
+      expiresAt: Date.now() + Math.max(5, remainingSec) * 1000,
     };
     setCodePrioritarie((prev) => {
       const filtered = prev.filter((q) => !(q.data === data && q.orario === orario));
@@ -329,6 +329,34 @@ export default function AreaPersonalePage() {
       return updated;
     });
   };
+
+  // Monitoraggio code prioritarie: allo scadere del timer, sblocca e assegna automaticamente lo slot all'atleta con crediti
+  useEffect(() => {
+    if (!user || isZeroCredits || hasDebt || isExpired || crediti <= 0) return;
+    if (codePrioritarie.length === 0) return;
+
+    const expiredQueues = codePrioritarie.filter((q) => q.expiresAt <= liveNow);
+    if (expiredQueues.length > 0) {
+      expiredQueues.forEach((q) => {
+        const isAlreadyBooked = miePrenotazioniAttive.some((p) => p.data === q.data && p.orario === q.orario);
+        if (!isAlreadyBooked) {
+          prenotaMutation.mutate({ data: q.data, orario: q.orario });
+          toast.success(`🎉 Countdown scaduto! Il posto delle ${q.orario} (${formatGiornoItaliano(q.data)}) si è liberato ed è stato assegnato a te!`, {
+            duration: 8000,
+          });
+        }
+      });
+
+      setCodePrioritarie((prev) => {
+        const remaining = prev.filter((q) => q.expiresAt > liveNow);
+        try {
+          const key = `area46_priority_queue_${user?.id || user?.email || "default"}`;
+          localStorage.setItem(key, JSON.stringify(remaining));
+        } catch {}
+        return remaining;
+      });
+    }
+  }, [liveNow, codePrioritarie, user, isZeroCredits, hasDebt, isExpired, crediti, miePrenotazioniAttive]);
 
   // Mese selezionato per il mini-calendario del profilo
   const [profiloMonthOffset, setProfiloMonthOffset] = useState(0);
@@ -3174,9 +3202,9 @@ export default function AreaPersonalePage() {
                     onClick={() => {
                       if (!optionedModalSlot) return;
                       if (userHasCredits) {
-                        aggiungiCodaPrioritaria(optionedModalSlot.data, optionedModalSlot.orario);
+                        aggiungiCodaPrioritaria(optionedModalSlot.data, optionedModalSlot.orario, rel.totalSec);
                         setOptionedModalSlot(null);
-                        toast.success(`Coda prioritaria registrata per le ${optionedModalSlot.orario}! Ti verrà assegnato se liberato.`);
+                        toast.success(`Coda prioritaria registrata per le ${optionedModalSlot.orario}! Ti verrà assegnato allo scadere del timer (${rel.min}m ${rel.sec}s).`);
                       } else {
                         localStorage.setItem(
                           "area46_frozen_slot",
