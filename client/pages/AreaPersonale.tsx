@@ -190,17 +190,26 @@ function getSimulatedSlotState(dateStr: string, orario: string, slotIndex: numbe
   // Valore deterministico per questo slot
   const val = (slotHash + daySeed) % 100;
 
-  // Circa 28% di slot completi simulati (se non prenotati realmente)
-  const isSimulatedFull = val < 28;
-  // Circa 35% di slot in scarsità (val tra 28 e 63)
-  const isSimulatedScarce = !isSimulatedFull && val >= 28 && val < 63;
+  // 15% di slot completi simulati
+  const isSimulatedFull = val < 15;
+  // 20% di slot opzionati temporaneamente da altro atleta (con timer rilascio)
+  const isSimulatedOptioned = !isSimulatedFull && val >= 15 && val < 35;
+  // 25% di slot in scarsità (val tra 35 e 60)
+  const isSimulatedScarce = !isSimulatedFull && !isSimulatedOptioned && val >= 35 && val < 60;
 
   const copyIndex = (slotHash + weekNumber) % COPY_SCARSITA_VARIANTS.length;
 
+  // Minuti e secondi di rilascio dell'opzione deterministici
+  const optionReleaseMin = (slotHash % 9) + 3; // da 3 a 11 minuti
+  const optionReleaseSec = (slotHash * 7) % 60;
+
   return {
     isSimulatedFull,
+    isSimulatedOptioned,
     isSimulatedScarce,
     copy: COPY_SCARSITA_VARIANTS[copyIndex],
+    optionReleaseMin,
+    optionReleaseSec,
   };
 }
 
@@ -238,6 +247,15 @@ export default function AreaPersonalePage() {
   // Gestione postazione congelata (15 minuti) per il tariffario
   const [frozenSlot, setFrozenSlot] = useState<{ data: string; orario: string; expiresAt: number } | null>(null);
   const [secondsLeft, setSecondsLeft] = useState<number>(0);
+
+  // Modale per slot opzionato da altro atleta
+  const [optionedModalSlot, setOptionedModalSlot] = useState<{
+    data: string;
+    orario: string;
+    adiacente: string;
+    releaseMin: number;
+    releaseSec: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!scannerSlot) return;
@@ -1095,7 +1113,7 @@ export default function AreaPersonalePage() {
                         );
                       }
 
-                      // Calcolo stato dinamico rotante (full simulato vs scarsità vs libero)
+                      // Calcolo stato dinamico rotante (full simulato vs opzionato vs scarsità vs libero)
                       const sim = getSimulatedSlotState(selectedDate, orario, index);
 
                       if (sim.isSimulatedFull) {
@@ -1114,6 +1132,50 @@ export default function AreaPersonalePage() {
                               <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
                             </span>
                           </div>
+                        );
+                      }
+
+                      if (sim.isSimulatedOptioned) {
+                        return (
+                          <button
+                            key={orario}
+                            type="button"
+                            onClick={() => {
+                              const adiacente = orariGiorno[index + 1] || orariGiorno[index - 1] || "18:30";
+                              setOptionedModalSlot({
+                                data: selectedDate,
+                                orario,
+                                adiacente,
+                                releaseMin: sim.optionReleaseMin,
+                                releaseSec: sim.optionReleaseSec,
+                              });
+                            }}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/70 border border-amber-300 hover:border-amber-500 transition-all shadow-2xs group cursor-pointer text-left"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className="size-8 rounded-xl bg-amber-200 text-amber-950 flex items-center justify-center font-bold text-xs shrink-0 border border-amber-300 group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                                {orario}
+                              </div>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-xs font-black text-amber-950">
+                                    Posto Opzionato
+                                  </span>
+                                  <span className="text-[9px] font-mono font-black px-1.5 py-0.2 rounded-full bg-amber-200 text-amber-900 border border-amber-300 flex items-center gap-1">
+                                    <Clock className="size-2.5 text-amber-800 animate-pulse" />
+                                    Rilascio: {sim.optionReleaseMin}m {sim.optionReleaseSec.toString().padStart(2, "0")}s
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-amber-900/80">
+                                  Un altro atleta sta completando la conferma
+                                </span>
+                              </div>
+                            </div>
+
+                            <span className="text-xs font-black text-amber-900 group-hover:text-[#1c00ff] transition-colors flex items-center gap-0.5">
+                              Opzioni &rarr;
+                            </span>
+                          </button>
                         );
                       }
 
@@ -2700,6 +2762,109 @@ export default function AreaPersonalePage() {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* MODALE SLOT OPZIONATO DA ALTRO ATLETA */}
+      <Dialog
+        open={!!optionedModalSlot}
+        onOpenChange={(open) => {
+          if (!open) setOptionedModalSlot(null);
+        }}
+      >
+        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <div className="mx-auto size-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-2 border border-amber-200">
+            <Clock className="size-6 text-amber-700 animate-pulse" />
+          </div>
+
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-lg font-black text-zinc-900">
+              Posto Provvisoriamente Opzionato
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 mt-1">
+              Un altro atleta ha riservato questo turno per il checkout.
+            </DialogDescription>
+          </DialogHeader>
+
+          {optionedModalSlot && (
+            <div className="my-4 space-y-3">
+              <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs space-y-1 text-center">
+                <div className="text-[10px] font-black uppercase text-amber-800">
+                  Tempo Rimanente al Rilascio Automatico
+                </div>
+                <div className="text-xl font-black font-mono text-amber-950">
+                  {optionedModalSlot.releaseMin}:
+                  {optionedModalSlot.releaseSec.toString().padStart(2, "0")} min
+                </div>
+                <p className="text-[11px] text-amber-900/80 leading-tight">
+                  Se l&apos;utente non conferma il pacchetto entro questo tempo, la pedana torna immediatamente disponibile.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-2">
+                <div className="font-black text-zinc-900 flex items-center gap-1.5">
+                  <Sparkles className="size-4 text-[#1c00ff]" />
+                  Le tue 2 opzioni veloci:
+                </div>
+                <p className="text-[11px] text-zinc-600 leading-snug">
+                  • <strong>Blocca il turno adiacente delle {optionedModalSlot.adiacente}</strong> (stessa data, 1 posto garantito).
+                  <br />
+                  • Oppure <strong>Mettiti in Coda Prioritaria</strong> per le {optionedModalSlot.orario}: sarai il 1° a sbloccarlo.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex flex-col gap-2">
+            <Button
+              onClick={() => {
+                if (optionedModalSlot) {
+                  localStorage.setItem(
+                    "area46_frozen_slot",
+                    JSON.stringify({
+                      data: optionedModalSlot.data,
+                      orario: optionedModalSlot.adiacente,
+                      expiresAt: Date.now() + 15 * 60 * 1000,
+                    })
+                  );
+                  setOptionedModalSlot(null);
+                  setActiveTab("tariffario");
+                  toast.success(`Postazione delle ${optionedModalSlot.adiacente} congelata per 15 minuti!`);
+                }
+              }}
+              className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-10 text-xs cursor-pointer"
+            >
+              Blocca Turno Adiacente delle {optionedModalSlot?.adiacente} &rarr;
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (optionedModalSlot) {
+                  localStorage.setItem(
+                    "area46_frozen_slot",
+                    JSON.stringify({
+                      data: optionedModalSlot.data,
+                      orario: optionedModalSlot.orario,
+                      expiresAt: Date.now() + 15 * 60 * 1000,
+                    })
+                  );
+                  setOptionedModalSlot(null);
+                  setActiveTab("tariffario");
+                  toast.success(`Coda prioritaria attivata per le ${optionedModalSlot.orario}!`);
+                }
+              }}
+              className="w-full rounded-xl border-amber-300 bg-amber-50 text-amber-950 font-bold h-9 text-xs hover:bg-amber-100 cursor-pointer"
+            >
+              Coda Prioritaria per le {optionedModalSlot?.orario} &rarr;
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setOptionedModalSlot(null)}
+              className="text-xs text-zinc-500 h-7 cursor-pointer"
+            >
+              Torna al calendario
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
