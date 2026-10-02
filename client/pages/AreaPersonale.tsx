@@ -175,7 +175,41 @@ function hashString(str: string): number {
   return Math.abs(hash);
 }
 
-function getSimulatedSlotState(dateStr: string, orario: string, slotIndex: number) {
+function getOptionReleaseSeconds(dateStr: string, orario: string, slotIndex: number, currentTimestamp: number): { min: number; sec: number; totalSec: number } {
+  const slotHash = hashString(`${dateStr}-${orario}-${slotIndex}`);
+  const cycleSec = 900; // 15 minuti di ciclo
+  const offset = (slotHash % 600) + 120; // offset tra 2 e 12 minuti
+  const nowSec = Math.floor(currentTimestamp / 1000);
+  const remainingTotal = cycleSec - ((nowSec + offset) % cycleSec);
+  const min = Math.floor(remainingTotal / 60);
+  const sec = remainingTotal % 60;
+  return { min, sec, totalSec: remainingTotal };
+}
+
+function trovaSlotAdiacente(orarioTarget: string, orariDisponibili: string[]): string {
+  if (!orariDisponibili || orariDisponibili.length === 0) return "18:00";
+  const [targetH, targetM] = orarioTarget.split(":").map(Number);
+  const targetMin = targetH * 60 + targetM;
+
+  const candidati = orariDisponibili.filter((o) => o !== orarioTarget);
+  if (candidati.length === 0) return orariDisponibili[0];
+
+  let bestSlot = candidati[0];
+  let minDiff = 9999;
+
+  for (const c of candidati) {
+    const [h, m] = c.split(":").map(Number);
+    const cMin = h * 60 + m;
+    const diff = Math.abs(cMin - targetMin);
+    if (diff < minDiff) {
+      minDiff = diff;
+      bestSlot = c;
+    }
+  }
+  return bestSlot;
+}
+
+function getSimulatedSlotState(dateStr: string, orario: string, slotIndex: number, currentTimestamp: number = Date.now()) {
   const dateHash = hashString(dateStr);
   const slotHash = hashString(`${dateStr}-${orario}-${slotIndex}`);
 
@@ -199,9 +233,12 @@ function getSimulatedSlotState(dateStr: string, orario: string, slotIndex: numbe
 
   const copyIndex = (slotHash + weekNumber) % COPY_SCARSITA_VARIANTS.length;
 
-  // Minuti e secondi di rilascio dell'opzione deterministici
-  const optionReleaseMin = (slotHash % 9) + 3; // da 3 a 11 minuti
-  const optionReleaseSec = (slotHash * 7) % 60;
+  const { min: optionReleaseMin, sec: optionReleaseSec } = getOptionReleaseSeconds(
+    dateStr,
+    orario,
+    slotIndex,
+    currentTimestamp
+  );
 
   return {
     isSimulatedFull,
@@ -248,14 +285,54 @@ export default function AreaPersonalePage() {
   const [frozenSlot, setFrozenSlot] = useState<{ data: string; orario: string; expiresAt: number } | null>(null);
   const [secondsLeft, setSecondsLeft] = useState<number>(0);
 
+  // Timer live al secondo per il countdown continuo degli slot opzionati
+  const [liveNow, setLiveNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setLiveNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Modale per slot opzionato da altro atleta
   const [optionedModalSlot, setOptionedModalSlot] = useState<{
     data: string;
     orario: string;
     adiacente: string;
-    releaseMin: number;
-    releaseSec: number;
+    slotIndex: number;
   } | null>(null);
+
+  // Code prioritarie dell'atleta (salvate in localStorage per persistenza)
+  const [codePrioritarie, setCodePrioritarie] = useState<Array<{ data: string; orario: string; expiresAt: number }>>(() => {
+    try {
+      const key = `area46_priority_queue_${user?.id || user?.email || "default"}`;
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed.filter((q: any) => q.expiresAt > Date.now());
+      }
+    } catch {}
+    return [];
+  });
+
+  const aggiungiCodaPrioritaria = (data: string, orario: string) => {
+    const nuova = {
+      data,
+      orario,
+      expiresAt: Date.now() + 15 * 60 * 1000,
+    };
+    setCodePrioritarie((prev) => {
+      const filtered = prev.filter((q) => !(q.data === data && q.orario === orario));
+      const updated = [...filtered, nuova];
+      try {
+        const key = `area46_priority_queue_${user?.id || user?.email || "default"}`;
+        localStorage.setItem(key, JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  // Mese selezionato per il mini-calendario del profilo
+  const [profiloMonthOffset, setProfiloMonthOffset] = useState(0);
+  const [profiloSelectedDay, setProfiloSelectedDay] = useState(() => formatDateISO(new Date()));
 
   useEffect(() => {
     if (!scannerSlot) return;
@@ -1114,7 +1191,7 @@ export default function AreaPersonalePage() {
                       }
 
                       // Calcolo stato dinamico rotante (full simulato vs opzionato vs scarsità vs libero)
-                      const sim = getSimulatedSlotState(selectedDate, orario, index);
+                      const sim = getSimulatedSlotState(selectedDate, orario, index, liveNow);
 
                       if (sim.isSimulatedFull) {
                         return (
@@ -1141,13 +1218,12 @@ export default function AreaPersonalePage() {
                             key={orario}
                             type="button"
                             onClick={() => {
-                              const adiacente = orariGiorno[index + 1] || orariGiorno[index - 1] || "18:30";
+                              const adiacente = trovaSlotAdiacente(orario, orariGiorno);
                               setOptionedModalSlot({
                                 data: selectedDate,
                                 orario,
                                 adiacente,
-                                releaseMin: sim.optionReleaseMin,
-                                releaseSec: sim.optionReleaseSec,
+                                slotIndex: index,
                               });
                             }}
                             className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/70 border border-amber-300 hover:border-amber-500 transition-all shadow-2xs group cursor-pointer text-left"
@@ -2145,6 +2221,246 @@ export default function AreaPersonalePage() {
             </div>
           </div>
 
+          {/* CALENDARIO PERSONALE PRENOTAZIONI & OPZIONI */}
+          <div className="p-4 rounded-3xl bg-white border border-zinc-200 shadow-2xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-black text-zinc-900 flex items-center gap-2">
+                  <CalendarIcon className="size-4 text-[#1c00ff]" />
+                  I Miei Turni & Opzioni
+                </h2>
+                <p className="text-[11px] text-zinc-500">
+                  Panoramica mensile delle tue sedute confermate e code attive
+                </p>
+              </div>
+
+              {/* Controlli navigazione mese */}
+              <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setProfiloMonthOffset((prev) => prev - 1)}
+                  className="p-1 rounded-lg hover:bg-white text-zinc-600 transition-colors cursor-pointer"
+                  title="Mese precedente"
+                >
+                  <ChevronLeft className="size-4" />
+                </button>
+                <span className="text-[11px] font-black capitalize px-1.5 min-w-[90px] text-center text-zinc-800">
+                  {(() => {
+                    const d = new Date();
+                    d.setDate(1);
+                    d.setMonth(d.getMonth() + profiloMonthOffset);
+                    return d.toLocaleDateString("it-IT", { month: "short", year: "numeric" });
+                  })()}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setProfiloMonthOffset((prev) => prev + 1)}
+                  className="p-1 rounded-lg hover:bg-white text-zinc-600 transition-colors cursor-pointer"
+                  title="Mese successivo"
+                >
+                  <ChevronRight className="size-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Griglia Calendario Mese */}
+            {(() => {
+              const d = new Date();
+              d.setDate(1);
+              d.setMonth(d.getMonth() + profiloMonthOffset);
+              const year = d.getFullYear();
+              const month = d.getMonth();
+              const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+              let startDayOfWeek = new Date(year, month, 1).getDay() - 1;
+              if (startDayOfWeek === -1) startDayOfWeek = 6;
+
+              const todayISO = formatDateISO(new Date());
+
+              return (
+                <div className="space-y-2">
+                  {/* Intestazione giorni */}
+                  <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-zinc-400 uppercase">
+                    <span>Lun</span>
+                    <span>Mar</span>
+                    <span>Mer</span>
+                    <span>Gio</span>
+                    <span>Ven</span>
+                    <span>Sab</span>
+                    <span>Dom</span>
+                  </div>
+
+                  {/* Griglia giorni */}
+                  <div className="grid grid-cols-7 gap-1">
+                    {Array.from({ length: startDayOfWeek }).map((_, i) => (
+                      <div key={`empty-${i}`} className="h-9 rounded-xl bg-transparent" />
+                    ))}
+                    {Array.from({ length: totalDaysInMonth }).map((_, i) => {
+                      const dayNum = i + 1;
+                      const dayISO = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+                      const isSelected = profiloSelectedDay === dayISO;
+                      const isToday = dayISO === todayISO;
+
+                      const dayBookings = miePrenotazioniAttive.filter((p) => p.data === dayISO);
+                      const dayQueues = codePrioritarie.filter(
+                        (q) => q.data === dayISO && q.expiresAt > liveNow
+                      );
+                      const hasBooking = dayBookings.length > 0;
+                      const hasQueue = dayQueues.length > 0;
+
+                      return (
+                        <button
+                          key={dayISO}
+                          type="button"
+                          onClick={() => setProfiloSelectedDay(dayISO)}
+                          className={`h-9 rounded-xl flex flex-col items-center justify-center relative text-xs font-bold transition-all cursor-pointer ${
+                            isSelected
+                              ? "bg-zinc-950 text-white shadow-xs"
+                              : isToday
+                              ? "bg-zinc-100 text-[#1c00ff] font-black border border-[#1c00ff]/30"
+                              : "bg-zinc-50 hover:bg-zinc-100 text-zinc-700"
+                          }`}
+                        >
+                          <span>{dayNum}</span>
+
+                          {/* Indicatori pallini */}
+                          <div className="flex items-center gap-0.5 absolute bottom-1">
+                            {hasBooking && (
+                              <span className="size-1.5 rounded-full bg-emerald-500 shadow-xs" />
+                            )}
+                            {hasQueue && (
+                              <span className="size-1.5 rounded-full bg-amber-400 shadow-xs" />
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Legenda rapida */}
+                  <div className="flex items-center gap-4 text-[10px] text-zinc-500 pt-1 justify-center">
+                    <span className="flex items-center gap-1">
+                      <span className="size-2 rounded-full bg-emerald-500" /> Prenotazione attiva
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="size-2 rounded-full bg-amber-400" /> Coda prioritaria
+                    </span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Dettagli della giornata selezionata nel mini-calendario */}
+            {(() => {
+              const dayBookings = miePrenotazioniAttive.filter((p) => p.data === profiloSelectedDay);
+              const dayQueues = codePrioritarie.filter(
+                (q) => q.data === profiloSelectedDay && q.expiresAt > liveNow
+              );
+
+              return (
+                <div className="mt-3 pt-3 border-t border-zinc-100 space-y-2">
+                  <div className="text-xs font-black text-zinc-800 capitalize flex items-center justify-between">
+                    <span>{formatGiornoEstesoItaliano(profiloSelectedDay)}</span>
+                    <span className="text-[10px] font-normal text-zinc-400">
+                      {dayBookings.length} prenotazioni • {dayQueues.length} code
+                    </span>
+                  </div>
+
+                  {dayBookings.length === 0 && dayQueues.length === 0 ? (
+                    <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-100 text-center text-xs text-zinc-400">
+                      Nessuna seduta o opzione attiva per questa data.
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {/* Sedute confermate */}
+                      {dayBookings.map((bk) => (
+                        <div
+                          key={bk.id}
+                          className="flex items-center justify-between p-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs"
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="size-7 rounded-lg bg-emerald-200 text-emerald-950 font-black flex items-center justify-center text-xs">
+                              {bk.orario}
+                            </div>
+                            <div>
+                              <div className="font-black text-emerald-950 flex items-center gap-1.5">
+                                <span>Seduta Confermata</span>
+                                <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                              </div>
+                              <div className="text-[10px] text-emerald-800">
+                                1 Pedana • Lab Landmine
+                              </div>
+                            </div>
+                          </div>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setPrenotazioneDaAnnullare(bk)}
+                            className="h-7 text-[11px] text-red-600 border-red-200 hover:bg-red-100 px-2 rounded-lg cursor-pointer"
+                          >
+                            Cancella
+                          </Button>
+                        </div>
+                      ))}
+
+                      {/* Code prioritarie */}
+                      {dayQueues.map((q, idx) => {
+                        const secLeft = Math.max(0, Math.floor((q.expiresAt - liveNow) / 1000));
+                        const m = Math.floor(secLeft / 60);
+                        const s = secLeft % 60;
+
+                        return (
+                          <div
+                            key={`queue-${idx}`}
+                            className="flex items-center justify-between p-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="size-7 rounded-lg bg-amber-200 text-amber-950 font-black flex items-center justify-center text-xs">
+                                {q.orario}
+                              </div>
+                              <div>
+                                <div className="font-black text-amber-950 flex items-center gap-1.5">
+                                  <span>In Coda Prioritaria</span>
+                                  <span className="text-[9px] font-mono font-black px-1 rounded bg-amber-200 text-amber-900 border border-amber-300">
+                                    {m}:{s.toString().padStart(2, "0")}
+                                  </span>
+                                </div>
+                                <div className="text-[10px] text-amber-800/80">
+                                  Riceverai il posto se non confermato
+                                </div>
+                              </div>
+                            </div>
+
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setCodePrioritarie((prev) => {
+                                  const updated = prev.filter(
+                                    (item) => !(item.data === q.data && item.orario === q.orario)
+                                  );
+                                  try {
+                                    const key = `area46_priority_queue_${user?.id || user?.email || "default"}`;
+                                    localStorage.setItem(key, JSON.stringify(updated));
+                                  } catch {}
+                                  return updated;
+                                });
+                                toast.info("Coda prioritaria rimossa.");
+                              }}
+                              className="h-7 text-[11px] text-zinc-500 hover:text-zinc-700 px-2 rounded-lg cursor-pointer"
+                            >
+                              Rimuovi
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+
           {/* GUIDA, CONTINUATIVO & ASSISTENTE AI */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <button
@@ -2782,89 +3098,115 @@ export default function AreaPersonalePage() {
               Posto Provvisoriamente Opzionato
             </DialogTitle>
             <DialogDescription className="text-xs text-zinc-500 mt-1">
-              Un altro atleta ha riservato questo turno per il checkout.
+              Un altro atleta ha momentaneamente riservato questo turno.
             </DialogDescription>
           </DialogHeader>
 
-          {optionedModalSlot && (
-            <div className="my-4 space-y-3">
-              <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs space-y-1 text-center">
-                <div className="text-[10px] font-black uppercase text-amber-800">
-                  Tempo Rimanente al Rilascio Automatico
-                </div>
-                <div className="text-xl font-black font-mono text-amber-950">
-                  {optionedModalSlot.releaseMin}:
-                  {optionedModalSlot.releaseSec.toString().padStart(2, "0")} min
-                </div>
-                <p className="text-[11px] text-amber-900/80 leading-tight">
-                  Se l&apos;utente non conferma il pacchetto entro questo tempo, la pedana torna immediatamente disponibile.
-                </p>
-              </div>
+          {optionedModalSlot && (() => {
+            const rel = getOptionReleaseSeconds(
+              optionedModalSlot.data,
+              optionedModalSlot.orario,
+              optionedModalSlot.slotIndex,
+              liveNow
+            );
+            const userHasCredits = !hasDebt && !isZeroCredits && !isExpired && crediti > 0;
 
-              <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-2">
-                <div className="font-black text-zinc-900 flex items-center gap-1.5">
-                  <Sparkles className="size-4 text-[#1c00ff]" />
-                  Le tue 2 opzioni veloci:
-                </div>
-                <p className="text-[11px] text-zinc-600 leading-snug">
-                  • <strong>Blocca il turno adiacente delle {optionedModalSlot.adiacente}</strong> (stessa data, 1 posto garantito).
-                  <br />
-                  • Oppure <strong>Mettiti in Coda Prioritaria</strong> per le {optionedModalSlot.orario}: sarai il 1° a sbloccarlo.
-                </p>
-              </div>
-            </div>
-          )}
+            return (
+              <>
+                <div className="my-4 space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs space-y-1 text-center">
+                    <div className="text-[10px] font-black uppercase text-amber-800 tracking-wider">
+                      Tempo Rimanente al Rilascio Automatico
+                    </div>
+                    <div className="text-2xl font-black font-mono text-amber-950">
+                      {rel.min}:{rel.sec.toString().padStart(2, "0")} min
+                    </div>
+                    <p className="text-[11px] text-amber-900/80 leading-tight">
+                      Se l&apos;atleta non conferma entro lo scadere del timer, la pedana torna immediatamente prenotabile.
+                    </p>
+                  </div>
 
-          <DialogFooter className="flex flex-col gap-2">
-            <Button
-              onClick={() => {
-                if (optionedModalSlot) {
-                  localStorage.setItem(
-                    "area46_frozen_slot",
-                    JSON.stringify({
-                      data: optionedModalSlot.data,
-                      orario: optionedModalSlot.adiacente,
-                      expiresAt: Date.now() + 15 * 60 * 1000,
-                    })
-                  );
-                  setOptionedModalSlot(null);
-                  setActiveTab("tariffario");
-                  toast.success(`Postazione delle ${optionedModalSlot.adiacente} congelata per 15 minuti!`);
-                }
-              }}
-              className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-10 text-xs cursor-pointer"
-            >
-              Blocca Turno Adiacente delle {optionedModalSlot?.adiacente} &rarr;
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (optionedModalSlot) {
-                  localStorage.setItem(
-                    "area46_frozen_slot",
-                    JSON.stringify({
-                      data: optionedModalSlot.data,
-                      orario: optionedModalSlot.orario,
-                      expiresAt: Date.now() + 15 * 60 * 1000,
-                    })
-                  );
-                  setOptionedModalSlot(null);
-                  setActiveTab("tariffario");
-                  toast.success(`Coda prioritaria attivata per le ${optionedModalSlot.orario}!`);
-                }
-              }}
-              className="w-full rounded-xl border-amber-300 bg-amber-50 text-amber-950 font-bold h-9 text-xs hover:bg-amber-100 cursor-pointer"
-            >
-              Coda Prioritaria per le {optionedModalSlot?.orario} &rarr;
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => setOptionedModalSlot(null)}
-              className="text-xs text-zinc-500 h-7 cursor-pointer"
-            >
-              Torna al calendario
-            </Button>
-          </DialogFooter>
+                  <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-2">
+                    <div className="font-black text-zinc-900 flex items-center gap-1.5">
+                      <Sparkles className="size-4 text-[#1c00ff]" />
+                      Le tue opzioni rapide:
+                    </div>
+                    <p className="text-[11px] text-zinc-600 leading-snug">
+                      • <strong>Blocca turno adiacente delle {optionedModalSlot.adiacente}</strong> ({formatGiornoItaliano(optionedModalSlot.data)}).
+                      <br />
+                      • Oppure <strong>Mettiti in Coda Prioritaria</strong> per le {optionedModalSlot.orario} e riceverai il posto appena liberato.
+                    </p>
+                  </div>
+                </div>
+
+                <DialogFooter className="flex flex-col gap-2">
+                  <Button
+                    onClick={() => {
+                      if (!optionedModalSlot) return;
+                      const targetSlot = {
+                        data: optionedModalSlot.data,
+                        orario: optionedModalSlot.adiacente,
+                      };
+                      if (userHasCredits) {
+                        prenotaMutation.mutate(targetSlot);
+                        setOptionedModalSlot(null);
+                      } else {
+                        localStorage.setItem(
+                          "area46_frozen_slot",
+                          JSON.stringify({
+                            data: targetSlot.data,
+                            orario: targetSlot.orario,
+                            expiresAt: Date.now() + 15 * 60 * 1000,
+                          })
+                        );
+                        setOptionedModalSlot(null);
+                        setActiveTab("tariffario");
+                        toast.success(`Postazione delle ${targetSlot.orario} congelata per 15 minuti!`);
+                      }
+                    }}
+                    className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-10 text-xs cursor-pointer"
+                  >
+                    Blocca Turno Adiacente delle {optionedModalSlot.adiacente} {userHasCredits ? "(-1 Credito)" : "→"}
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      if (!optionedModalSlot) return;
+                      if (userHasCredits) {
+                        aggiungiCodaPrioritaria(optionedModalSlot.data, optionedModalSlot.orario);
+                        setOptionedModalSlot(null);
+                        toast.success(`Coda prioritaria registrata per le ${optionedModalSlot.orario}! Ti verrà assegnato se liberato.`);
+                      } else {
+                        localStorage.setItem(
+                          "area46_frozen_slot",
+                          JSON.stringify({
+                            data: optionedModalSlot.data,
+                            orario: optionedModalSlot.orario,
+                            expiresAt: Date.now() + 15 * 60 * 1000,
+                          })
+                        );
+                        setOptionedModalSlot(null);
+                        setActiveTab("tariffario");
+                        toast.success(`Coda prioritaria attivata per le ${optionedModalSlot.orario}!`);
+                      }
+                    }}
+                    className="w-full rounded-xl border-amber-300 bg-amber-50 text-amber-950 font-bold h-9 text-xs hover:bg-amber-100 cursor-pointer"
+                  >
+                    Mettiti in Coda Prioritaria ({optionedModalSlot.orario})
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    onClick={() => setOptionedModalSlot(null)}
+                    className="text-xs text-zinc-500 h-7 cursor-pointer"
+                  >
+                    Resta sul giorno
+                  </Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
         </DialogContent>
       </Dialog>
 
