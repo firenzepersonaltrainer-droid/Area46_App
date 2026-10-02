@@ -330,34 +330,6 @@ export default function AreaPersonalePage() {
     });
   };
 
-  // Monitoraggio code prioritarie: allo scadere del timer, sblocca e assegna automaticamente lo slot all'atleta con crediti
-  useEffect(() => {
-    if (!user || isZeroCredits || hasDebt || isExpired || crediti <= 0) return;
-    if (codePrioritarie.length === 0) return;
-
-    const expiredQueues = codePrioritarie.filter((q) => q.expiresAt <= liveNow);
-    if (expiredQueues.length > 0) {
-      expiredQueues.forEach((q) => {
-        const isAlreadyBooked = miePrenotazioniAttive.some((p) => p.data === q.data && p.orario === q.orario);
-        if (!isAlreadyBooked) {
-          prenotaMutation.mutate({ data: q.data, orario: q.orario });
-          toast.success(`🎉 Countdown scaduto! Il posto delle ${q.orario} (${formatGiornoItaliano(q.data)}) si è liberato ed è stato assegnato a te!`, {
-            duration: 8000,
-          });
-        }
-      });
-
-      setCodePrioritarie((prev) => {
-        const remaining = prev.filter((q) => q.expiresAt > liveNow);
-        try {
-          const key = `area46_priority_queue_${user?.id || user?.email || "default"}`;
-          localStorage.setItem(key, JSON.stringify(remaining));
-        } catch {}
-        return remaining;
-      });
-    }
-  }, [liveNow, codePrioritarie, user, isZeroCredits, hasDebt, isExpired, crediti, miePrenotazioniAttive]);
-
   // Mese selezionato per il mini-calendario del profilo
   const [profiloMonthOffset, setProfiloMonthOffset] = useState(0);
   const [profiloSelectedDay, setProfiloSelectedDay] = useState(() => formatDateISO(new Date()));
@@ -561,6 +533,34 @@ export default function AreaPersonalePage() {
       toast.error(err.message || "Errore nella prenotazione dello slot.");
     },
   });
+
+  // Monitoraggio code prioritarie: allo scadere del timer, sblocca e assegna automaticamente lo slot all'atleta con crediti
+  useEffect(() => {
+    if (!user || isZeroCredits || hasDebt || isExpired || crediti <= 0) return;
+    if (codePrioritarie.length === 0) return;
+
+    const expiredQueues = codePrioritarie.filter((q) => q.expiresAt <= liveNow);
+    if (expiredQueues.length > 0) {
+      expiredQueues.forEach((q) => {
+        const isAlreadyBooked = miePrenotazioniAttive.some((p) => p.data === q.data && p.orario === q.orario);
+        if (!isAlreadyBooked) {
+          prenotaMutation.mutate({ data: q.data, orario: q.orario });
+          toast.success(`🎉 Countdown scaduto! Il posto delle ${q.orario} (${formatGiornoItaliano(q.data)}) si è liberato ed è stato assegnato a te!`, {
+            duration: 8000,
+          });
+        }
+      });
+
+      setCodePrioritarie((prev) => {
+        const remaining = prev.filter((q) => q.expiresAt > liveNow);
+        try {
+          const key = `area46_priority_queue_${user?.id || user?.email || "default"}`;
+          localStorage.setItem(key, JSON.stringify(remaining));
+        } catch {}
+        return remaining;
+      });
+    }
+  }, [liveNow, codePrioritarie, user, isZeroCredits, hasDebt, isExpired, crediti, miePrenotazioniAttive, prenotaMutation]);
 
   // Mutation Prenotazione Multipla Rapida
   const batchPrenotaMutation = useMutation({
