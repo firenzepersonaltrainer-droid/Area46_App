@@ -137,6 +137,73 @@ const ORARI_DISPONIBILI_BATCH = [
   "20:00", "20:15", "20:30",
 ];
 
+// ─── ALGORITMO DI SCARSITÀ E SATURAZIONE DINAMICA ────────────────────────────
+const COPY_SCARSITA_VARIANTS = [
+  {
+    title: "Postazioni Limitate",
+    badge: "⚡ 1 sola pedana rimasta",
+    sub: "Capienza quasi esaurita per questo turno",
+  },
+  {
+    title: "Richiesta Elevata",
+    badge: "🔥 Ultimi 2 posti",
+    sub: "Fascia ad alta frequenza nel Lab",
+  },
+  {
+    title: "Postazioni Limitate",
+    badge: "⏳ Ultima postazione",
+    sub: "In esaurimento per la fascia oraria",
+  },
+  {
+    title: "Disponibilità Limitata",
+    badge: "⚡ 2 pedane rimaste",
+    sub: "Turno con prenotazioni in corso",
+  },
+  {
+    title: "Postazioni Limitate",
+    badge: "🔥 Quasi al completo",
+    sub: "Richiesta sostenuta in questa fascia",
+  },
+];
+
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function getSimulatedSlotState(dateStr: string, orario: string, slotIndex: number) {
+  const dateHash = hashString(dateStr);
+  const slotHash = hashString(`${dateStr}-${orario}-${slotIndex}`);
+
+  // Settimana dell'anno (ruota ogni 7 giorni)
+  const d = new Date(dateStr + "T00:00:00");
+  const firstJan = new Date(d.getFullYear(), 0, 1);
+  const weekNumber = Math.ceil(((d.getTime() - firstJan.getTime()) / 86400000 + firstJan.getDay() + 1) / 7);
+
+  // Seme deterministico per il giorno e la settimana
+  const daySeed = (dateHash + weekNumber * 101) % 1000;
+
+  // Valore deterministico per questo slot
+  const val = (slotHash + daySeed) % 100;
+
+  // Circa 28% di slot completi simulati (se non prenotati realmente)
+  const isSimulatedFull = val < 28;
+  // Circa 35% di slot in scarsità (val tra 28 e 63)
+  const isSimulatedScarce = !isSimulatedFull && val >= 28 && val < 63;
+
+  const copyIndex = (slotHash + weekNumber) % COPY_SCARSITA_VARIANTS.length;
+
+  return {
+    isSimulatedFull,
+    isSimulatedScarce,
+    copy: COPY_SCARSITA_VARIANTS[copyIndex],
+  };
+}
+
 export default function AreaPersonalePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -917,7 +984,16 @@ export default function AreaPersonalePage() {
                     Slot • {formatGiornoItaliano(selectedDate)}
                   </span>
                   <span className="text-[11px] font-bold text-zinc-500">
-                    {isInteroGiornoChiuso ? "Lab Chiuso" : `${orariGiorno.length - prenotazioniGiorno.length} slot liberi`}
+                    {isInteroGiornoChiuso
+                      ? "Lab Chiuso"
+                      : `${
+                          orariGiorno.filter((o, idx) => {
+                            const hasReal = prenotazioniGiorno.some((p) => p.orario === o);
+                            if (hasReal) return false;
+                            const sim = getSimulatedSlotState(selectedDate, o, idx);
+                            return !sim.isSimulatedFull;
+                          }).length
+                        } slot liberi`}
                   </span>
                 </div>
 
@@ -942,7 +1018,7 @@ export default function AreaPersonalePage() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {orariGiorno.map((orario) => {
+                    {orariGiorno.map((orario, index) => {
                       const slotInfo = slotDinamici.find((s) => s.orario === orario);
                       const booking = prenotazioniGiorno.find((p) => p.orario === orario);
                       const isOccupato = !!booking;
@@ -1019,8 +1095,29 @@ export default function AreaPersonalePage() {
                         );
                       }
 
-                      // Heuristic discreta e credibile per "postazioni limitate" (orari di punta)
-                      const isPeak = ["07:30", "13:00", "17:00", "18:00", "19:00"].includes(orario);
+                      // Calcolo stato dinamico rotante (full simulato vs scarsità vs libero)
+                      const sim = getSimulatedSlotState(selectedDate, orario, index);
+
+                      if (sim.isSimulatedFull) {
+                        return (
+                          <div
+                            key={orario}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-400 select-none"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Clock className="size-4 text-zinc-300" />
+                              <span className="text-sm font-bold tabular-nums line-through decoration-zinc-300">
+                                {orario}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-600 flex items-center gap-1">
+                              <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
+                            </span>
+                          </div>
+                        );
+                      }
+
+                      const isScarce = sim.isSimulatedScarce;
 
                       return (
                         <button
@@ -1043,7 +1140,7 @@ export default function AreaPersonalePage() {
                             setSlotDaPrenotare(orario);
                           }}
                           className={`flex items-center justify-between p-3 rounded-2xl border transition-all shadow-2xs group cursor-pointer text-left ${
-                            isPeak
+                            isScarce
                               ? "bg-amber-50/40 hover:bg-amber-50/70 border-amber-200/90 hover:border-amber-400"
                               : "bg-white hover:bg-zinc-50 border-zinc-200 hover:border-[#1c00ff]/60"
                           }`}
@@ -1051,7 +1148,7 @@ export default function AreaPersonalePage() {
                           <div className="flex items-center gap-2.5">
                             <div
                               className={`size-8 rounded-xl flex items-center justify-center font-bold text-xs transition-colors ${
-                                isPeak
+                                isScarce
                                   ? "bg-amber-200/80 text-amber-950 font-black group-hover:bg-[#1c00ff] group-hover:text-white"
                                   : "bg-zinc-100 text-zinc-800 group-hover:bg-[#1c00ff] group-hover:text-white"
                               }`}
@@ -1061,17 +1158,17 @@ export default function AreaPersonalePage() {
                             <div className="flex flex-col">
                               <div className="flex items-center gap-1.5">
                                 <span className="text-xs font-black text-zinc-900">
-                                  {isPeak ? "Postazioni Limitate" : (slotInfo?.nome_attivita || "Landmine Lab")}
+                                  {isScarce ? sim.copy.title : (slotInfo?.nome_attivita || "Landmine Lab")}
                                 </span>
-                                {isPeak && (
+                                {isScarce && (
                                   <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                                    ⚡ 1 sola pedana rimasta
+                                    {sim.copy.badge}
                                   </span>
                                 )}
                               </div>
                               <span className="text-[10px] text-zinc-500">
-                                {isPeak
-                                  ? "Capienza quasi esaurita per questo turno"
+                                {isScarce
+                                  ? sim.copy.sub
                                   : `1 Posto • ${slotInfo?.costo_crediti ?? 1} Credito`}
                               </span>
                             </div>
