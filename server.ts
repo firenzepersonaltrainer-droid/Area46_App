@@ -1528,54 +1528,13 @@ app.post("/app-api/pagamenti/stripe-checkout", async (c) => {
       }
     }
 
-    // Modalità demo se nessuna chiave Stripe configurata
-    const currentCrediti = Number(atleta?.crediti || 0);
-    const packCrediti = Number(pacchetto.crediti || 0);
-    let debitiDecurtati = 0;
-    let creditiEffettivi = packCrediti;
-    if (currentCrediti < 0) {
-      debitiDecurtati = Math.abs(currentCrediti);
-      creditiEffettivi = packCrediti - debitiDecurtati;
-    }
-    const finalCrediti = currentCrediti < 0 ? creditiEffettivi : currentCrediti + packCrediti;
-    const txCode = `TX-DEMO-${Date.now().toString().slice(-6)}`;
-
-    if (atleta) {
-      await sql`
-        UPDATE profili_utenti
-        SET crediti = ${finalCrediti},
-            data_scadenza_crediti = (CURRENT_DATE + (${pacchetto.giorni_validita || 60} || ' days')::interval)::date,
-            data_ultimo_accesso = NOW()
-        WHERE id = ${atleta.id}
-      `;
-    }
-
-    const txRows = await sql`
-      INSERT INTO transazioni_pagamenti (
-        codice_transazione, atleta_id, email_cliente, nome_cliente, codice_fiscale, indirizzo,
-        id_pacchetto, nome_pacchetto, importo_euro, metodo, crediti_acquistati, debiti_decurtati,
-        crediti_effettivi_aggiunti, causale_bonifico, stato, stato_fattura
-      ) VALUES (
-        ${txCode}, ${atleta?.id || null}, ${atleta?.email || user?.email}, ${
-      atleta ? `${atleta.nome} ${atleta.cognome}` : user?.name || "Atleta"
-    },
-        ${body.codice_fiscale || atleta?.codice_fiscale || null}, ${body.indirizzo || atleta?.indirizzo || null},
-        ${pacchetto.id}, ${pacchetto.nome}, ${pacchetto.prezzo_euro}, 'carta', ${packCrediti},
-        ${debitiDecurtati}, ${creditiEffettivi}, null, 'completato', 'da_emettere'
-      )
-      RETURNING *
-    `;
-
+    // SE LE CHIAVI STRIPE NON SONO DISPONIBILI SUL SERVER: BLOCCO DI SICUREZZA
     return c.json(
       {
-        ok: true,
-        demo_mode: true,
-        transazione: txRows[0],
-        messaggio:
-          "Pacchetto Lab acquistato in modalità demo. Per incassare realmente sul tuo conto bancario inserisci le chiavi Stripe nel pannello Fisco.",
-        crediti_attuali: finalCrediti,
+        error:
+          "Il gateway di pagamento con carta non è al momento collegato o configurato. Seleziona Bonifico Bancario oppure contatta il Coach/Lab.",
       },
-      201
+      400
     );
   } catch (err: any) {
     return c.json({ error: err.message }, 500);

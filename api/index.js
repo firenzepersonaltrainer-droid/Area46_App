@@ -29223,66 +29223,10 @@ CALENDARIO E PRENOTAZIONI:
         return res.end(JSON.stringify({ error: err.message || "Errore di connessione a Stripe" }));
       }
     }
-    const currentCrediti = Number(atleta.crediti) || 0;
-    const packCrediti = Number(pacchetto.crediti) || 0;
-    let debitiDecurtati = 0;
-    let creditiEffettivi = packCrediti;
-    if (currentCrediti < 0) {
-      debitiDecurtati = Math.abs(currentCrediti);
-      creditiEffettivi = packCrediti - debitiDecurtati;
-    }
-    const txCode = `TX-DEMO-${Date.now().toString().slice(-6)}`;
-    const nuovaTransazione = {
-      codice_transazione: txCode,
-      atleta_id: atleta.id,
-      email_cliente: atleta.email,
-      nome_cliente: `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
-      codice_fiscale: parsedBody.codice_fiscale || atleta.codice_fiscale || "",
-      indirizzo: parsedBody.indirizzo || atleta.indirizzo || "",
-      id_pacchetto: pacchetto.id,
-      nome_pacchetto: pacchetto.nome,
-      importo_euro: pacchetto.prezzo_euro,
-      metodo: "carta",
-      crediti_acquistati: packCrediti,
-      debiti_decurtati: debitiDecurtati,
-      crediti_effettivi_aggiunti: creditiEffettivi,
-      causale_bonifico: null,
-      stato: "completato",
-      stato_fattura: "da_emettere",
-      is_demo: true,
-      created_at: (/* @__PURE__ */ new Date()).toISOString()
-    };
-    if (currentCrediti < 0) {
-      atleta.crediti = creditiEffettivi;
-    } else {
-      atleta.crediti = currentCrediti + packCrediti;
-    }
-    const nuovaScadenza = new Date(Date.now() + (pacchetto.giorni_validita || 60) * 864e5).toISOString().slice(0, 10);
-    if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-      atleta.data_scadenza_crediti = nuovaScadenza;
-    }
-    atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-    addMovimentoCrediti(db, {
-      atleta_id: atleta.id,
-      email_cliente: atleta.email,
-      nome_cliente: nuovaTransazione.nome_cliente,
-      tipo: "acquisto_carnet",
-      delta_crediti: creditiEffettivi,
-      saldo_risultante: atleta.crediti,
-      motivazione: `Acquisto ${pacchetto.nome}${debitiDecurtati > 0 ? ` (sanati ${debitiDecurtati} crediti di debito)` : ""}`,
-      operatore: "atleta"
-    });
-    db.transazioni_pagamenti = db.transazioni_pagamenti || [];
-    db.transazioni_pagamenti.unshift(nuovaTransazione);
-    saveData(db);
-    res.statusCode = 201;
+    res.statusCode = 400;
     return res.end(
       JSON.stringify({
-        ok: true,
-        demo_mode: true,
-        transazione: nuovaTransazione,
-        messaggio: "Pacchetto Lab acquistato in modalit\xE0 demo. Per incassare realmente sul tuo conto bancario inserisci le chiavi Stripe nel pannello Fisco.",
-        crediti_attuali: atleta.crediti
+        error: "Il gateway di pagamento con carta non \xE8 al momento collegato o configurato. Seleziona Bonifico Bancario oppure contatta il Coach/Lab."
       })
     );
   }

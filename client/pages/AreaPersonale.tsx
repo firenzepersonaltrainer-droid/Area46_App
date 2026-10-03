@@ -791,6 +791,7 @@ export default function AreaPersonalePage() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Errore durante il checkout");
+        if (!data.checkout_url) throw new Error("Impossibile avviare il checkout protetto di Stripe.");
         return data;
       }
 
