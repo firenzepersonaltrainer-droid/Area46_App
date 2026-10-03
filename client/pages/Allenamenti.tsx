@@ -449,14 +449,38 @@ export function ArchivioAllenamentiPage() {
     queryKey: ["allenamenti", livelloEffettivo],
     queryFn: () => fetch(`/app-api/allenamenti${livelloEffettivo ? `?livello=${encodeURIComponent(livelloEffettivo)}` : ""}`).then((r) => r.json()),
   });
-  const { data: stati = [] } = useQuery<StatoRecord[]>({ queryKey: ["stati"], queryFn: () => fetch("/app-api/stati").then((r) => r.json()) });
+  const { data: stati = [] } = useQuery<StatoRecord[]>({
+    queryKey: ["stati"],
+    queryFn: () => fetch("/app-api/stati").then((r) => r.json()),
+    refetchInterval: 8000,
+  });
   const statoMap = new Map<string, Stato>((stati || []).map((s) => [statoKey(s.livello, s.giorno), s.stato]));
 
   async function handleStatoChange(lv: string, giornoNum: number, stato: Stato) {
     const statoCorrente = statoMap.get(statoKey(lv, giornoNum)) ?? "non_iniziato";
-    if (stato === "non_iniziato" && statoCorrente !== "non_iniziato") { await reset.richiediReset(lv, giornoNum); return; }
-    await fetch("/app-api/stati", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ livello: lv, giorno: giornoNum, stato }) });
-    queryClient.invalidateQueries({ queryKey: ["stati"] });
+    if (stato === "non_iniziato" && statoCorrente !== "non_iniziato") {
+      await reset.richiediReset(lv, giornoNum);
+      return;
+    }
+
+    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO (0ms latenza)
+    queryClient.setQueryData<StatoRecord[]>(["stati"], (old = []) => {
+      const filtered = old.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
+      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: new Date().toISOString() }];
+    });
+
+    try {
+      await fetch("/app-api/stati", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato }),
+      });
+      queryClient.invalidateQueries({ queryKey: ["stati"] });
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
+    } catch {
+      toast.error("Errore di rete. Lo stato verrà risincronizzato appena possibile.");
+      queryClient.invalidateQueries({ queryKey: ["stati"] });
+    }
   }
 
   return (
@@ -501,15 +525,39 @@ export default function AllenamentiPage() {
     queryKey: ["allenamenti", livello],
     queryFn: () => fetch(`/app-api/allenamenti${livello ? `?livello=${encodeURIComponent(livello)}` : ""}`).then((r) => r.json()),
   });
-  const { data: stati = [], isLoading: loadingStati } = useQuery<StatoRecord[]>({ queryKey: ["stati"], queryFn: () => fetch("/app-api/stati").then((r) => r.json()) });
+  const { data: stati = [], isLoading: loadingStati } = useQuery<StatoRecord[]>({
+    queryKey: ["stati"],
+    queryFn: () => fetch("/app-api/stati").then((r) => r.json()),
+    refetchInterval: 8000,
+  });
   const isLoading = loadingGiorni || loadingStati;
   const statoMap = new Map<string, Stato>((stati || []).map((s) => [statoKey(s.livello, s.giorno), s.stato]));
 
   async function handleStatoChange(lv: string, giornoNum: number, stato: Stato) {
     const statoCorrente = statoMap.get(statoKey(lv, giornoNum)) ?? "non_iniziato";
-    if (stato === "non_iniziato" && statoCorrente !== "non_iniziato") { await reset.richiediReset(lv, giornoNum); return; }
-    await fetch("/app-api/stati", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ livello: lv, giorno: giornoNum, stato }) });
-    queryClient.invalidateQueries({ queryKey: ["stati"] });
+    if (stato === "non_iniziato" && statoCorrente !== "non_iniziato") {
+      await reset.richiediReset(lv, giornoNum);
+      return;
+    }
+
+    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO (0ms latenza)
+    queryClient.setQueryData<StatoRecord[]>(["stati"], (old = []) => {
+      const filtered = old.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
+      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: new Date().toISOString() }];
+    });
+
+    try {
+      await fetch("/app-api/stati", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato }),
+      });
+      queryClient.invalidateQueries({ queryKey: ["stati"] });
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
+    } catch {
+      toast.error("Errore di rete. Lo stato verrà risincronizzato appena possibile.");
+      queryClient.invalidateQueries({ queryKey: ["stati"] });
+    }
   }
 
   const lista = giorni || [];
