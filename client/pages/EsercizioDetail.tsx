@@ -15,6 +15,9 @@ import {
   X,
   Check,
   LayoutList,
+  Bookmark,
+  Save,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -348,6 +351,11 @@ export default function EsercizioDetailPage() {
     } finally {
       setSaving(false);
     }
+  }
+
+  function handleSalvaBozzaManuale() {
+    saveDraftToStore(draftKey, { sets, feedback });
+    toast.success("Bozza salvata! I tuoi carichi sono salvati su questo dispositivo.");
   }
 
   useEffect(() => {
@@ -782,14 +790,24 @@ export default function EsercizioDetailPage() {
                     </p>
                   </div>
 
-                  <button
-                    onClick={() => setDialogOpen(false)}
-                    className="flex size-10 shrink-0 items-center justify-center rounded-full bg-black/5 hover:bg-black/10 text-zinc-700 hover:text-zinc-950 transition-colors cursor-pointer"
-                    aria-label="Chiudi"
-                    title="Chiudi schermata (ESC)"
-                  >
-                    <X className="size-5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setDialogOpen(false)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-200/80 hover:bg-zinc-300 text-zinc-900 text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
+                      title="Torna alla scheda dell'esercizio"
+                    >
+                      <ArrowLeft className="size-4 text-[#1c00ff]" />
+                      <span>Torna all'esercizio</span>
+                    </button>
+                    <button
+                      onClick={() => setDialogOpen(false)}
+                      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-black/5 hover:bg-black/10 text-zinc-700 hover:text-zinc-950 transition-colors cursor-pointer"
+                      aria-label="Chiudi"
+                      title="Chiudi schermata (ESC)"
+                    >
+                      <X className="size-5" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Banner Bozza in Sospeso */}
@@ -801,13 +819,22 @@ export default function EsercizioDetailPage() {
                         Bozza in sospeso conservata: i dati inseriti non andranno persi navigando tra gli esercizi o jump set.
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={handleClearDraft}
-                      className="text-xs font-black text-red-600 hover:text-red-700 underline cursor-pointer shrink-0"
-                    >
-                      Cancella bozza
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={handleSalvaBozzaManuale}
+                        className="text-xs font-black text-[#1c00ff] hover:underline cursor-pointer flex items-center gap-1"
+                      >
+                        <Save className="size-3.5" /> Salva ora
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleClearDraft}
+                        className="text-xs font-black text-red-600 hover:text-red-700 underline cursor-pointer shrink-0"
+                      >
+                        Cancella bozza
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -951,42 +978,57 @@ export default function EsercizioDetailPage() {
               </div>
 
               {/* Footer con Azioni */}
-              <div className="mt-6 pt-4 border-t border-black/10 flex items-center justify-end gap-3 flex-wrap">
-                {hasDraftContent && (
+              <div className="mt-6 pt-4 border-t border-black/10 flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={handleClearDraft}
+                    onClick={() => setDialogOpen(false)}
                     disabled={saving}
-                    className="mr-auto flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors shadow-2xs cursor-pointer"
+                    className="flex items-center gap-1.5 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-xs sm:text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors shadow-xs cursor-pointer"
                   >
-                    <Trash2 className="size-4 text-red-600" />
-                    <span>Cancella bozza</span>
+                    <ArrowLeft className="size-4 text-[#1c00ff]" />
+                    <span>Torna all'esercizio</span>
                   </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setDialogOpen(false)}
-                  disabled={saving}
-                  className="rounded-xl border border-zinc-300 bg-white px-5 py-3 text-sm font-bold text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950 transition-colors shadow-sm cursor-pointer"
-                >
-                  Annulla
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSalva}
-                  disabled={saving}
-                  className="flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-black text-white shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-50"
-                  style={{ background: "#1c00ff", border: "1.5px solid #e3ff00" }}
-                >
-                  {saving ? (
-                    <span>Salvataggio…</span>
-                  ) : (
-                    <>
-                      <Check className="size-4 text-[#e3ff00]" />
-                      <span>Salva nel Diario</span>
-                    </>
+                  {hasDraftContent && (
+                    <button
+                      type="button"
+                      onClick={handleClearDraft}
+                      disabled={saving}
+                      className="flex items-center gap-1 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs sm:text-sm font-bold text-red-700 hover:bg-red-100 transition-colors shadow-2xs cursor-pointer"
+                    >
+                      <Trash2 className="size-3.5 text-red-600" />
+                      <span className="hidden sm:inline">Cancella bozza</span>
+                    </button>
                   )}
-                </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSalvaBozzaManuale}
+                    disabled={saving}
+                    className="flex items-center gap-1.5 rounded-xl border-2 border-[#1c00ff] bg-blue-50/80 px-4 py-3 text-xs sm:text-sm font-black text-[#1c00ff] hover:bg-blue-100 transition-colors shadow-xs cursor-pointer"
+                  >
+                    <Save className="size-4" />
+                    <span>Salva Bozza</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSalva}
+                    disabled={saving}
+                    className="flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-xs sm:text-sm font-black text-white shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-50"
+                    style={{ background: "#1c00ff", border: "1.5px solid #e3ff00" }}
+                  >
+                    {saving ? (
+                      <span>Salvataggio…</span>
+                    ) : (
+                      <>
+                        <Check className="size-4 text-[#e3ff00]" />
+                        <span>Salva nel Diario</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>,

@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   BookMarked, Trash2, ChevronDown, ChevronUp, ChevronLeft,
-  BarChart2, List, Search, X, Pencil,
+  BarChart2, List, Search, X, Pencil, Dumbbell,
 } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -107,6 +108,7 @@ function filtraPerPeriodo(voci: VoceDiario[], periodo: PeriodoFiltro): VoceDiari
 }
 
 function SottoDiario({ idEsercizio, nomeEsercizio, onBack }: { idEsercizio: string; nomeEsercizio: string; onBack: () => void }) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [deleting, setDeleting] = useState<number | null>(null);
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("mese");
@@ -142,16 +144,16 @@ function SottoDiario({ idEsercizio, nomeEsercizio, onBack }: { idEsercizio: stri
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <button onClick={onBack} className="flex items-center justify-center rounded-md p-1.5 hover:bg-inset cursor-pointer" aria-label="Torna al diario">
           <ChevronLeft className="size-5 text-secondary" />
         </button>
-        <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-primary truncate">{nomeEsercizio}</h2>
+        <div className="min-w-0 flex-1">
+          <h2 className="text-lg font-bold text-primary truncate">{nomeEsercizio}</h2>
           <p className="text-xs text-secondary">{voci.length} sessioni registrate</p>
         </div>
         {maxCarico !== null && (
-          <span className="ml-auto shrink-0 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold" style={{ background: "#e3ff00", color: "#1c00ff" }}>Max {maxCarico} kg</span>
+          <span className="shrink-0 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold" style={{ background: "#e3ff00", color: "#1c00ff" }}>Max {maxCarico} kg</span>
         )}
       </div>
 

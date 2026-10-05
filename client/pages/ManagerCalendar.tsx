@@ -151,11 +151,6 @@ export default function ManagerCalendarPage() {
     return calcolaSlotPerGiorno(selectedDate, regole, eccezioni, attivita);
   }, [selectedDate, regole, eccezioni, attivita]);
 
-  // Lista orari del giorno generati dinamicamente
-  const orariGiorno = useMemo(() => {
-    return slotDinamici.map((s) => s.orario);
-  }, [slotDinamici]);
-
   // Prenotazioni attive del giorno
   const prenotazioniGiorno = useMemo(() => {
     return prenotazioni.filter(
@@ -166,6 +161,13 @@ export default function ManagerCalendarPage() {
         !p.stato?.startsWith("cancellata")
     );
   }, [prenotazioni, selectedDate]);
+
+  // Lista orari del giorno generati dinamicamente + orari prenotati (garantisce visibilità per tutti gli slot)
+  const orariGiorno = useMemo(() => {
+    const dyn = slotDinamici.map((s) => s.orario);
+    const booked = prenotazioniGiorno.map((p) => p.orario).filter(Boolean);
+    return Array.from(new Set([...dyn, ...booked])).sort((a, b) => a.localeCompare(b));
+  }, [slotDinamici, prenotazioniGiorno]);
 
   // Mutation Nuova Prenotazione Manuale Coach
   const prenotaManualeMutation = useMutation({

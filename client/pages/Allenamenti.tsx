@@ -340,8 +340,37 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
   onStatoChange: (livello: string, giornoNum: number, stato: Stato) => void;
 }) {
   const gruppi = raggruppaPerSettimana(giorni);
-  // Gestione stato aperto/chiuso dei cicli (default tutti aperti)
-  const [collapsedSettimane, setCollapsedSettimane] = useState<Set<string>>(new Set());
+  // Default: tutti i cicli precedenti chiusi, ultimo ciclo aperto
+  const [collapsedSettimane, setCollapsedSettimane] = useState<Set<string>>(() => {
+    if (gruppi.length > 1) {
+      const set = new Set<string>();
+      for (let i = 0; i < gruppi.length - 1; i++) {
+        set.add(gruppi[i][0]);
+      }
+      return set;
+    }
+    return new Set();
+  });
+
+  const lastCycleRef = React.useRef<HTMLDivElement | null>(null);
+
+  // Quando cambia il livello o la lista giorni, chiudi i precedenti e scorri all'ultimo ciclo in corso
+  React.useEffect(() => {
+    if (gruppi.length > 1) {
+      const set = new Set<string>();
+      for (let i = 0; i < gruppi.length - 1; i++) {
+        set.add(gruppi[i][0]);
+      }
+      setCollapsedSettimane(set);
+
+      const timer = setTimeout(() => {
+        if (lastCycleRef.current) {
+          lastCycleRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [giorni, livelloFiltro]);
 
   const toggleSettimana = (sett: string) => {
     setCollapsedSettimane((prev) => {
@@ -366,10 +395,11 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
   const mostraHeader = gruppi.length > 1 || (gruppi.length === 1 && gruppi[0][0] !== "Allenamenti");
   return (
     <div className="space-y-6">
-      {gruppi.map(([settimana, items]) => {
+      {gruppi.map(([settimana, items], index) => {
         const isCollapsed = collapsedSettimane.has(settimana);
+        const isLast = index === gruppi.length - 1;
         return (
-          <div key={settimana}>
+          <div key={settimana} ref={isLast ? lastCycleRef : undefined}>
             {mostraHeader && (
               <div
                 onClick={() => toggleSettimana(settimana)}

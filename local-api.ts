@@ -1170,9 +1170,7 @@ direttamente dal Pannello Manager Atleti.
         shared_wallet_with: parsedBody.shared_wallet_with?.trim() || null,
         tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
         tempo_anticipo_prenotazione_ore: Number(parsedBody.tempo_anticipo_prenotazione_ore || 24),
-        data_scadenza_crediti:
-          parsedBody.data_scadenza_crediti ||
-          new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10),
+        data_scadenza_crediti: parsedBody.data_scadenza_crediti || null,
         data_ultimo_accesso: new Date().toISOString(),
         note_coach: parsedBody.note_coach || "",
         created_at:
@@ -1295,25 +1293,45 @@ firenzepersonaltrainer@gmail.com
       const saldoPrecedente = Number(profilo.crediti) || 0;
       let delta = 0;
 
+      const walletOwner = getWalletOwner(profilo, db);
+      const isShared = walletOwner && walletOwner.id !== profilo.id;
+
       if (parsedBody.crediti !== undefined) {
         const nuovoVal = Number(parsedBody.crediti);
         delta = nuovoVal - saldoPrecedente;
         profilo.crediti = nuovoVal;
+        if (isShared && walletOwner) {
+          walletOwner.crediti = nuovoVal;
+        }
       } else if (parsedBody.delta !== undefined) {
         delta = Number(parsedBody.delta);
         profilo.crediti = saldoPrecedente + delta;
+        if (isShared && walletOwner) {
+          walletOwner.crediti = (walletOwner.crediti || 0) + delta;
+        }
       }
 
-      if (parsedBody.data_scadenza_crediti) {
-        profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
+      if (parsedBody.data_scadenza_crediti !== undefined) {
+        const valScad = parsedBody.data_scadenza_crediti ? String(parsedBody.data_scadenza_crediti).trim() : null;
+        profilo.data_scadenza_crediti = valScad;
+        if (isShared && walletOwner) {
+          walletOwner.data_scadenza_crediti = valScad;
+        }
       }
 
       if (parsedBody.anticipi_da_scontare !== undefined) {
-        profilo.anticipi_da_scontare = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+        const valAnt = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+        profilo.anticipi_da_scontare = valAnt;
+        if (isShared && walletOwner) {
+          walletOwner.anticipi_da_scontare = valAnt;
+        }
       } else if (parsedBody.e_anticipo) {
         const deltaPos = delta > 0 ? delta : (Number(parsedBody.crediti ?? 0) - saldoPrecedente);
         if (deltaPos > 0) {
           profilo.anticipi_da_scontare = (profilo.anticipi_da_scontare || 0) + deltaPos;
+          if (isShared && walletOwner) {
+            walletOwner.anticipi_da_scontare = (walletOwner.anticipi_da_scontare || 0) + deltaPos;
+          }
         }
       }
 
@@ -1321,9 +1339,9 @@ firenzepersonaltrainer@gmail.com
       if (delta !== 0) {
         const isAnticipo = parsedBody.e_anticipo || (parsedBody.tipo === "anticipo_crediti");
         addMovimentoCrediti(db, {
-          atleta_id: profilo.id,
-          email_cliente: profilo.email,
-          nome_cliente: `${profilo.nome} ${profilo.cognome}`,
+          atleta_id: isShared && walletOwner ? walletOwner.id : profilo.id,
+          email_cliente: isShared && walletOwner ? walletOwner.email : profilo.email,
+          nome_cliente: isShared && walletOwner ? `${walletOwner.nome} ${walletOwner.cognome}` : `${profilo.nome} ${profilo.cognome}`,
           tipo:
             parsedBody.tipo ||
             (isAnticipo
@@ -1347,6 +1365,7 @@ firenzepersonaltrainer@gmail.com
       }
 
       profilo.updated_at = new Date().toISOString();
+      if (isShared && walletOwner) walletOwner.updated_at = new Date().toISOString();
       saveData(db);
       await syncDataToGoogleDrive(db).catch(() => {});
       return res.end(JSON.stringify(profilo));
@@ -1361,15 +1380,23 @@ firenzepersonaltrainer@gmail.com
         res.statusCode = 404;
         return res.end(JSON.stringify({ error: "Profilo non trovato" }));
       }
+      const walletOwner = getWalletOwner(profilo, db);
+      const isShared = walletOwner && walletOwner.id !== profilo.id;
+
       if (parsedBody.nome !== undefined) profilo.nome = parsedBody.nome;
       if (parsedBody.cognome !== undefined) profilo.cognome = parsedBody.cognome;
       if (parsedBody.email !== undefined) profilo.email = parsedBody.email;
       if (parsedBody.telefono !== undefined) profilo.telefono = parsedBody.telefono;
       if (parsedBody.codice_fiscale !== undefined) profilo.codice_fiscale = parsedBody.codice_fiscale;
       if (parsedBody.indirizzo !== undefined) profilo.indirizzo = parsedBody.indirizzo;
-      if (parsedBody.crediti !== undefined) profilo.crediti = Number(parsedBody.crediti);
+      if (parsedBody.crediti !== undefined) {
+        profilo.crediti = Number(parsedBody.crediti);
+        if (isShared && walletOwner) walletOwner.crediti = Number(parsedBody.crediti);
+      }
       if (parsedBody.anticipi_da_scontare !== undefined) {
-        profilo.anticipi_da_scontare = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+        const valAnt = Math.max(0, Number(parsedBody.anticipi_da_scontare));
+        profilo.anticipi_da_scontare = valAnt;
+        if (isShared && walletOwner) walletOwner.anticipi_da_scontare = valAnt;
       }
       if (parsedBody.tempo_cancellazione_ore !== undefined) {
         profilo.tempo_cancellazione_ore = Number(parsedBody.tempo_cancellazione_ore);
@@ -1378,13 +1405,16 @@ firenzepersonaltrainer@gmail.com
         profilo.tempo_anticipo_prenotazione_ore = Number(parsedBody.tempo_anticipo_prenotazione_ore);
       }
       if (parsedBody.data_scadenza_crediti !== undefined) {
-        profilo.data_scadenza_crediti = parsedBody.data_scadenza_crediti;
+        const valScad = parsedBody.data_scadenza_crediti ? String(parsedBody.data_scadenza_crediti).trim() : null;
+        profilo.data_scadenza_crediti = valScad;
+        if (isShared && walletOwner) walletOwner.data_scadenza_crediti = valScad;
       }
       if (parsedBody.note_coach !== undefined) profilo.note_coach = parsedBody.note_coach;
       if (parsedBody.shared_wallet_with !== undefined) {
         profilo.shared_wallet_with = parsedBody.shared_wallet_with?.trim() || null;
       }
       profilo.updated_at = new Date().toISOString();
+      if (isShared && walletOwner) walletOwner.updated_at = new Date().toISOString();
       saveData(db);
       await syncDataToGoogleDrive(db);
       return res.end(JSON.stringify(profilo));

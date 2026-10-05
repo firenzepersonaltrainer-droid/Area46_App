@@ -473,18 +473,10 @@ export default function FloatingTimer() {
     });
   }
   function setMode(newMode: Mode) {
-    setState((s) => {
-      const first = s.steps[0] || DEFAULT_STEPS[0];
-      return {
-        ...s,
-        mode: newMode,
-        running: false,
-        countdownLeft: s.countdownTotal,
-        currentStepIndex: 0,
-        currentRound: 1,
-        phaseLeft: first.durataSecs,
-      };
-    });
+    setState((s) => ({
+      ...s,
+      mode: newMode,
+    }));
   }
 
   const { mode, running, minimized, open } = state;

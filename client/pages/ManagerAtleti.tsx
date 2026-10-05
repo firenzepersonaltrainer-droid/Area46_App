@@ -281,7 +281,7 @@ export default function ManagerAtletiPage() {
         shared_wallet_with: "",
         tempo_cancellazione_ore: 24,
         tempo_anticipo_prenotazione_ore: 24,
-        data_scadenza_crediti: new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10),
+        data_scadenza_crediti: "",
       });
     }
     setAnagraficaModalOpen(true);
