@@ -358,6 +358,8 @@ export default function EsercizioDetailPage() {
     toast.success("Bozza salvata! I tuoi carichi sono salvati su questo dispositivo.");
   }
 
+  const modalScrollRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (esercizio?.link_video && esercizio.link_video.toLowerCase().includes("/shorts/")) {
       setAspectRatio("9:16");
@@ -365,6 +367,29 @@ export default function EsercizioDetailPage() {
       setAspectRatio("16:9");
     }
   }, [esercizio?.link_video]);
+
+  useEffect(() => {
+    if (dialogOpen) {
+      if (typeof document !== "undefined") {
+        document.body.style.overflow = "hidden";
+      }
+      const timer = setTimeout(() => {
+        if (modalScrollRef.current) {
+          modalScrollRef.current.scrollTop = 0;
+        }
+      }, 10);
+      return () => {
+        clearTimeout(timer);
+        if (typeof document !== "undefined") {
+          document.body.style.overflow = "";
+        }
+      };
+    } else {
+      if (typeof document !== "undefined") {
+        document.body.style.overflow = "";
+      }
+    }
+  }, [dialogOpen]);
 
   const hasDraftContent =
     sets.some((s) => s.carico_kg.trim() !== "" || s.ripetizioni.trim() !== "" || s.rpe.trim() !== "") ||
@@ -741,19 +766,20 @@ export default function EsercizioDetailPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Schermata Fullscreen Registra Carico (Sfondo chiaro con leggera trasparenza) */}
+      {/* Schermata Fullscreen Registra Carico (Sfondo chiaro con trasparenza elegante) */}
       {dialogOpen &&
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="absolute inset-0 z-40 flex flex-col w-full h-full overflow-y-auto"
+            ref={modalScrollRef}
+            className="fixed inset-0 z-50 flex flex-col w-full h-full overflow-y-auto overscroll-contain"
             style={{
-              backgroundColor: "rgba(244, 245, 248, 0.95)",
+              backgroundColor: "rgba(244, 245, 248, 0.98)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
             }}
           >
-            <div className="w-full min-h-full flex flex-col justify-between p-4 sm:p-5 py-6">
+            <div className="w-full min-h-full flex flex-col justify-between p-4 sm:p-5 py-6 max-w-lg mx-auto">
               {/* Header */}
               <div>
                 <div className="flex items-start justify-between gap-4 pb-4 border-b border-black/10">
@@ -1027,7 +1053,7 @@ export default function EsercizioDetailPage() {
               </div>
             </div>
           </div>,
-          document.getElementById("phone-frame") || document.body,
+          document.body,
         )}
     </div>
   );
