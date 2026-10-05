@@ -281,15 +281,45 @@ export async function runGlideSync() {
               const email = emailKey ? String(r[emailKey]).trim().toLowerCase() : "";
               if (!email || !email.includes("@")) continue;
 
-              const exKey = Object.keys(r).find((k) => k.toLowerCase().includes("esercizio"));
-              const loadKey = Object.keys(r).find((k) => k.toLowerCase().includes("carico") || k.toLowerCase().includes("kg") || k.toLowerCase().includes("peso"));
+              const exKey = Object.keys(r).find((k) => k.toLowerCase() === "nome_esercizio" || k.toLowerCase().includes("esercizio"));
+              const idExKey = Object.keys(r).find((k) => k.toLowerCase() === "id_esercizio" || k.toLowerCase().includes("id_es"));
+              const loadKey = Object.keys(r).find((k) => k.toLowerCase() === "carico_kg" || k.toLowerCase().includes("carico") || k.toLowerCase().includes("peso"));
               const feedKey = Object.keys(r).find((k) => k.toLowerCase().includes("feedback") || k.toLowerCase().includes("note"));
-              const dateKey = Object.keys(r).find((k) => k.toLowerCase().includes("data") || k.toLowerCase().includes("date"));
+              const dateKey = Object.keys(r).find((k) => k.toLowerCase().includes("data_ora") || k.toLowerCase().includes("data") || k.toLowerCase().includes("date"));
+              const repKey = Object.keys(r).find((k) => k.toLowerCase().includes("ripetiz") || k.toLowerCase() === "rep" || k.toLowerCase() === "reps");
+              const serKey = Object.keys(r).find((k) => k.toLowerCase().includes("serie") || k.toLowerCase() === "sets");
+              const setsJsonKey = Object.keys(r).find((k) => k.toLowerCase().includes("sets_json") || k.toLowerCase().includes("setsjson"));
+              const rpeJsonKey = Object.keys(r).find((k) => k.toLowerCase().includes("rpe_json") || k.toLowerCase().includes("rpejson"));
 
-              const nomeEsercizio = exKey ? String(r[exKey]).trim() : "Esercizio Landmine";
-              const caricoKg = loadKey ? parseFloat(String(r[loadKey])) || null : null;
-              const feedback = feedKey ? String(r[feedKey]).trim() : null;
-              const dataOra = dateKey && r[dateKey] ? String(r[dateKey]) : new Date().toISOString();
+              const nomeEsercizio = exKey && r[exKey] ? String(r[exKey]).trim() : "Esercizio Landmine";
+              const id_esercizio = idExKey && r[idExKey] !== "" && r[idExKey] !== undefined ? String(r[idExKey]).trim() : null;
+              const caricoKg = loadKey && r[loadKey] !== "" && r[loadKey] !== undefined ? parseFloat(String(r[loadKey])) || null : null;
+              const ripetizioni = repKey && r[repKey] !== "" && r[repKey] !== undefined ? parseInt(String(r[repKey])) || null : null;
+              const serie = serKey && r[serKey] !== "" && r[serKey] !== undefined ? parseInt(String(r[serKey])) || null : null;
+              const feedback = feedKey && r[feedKey] ? String(r[feedKey]).trim() : null;
+              const dataOra = dateKey && r[dateKey] ? String(r[dateKey]).trim() : new Date().toISOString();
+              const sets_json = setsJsonKey && r[setsJsonKey] ? String(r[setsJsonKey]).trim() : null;
+              const rpe_json = rpeJsonKey && r[rpeJsonKey] ? String(r[rpeJsonKey]).trim() : null;
+
+              // Assicurati che l'utente esista in profili_utenti senza toccare crediti
+              const existingUser = db.profili_utenti.find((p) => p.email.toLowerCase() === email);
+              if (!existingUser) {
+                db.profili_utenti.push({
+                  id: `usr-glide-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                  email,
+                  nome: email.split("@")[0],
+                  cognome: "",
+                  telefono: "",
+                  codice_fiscale: "",
+                  ruolo: "atleta",
+                  crediti: 0,
+                  data_scadenza_crediti: null,
+                  tipo_abbonamento: "standard",
+                  tempo_cancellazione_ore: 24,
+                  data_ultimo_accesso: new Date().toISOString(),
+                });
+                report.utenti_aggiunti++;
+              }
 
               const exists = db.diario_utente.some(
                 (ex) =>
@@ -301,11 +331,16 @@ export async function runGlideSync() {
                 db.diario_utente.push({
                   id: Date.now() + Math.floor(Math.random() * 1000000),
                   email_cliente: email,
+                  id_esercizio: id_esercizio,
                   nome_esercizio: nomeEsercizio,
                   carico_kg: caricoKg,
+                  ripetizioni: ripetizioni,
+                  serie: serie,
+                  sets_json: sets_json,
+                  rpe_json: rpe_json,
                   feedback,
                   data_ora: dataOra,
-                  created_at: new Date().toISOString(),
+                  created_at: dataOra || new Date().toISOString(),
                 });
                 report.voci_diario_aggiunte++;
               }
