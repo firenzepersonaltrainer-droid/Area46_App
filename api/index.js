@@ -30525,13 +30525,13 @@ CALENDARIO E PRENOTAZIONI:
   if (pathname === "/app-api/lab-config" && method === "GET") {
     const reqSecret = req.headers["x-stripe-secret-key"]?.trim();
     const reqPub = req.headers["x-stripe-publishable-key"]?.trim();
-    if (reqSecret && (!db.configurazione_lab?.stripe_secret_key || !db.configurazione_lab.stripe_secret_key.startsWith("sk_"))) {
+    if (reqSecret && (!db.configurazione_lab?.stripe_secret_key || !db.configurazione_lab.stripe_secret_key.startsWith("sk_") && !db.configurazione_lab.stripe_secret_key.startsWith("rk_"))) {
       db.configurazione_lab = db.configurazione_lab || {};
       db.configurazione_lab.stripe_secret_key = reqSecret;
       if (reqPub) db.configurazione_lab.stripe_publishable_key = reqPub;
       db.configurazione_lab.stripe_collegato = true;
       saveData(db);
-    } else if (process.env.STRIPE_SECRET_KEY && (!db.configurazione_lab?.stripe_secret_key || !db.configurazione_lab.stripe_secret_key.startsWith("sk_"))) {
+    } else if (process.env.STRIPE_SECRET_KEY && (!db.configurazione_lab?.stripe_secret_key || !db.configurazione_lab.stripe_secret_key.startsWith("sk_") && !db.configurazione_lab.stripe_secret_key.startsWith("rk_"))) {
       db.configurazione_lab = db.configurazione_lab || {};
       db.configurazione_lab.stripe_secret_key = process.env.STRIPE_SECRET_KEY.trim();
       if (process.env.STRIPE_PUBLISHABLE_KEY) {
@@ -31051,7 +31051,7 @@ CALENDARIO E PRENOTAZIONI:
     }
     const secretKey = parsedBody.stripe_secret_key || req.headers["x-stripe-secret-key"] || db.configurazione_lab?.stripe_secret_key || process.env.STRIPE_SECRET_KEY;
     const origin = req.headers.origin || "http://localhost:5173";
-    if (secretKey && secretKey.startsWith("sk_")) {
+    if (secretKey && (secretKey.startsWith("sk_") || secretKey.startsWith("rk_"))) {
       if (!db.configurazione_lab?.stripe_secret_key) {
         db.configurazione_lab = db.configurazione_lab || {};
         db.configurazione_lab.stripe_secret_key = secretKey.trim();
@@ -31161,7 +31161,7 @@ CALENDARIO E PRENOTAZIONI:
       res.statusCode = 400;
       return res.end(JSON.stringify({ error: "Stripe non configurato" }));
     }
-    if (secretKey && secretKey.startsWith("sk_") && !db.configurazione_lab?.stripe_secret_key) {
+    if (secretKey && (secretKey.startsWith("sk_") || secretKey.startsWith("rk_")) && !db.configurazione_lab?.stripe_secret_key) {
       db.configurazione_lab = db.configurazione_lab || {};
       db.configurazione_lab.stripe_secret_key = secretKey.trim();
       db.configurazione_lab.stripe_collegato = true;

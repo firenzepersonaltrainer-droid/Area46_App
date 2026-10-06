@@ -1456,7 +1456,7 @@ app.post("/app-api/pagamenti/stripe-checkout", async (c) => {
     const origin = c.req.header("origin") || "http://localhost:5173";
     const returnPath = body.return_url || "/account";
 
-    if (secretKey && secretKey.startsWith("sk_")) {
+    if (secretKey && (secretKey.startsWith("sk_") || secretKey.startsWith("rk_"))) {
       try {
         const buildParams = (includePayPal: boolean) => {
           const p = new URLSearchParams();

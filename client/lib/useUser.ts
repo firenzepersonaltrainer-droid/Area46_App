@@ -901,7 +901,7 @@ export function useLabConfig() {
   useEffect(() => {
     if (serverConfig) {
       const stored = getStoredStripeCredentials();
-      if (stored && stored.stripe_secret_key && stored.stripe_secret_key.startsWith("sk_")) {
+      if (stored && stored.stripe_secret_key && (stored.stripe_secret_key.startsWith("sk_") || stored.stripe_secret_key.startsWith("rk_"))) {
         if (!serverConfig.stripe_secret_key) {
           fetch("/app-api/lab-config", {
             method: "PUT",
@@ -945,6 +945,8 @@ export function useLabConfig() {
     const hasStoredSecret = !!(stored.stripe_secret_key && stored.stripe_secret_key.trim().length > 0);
     const hasServerSecret = !!(base.stripe_secret_key && base.stripe_secret_key.trim().length > 0);
 
+    const isSecretValid = (k?: string) => Boolean(k && (k.startsWith("sk_") || k.startsWith("rk_")));
+
     return {
       ...base,
       stripe_mode: stored.stripe_mode || base.stripe_mode || "live",
@@ -953,8 +955,8 @@ export function useLabConfig() {
       stripe_webhook_secret: stored.stripe_webhook_secret || base.stripe_webhook_secret || "",
       stripe_collegato: Boolean(
         base.stripe_collegato ||
-        (hasStoredSecret && stored.stripe_secret_key!.startsWith("sk_")) ||
-        (hasServerSecret && base.stripe_secret_key!.startsWith("sk_"))
+        (hasStoredSecret && isSecretValid(stored.stripe_secret_key)) ||
+        (hasServerSecret && isSecretValid(base.stripe_secret_key))
       ),
     };
   }, [serverConfig]);

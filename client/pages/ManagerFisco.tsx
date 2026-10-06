@@ -421,7 +421,7 @@ export default function ManagerFiscoPage() {
       // 2. Invia al backend
       await aggiornaConfig({
         ...credsToSave,
-        stripe_collegato: !!(stripeSecretKey.trim() && stripeSecretKey.trim().startsWith("sk_")),
+        stripe_collegato: !!(stripeSecretKey.trim() && (stripeSecretKey.trim().startsWith("sk_") || stripeSecretKey.trim().startsWith("rk_"))),
       });
       toast.success("Credenziali Stripe salvate e memorizzate in modo permanente!");
     } catch (err: any) {
@@ -457,7 +457,7 @@ export default function ManagerFiscoPage() {
       saveStoredStripeCredentials(parsed);
       await aggiornaConfig({
         ...parsed,
-        stripe_collegato: !!(parsed.stripe_secret_key && parsed.stripe_secret_key.startsWith("sk_")),
+        stripe_collegato: !!(parsed.stripe_secret_key && (parsed.stripe_secret_key.startsWith("sk_") || parsed.stripe_secret_key.startsWith("rk_"))),
       });
       setBackupModalOpen(false);
       setBackupInput("");
@@ -619,8 +619,8 @@ export default function ManagerFiscoPage() {
 
   const isStripeConnected = !!(
     config?.stripe_collegato ||
-    (config?.stripe_secret_key && config.stripe_secret_key.startsWith("sk_")) ||
-    (stripeSecretKey && stripeSecretKey.trim().startsWith("sk_"))
+    (config?.stripe_secret_key && (config.stripe_secret_key.startsWith("sk_") || config.stripe_secret_key.startsWith("rk_"))) ||
+    (stripeSecretKey && (stripeSecretKey.trim().startsWith("sk_") || stripeSecretKey.trim().startsWith("rk_")))
   );
 
   return (
