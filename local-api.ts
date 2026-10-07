@@ -1168,6 +1168,16 @@ direttamente dal Pannello Manager Atleti.
         crediti: creditiIniziali,
         anticipi_da_scontare: Number(parsedBody.anticipi_da_scontare || 0),
         shared_wallet_with: parsedBody.shared_wallet_with?.trim() || null,
+        tipo_abbonamento:
+          parsedBody.tipo_abbonamento ||
+          (existingIndex >= 0 && db.profili_utenti[existingIndex].tipo_abbonamento
+            ? db.profili_utenti[existingIndex].tipo_abbonamento
+            : "standard"),
+        stato_iscrizione:
+          parsedBody.stato_iscrizione ||
+          (existingIndex >= 0 && db.profili_utenti[existingIndex].stato_iscrizione
+            ? db.profili_utenti[existingIndex].stato_iscrizione
+            : "attivo"),
         tempo_cancellazione_ore: Number(parsedBody.tempo_cancellazione_ore || 24),
         tempo_anticipo_prenotazione_ore: Number(parsedBody.tempo_anticipo_prenotazione_ore || 24),
         data_scadenza_crediti: parsedBody.data_scadenza_crediti || null,
@@ -1413,6 +1423,12 @@ firenzepersonaltrainer@gmail.com
       if (parsedBody.shared_wallet_with !== undefined) {
         profilo.shared_wallet_with = parsedBody.shared_wallet_with?.trim() || null;
       }
+      if (parsedBody.tipo_abbonamento !== undefined) {
+        profilo.tipo_abbonamento = parsedBody.tipo_abbonamento;
+      }
+      if (parsedBody.stato_iscrizione !== undefined) {
+        profilo.stato_iscrizione = parsedBody.stato_iscrizione;
+      }
       profilo.updated_at = new Date().toISOString();
       if (isShared && walletOwner) walletOwner.updated_at = new Date().toISOString();
       saveData(db);
@@ -1505,7 +1521,8 @@ firenzepersonaltrainer@gmail.com
         return res.end(JSON.stringify({ error: "Atleta non trovato" }));
       }
 
-      const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+      const tipoAbb = atleta.tipo_abbonamento || "standard";
+      const isContinuativo = tipoAbb.startsWith("lab_continuativo");
       const tariffaPiena = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
       const todayStr = new Date().toISOString().slice(0, 10);
       const currentTimeStr = new Date().toLocaleTimeString("it-IT", {
@@ -1539,12 +1556,14 @@ firenzepersonaltrainer@gmail.com
       if (transazioniAtleta.length > 0) {
         totaleGiaVersato = Number(transazioniAtleta[0].importo_euro) || 0;
       } else {
-        totaleGiaVersato = tipoAbb === "lab_continuativo_2x" ? 250 : 359;
+        totaleGiaVersato = isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0;
       }
 
-      const penaleStandard = 50.0;
-      const valoreSedutePieno = Math.round(seduteSvolteCount * tariffaPiena * 100) / 100;
-      const totaleDovuto = Math.round((valoreSedutePieno + penaleStandard) * 100) / 100;
+      const penaleStandard = isContinuativo ? 50.0 : 0.0;
+      const valoreSedutePieno = isContinuativo
+        ? Math.round(seduteSvolteCount * tariffaPiena * 100) / 100
+        : 0;
+      const totaleDovuto = isContinuativo ? Math.round((valoreSedutePieno + penaleStandard) * 100) / 100 : 0;
       const totaleDaAddebitare = Math.max(
         0,
         Math.round((totaleDovuto - totaleGiaVersato) * 100) / 100
@@ -1613,13 +1632,14 @@ firenzepersonaltrainer@gmail.com
       });
 
       // 2. Calcolo importi
-      const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+      const tipoAbb = atleta.tipo_abbonamento || "standard";
+      const isContinuativo = tipoAbb.startsWith("lab_continuativo");
       const defaultTariffa = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
-      const tariffa = Number(parsedBody.tariffa_seduta ?? defaultTariffa);
+      const tariffa = Number(parsedBody.tariffa_seduta ?? (isContinuativo ? defaultTariffa : 0));
       const svolte = Number(parsedBody.sedute_svolte ?? 0);
-      const penale = Number(parsedBody.penale_euro ?? 50.0);
+      const penale = Number(parsedBody.penale_euro ?? (isContinuativo ? 50.0 : 0.0));
       const versato = Number(
-        parsedBody.totale_versato ?? (tipoAbb === "lab_continuativo_2x" ? 250 : 359)
+        parsedBody.totale_versato ?? (isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0)
       );
 
       const valoreSedute = Math.round(svolte * tariffa * 100) / 100;

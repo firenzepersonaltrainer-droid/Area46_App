@@ -615,10 +615,11 @@ app.post("/app-api/profili", async (c) => {
   const id = body.id || `usr-atleta-${Date.now()}`;
   const rows = await sql`
     INSERT INTO profili_utenti (
-      id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach, shared_wallet_with
+      id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach, shared_wallet_with, tipo_abbonamento, stato_iscrizione
     ) VALUES (
       ${id}, ${body.email}, ${body.nome}, ${body.cognome}, ${body.telefono || null}, ${body.codice_fiscale || null},
-      ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}, ${body.shared_wallet_with || null}
+      ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}, ${body.shared_wallet_with || null},
+      ${body.tipo_abbonamento || 'standard'}, ${body.stato_iscrizione || 'attivo'}
     )
     ON CONFLICT (email) DO UPDATE SET
       nome = EXCLUDED.nome,
@@ -631,6 +632,8 @@ app.post("/app-api/profili", async (c) => {
       data_scadenza_crediti = COALESCE(EXCLUDED.data_scadenza_crediti, profili_utenti.data_scadenza_crediti),
       note_coach = COALESCE(EXCLUDED.note_coach, profili_utenti.note_coach),
       shared_wallet_with = EXCLUDED.shared_wallet_with,
+      tipo_abbonamento = COALESCE(EXCLUDED.tipo_abbonamento, profili_utenti.tipo_abbonamento),
+      stato_iscrizione = COALESCE(EXCLUDED.stato_iscrizione, profili_utenti.stato_iscrizione),
       updated_at = NOW()
     RETURNING *
   `;
@@ -655,6 +658,8 @@ app.put("/app-api/profili/:id", async (c) => {
       data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti}, data_scadenza_crediti),
       note_coach = COALESCE(${body.note_coach}, note_coach),
       shared_wallet_with = CASE WHEN ${body.shared_wallet_with !== undefined} THEN ${body.shared_wallet_with || null} ELSE shared_wallet_with END,
+      tipo_abbonamento = COALESCE(${body.tipo_abbonamento}, tipo_abbonamento),
+      stato_iscrizione = COALESCE(${body.stato_iscrizione}, stato_iscrizione),
       updated_at = NOW()
     WHERE id = ${id}
     RETURNING *
@@ -748,7 +753,8 @@ app.get("/app-api/atleti/:id/anteprima-dismissione", async (c) => {
   if (atleti.length === 0) return c.json({ error: "Atleta non trovato" }, 404);
   const atleta = atleti[0];
 
-  const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+  const tipoAbb = atleta.tipo_abbonamento || "standard";
+  const isContinuativo = tipoAbb.startsWith("lab_continuativo");
   const tariffaPiena = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
 
   const seduteSvolte = await sql`
@@ -773,10 +779,10 @@ app.get("/app-api/atleti/:id/anteprima-dismissione", async (c) => {
       AND stato = 'completato'
     ORDER BY created_at DESC LIMIT 1
   `;
-  const totaleGiaVersato = txRows.length > 0 ? Number(txRows[0].importo_euro) : (tipoAbb === "lab_continuativo_2x" ? 250 : 359);
-  const penaleStandard = 50.0;
-  const valoreSedutePieno = Math.round(seduteSvolteCount * tariffaPiena * 100) / 100;
-  const totaleDovuto = Math.round((valoreSedutePieno + penaleStandard) * 100) / 100;
+  const totaleGiaVersato = txRows.length > 0 ? Number(txRows[0].importo_euro) : (isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0);
+  const penaleStandard = isContinuativo ? 50.0 : 0.0;
+  const valoreSedutePieno = isContinuativo ? Math.round(seduteSvolteCount * tariffaPiena * 100) / 100 : 0;
+  const totaleDovuto = isContinuativo ? Math.round((valoreSedutePieno + penaleStandard) * 100) / 100 : 0;
   const totaleDaAddebitare = Math.max(0, Math.round((totaleDovuto - totaleGiaVersato) * 100) / 100);
 
   const cfgRows = await sql`SELECT notifica_email FROM configurazione_lab WHERE id = 1 LIMIT 1`;
@@ -825,12 +831,13 @@ app.post("/app-api/atleti/:id/dismissione-anticipata", async (c) => {
     RETURNING id, data, orario
   `;
 
-  const tipoAbb = atleta.tipo_abbonamento || "lab_continuativo_3x";
+  const tipoAbb = atleta.tipo_abbonamento || "standard";
+  const isContinuativo = tipoAbb.startsWith("lab_continuativo");
   const defaultTariffa = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
-  const tariffa = Number(body.tariffa_seduta ?? defaultTariffa);
+  const tariffa = Number(body.tariffa_seduta ?? (isContinuativo ? defaultTariffa : 0));
   const svolte = Number(body.sedute_svolte ?? 0);
-  const penale = Number(body.penale_euro ?? 50.0);
-  const versato = Number(body.totale_versato ?? (tipoAbb === "lab_continuativo_2x" ? 250 : 359));
+  const penale = Number(body.penale_euro ?? (isContinuativo ? 50.0 : 0.0));
+  const versato = Number(body.totale_versato ?? (isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0));
 
   const valoreSedute = Math.round(svolte * tariffa * 100) / 100;
   const totaleDovuto = Math.round((valoreSedute + penale) * 100) / 100;

@@ -265,6 +265,8 @@ export default function ManagerAtletiPage() {
     if (atleta) {
       setEditForm({
         ...atleta,
+        tipo_abbonamento: atleta.tipo_abbonamento || "standard",
+        stato_iscrizione: atleta.stato_iscrizione || "attivo",
         shared_wallet_with: atleta.shared_wallet_with || "",
         tempo_cancellazione_ore: atleta.tempo_cancellazione_ore || 24,
         tempo_anticipo_prenotazione_ore: atleta.tempo_anticipo_prenotazione_ore ?? 24,
@@ -278,6 +280,8 @@ export default function ManagerAtletiPage() {
         codice_fiscale: "",
         indirizzo: "",
         crediti: 10,
+        tipo_abbonamento: "standard",
+        stato_iscrizione: "attivo",
         shared_wallet_with: "",
         tempo_cancellazione_ore: 24,
         tempo_anticipo_prenotazione_ore: 24,
@@ -969,6 +973,42 @@ export default function ManagerAtletiPage() {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                  Formula / Abbonamento
+                </label>
+                <select
+                  value={editForm.tipo_abbonamento || "standard"}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, tipo_abbonamento: e.target.value as any })
+                  }
+                  className="w-full bg-white border border-zinc-200 rounded-xl px-2.5 py-2 text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#1c00ff]"
+                >
+                  <option value="standard">Standard (Carnet a consumo)</option>
+                  <option value="lab_continuativo_2x">Continuativo 2X (250€/m)</option>
+                  <option value="lab_continuativo_3x">Continuativo 3X (359€/m)</option>
+                  <option value="nessuno">Nessuno (Disattivo)</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                  Stato Atleta
+                </label>
+                <select
+                  value={editForm.stato_iscrizione || "attivo"}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, stato_iscrizione: e.target.value as any })
+                  }
+                  className="w-full bg-white border border-zinc-200 rounded-xl px-2.5 py-2 text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#1c00ff]"
+                >
+                  <option value="attivo">Attivo</option>
+                  <option value="sospeso">Sospeso</option>
+                  <option value="dismesso">Dismesso</option>
+                </select>
+              </div>
+            </div>
+
             {/* SELEZIONE POLICY CANCELLAZIONE PERSONALIZZATA */}
             <div>
               <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
@@ -1447,7 +1487,11 @@ export default function ManagerAtletiPage() {
                   <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200">
                     {anteprimaData?.tipo_abbonamento === "lab_continuativo_2x"
                       ? "Continuativo 2X (250€/m)"
-                      : "Continuativo 3X (359€/m)"}
+                      : anteprimaData?.tipo_abbonamento === "lab_continuativo_3x"
+                      ? "Continuativo 3X (359€/m)"
+                      : anteprimaData?.tipo_abbonamento === "standard"
+                      ? "Standard (Carnet)"
+                      : "Altro"}
                   </span>
                 </div>
                 <div className="text-[11px] text-zinc-500 flex flex-col gap-0.5 font-mono">
