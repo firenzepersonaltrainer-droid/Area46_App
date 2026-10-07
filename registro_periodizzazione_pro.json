@@ -3,7 +3,7 @@
   "fonte_catalogo_esclusiva": "PRO database esercizi (escluso foglio elenco completo)",
   "macrociclo_attuale": "Sviluppo Multicompetenze e Rotazione Catalogo PRO (163 esercizi)",
   "mesociclo_attuale": "Mesociclo 2 (Cicli 4, 5, 6)",
-  "ciclo_attivo_da_pianificare": "Ciclo 5 (Intensificazione Mesociclo 2)",
+  "ciclo_attivo_da_pianificare": "Ciclo 6 (Scarico e Trasformazione Mesociclo 2)",
   "storico_cicli": {
     "Ciclo 1": {
       "status": "completato / transizione",
@@ -22,27 +22,32 @@
       "status": "attivo / programmato",
       "sessioni": 6,
       "focus": "Avvio Mesociclo 2: Rientro Potenza Anca (COMBO Clean landmine, KB Snatch), Scarico Spinta Orizzontale Pesante (Mod. B), Trazione Cavi/Rope, Pliometria Gambe"
+    },
+    "Ciclo 5": {
+      "status": "attivo / programmato",
+      "sessioni": 6,
+      "focus": "Picco Mesociclo 2: COMBO Landmine C&J high hand switch, KB snatch to lunge, Flag Bearer isoinerziale time under tension, Pliometria e Skierg pagaia"
     }
   },
   "pattern_status": {
     "spinta_orizzontale": {
-      "stato": "SCARICO SELETTIVO (Modalità B attiva - Coiled Punch iso)"
+      "stato": "SCARICO SELETTIVO (Modalità B attiva - coiled Ax Sit up)"
     },
     "trazione_orizzontale": {
       "stato": "consolidamento (Meadow row, Push the wall)"
     },
     "accosciata_squat": {
-      "stato": "esplosività monolaterale (Step Up box, Super Mario jump)"
+      "stato": "stabilità monolaterale e dinamica (Kettlebell skater swing, Salto alfiere)"
     },
     "cerniera_anca": {
-      "stato": "rientro balistico e potenza (COMBO Landmine clean, KB Snatch)"
+      "stato": "picco di potenza e coordinazione (COMBO Landmine C&J, KB Snatch lunge)"
     },
     "braccia_spalle": {
-      "stato": "mantenimento e sviluppo (Kneeling press landmine, Endless rope, Skierg pagaia)"
+      "stato": "sviluppo verticale e trazione spiralizzata (Dumbell Jerk, Endless rope half kneeling pull, Skierg pagaia alternato)"
     }
   },
   "totale_esercizi_catalogo": 163,
-  "esercizi_utilizzati": 63,
+  "esercizi_utilizzati": 80,
   "esercizi": [
     {
       "id": "43",
@@ -121,8 +126,8 @@
       "pattern": "cerniera d'anca, trazione verticale dal basso, spinta verticale",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "230",
@@ -181,8 +186,8 @@
       "pattern": "core strenght, spinta verticale asimmetrica",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "190",
@@ -211,8 +216,8 @@
       "pattern": "core training",
       "ruolo": "complementare a tutto",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "90",
@@ -281,8 +286,8 @@
       "pattern": "core stablity in estensione catene crociate e spirali",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "77",
@@ -351,8 +356,8 @@
       "pattern": "core training in trazione verticale spiralizzata",
       "ruolo": "accessrio",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "195",
@@ -551,8 +556,8 @@
       "pattern": "spinta verticale, asimmetrico, affondo",
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "70",
@@ -741,8 +746,8 @@
       "pattern": "cerniera d'anca, spinta verticale, trasferimento di carico",
       "ruolo": "fondamentale",
       "categoria": "skill e combo",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "224",
@@ -751,8 +756,8 @@
       "pattern": "cerniera d'anca, affondo, trazione verticale dal basso",
       "ruolo": "fondamentale",
       "categoria": "skill e combo",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "205",
@@ -861,8 +866,8 @@
       "pattern": "core conditioning, catena flessoria",
       "ruolo": "complementare",
       "categoria": "skill e combo",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "63",
@@ -971,8 +976,8 @@
       "pattern": "stabilizzazione anca e core in pattern biomeccanico funzonale",
       "ruolo": "engine",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "4",
@@ -1041,8 +1046,8 @@
       "pattern": "pedalare con movimento di spinta e trazione simultaneo delle braccia",
       "ruolo": "engine, benchmark",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "13",
@@ -1241,8 +1246,8 @@
       "pattern": "cerniera d'anca, traslazione laterale, trazione verticale dal basso",
       "ruolo": "fondamentale",
       "categoria": "pliometria e agility",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "168",
@@ -1281,8 +1286,8 @@
       "pattern": "destrezza, asaltello",
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "145",
@@ -1461,8 +1466,8 @@
       "pattern": "flessoestensione della spalla, rotazione sul piano trasverso",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "163",
@@ -1521,8 +1526,8 @@
       "pattern": "mobilità sul piano sagittale del rachide",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "33",
@@ -1541,8 +1546,8 @@
       "pattern": "accosciata, cerniera d'anca",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "47",
@@ -1601,8 +1606,8 @@
       "pattern": "coordinazione alto basso, core stability in spinta monolaterale, cerniera d'anca",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 5",
+      "usage_count": 1
     },
     {
       "id": "23",
