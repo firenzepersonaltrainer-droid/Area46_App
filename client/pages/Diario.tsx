@@ -83,18 +83,34 @@ interface GruppoEsercizio {
   ultimoCarico: number | null;
 }
 
+function parseSafeDate(iso: any): Date {
+  if (!iso) return new Date();
+  if (typeof iso === "string" && (iso.includes("T") || iso.includes("-") || iso.includes("/"))) {
+    const d = new Date(iso);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const num = typeof iso === "number" ? iso : parseFloat(String(iso));
+  if (!isNaN(num) && num > 20000 && num < 70000) {
+    const epochMs = (num - 25569) * 86400 * 1000;
+    const d = new Date(epochMs);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const fallback = new Date(iso);
+  return isNaN(fallback.getTime()) ? new Date() : fallback;
+}
+
 function formatData(iso: string) {
-  const d = new Date(iso);
+  const d = parseSafeDate(iso);
   return d.toLocaleDateString("it-IT", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 function formatOra(iso: string) {
-  const d = new Date(iso);
+  const d = parseSafeDate(iso);
   return d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
 }
 
 function formatDataBreve(iso: string) {
-  const d = new Date(iso);
+  const d = parseSafeDate(iso);
   return d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" });
 }
 
@@ -104,7 +120,7 @@ function filtraPerPeriodo(voci: VoceDiario[], periodo: PeriodoFiltro): VoceDiari
   if (periodo === "tutto") return voci;
   const ora = Date.now();
   const ms = periodo === "settimana" ? 7 * 86400000 : periodo === "mese" ? 30 * 86400000 : 90 * 86400000;
-  return voci.filter((v) => ora - new Date(v.data_ora).getTime() <= ms);
+  return voci.filter((v) => ora - parseSafeDate(v.data_ora).getTime() <= ms);
 }
 
 function SottoDiario({ idEsercizio, nomeEsercizio, onBack }: { idEsercizio: string; nomeEsercizio: string; onBack: () => void }) {
@@ -326,11 +342,27 @@ export default function DiarioPage() {
   const gruppi: GruppoEsercizio[] = React.useMemo(() => {
     const map = new Map<string, GruppoEsercizio>();
     for (const v of voci) {
-      const key = v.id_esercizio;
-      if (!map.has(key)) { map.set(key, { id_esercizio: key, nome_esercizio: v.nome_esercizio || key, ultimaData: v.data_ora, totaleLog: 1, ultimoCarico: v.carico_kg }); }
-      else { map.get(key)!.totaleLog += 1; }
+      const key = v.nome_esercizio || v.id_esercizio || "Esercizio";
+      if (!map.has(key)) {
+        map.set(key, {
+          id_esercizio: v.id_esercizio || key,
+          nome_esercizio: v.nome_esercizio || v.id_esercizio || "Esercizio",
+          ultimaData: v.data_ora,
+          totaleLog: 1,
+          ultimoCarico: v.carico_kg,
+        });
+      } else {
+        const existing = map.get(key)!;
+        existing.totaleLog += 1;
+        if (parseSafeDate(v.data_ora).getTime() > parseSafeDate(existing.ultimaData).getTime()) {
+          existing.ultimaData = v.data_ora;
+          if (v.carico_kg != null) existing.ultimoCarico = v.carico_kg;
+        }
+      }
     }
-    return Array.from(map.values());
+    return Array.from(map.values()).sort(
+      (a, b) => parseSafeDate(b.ultimaData).getTime() - parseSafeDate(a.ultimaData).getTime()
+    );
   }, [voci]);
 
   const [ricerca, setRicerca] = useState("");

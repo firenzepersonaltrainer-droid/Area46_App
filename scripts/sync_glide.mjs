@@ -53,6 +53,32 @@ async function getGoogleAccessToken(creds) {
   return data.access_token;
 }
 
+function excelSerialToISO(val) {
+  if (!val) return new Date().toISOString();
+  if (typeof val === "string" && (val.includes("T") || val.includes("-") || val.includes("/"))) {
+    const parsed = new Date(val);
+    if (!isNaN(parsed.getTime())) return parsed.toISOString();
+  }
+  const num = parseFloat(val);
+  if (!isNaN(num) && num > 20000 && num < 70000) {
+    const epochMs = (num - 25569) * 86400 * 1000;
+    const d = new Date(epochMs);
+    if (!isNaN(d.getTime())) return d.toISOString();
+  }
+  const d = new Date(val);
+  return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+}
+
+function resolveExerciseName(rawName, rawId, exMap) {
+  const isNumeric = /^\d+$/.test(String(rawName || "").trim());
+  if (isNumeric || !rawName || rawName === rawId) {
+    const idToSearch = rawId || rawName;
+    const realName = exMap.get(String(idToSearch).trim()) || exMap.get(String(idToSearch).replace(/^0+/, ""));
+    if (realName) return realName;
+  }
+  return rawName || "Esercizio Landmine";
+}
+
 export async function runGlideSync() {
   console.log("=======================================================");
   console.log("🔄 AVVIO SINCRONIZZAZIONE DATI DA GLIDE — AREA46 LAB");
@@ -73,6 +99,17 @@ export async function runGlideSync() {
   const db = JSON.parse(fs.readFileSync(DEMO_DATA_PATH, "utf-8"));
   db.profili_utenti = db.profili_utenti || [];
   db.diario_utente = db.diario_utente || [];
+  db.database_esercizi = db.database_esercizi || [];
+
+  const exMap = new Map();
+  db.database_esercizi.forEach((e) => {
+    if (e.id) exMap.set(String(e.id), e.nome_reale);
+    if (e.id_esercizio) {
+      exMap.set(String(e.id_esercizio), e.nome_reale);
+      const trimmed = String(e.id_esercizio).replace(/^0+/, "");
+      if (trimmed) exMap.set(trimmed, e.nome_reale);
+    }
+  });
 
   let token = null;
   if (fs.existsSync(CREDENZIALI_PATH)) {
@@ -112,8 +149,10 @@ export async function runGlideSync() {
             const emailCliente = (emailIdx >= 0 ? row[emailIdx] : "")?.trim().toLowerCase();
             if (!emailCliente || !emailCliente.includes("@")) continue;
 
-            const dataOra = (dateIdx >= 0 ? row[dateIdx] : "") || new Date().toISOString();
-            const nomeEsercizio = (exIdx >= 0 ? row[exIdx] : "") || "Esercizio Landmine";
+            const rawDataOra = (dateIdx >= 0 ? row[dateIdx] : "") || new Date().toISOString();
+            const dataOra = excelSerialToISO(rawDataOra);
+            const rawEx = (exIdx >= 0 ? row[exIdx] : "") || "";
+            const nomeEsercizio = resolveExerciseName(rawEx, rawEx, exMap);
             const caricoKg = loadIdx >= 0 ? parseFloat(row[loadIdx]) || null : null;
             const feedback = feedIdx >= 0 ? row[feedIdx] : null;
 
@@ -129,11 +168,12 @@ export async function runGlideSync() {
               db.diario_utente.push({
                 id: Date.now() + Math.floor(Math.random() * 1000000),
                 email_cliente: emailCliente,
+                id_esercizio: rawEx,
                 nome_esercizio: nomeEsercizio,
                 carico_kg: caricoKg,
                 feedback: feedback,
                 data_ora: dataOra,
-                created_at: new Date().toISOString(),
+                created_at: dataOra,
               });
               report.voci_diario_aggiunte++;
             }
@@ -291,13 +331,15 @@ export async function runGlideSync() {
               const setsJsonKey = Object.keys(r).find((k) => k.toLowerCase().includes("sets_json") || k.toLowerCase().includes("setsjson"));
               const rpeJsonKey = Object.keys(r).find((k) => k.toLowerCase().includes("rpe_json") || k.toLowerCase().includes("rpejson"));
 
-              const nomeEsercizio = exKey && r[exKey] ? String(r[exKey]).trim() : "Esercizio Landmine";
-              const id_esercizio = idExKey && r[idExKey] !== "" && r[idExKey] !== undefined ? String(r[idExKey]).trim() : null;
+              const rawEx = exKey && r[exKey] ? String(r[exKey]).trim() : "";
+              const id_esercizio = idExKey && r[idExKey] !== "" && r[idExKey] !== undefined ? String(r[idExKey]).trim() : rawEx;
+              const nomeEsercizio = resolveExerciseName(rawEx, id_esercizio, exMap);
               const caricoKg = loadKey && r[loadKey] !== "" && r[loadKey] !== undefined ? parseFloat(String(r[loadKey])) || null : null;
               const ripetizioni = repKey && r[repKey] !== "" && r[repKey] !== undefined ? parseInt(String(r[repKey])) || null : null;
               const serie = serKey && r[serKey] !== "" && r[serKey] !== undefined ? parseInt(String(r[serKey])) || null : null;
               const feedback = feedKey && r[feedKey] ? String(r[feedKey]).trim() : null;
-              const dataOra = dateKey && r[dateKey] ? String(r[dateKey]).trim() : new Date().toISOString();
+              const rawDataOra = dateKey && r[dateKey] ? String(r[dateKey]).trim() : new Date().toISOString();
+              const dataOra = excelSerialToISO(rawDataOra);
               const sets_json = setsJsonKey && r[setsJsonKey] ? String(r[setsJsonKey]).trim() : null;
               const rpe_json = rpeJsonKey && r[rpeJsonKey] ? String(r[rpeJsonKey]).trim() : null;
 
@@ -340,7 +382,7 @@ export async function runGlideSync() {
                   rpe_json: rpe_json,
                   feedback,
                   data_ora: dataOra,
-                  created_at: dataOra || new Date().toISOString(),
+                  created_at: dataOra,
                 });
                 report.voci_diario_aggiunte++;
               }

@@ -42,6 +42,22 @@ interface SetEntry {
   rpe?: string | number | null;
 }
 
+function parseSafeDate(iso: any): Date {
+  if (!iso) return new Date();
+  if (typeof iso === "string" && (iso.includes("T") || iso.includes("-") || iso.includes("/"))) {
+    const d = new Date(iso);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const num = typeof iso === "number" ? iso : parseFloat(String(iso));
+  if (!isNaN(num) && num > 20000 && num < 70000) {
+    const epochMs = (num - 25569) * 86400 * 1000;
+    const d = new Date(epochMs);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const fallback = new Date(iso);
+  return isNaN(fallback.getTime()) ? new Date() : fallback;
+}
+
 interface VoceDiario {
   id: number;
   data_ora: string;
@@ -121,7 +137,7 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
   // Ordina per data crescente per i grafici
   const sortedDiarioAsc = useMemo(() => {
     return [...diario].sort(
-      (a, b) => new Date(a.data_ora).getTime() - new Date(b.data_ora).getTime()
+      (a, b) => parseSafeDate(a.data_ora).getTime() - parseSafeDate(b.data_ora).getTime()
     );
   }, [diario]);
 
@@ -129,13 +145,14 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
   const eserciziUnivoci = useMemo(() => {
     const map = new Map<string, { id: string; nome: string; count: number }>();
     diario.forEach((v) => {
-      const existing = map.get(v.id_esercizio);
+      const key = v.id_esercizio || v.nome_esercizio;
+      const existing = map.get(key);
       if (existing) {
         existing.count += 1;
       } else {
-        map.set(v.id_esercizio, {
-          id: v.id_esercizio,
-          nome: v.nome_esercizio,
+        map.set(key, {
+          id: key,
+          nome: v.nome_esercizio || key,
           count: 1,
         });
       }
@@ -164,10 +181,10 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
     const filtered =
       selectedExId === "all"
         ? sortedDiarioAsc
-        : sortedDiarioAsc.filter((v) => v.id_esercizio === selectedExId);
+        : sortedDiarioAsc.filter((v) => v.id_esercizio === selectedExId || v.nome_esercizio === selectedExId);
 
     return filtered.map((v) => {
-      const d = new Date(v.data_ora);
+      const d = parseSafeDate(v.data_ora);
       const dataLabel = d.toLocaleDateString("it-IT", { day: "2-digit", month: "short" });
       const caricoMax = computeCaricoMax(v);
       const tonn = computeTonnellaggio(v);
@@ -734,7 +751,7 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
                     const caricoMax = computeCaricoMax(v);
                     const tonn = computeTonnellaggio(v);
                     const rpe = computeRpeMedio(v);
-                    const dateFormatted = new Date(v.data_ora).toLocaleDateString("it-IT", {
+                    const dateFormatted = parseSafeDate(v.data_ora).toLocaleDateString("it-IT", {
                       weekday: "short",
                       day: "2-digit",
                       month: "short",

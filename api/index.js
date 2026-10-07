@@ -33239,7 +33239,34 @@ CALENDARIO E PRENOTAZIONI:
   if (pathname === "/app-api/diario" && method === "GET") {
     const targetEmail = url.searchParams.get("email");
     const filterEmail = targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
-    const rows = [...db.diario_utente].filter((d) => !filterEmail || d.email_cliente === filterEmail).sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
+    const exMap = /* @__PURE__ */ new Map();
+    (db.database_esercizi || []).forEach((e) => {
+      if (e.id) exMap.set(String(e.id), e.nome_reale);
+      if (e.id_esercizio) {
+        exMap.set(String(e.id_esercizio), e.nome_reale);
+        const trimmed = String(e.id_esercizio).replace(/^0+/, "");
+        if (trimmed) exMap.set(trimmed, e.nome_reale);
+      }
+    });
+    const rows = [...db.diario_utente].filter((d) => !filterEmail || d.email_cliente === filterEmail).map((d) => {
+      let nome = d.nome_esercizio;
+      if (!nome || /^\d+$/.test(String(nome).trim()) || nome === d.id_esercizio) {
+        const real = exMap.get(String(d.id_esercizio || nome).trim()) || exMap.get(String(d.id_esercizio || nome).replace(/^0+/, ""));
+        if (real) nome = real;
+      }
+      let sets = d.sets_json;
+      if (typeof sets === "string") {
+        try {
+          sets = JSON.parse(sets);
+        } catch {
+        }
+      }
+      return {
+        ...d,
+        nome_esercizio: nome || "Esercizio Landmine",
+        sets_json: sets
+      };
+    }).sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
     return res.end(JSON.stringify(rows));
   }
   const diarioExMatch = pathname.match(/^\/app-api\/diario\/esercizio\/([^/]+)$/);
@@ -33247,9 +33274,36 @@ CALENDARIO E PRENOTAZIONI:
     const idEsercizio = decodeURIComponent(diarioExMatch[1]);
     const targetEmail = url.searchParams.get("email");
     const filterEmail = targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
+    const exMap = /* @__PURE__ */ new Map();
+    (db.database_esercizi || []).forEach((e) => {
+      if (e.id) exMap.set(String(e.id), e.nome_reale);
+      if (e.id_esercizio) {
+        exMap.set(String(e.id_esercizio), e.nome_reale);
+        const trimmed = String(e.id_esercizio).replace(/^0+/, "");
+        if (trimmed) exMap.set(trimmed, e.nome_reale);
+      }
+    });
     const rows = [...db.diario_utente].filter(
-      (d) => (!filterEmail || d.email_cliente === filterEmail) && d.id_esercizio === idEsercizio
-    ).sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
+      (d) => (!filterEmail || d.email_cliente === filterEmail) && (d.id_esercizio === idEsercizio || String(d.id_esercizio).replace(/^0+/, "") === idEsercizio.replace(/^0+/, "") || d.nome_esercizio?.toLowerCase() === idEsercizio.toLowerCase())
+    ).map((d) => {
+      let nome = d.nome_esercizio;
+      if (!nome || /^\d+$/.test(String(nome).trim()) || nome === d.id_esercizio) {
+        const real = exMap.get(String(d.id_esercizio || nome).trim()) || exMap.get(String(d.id_esercizio || nome).replace(/^0+/, ""));
+        if (real) nome = real;
+      }
+      let sets = d.sets_json;
+      if (typeof sets === "string") {
+        try {
+          sets = JSON.parse(sets);
+        } catch {
+        }
+      }
+      return {
+        ...d,
+        nome_esercizio: nome || "Esercizio Landmine",
+        sets_json: sets
+      };
+    }).sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
     return res.end(JSON.stringify(rows));
   }
   if (pathname === "/app-api/diario" && method === "POST") {

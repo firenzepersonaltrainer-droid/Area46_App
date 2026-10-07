@@ -37,6 +37,22 @@ interface SetRow {
   rpe: string;
 }
 
+function parseSafeDate(iso: any): Date {
+  if (!iso) return new Date();
+  if (typeof iso === "string" && (iso.includes("T") || iso.includes("-") || iso.includes("/"))) {
+    const d = new Date(iso);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const num = typeof iso === "number" ? iso : parseFloat(String(iso));
+  if (!isNaN(num) && num > 20000 && num < 70000) {
+    const epochMs = (num - 25569) * 86400 * 1000;
+    const d = new Date(epochMs);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const fallback = new Date(iso);
+  return isNaN(fallback.getTime()) ? new Date() : fallback;
+}
+
 const emptySet = (): SetRow => ({ carico_kg: "", ripetizioni: "", rpe: "" });
 
 interface DraftData {
@@ -682,7 +698,7 @@ export default function EsercizioDetailPage() {
             ) : (
               <div className="divide-y divide-border-weak max-h-[60vh] overflow-y-auto -mx-6 px-6">
                 {storicoRows.map((row: any) => {
-                  const data = new Date(row.data_ora);
+                  const data = parseSafeDate(row.data_ora);
                   const dataStr = data.toLocaleDateString("it-IT", { day: "2-digit", month: "short", year: "numeric" });
                   const oraStr = data.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
                   const setsArr: any[] = row.sets_json ?? [];

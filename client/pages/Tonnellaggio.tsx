@@ -38,8 +38,24 @@ function formatSettimanaLabel(key: string): string {
   return key.replace("-W", " W");
 }
 
+function parseSafeDate(iso: any): Date {
+  if (!iso) return new Date();
+  if (typeof iso === "string" && (iso.includes("T") || iso.includes("-") || iso.includes("/"))) {
+    const d = new Date(iso);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const num = typeof iso === "number" ? iso : parseFloat(String(iso));
+  if (!isNaN(num) && num > 20000 && num < 70000) {
+    const epochMs = (num - 25569) * 86400 * 1000;
+    const d = new Date(epochMs);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const fallback = new Date(iso);
+  return isNaN(fallback.getTime()) ? new Date() : fallback;
+}
+
 function formatDataLabel(iso: string): string {
-  const d = new Date(iso);
+  const d = parseSafeDate(iso);
   return d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" });
 }
 
@@ -77,7 +93,7 @@ export default function TonnellaggioPage() {
   const perSessione = useMemo(() => {
     const map = new Map<string, { label: string; totale: number; count: number }>();
     for (const v of vociValide) {
-      const d = new Date(v.data_ora);
+      const d = parseSafeDate(v.data_ora);
       const key = d.toISOString().slice(0, 10);
       const label = formatDataLabel(v.data_ora);
       if (!map.has(key)) map.set(key, { label, totale: 0, count: 0 });
@@ -90,7 +106,7 @@ export default function TonnellaggioPage() {
   const perSettimana = useMemo(() => {
     const map = new Map<string, number>();
     for (const v of vociValide) {
-      const key = getSettimana(new Date(v.data_ora));
+      const key = getSettimana(parseSafeDate(v.data_ora));
       map.set(key, (map.get(key) ?? 0) + v.tonnellaggio_voce);
     }
     return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([key, tot]) => ({ name: formatSettimanaLabel(key), tonnellaggio: Math.round(tot) }));
@@ -99,7 +115,7 @@ export default function TonnellaggioPage() {
   const perMese = useMemo(() => {
     const map = new Map<string, number>();
     for (const v of vociValide) {
-      const key = getMese(new Date(v.data_ora));
+      const key = getMese(parseSafeDate(v.data_ora));
       map.set(key, (map.get(key) ?? 0) + v.tonnellaggio_voce);
     }
     return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([key, tot]) => ({ name: formatMeseLabel(key), tonnellaggio: Math.round(tot) }));
