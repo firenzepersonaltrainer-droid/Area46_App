@@ -27492,20 +27492,6 @@ var demo_data_default = {
       created_at: "46272.42068311343"
     },
     {
-      id: 1791185369409,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "81",
-      nome_esercizio: "81",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"8","carico_kg":8,"ripetizioni":6}]',
-      rpe_json: '["8"]',
-      feedback: null,
-      data_ora: "46272.46182215278",
-      created_at: "46272.46182215278"
-    },
-    {
       id: 1791185465592,
       email_cliente: "firenzepersonaltrainer@gmail.com",
       id_esercizio: "79",
@@ -28094,34 +28080,6 @@ var demo_data_default = {
       created_at: "46286.28089175926"
     },
     {
-      id: 1791185392766,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "81",
-      nome_esercizio: "81",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"4","carico_kg":2,"ripetizioni":3}]',
-      rpe_json: '["4"]',
-      feedback: "5 lg",
-      data_ora: "46286.738839756945",
-      created_at: "46286.738839756945"
-    },
-    {
-      id: 1791185012741,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "208",
-      nome_esercizio: "208",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"0","carico_kg":0,"ripetizioni":0}]',
-      rpe_json: '["0"]',
-      feedback: "Nessun carico",
-      data_ora: "46286.73920880787",
-      created_at: "46286.73920880787"
-    },
-    {
       id: 1791185674982,
       email_cliente: "daniele.casci@gmail.com",
       id_esercizio: "44",
@@ -28246,20 +28204,6 @@ var demo_data_default = {
       feedback: "Molta differenza percepita tra 20 kg e 24 kg",
       data_ora: "46288.781962395835",
       created_at: "46288.781962395835"
-    },
-    {
-      id: 1791185197820,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "80",
-      nome_esercizio: "80",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"10","carico_kg":7.5,"ripetizioni":10}]',
-      rpe_json: '["10"]',
-      feedback: "10 kg",
-      data_ora: "46290.73516646991",
-      created_at: "46290.73516646991"
     },
     {
       id: 1791185328794,
@@ -29326,20 +29270,6 @@ var demo_data_default = {
       created_at: "2026-09-07T10:05:47.021Z"
     },
     {
-      id: 1791381875832,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "81",
-      nome_esercizio: "Meadow Row",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"8","carico_kg":8,"ripetizioni":6}]',
-      rpe_json: '["8"]',
-      feedback: null,
-      data_ora: "2026-09-07T11:05:01.434Z",
-      created_at: "2026-09-07T11:05:01.434Z"
-    },
-    {
       id: 1791382297385,
       email_cliente: "firenzepersonaltrainer@gmail.com",
       id_esercizio: "79",
@@ -29928,34 +29858,6 @@ var demo_data_default = {
       created_at: "2026-09-21T06:44:29.048Z"
     },
     {
-      id: 1791382094121,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "81",
-      nome_esercizio: "Meadow Row",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"4","carico_kg":2,"ripetizioni":3}]',
-      rpe_json: '["4"]',
-      feedback: "5 lg",
-      data_ora: "2026-09-21T17:43:55.755Z",
-      created_at: "2026-09-21T17:43:55.755Z"
-    },
-    {
-      id: 1791382520506,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "208",
-      nome_esercizio: "Landmine Plyo Lift NO DOWN",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"0","carico_kg":0,"ripetizioni":0}]',
-      rpe_json: '["0"]',
-      feedback: "Nessun carico",
-      data_ora: "2026-09-21T17:44:27.641Z",
-      created_at: "2026-09-21T17:44:27.641Z"
-    },
-    {
       id: 1791382077642,
       email_cliente: "daniele.casci@gmail.com",
       id_esercizio: "44",
@@ -30082,20 +29984,6 @@ var demo_data_default = {
       created_at: "2026-09-23T18:46:01.551Z"
     },
     {
-      id: 1791382358234,
-      email_cliente: "vally1069@gmail.com",
-      id_esercizio: "80",
-      nome_esercizio: "Coiled Bench Row",
-      carico_kg: null,
-      ripetizioni: null,
-      serie: null,
-      sets_json: '[{"rpe":"10","carico_kg":7.5,"ripetizioni":10}]',
-      rpe_json: '["10"]',
-      feedback: "10 kg",
-      data_ora: "2026-09-25T17:38:38.383Z",
-      created_at: "2026-09-25T17:38:38.383Z"
-    },
-    {
       id: 1791382704356,
       email_cliente: "tebog1887@gmail.com",
       id_esercizio: "67",
@@ -30208,8 +30096,111 @@ var demo_data_default = {
       created_at: "2026-10-02T14:21:03.096Z"
     }
   ],
-  stato_allenamenti: [],
-  preferenze_utente: [],
+  stato_allenamenti: [
+    {
+      email_cliente: "vallycamera@hotmail.it",
+      livello: "Advanced",
+      giorno: 20,
+      stato: "completato",
+      updated_at: "2026-10-07T14:55:14.297Z"
+    },
+    {
+      email_cliente: "vallycamera@hotmail.it",
+      livello: "Advanced",
+      giorno: 19,
+      stato: "completato",
+      updated_at: "2026-10-07T14:55:16.401Z"
+    },
+    {
+      email_cliente: "silvia.brenzini@gmail.com",
+      livello: "Level 2",
+      giorno: 1,
+      stato: "completato",
+      updated_at: "2026-10-08T08:34:38.127Z"
+    },
+    {
+      email_cliente: "silvia.brenzini@gmail.com",
+      livello: "Level 2",
+      giorno: 2,
+      stato: "completato",
+      updated_at: "2026-10-08T08:34:40.054Z"
+    },
+    {
+      email_cliente: "silvia.brenzini@gmail.com",
+      livello: "Level 2",
+      giorno: 3,
+      stato: "completato",
+      updated_at: "2026-10-08T08:35:08.329Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 1",
+      giorno: 10,
+      stato: "completato",
+      updated_at: "2026-10-08T09:14:12.588Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 2",
+      giorno: 1,
+      stato: "completato",
+      updated_at: "2026-10-08T09:14:47.362Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 1",
+      giorno: 1,
+      stato: "non_iniziato",
+      updated_at: "2026-10-08T09:54:15.963Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 1",
+      giorno: 2,
+      stato: "non_iniziato",
+      updated_at: "2026-10-08T09:54:15.963Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 1",
+      giorno: 3,
+      stato: "non_iniziato",
+      updated_at: "2026-10-08T09:54:15.963Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 1",
+      giorno: 4,
+      stato: "non_iniziato",
+      updated_at: "2026-10-08T09:54:15.963Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 1",
+      giorno: 5,
+      stato: "non_iniziato",
+      updated_at: "2026-10-08T09:54:15.963Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "Level 1",
+      giorno: 6,
+      stato: "non_iniziato",
+      updated_at: "2026-10-08T09:54:15.963Z"
+    }
+  ],
+  preferenze_utente: [
+    {
+      email_cliente: "sil_ba@hotmail.it",
+      memoria_livello: "Entry Level",
+      updated_at: "2026-10-07T15:09:06.907Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      memoria_livello: "Level 1",
+      updated_at: "2026-10-08T08:55:30.713Z"
+    }
+  ],
   profili_utenti: [
     {
       id: "usr-coach-01",
@@ -30237,7 +30228,7 @@ var demo_data_default = {
       cognome: "Pantanella",
       name: "Alessandro Pantanella",
       ruolo: "atleta",
-      crediti: 36,
+      crediti: 29,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -30246,7 +30237,12 @@ var demo_data_default = {
       shared_partners_count: 1,
       shared_partner_names: [
         "Pierpaola Ciancia"
-      ]
+      ],
+      anticipi_da_scontare: 0,
+      updated_at: "2026-10-08T07:51:28.896Z",
+      data_ultimo_accesso: "2026-10-08T07:31:47.492Z",
+      tempo_anticipo_prenotazione_ore: 24,
+      shared_wallet_with: null
     },
     {
       id: "usr-bw-1953987",
@@ -30262,7 +30258,12 @@ var demo_data_default = {
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       is_shared_wallet: true,
-      shared_master_nome: "Alessandro Pantanella"
+      shared_master_nome: "Alessandro Pantanella",
+      anticipi_da_scontare: 0,
+      tempo_anticipo_prenotazione_ore: 24,
+      shared_wallet_with: "usr-bw-1953985",
+      updated_at: "2026-10-07T14:41:33.988Z",
+      data_ultimo_accesso: "2026-10-08T07:31:47.492Z"
     },
     {
       id: "usr-bw-2067105",
@@ -30273,11 +30274,14 @@ var demo_data_default = {
       nickname: "Usa",
       name: "Silvia Usai",
       ruolo: "atleta",
-      crediti: 8,
-      data_scadenza_crediti: "2026-11-30",
+      crediti: 1,
+      data_scadenza_crediti: "2026-11-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
+      stato_iscrizione: "attivo",
+      anticipi_da_scontare: 0,
+      updated_at: "2026-10-07T14:42:56.468Z",
+      data_ultimo_accesso: "2026-10-07T16:57:18.464Z"
     },
     {
       id: "usr-bw-2078480",
@@ -30288,26 +30292,14 @@ var demo_data_default = {
       nickname: "Maddy",
       name: "Anna Paola Maddalena",
       ruolo: "atleta",
-      crediti: 8,
-      data_scadenza_crediti: "2026-11-30",
+      crediti: 18,
+      data_scadenza_crediti: "2027-01-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
-    },
-    {
-      id: "usr-bw-2056285",
-      bookyway_id: 2056285,
-      email: "bogazziclaudia@gmail.com",
-      nome: "Claudia",
-      cognome: "Bogazzi",
-      nickname: "Cl\xF2",
-      name: "Claudia Bogazzi",
-      ruolo: "atleta",
-      crediti: 8,
-      data_scadenza_crediti: "2026-11-30",
-      tempo_cancellazione_ore: 24,
-      tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
+      stato_iscrizione: "attivo",
+      anticipi_da_scontare: 0,
+      updated_at: "2026-10-07T14:43:38.330Z",
+      data_ultimo_accesso: "2026-10-07T14:56:15.756Z"
     },
     {
       id: "usr-bw-1953979",
@@ -30318,11 +30310,13 @@ var demo_data_default = {
       nickname: "La Vale",
       name: "Valeria Camera",
       ruolo: "atleta",
-      crediti: 12,
-      data_scadenza_crediti: "2026-11-30",
+      crediti: 6,
+      data_scadenza_crediti: "2026-11-05",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
+      stato_iscrizione: "attivo",
+      anticipi_da_scontare: 0,
+      updated_at: "2026-10-07T14:44:36.455Z"
     },
     {
       id: "usr-bw-1953992",
@@ -30333,11 +30327,12 @@ var demo_data_default = {
       nickname: "Il Calo",
       name: "Matteo Calosci",
       ruolo: "atleta",
-      crediti: 20,
+      crediti: 19,
       data_scadenza_crediti: "2026-12-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
+      stato_iscrizione: "attivo",
+      data_ultimo_accesso: "2026-10-08T05:47:55.795Z"
     },
     {
       id: "usr-bw-1953938",
@@ -30363,11 +30358,14 @@ var demo_data_default = {
       nickname: "Casciozzi",
       name: "Daniele Casci",
       ruolo: "atleta",
-      crediti: 0,
-      data_scadenza_crediti: "2026-11-29",
+      crediti: 11,
+      data_scadenza_crediti: "2027-07-31",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
+      stato_iscrizione: "attivo",
+      anticipi_da_scontare: 0,
+      updated_at: "2026-10-07T14:45:15.354Z",
+      data_ultimo_accesso: "2026-10-07T20:00:32.280Z"
     },
     {
       id: "usr-bw-2080725",
@@ -30378,26 +30376,13 @@ var demo_data_default = {
       nickname: "Matte",
       name: "Matteo Tesse",
       ruolo: "atleta",
-      crediti: 0,
-      data_scadenza_crediti: null,
+      crediti: 6,
+      data_scadenza_crediti: "2026-10-31",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
-    },
-    {
-      id: "usr-bw-1953989",
-      bookyway_id: 1953989,
-      email: "domix89@msn.com",
-      nome: "Domenico",
-      cognome: "Andretta",
-      nickname: "Il Maggiore",
-      name: "Domenico Andretta",
-      ruolo: "atleta",
-      crediti: 0,
-      data_scadenza_crediti: null,
-      tempo_cancellazione_ore: 24,
-      tipo_abbonamento: "standard",
-      stato_iscrizione: "attivo"
+      stato_iscrizione: "attivo",
+      anticipi_da_scontare: 16,
+      updated_at: "2026-10-07T14:46:15.636Z"
     },
     {
       id: "usr-bw-2084583",
@@ -30426,20 +30411,6 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo"
-    },
-    {
-      id: "usr-glide-1791381752599-443",
-      email: "vally1069@gmail.com",
-      nome: "vally1069",
-      cognome: "",
-      telefono: "",
-      codice_fiscale: "",
-      ruolo: "atleta",
-      crediti: 0,
-      data_scadenza_crediti: null,
-      tipo_abbonamento: "standard",
-      tempo_cancellazione_ore: 24,
-      data_ultimo_accesso: "2026-10-07T14:02:32.599Z"
     }
   ],
   configurazione_lab: {
@@ -30475,10 +30446,10 @@ var demo_data_default = {
     ],
     inattivita_mesi_reset: 6,
     stripe_mode: "live",
-    stripe_publishable_key: "",
+    stripe_publishable_key: "pk_live_51UKHDnCXOM5gkf1ApxjiIiep4uuixQTlFmsQ6512ij8tk2SUVYgM6BDCKozYiCm4VHftNUE8Pit503OZe6cWORyc00vIQ1S5qR",
     stripe_secret_key: "",
     stripe_webhook_secret: "",
-    stripe_collegato: false
+    stripe_collegato: true
   },
   tariffario_pacchetti: [
     {
@@ -31182,6 +31153,474 @@ var demo_data_default = {
       credito_scalato: true,
       attivita: "Landmine Lab",
       created_at: "2026-08-28T21:42:16.000Z"
+    },
+    {
+      id: "bk-1791384759680",
+      data: "2026-10-09",
+      orario: "17:00",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T14:52:39.680Z"
+    },
+    {
+      id: "bk-1791384870603",
+      data: "2026-10-21",
+      orario: "10:30",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T14:54:30.603Z"
+    },
+    {
+      id: "bk-1791384891812",
+      data: "2026-10-23",
+      orario: "10:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T14:54:51.812Z"
+    },
+    {
+      id: "bk-1791384954112",
+      data: "2026-10-26",
+      orario: "10:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T14:55:54.112Z"
+    },
+    {
+      id: "bk-1791384975756",
+      data: "2026-10-30",
+      orario: "11:00",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T14:56:15.756Z"
+    },
+    {
+      id: "bk-1791392104733",
+      data: "2026-10-09",
+      orario: "11:00",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T16:55:04.733Z"
+    },
+    {
+      id: "bk-1791392140555",
+      data: "2026-10-14",
+      orario: "10:00",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T16:55:40.555Z"
+    },
+    {
+      id: "bk-1791392156328",
+      data: "2026-10-16",
+      orario: "17:15",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T16:55:56.328Z"
+    },
+    {
+      id: "bk-1791392188865",
+      data: "2026-10-21",
+      orario: "10:00",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T16:56:28.865Z"
+    },
+    {
+      id: "bk-1791392212892",
+      data: "2026-10-23",
+      orario: "10:45",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T16:56:52.892Z"
+    },
+    {
+      id: "bk-1791392238464",
+      data: "2026-10-28",
+      orario: "09:45",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-07T16:57:18.464Z"
+    },
+    {
+      id: "bk-1791403232280-0",
+      data: "2026-10-09",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-1",
+      data: "2026-10-14",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-2",
+      data: "2026-10-21",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-3",
+      data: "2026-10-23",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-4",
+      data: "2026-10-28",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-5",
+      data: "2026-10-30",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-6",
+      data: "2026-11-04",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-7",
+      data: "2026-11-06",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-8",
+      data: "2026-11-11",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-9",
+      data: "2026-11-13",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-10",
+      data: "2026-11-18",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-11",
+      data: "2026-11-20",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-12",
+      data: "2026-11-25",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-13",
+      data: "2026-11-27",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-14",
+      data: "2026-12-02",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-15",
+      data: "2026-12-04",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-16",
+      data: "2026-12-09",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-17",
+      data: "2026-12-11",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-18",
+      data: "2026-12-16",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-19",
+      data: "2026-12-18",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-20",
+      data: "2026-12-23",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-21",
+      data: "2026-12-25",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791403232280-22",
+      data: "2026-12-30",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Prenotazione Multipla Rapida",
+      created_at: "2026-10-07T20:00:32.280Z"
+    },
+    {
+      id: "bk-1791438475795",
+      data: "2026-10-12",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-08T05:47:55.796Z"
+    },
+    {
+      id: "bk-1791444707492",
+      data: "2026-10-09",
+      orario: "17:30",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-08T07:31:47.492Z"
     }
   ],
   transazioni_pagamenti: [
@@ -31282,6 +31721,258 @@ var demo_data_default = {
   ],
   active_user_id: null,
   movimenti_crediti: [
+    {
+      id: "mov-1791444707492-481",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-10-08T07:31:47.492Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 25,
+      motivazione: "Prenotazione slot del 2026-10-09 ore 17:30 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791438475796-849",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      data_ora: "2026-10-08T05:47:55.796Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 19,
+      motivazione: "Prenotazione slot del 2026-10-12 ore 19:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791403232280-230",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-10-07T20:00:32.280Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -23,
+      saldo_risultante: 11,
+      motivazione: "Prenotazione multipla di 23 sessioni",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791392238464-712",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-10-07T16:57:18.464Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 1,
+      motivazione: "Prenotazione slot del 2026-10-28 ore 09:45",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791392212892-988",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-10-07T16:56:52.892Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 2,
+      motivazione: "Prenotazione slot del 2026-10-23 ore 10:45",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791392188865-632",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-10-07T16:56:28.865Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 3,
+      motivazione: "Prenotazione slot del 2026-10-21 ore 10:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791392156328-405",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-10-07T16:55:56.328Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 4,
+      motivazione: "Prenotazione slot del 2026-10-16 ore 17:15",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791392140555-980",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-10-07T16:55:40.555Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 5,
+      motivazione: "Prenotazione slot del 2026-10-14 ore 10:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791392104734-372",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-10-07T16:55:04.734Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 6,
+      motivazione: "Prenotazione slot del 2026-10-09 ore 11:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791384975756-945",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-10-07T14:56:15.756Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 18,
+      motivazione: "Prenotazione slot del 2026-10-30 ore 11:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791384954112-62",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-10-07T14:55:54.112Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 19,
+      motivazione: "Prenotazione slot del 2026-10-26 ore 10:15",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791384891812-433",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-10-07T14:54:51.812Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 20,
+      motivazione: "Prenotazione slot del 2026-10-23 ore 10:15",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791384870603-748",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-10-07T14:54:30.603Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 21,
+      motivazione: "Prenotazione slot del 2026-10-21 ore 10:30",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791384759680-585",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-10-07T14:52:39.680Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 22,
+      motivazione: "Prenotazione slot del 2026-10-09 ore 17:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1791384375636-689",
+      atleta_id: "usr-bw-2080725",
+      email_cliente: "tebog1887@gmail.com",
+      nome_cliente: "Matteo Tesse",
+      data_ora: "2026-10-07T14:46:15.636Z",
+      tipo: "bonus_regalo",
+      delta_crediti: 6,
+      saldo_risultante: 6,
+      motivazione: "Bonus/Regalo assegnato dal Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1791384315354-556",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-10-07T14:45:15.354Z",
+      tipo: "bonus_regalo",
+      delta_crediti: 34,
+      saldo_risultante: 34,
+      motivazione: "Bonus/Regalo assegnato dal Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1791384275722-752",
+      atleta_id: "usr-bw-1953979",
+      email_cliente: "vallycamera@hotmail.it",
+      nome_cliente: "Valeria Camera",
+      data_ora: "2026-10-07T14:44:35.722Z",
+      tipo: "penalty",
+      delta_crediti: -6,
+      saldo_risultante: 6,
+      motivazione: "Rettifica/Penalty manuale Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1791384187394-584",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-10-07T14:43:07.394Z",
+      tipo: "bonus_regalo",
+      delta_crediti: 15,
+      saldo_risultante: 23,
+      motivazione: "Bonus/Regalo assegnato dal Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1791384176468-214",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-10-07T14:42:56.468Z",
+      tipo: "penalty",
+      delta_crediti: -1,
+      saldo_risultante: 7,
+      motivazione: "Rettifica/Penalty manuale Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1791384114107-265",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-10-07T14:41:54.107Z",
+      tipo: "penalty",
+      delta_crediti: -10,
+      saldo_risultante: 26,
+      motivazione: "Rettifica/Penalty manuale Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1791384042375-984",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-10-07T14:40:42.375Z",
+      tipo: "penalty",
+      delta_crediti: -10,
+      saldo_risultante: 26,
+      motivazione: "Rettifica/Penalty manuale Coach",
+      operatore: "coach"
+    },
     {
       id: "mov-1790874899682-418",
       atleta_id: "usr-test-anticipo-1790874899312",
@@ -31507,7 +32198,14 @@ var demo_data_default = {
     }
   ],
   prenotazioni_cancellate: [],
-  utenti_cancellati: [],
+  utenti_cancellati: [
+    "usr-bw-2056285",
+    "bogazziclaudia@gmail.com",
+    "usr-bw-1953989",
+    "domix89@msn.com",
+    "usr-glide-1791381752599-443",
+    "vally1069@gmail.com"
+  ],
   notifiche_email: [
     {
       id: "email-1790874914574-778",
@@ -32022,6 +32720,43 @@ function loadData() {
   }
   return loaded;
 }
+function mergeStati(baseList, incomingList) {
+  const map2 = /* @__PURE__ */ new Map();
+  const makeKey = (item) => `${(item?.email_cliente || "").trim().toLowerCase()}__${item?.livello || ""}__${item?.giorno}`;
+  for (const item of baseList || []) {
+    if (!item || !item.email_cliente) continue;
+    map2.set(makeKey(item), item);
+  }
+  for (const item of incomingList || []) {
+    if (!item || !item.email_cliente) continue;
+    const key = makeKey(item);
+    if (!map2.has(key)) {
+      map2.set(key, item);
+    } else {
+      const existing = map2.get(key);
+      const existingTime = new Date(existing.updated_at || 0).getTime();
+      const incomingTime = new Date(item.updated_at || 0).getTime();
+      if (incomingTime >= existingTime) {
+        map2.set(key, item);
+      }
+    }
+  }
+  return Array.from(map2.values());
+}
+var gdriveSyncQueue = Promise.resolve();
+var pendingSyncDb = null;
+function queueDriveSync(data) {
+  pendingSyncDb = data;
+  gdriveSyncQueue = gdriveSyncQueue.catch(() => {
+  }).then(async () => {
+    if (!pendingSyncDb) return;
+    const snapshot = pendingSyncDb;
+    pendingSyncDb = null;
+    await syncDataToGoogleDrive(snapshot);
+  }).catch(() => {
+  });
+  return gdriveSyncQueue;
+}
 function saveData(data, skipCloudSync = false) {
   db = data;
   try {
@@ -32039,7 +32774,7 @@ function saveData(data, skipCloudSync = false) {
   } catch {
   }
   if (!skipCloudSync) {
-    syncDataToGoogleDrive(data).catch(() => {
+    queueDriveSync(data).catch(() => {
     });
   }
 }
@@ -32146,7 +32881,7 @@ async function syncDataToGoogleDrive(fullDb) {
       driveDb.diario_utente = fullDb.diario_utente || [];
     }
     if (fullDb.stato_allenamenti !== void 0) {
-      driveDb.stato_allenamenti = fullDb.stato_allenamenti || [];
+      driveDb.stato_allenamenti = mergeStati(driveDb.stato_allenamenti || [], fullDb.stato_allenamenti || []);
     }
     if (fullDb.preferenze_utente !== void 0) {
       driveDb.preferenze_utente = fullDb.preferenze_utente || [];
@@ -32247,7 +32982,7 @@ async function tryLoadConfigFromGoogleDrive() {
       db.diario_utente = driveDb.diario_utente;
     }
     if (driveDb.stato_allenamenti && Array.isArray(driveDb.stato_allenamenti)) {
-      db.stato_allenamenti = driveDb.stato_allenamenti;
+      db.stato_allenamenti = mergeStati(db.stato_allenamenti || [], driveDb.stato_allenamenti);
     }
     if (driveDb.preferenze_utente && Array.isArray(driveDb.preferenze_utente)) {
       db.preferenze_utente = driveDb.preferenze_utente;
@@ -32450,6 +33185,32 @@ function getCurrentUser(reqOrDb, maybeDb) {
     );
     if (user) {
       return getHydratedUser(user, database);
+    }
+  }
+  return null;
+}
+function resolveTargetEmail(req, database, currentUser, explicitEmail) {
+  if (explicitEmail && typeof explicitEmail === "string" && explicitEmail.trim()) {
+    return explicitEmail.trim().toLowerCase();
+  }
+  if (currentUser && currentUser.email) {
+    return currentUser.email.trim().toLowerCase();
+  }
+  if (req && req.headers) {
+    const headerUser = req.headers["x-area46-user"] || req.headers["x-user-id"] || (typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ") ? req.headers.authorization.slice(7) : null);
+    const cookies = parseCookies(req.headers.cookie);
+    const cookieUser = cookies["area46_user_id"] || cookies["area46_user_email"];
+    const candidate = String(headerUser || cookieUser || "").trim();
+    if (candidate) {
+      const user = (database.profili_utenti || []).find(
+        (u) => u.id === candidate || u.email?.toLowerCase() === candidate.toLowerCase()
+      );
+      if (user && user.email) {
+        return user.email.trim().toLowerCase();
+      }
+      if (candidate.includes("@")) {
+        return candidate.toLowerCase();
+      }
     }
   }
   return null;
@@ -35026,69 +35787,157 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify(filtered));
   }
   if (pathname === "/app-api/stati" && method === "GET") {
-    const rows = db.stato_allenamenti.filter((s) => s.email_cliente === currentUser.email);
+    const explicitEmail = url.searchParams.get("email");
+    const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+    if (!targetEmail) {
+      return res.end(JSON.stringify([]));
+    }
+    const rows = (db.stato_allenamenti || []).filter(
+      (s) => (s.email_cliente || "").trim().toLowerCase() === targetEmail
+    );
     return res.end(JSON.stringify(rows));
+  }
+  if (pathname === "/app-api/stati/reset-preview" && method === "GET") {
+    const explicitEmail = url.searchParams.get("email");
+    const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+    if (!targetEmail) {
+      return res.end(JSON.stringify({ count: 0 }));
+    }
+    const livello = url.searchParams.get("livello") || "";
+    const giornoInt = parseInt(url.searchParams.get("giorno") || "0", 10);
+    const eserciziGiorno = (db.allenamenti || []).filter((a) => {
+      if (a.livello !== livello) return false;
+      const m = String(a.giorno).match(/[0-9]+/);
+      return m && parseInt(m[0], 10) === giornoInt;
+    }).map((a) => a.id_esercizio);
+    const count = (db.diario_utente || []).filter(
+      (d) => (d.email_cliente || "").trim().toLowerCase() === targetEmail && eserciziGiorno.includes(d.id_esercizio)
+    ).length;
+    return res.end(JSON.stringify({ count }));
   }
   const diarioCountMatch = pathname.match(/^\/app-api\/diario\/conteggio\/([^/]+)\/([^/]+)$/);
   if (diarioCountMatch && method === "GET") {
     const livello = decodeURIComponent(diarioCountMatch[1]);
     const giornoInt = parseInt(diarioCountMatch[2], 10);
-    const eserciziGiorno = db.allenamenti.filter((a) => {
+    const explicitEmail = url.searchParams.get("email");
+    const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+    if (!targetEmail) {
+      return res.end(JSON.stringify({ count: 0 }));
+    }
+    const eserciziGiorno = (db.allenamenti || []).filter((a) => {
       if (a.livello !== livello) return false;
       const m = String(a.giorno).match(/[0-9]+/);
       return m && parseInt(m[0], 10) === giornoInt;
     }).map((a) => a.id_esercizio);
-    const count = db.diario_utente.filter(
-      (d) => d.email_cliente === currentUser.email && eserciziGiorno.includes(d.id_esercizio)
+    const count = (db.diario_utente || []).filter(
+      (d) => (d.email_cliente || "").trim().toLowerCase() === targetEmail && eserciziGiorno.includes(d.id_esercizio)
     ).length;
     return res.end(JSON.stringify({ count }));
   }
   if (pathname === "/app-api/stati/reset" && method === "POST") {
+    const explicitEmail = parsedBody.email_cliente || parsedBody.email;
+    const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+    if (!targetEmail) {
+      res.statusCode = 401;
+      return res.end(JSON.stringify({ ok: false, error: "Utente non identificato" }));
+    }
     const { livello, giorno } = parsedBody;
     const giornoInt = parseInt(String(giorno), 10);
-    const eserciziGiorno = db.allenamenti.filter((a) => {
+    const eserciziGiorno = (db.allenamenti || []).filter((a) => {
       if (a.livello !== livello) return false;
       const m = String(a.giorno).match(/[0-9]+/);
       return m && parseInt(m[0], 10) === giornoInt;
     }).map((a) => a.id_esercizio);
-    const initialCount = db.diario_utente.length;
-    db.diario_utente = db.diario_utente.filter(
-      (d) => !(d.email_cliente === currentUser.email && eserciziGiorno.includes(d.id_esercizio))
+    const initialCount = (db.diario_utente || []).length;
+    db.diario_utente = (db.diario_utente || []).filter(
+      (d) => !((d.email_cliente || "").trim().toLowerCase() === targetEmail && eserciziGiorno.includes(d.id_esercizio))
     );
-    const eliminati = initialCount - db.diario_utente.length;
-    const existing = db.stato_allenamenti.find(
-      (s) => s.email_cliente === currentUser.email && s.livello === livello && s.giorno === giornoInt
+    const eliminati = initialCount - (db.diario_utente || []).length;
+    const existing = (db.stato_allenamenti || []).find(
+      (s) => (s.email_cliente || "").trim().toLowerCase() === targetEmail && s.livello === livello && Number(s.giorno) === giornoInt
     );
+    const nowIso = (/* @__PURE__ */ new Date()).toISOString();
     if (existing) {
       existing.stato = "non_iniziato";
-      existing.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+      existing.updated_at = nowIso;
     } else {
+      if (!Array.isArray(db.stato_allenamenti)) db.stato_allenamenti = [];
       db.stato_allenamenti.push({
-        email_cliente: currentUser.email,
+        email_cliente: targetEmail,
         livello,
         giorno: giornoInt,
         stato: "non_iniziato",
-        updated_at: (/* @__PURE__ */ new Date()).toISOString()
+        updated_at: nowIso
       });
     }
     saveData(db);
     return res.end(JSON.stringify({ ok: true, eliminati }));
   }
+  if (pathname === "/app-api/stati/batch" && method === "POST") {
+    const explicitEmail = parsedBody.email_cliente || parsedBody.email;
+    const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+    if (!targetEmail) {
+      res.statusCode = 401;
+      return res.end(JSON.stringify({ ok: false, error: "Utente non identificato" }));
+    }
+    const updates = parsedBody.updates || [];
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return res.end(JSON.stringify({ ok: true, count: 0 }));
+    }
+    if (!Array.isArray(db.stato_allenamenti)) {
+      db.stato_allenamenti = [];
+    }
+    const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+    for (const item of updates) {
+      const lv = String(item.livello || "");
+      const gNum = Number(item.giorno);
+      const st = String(item.stato || "non_iniziato");
+      if (!lv || isNaN(gNum)) continue;
+      const existing = db.stato_allenamenti.find(
+        (s) => (s.email_cliente || "").trim().toLowerCase() === targetEmail && s.livello === lv && Number(s.giorno) === gNum
+      );
+      if (existing) {
+        existing.stato = st;
+        existing.updated_at = nowIso;
+      } else {
+        db.stato_allenamenti.push({
+          email_cliente: targetEmail,
+          livello: lv,
+          giorno: gNum,
+          stato: st,
+          updated_at: nowIso
+        });
+      }
+    }
+    saveData(db);
+    return res.end(JSON.stringify({ ok: true, count: updates.length }));
+  }
   if (pathname === "/app-api/stati" && method === "POST") {
+    const explicitEmail = parsedBody.email_cliente || parsedBody.email;
+    const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+    if (!targetEmail) {
+      res.statusCode = 401;
+      return res.end(JSON.stringify({ ok: false, error: "Utente non identificato" }));
+    }
     const { livello, giorno, stato } = parsedBody;
+    const giornoNum = Number(giorno);
+    const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+    if (!Array.isArray(db.stato_allenamenti)) {
+      db.stato_allenamenti = [];
+    }
     const existing = db.stato_allenamenti.find(
-      (s) => s.email_cliente === currentUser.email && s.livello === livello && s.giorno === Number(giorno)
+      (s) => (s.email_cliente || "").trim().toLowerCase() === targetEmail && s.livello === livello && Number(s.giorno) === giornoNum
     );
     if (existing) {
       existing.stato = stato;
-      existing.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+      existing.updated_at = nowIso;
     } else {
       db.stato_allenamenti.push({
-        email_cliente: currentUser.email,
+        email_cliente: targetEmail,
         livello,
-        giorno: Number(giorno),
+        giorno: giornoNum,
         stato,
-        updated_at: (/* @__PURE__ */ new Date()).toISOString()
+        updated_at: nowIso
       });
     }
     saveData(db);

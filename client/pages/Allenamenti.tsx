@@ -34,7 +34,24 @@ import { Button } from "../components/Button";
 import { toast } from "../components/Toast";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { useLivelloMemoria } from "../lib/useLivelloMemoria";
-import { useCurrentUser } from "../lib/useUser";
+import { useCurrentUser, getActiveUserId } from "../lib/useUser";
+
+export function fetchWithAuth(url: string, options: RequestInit = {}) {
+  const storedId = getActiveUserId();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...((options.headers as Record<string, string>) || {}),
+  };
+  if (storedId) {
+    headers["x-area46-user"] = storedId;
+    headers["x-user-id"] = storedId;
+  }
+  return fetch(url, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
+}
 
 type Stato = "non_iniziato" | "in_corso" | "completato";
 
@@ -97,25 +114,36 @@ function useResetConfirm(queryClient: ReturnType<typeof useQueryClient>) {
   const [resetting, setResetting] = useState(false);
 
   async function richiediReset(livello: string, giornoNum: number) {
-    const res = await fetch(
-      `/app-api/stati/reset-preview?livello=${encodeURIComponent(livello)}&giorno=${giornoNum}`,
-    );
-    const data = await res.json();
-    setPending({ livello, giornoNum, countLog: data.count ?? 0 });
+    try {
+      const res = await fetchWithAuth(
+        `/app-api/stati/reset-preview?livello=${encodeURIComponent(livello)}&giorno=${giornoNum}`,
+      );
+      if (!res.ok) {
+        setPending({ livello, giornoNum, countLog: 0 });
+        return;
+      }
+      const data = await res.json();
+      setPending({ livello, giornoNum, countLog: data.count ?? 0 });
+    } catch {
+      setPending({ livello, giornoNum, countLog: 0 });
+    }
   }
 
   async function confermaReset() {
     if (!pending) return;
     setResetting(true);
     try {
-      const res = await fetch("/app-api/stati/reset", {
+      const res = await fetchWithAuth("/app-api/stati/reset", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ livello: pending.livello, giorno: pending.giornoNum }),
       });
       const data = await res.json();
       const eliminati = data.eliminati ?? 0;
-      queryClient.invalidateQueries({ queryKey: ["stati"] });
+      queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
+        const safeOld = Array.isArray(old) ? old : [];
+        const filtered = safeOld.filter((s) => !(s.livello === pending.livello && s.giorno === pending.giornoNum));
+        return [...filtered, { livello: pending.livello, giorno: pending.giornoNum, stato: "non_iniziato", updated_at: new Date().toISOString() }];
+      });
       queryClient.invalidateQueries({ queryKey: ["diario"] });
       queryClient.invalidateQueries({ queryKey: ["tonnellaggio"] });
       if (eliminati > 0) {
@@ -335,11 +363,18 @@ function raggruppaPerSettimana(giorni: GiornoItem[]): Array<[string, GiornoItem[
   return Array.from(map.entries());
 }
 
-function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
+function ListaGiorni({
+  giorni,
+  livelloFiltro,
+  statoMap,
+  onStatoChange,
+  onBatchStatoChange,
+}: {
   giorni: GiornoItem[];
   livelloFiltro: string;
   statoMap: Map<string, Stato>;
   onStatoChange: (livello: string, giornoNum: number, stato: Stato) => void;
+  onBatchStatoChange?: (updates: Array<{ livello: string; giornoNum: number; stato: Stato }>) => void;
 }) {
   const { user } = useCurrentUser();
   const isCoach = user?.ruolo === "manager";
@@ -395,14 +430,25 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
       return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
     });
     const nuovoStato: Stato = tuttiCompletati ? "non_iniziato" : "completato";
-    items.forEach((item) => {
-      const lv = livelloFiltro || item.livello || "";
-      onStatoChange(lv, item.giorno_num, nuovoStato);
-    });
+    const updates = items.map((item) => ({
+      livello: livelloFiltro || item.livello || "",
+      giornoNum: item.giorno_num,
+      stato: nuovoStato,
+    }));
+
+    if (onBatchStatoChange) {
+      onBatchStatoChange(updates);
+    } else {
+      items.forEach((item) => {
+        const lv = livelloFiltro || item.livello || "";
+        onStatoChange(lv, item.giorno_num, nuovoStato);
+      });
+    }
+
     toast.success(
       nuovoStato === "completato"
         ? "Tutti gli allenamenti del ciclo contrassegnati come completati!"
-        : "Allenamenti del ciclo ripristinati!"
+        : "Allenamenti del ciclo ripristinati come da svolgere!"
     );
   };
 
@@ -523,6 +569,7 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
 }
 
 export function ArchivioAllenamentiPage() {
+  const { user } = useCurrentUser();
   const { livello, setLivello } = useLivelloMemoria();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -533,15 +580,22 @@ export function ArchivioAllenamentiPage() {
 
   const { data: livelli = [] } = useQuery<string[]>({ queryKey: ["livelli"], queryFn: () => fetch("/app-api/livelli").then((r) => r.json()) });
   const livelliAllenamento = (livelli || []).filter((l) => l !== "Approfondimenti ed extra");
-  const { data: giorni = [], isLoading } = useQuery<GiornoItem[]>({
+  const { data: giorni = [], isLoading: loadingGiorni } = useQuery<GiornoItem[]>({
     queryKey: ["allenamenti", livelloEffettivo],
     queryFn: () => fetch(`/app-api/allenamenti${livelloEffettivo ? `?livello=${encodeURIComponent(livelloEffettivo)}` : ""}`).then((r) => r.json()),
   });
-  const { data: stati = [] } = useQuery<StatoRecord[]>({
-    queryKey: ["stati"],
-    queryFn: () => fetch("/app-api/stati").then((r) => r.json()),
-    refetchInterval: 8000,
+  const { data: rawStati = [], isLoading: loadingStati } = useQuery<StatoRecord[]>({
+    queryKey: ["stati", user?.id || user?.email || "active"],
+    queryFn: async () => {
+      const res = await fetchWithAuth("/app-api/stati");
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    },
+    refetchInterval: 30000,
   });
+  const stati = Array.isArray(rawStati) ? rawStati : [];
+  const isLoading = loadingGiorni || loadingStati;
   const statoMap = new Map<string, Stato>((stati || []).map((s) => [statoKey(s.livello, s.giorno), s.stato]));
 
   async function handleStatoChange(lv: string, giornoNum: number, stato: Stato) {
@@ -551,22 +605,61 @@ export function ArchivioAllenamentiPage() {
       return;
     }
 
+    const nowIso = new Date().toISOString();
     // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO (0ms latenza)
-    queryClient.setQueryData<StatoRecord[]>(["stati"], (old = []) => {
-      const filtered = old.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
-      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: new Date().toISOString() }];
+    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
+      const safeOld = Array.isArray(old) ? old : [];
+      const filtered = safeOld.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
+      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: nowIso }];
     });
 
     try {
-      await fetch("/app-api/stati", {
+      const res = await fetchWithAuth("/app-api/stati", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato }),
+        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato, email_cliente: user?.email }),
       });
-      queryClient.invalidateQueries({ queryKey: ["stati"] });
+      if (!res.ok) throw new Error("Errore salvataggio stato");
       queryClient.invalidateQueries({ queryKey: ["diario"] });
     } catch {
-      toast.error("Errore di rete. Lo stato verrà risincronizzato appena possibile.");
+      toast.error("Errore di sincronizzazione. Lo stato verrà risincronizzato.");
+      queryClient.invalidateQueries({ queryKey: ["stati"] });
+    }
+  }
+
+  async function handleBatchStatoChange(updates: Array<{ livello: string; giornoNum: number; stato: Stato }>) {
+    if (!updates || updates.length === 0) return;
+    const updateMap = new Map(updates.map((u) => [statoKey(u.livello, u.giornoNum), u.stato]));
+    const nowIso = new Date().toISOString();
+
+    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO IN BLOCCO (0ms)
+    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
+      const safeOld = Array.isArray(old) ? old : [];
+      const updatedExisting = safeOld.map((s) => {
+        const key = statoKey(s.livello, s.giorno);
+        if (updateMap.has(key)) {
+          return { ...s, stato: updateMap.get(key)!, updated_at: nowIso };
+        }
+        return s;
+      });
+      const existingKeys = new Set(safeOld.map((s) => statoKey(s.livello, s.giorno)));
+      const newRecords = updates
+        .filter((u) => !existingKeys.has(statoKey(u.livello, u.giornoNum)))
+        .map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato, updated_at: nowIso }));
+      return [...updatedExisting, ...newRecords];
+    });
+
+    try {
+      const res = await fetchWithAuth("/app-api/stati/batch", {
+        method: "POST",
+        body: JSON.stringify({
+          email_cliente: user?.email,
+          updates: updates.map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato })),
+        }),
+      });
+      if (!res.ok) throw new Error("Errore salvataggio ciclo");
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
+    } catch {
+      toast.error("Errore di sincronizzazione del ciclo. Riprova.");
       queryClient.invalidateQueries({ queryKey: ["stati"] });
     }
   }
@@ -594,7 +687,13 @@ export function ArchivioAllenamentiPage() {
         {isLoading ? (
           <div className="space-y-2">{[...Array(8)].map((_, i) => <div key={i} className="h-16 animate-pulse rounded-lg bg-inset" />)}</div>
         ) : (
-          <ListaGiorni giorni={giorni} livelloFiltro={livelloEffettivo} statoMap={statoMap} onStatoChange={handleStatoChange} />
+          <ListaGiorni
+            giorni={giorni}
+            livelloFiltro={livelloEffettivo}
+            statoMap={statoMap}
+            onStatoChange={handleStatoChange}
+            onBatchStatoChange={handleBatchStatoChange}
+          />
         )}
       </div>
     </>
@@ -602,6 +701,7 @@ export function ArchivioAllenamentiPage() {
 }
 
 export default function AllenamentiPage() {
+  const { user } = useCurrentUser();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { livello, setLivello } = useLivelloMemoria();
@@ -613,11 +713,17 @@ export default function AllenamentiPage() {
     queryKey: ["allenamenti", livello],
     queryFn: () => fetch(`/app-api/allenamenti${livello ? `?livello=${encodeURIComponent(livello)}` : ""}`).then((r) => r.json()),
   });
-  const { data: stati = [], isLoading: loadingStati } = useQuery<StatoRecord[]>({
-    queryKey: ["stati"],
-    queryFn: () => fetch("/app-api/stati").then((r) => r.json()),
-    refetchInterval: 8000,
+  const { data: rawStati = [], isLoading: loadingStati } = useQuery<StatoRecord[]>({
+    queryKey: ["stati", user?.id || user?.email || "active"],
+    queryFn: async () => {
+      const res = await fetchWithAuth("/app-api/stati");
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    },
+    refetchInterval: 30000,
   });
+  const stati = Array.isArray(rawStati) ? rawStati : [];
   const isLoading = loadingGiorni || loadingStati;
   const statoMap = new Map<string, Stato>((stati || []).map((s) => [statoKey(s.livello, s.giorno), s.stato]));
 
@@ -628,22 +734,61 @@ export default function AllenamentiPage() {
       return;
     }
 
+    const nowIso = new Date().toISOString();
     // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO (0ms latenza)
-    queryClient.setQueryData<StatoRecord[]>(["stati"], (old = []) => {
-      const filtered = old.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
-      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: new Date().toISOString() }];
+    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
+      const safeOld = Array.isArray(old) ? old : [];
+      const filtered = safeOld.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
+      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: nowIso }];
     });
 
     try {
-      await fetch("/app-api/stati", {
+      const res = await fetchWithAuth("/app-api/stati", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato }),
+        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato, email_cliente: user?.email }),
       });
-      queryClient.invalidateQueries({ queryKey: ["stati"] });
+      if (!res.ok) throw new Error("Salvataggio fallito");
       queryClient.invalidateQueries({ queryKey: ["diario"] });
     } catch {
-      toast.error("Errore di rete. Lo stato verrà risincronizzato appena possibile.");
+      toast.error("Errore di sincronizzazione. Lo stato verrà risincronizzato.");
+      queryClient.invalidateQueries({ queryKey: ["stati"] });
+    }
+  }
+
+  async function handleBatchStatoChange(updates: Array<{ livello: string; giornoNum: number; stato: Stato }>) {
+    if (!updates || updates.length === 0) return;
+    const updateMap = new Map(updates.map((u) => [statoKey(u.livello, u.giornoNum), u.stato]));
+    const nowIso = new Date().toISOString();
+
+    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO IN BLOCCO (0ms)
+    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
+      const safeOld = Array.isArray(old) ? old : [];
+      const updatedExisting = safeOld.map((s) => {
+        const key = statoKey(s.livello, s.giorno);
+        if (updateMap.has(key)) {
+          return { ...s, stato: updateMap.get(key)!, updated_at: nowIso };
+        }
+        return s;
+      });
+      const existingKeys = new Set(safeOld.map((s) => statoKey(s.livello, s.giorno)));
+      const newRecords = updates
+        .filter((u) => !existingKeys.has(statoKey(u.livello, u.giornoNum)))
+        .map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato, updated_at: nowIso }));
+      return [...updatedExisting, ...newRecords];
+    });
+
+    try {
+      const res = await fetchWithAuth("/app-api/stati/batch", {
+        method: "POST",
+        body: JSON.stringify({
+          email_cliente: user?.email,
+          updates: updates.map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato })),
+        }),
+      });
+      if (!res.ok) throw new Error("Salvataggio in blocco fallito");
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
+    } catch {
+      toast.error("Errore di sincronizzazione del ciclo. Riprova.");
       queryClient.invalidateQueries({ queryKey: ["stati"] });
     }
   }

@@ -245,6 +245,27 @@ app.post("/app-api/stati", async (c) => {
   return c.json(row, 200);
 });
 
+app.post("/app-api/stati/batch", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const user = auth(c).user();
+  if (!user) return c.json({ error: "Unauthorized" }, 401);
+  const { updates, email_cliente } = await c.req.json();
+  const targetEmail = (user.ruolo === "manager" && email_cliente) ? email_cliente : user.email;
+
+  if (Array.isArray(updates) && updates.length > 0) {
+    for (const item of updates) {
+      if (!["non_iniziato", "in_corso", "completato"].includes(item.stato)) continue;
+      await sql`
+        INSERT INTO stato_allenamenti (email_cliente, livello, giorno, stato, updated_at)
+        VALUES (${targetEmail}, ${item.livello}, ${item.giorno}, ${item.stato}, NOW())
+        ON CONFLICT (email_cliente, livello, giorno)
+        DO UPDATE SET stato = EXCLUDED.stato, updated_at = NOW()
+      `;
+    }
+  }
+  return c.json({ ok: true, count: updates?.length || 0 }, 200);
+});
+
 // ─── Diario Utente ───────────────────────────────────────────────────────────
 
 app.get("/app-api/diario", async (c) => {

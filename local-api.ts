@@ -60,6 +60,51 @@ function loadData() {
   return loaded;
 }
 
+function mergeStati(baseList: any[], incomingList: any[]): any[] {
+  const map = new Map<string, any>();
+  const makeKey = (item: any) =>
+    `${(item?.email_cliente || "").trim().toLowerCase()}__${item?.livello || ""}__${item?.giorno}`;
+
+  for (const item of (baseList || [])) {
+    if (!item || !item.email_cliente) continue;
+    map.set(makeKey(item), item);
+  }
+
+  for (const item of (incomingList || [])) {
+    if (!item || !item.email_cliente) continue;
+    const key = makeKey(item);
+    if (!map.has(key)) {
+      map.set(key, item);
+    } else {
+      const existing = map.get(key);
+      const existingTime = new Date(existing.updated_at || 0).getTime();
+      const incomingTime = new Date(item.updated_at || 0).getTime();
+      if (incomingTime >= existingTime) {
+        map.set(key, item);
+      }
+    }
+  }
+
+  return Array.from(map.values());
+}
+
+let gdriveSyncQueue: Promise<void> = Promise.resolve();
+let pendingSyncDb: any = null;
+
+function queueDriveSync(data: any): Promise<void> {
+  pendingSyncDb = data;
+  gdriveSyncQueue = gdriveSyncQueue
+    .catch(() => {})
+    .then(async () => {
+      if (!pendingSyncDb) return;
+      const snapshot = pendingSyncDb;
+      pendingSyncDb = null;
+      await syncDataToGoogleDrive(snapshot);
+    })
+    .catch(() => {});
+  return gdriveSyncQueue;
+}
+
 function saveData(data: any, skipCloudSync = false) {
   db = data;
   try {
@@ -79,9 +124,9 @@ function saveData(data: any, skipCloudSync = false) {
     // Read-only filesystem on Vercel lambda, expected
   }
 
-  // Sincronizzazione cloud automatica su Google Drive
+  // Sincronizzazione cloud automatica su Google Drive con serializzazione
   if (!skipCloudSync) {
-    syncDataToGoogleDrive(data).catch(() => {});
+    queueDriveSync(data).catch(() => {});
   }
 }
 
@@ -196,7 +241,7 @@ async function syncDataToGoogleDrive(fullDb: any) {
       driveDb.diario_utente = fullDb.diario_utente || [];
     }
     if (fullDb.stato_allenamenti !== undefined) {
-      driveDb.stato_allenamenti = fullDb.stato_allenamenti || [];
+      driveDb.stato_allenamenti = mergeStati(driveDb.stato_allenamenti || [], fullDb.stato_allenamenti || []);
     }
     if (fullDb.preferenze_utente !== undefined) {
       driveDb.preferenze_utente = fullDb.preferenze_utente || [];
@@ -300,7 +345,7 @@ async function tryLoadConfigFromGoogleDrive() {
       db.diario_utente = driveDb.diario_utente;
     }
     if (driveDb.stato_allenamenti && Array.isArray(driveDb.stato_allenamenti)) {
-      db.stato_allenamenti = driveDb.stato_allenamenti;
+      db.stato_allenamenti = mergeStati(db.stato_allenamenti || [], driveDb.stato_allenamenti);
     }
     if (driveDb.preferenze_utente && Array.isArray(driveDb.preferenze_utente)) {
       db.preferenze_utente = driveDb.preferenze_utente;
@@ -552,6 +597,47 @@ export function getCurrentUser(reqOrDb: any, maybeDb?: any) {
   }
 
   // IMPORTANTE: Se non vi è sessione (finestra anonima/incognito o logout), restituire rigorosamente null.
+  return null;
+}
+
+export function resolveTargetEmail(
+  req: IncomingMessage,
+  database: any,
+  currentUser: any,
+  explicitEmail?: string | null
+): string | null {
+  if (explicitEmail && typeof explicitEmail === "string" && explicitEmail.trim()) {
+    return explicitEmail.trim().toLowerCase();
+  }
+  if (currentUser && currentUser.email) {
+    return currentUser.email.trim().toLowerCase();
+  }
+  if (req && req.headers) {
+    const headerUser =
+      req.headers["x-area46-user"] ||
+      req.headers["x-user-id"] ||
+      (typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ")
+        ? req.headers.authorization.slice(7)
+        : null);
+
+    const cookies = parseCookies(req.headers.cookie);
+    const cookieUser = cookies["area46_user_id"] || cookies["area46_user_email"];
+    const candidate = String(headerUser || cookieUser || "").trim();
+
+    if (candidate) {
+      const user = (database.profili_utenti || []).find(
+        (u: any) =>
+          u.id === candidate ||
+          u.email?.toLowerCase() === candidate.toLowerCase()
+      );
+      if (user && user.email) {
+        return user.email.trim().toLowerCase();
+      }
+      if (candidate.includes("@")) {
+        return candidate.toLowerCase();
+      }
+    }
+  }
   return null;
 }
 
@@ -3730,8 +3816,42 @@ CALENDARIO E PRENOTAZIONI:
 
     // 8. Stati Allenamenti: GET /app-api/stati
     if (pathname === "/app-api/stati" && method === "GET") {
-      const rows = db.stato_allenamenti.filter((s: any) => s.email_cliente === currentUser.email);
+      const explicitEmail = url.searchParams.get("email");
+      const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+      if (!targetEmail) {
+        return res.end(JSON.stringify([]));
+      }
+      const rows = (db.stato_allenamenti || []).filter(
+        (s: any) => (s.email_cliente || "").trim().toLowerCase() === targetEmail
+      );
       return res.end(JSON.stringify(rows));
+    }
+
+    // 8b. Reset Preview: GET /app-api/stati/reset-preview
+    if (pathname === "/app-api/stati/reset-preview" && method === "GET") {
+      const explicitEmail = url.searchParams.get("email");
+      const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+      if (!targetEmail) {
+        return res.end(JSON.stringify({ count: 0 }));
+      }
+      const livello = url.searchParams.get("livello") || "";
+      const giornoInt = parseInt(url.searchParams.get("giorno") || "0", 10);
+
+      const eserciziGiorno = (db.allenamenti || [])
+        .filter((a: any) => {
+          if (a.livello !== livello) return false;
+          const m = String(a.giorno).match(/[0-9]+/);
+          return m && parseInt(m[0], 10) === giornoInt;
+        })
+        .map((a: any) => a.id_esercizio);
+
+      const count = (db.diario_utente || []).filter(
+        (d: any) =>
+          (d.email_cliente || "").trim().toLowerCase() === targetEmail &&
+          eserciziGiorno.includes(d.id_esercizio)
+      ).length;
+
+      return res.end(JSON.stringify({ count }));
     }
 
     // 9. Conteggio Diario per Giorno: GET /app-api/diario/conteggio/:livello/:giorno
@@ -3739,8 +3859,14 @@ CALENDARIO E PRENOTAZIONI:
     if (diarioCountMatch && method === "GET") {
       const livello = decodeURIComponent(diarioCountMatch[1]);
       const giornoInt = parseInt(diarioCountMatch[2], 10);
+      const explicitEmail = url.searchParams.get("email");
+      const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
 
-      const eserciziGiorno = db.allenamenti
+      if (!targetEmail) {
+        return res.end(JSON.stringify({ count: 0 }));
+      }
+
+      const eserciziGiorno = (db.allenamenti || [])
         .filter((a: any) => {
           if (a.livello !== livello) return false;
           const m = String(a.giorno).match(/[0-9]+/);
@@ -3748,8 +3874,10 @@ CALENDARIO E PRENOTAZIONI:
         })
         .map((a: any) => a.id_esercizio);
 
-      const count = db.diario_utente.filter(
-        (d: any) => d.email_cliente === currentUser.email && eserciziGiorno.includes(d.id_esercizio)
+      const count = (db.diario_utente || []).filter(
+        (d: any) =>
+          (d.email_cliente || "").trim().toLowerCase() === targetEmail &&
+          eserciziGiorno.includes(d.id_esercizio)
       ).length;
 
       return res.end(JSON.stringify({ count }));
@@ -3757,10 +3885,17 @@ CALENDARIO E PRENOTAZIONI:
 
     // 10. Reset: POST /app-api/stati/reset
     if (pathname === "/app-api/stati/reset" && method === "POST") {
+      const explicitEmail = parsedBody.email_cliente || parsedBody.email;
+      const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+      if (!targetEmail) {
+        res.statusCode = 401;
+        return res.end(JSON.stringify({ ok: false, error: "Utente non identificato" }));
+      }
+
       const { livello, giorno } = parsedBody;
       const giornoInt = parseInt(String(giorno), 10);
 
-      const eserciziGiorno = db.allenamenti
+      const eserciziGiorno = (db.allenamenti || [])
         .filter((a: any) => {
           if (a.livello !== livello) return false;
           const m = String(a.giorno).match(/[0-9]+/);
@@ -3768,52 +3903,119 @@ CALENDARIO E PRENOTAZIONI:
         })
         .map((a: any) => a.id_esercizio);
 
-      const initialCount = db.diario_utente.length;
-      db.diario_utente = db.diario_utente.filter(
+      const initialCount = (db.diario_utente || []).length;
+      db.diario_utente = (db.diario_utente || []).filter(
         (d: any) =>
-          !(d.email_cliente === currentUser.email && eserciziGiorno.includes(d.id_esercizio))
+          !((d.email_cliente || "").trim().toLowerCase() === targetEmail && eserciziGiorno.includes(d.id_esercizio))
       );
-      const eliminati = initialCount - db.diario_utente.length;
+      const eliminati = initialCount - (db.diario_utente || []).length;
 
-      const existing = db.stato_allenamenti.find(
+      const existing = (db.stato_allenamenti || []).find(
         (s: any) =>
-          s.email_cliente === currentUser.email && s.livello === livello && s.giorno === giornoInt
+          (s.email_cliente || "").trim().toLowerCase() === targetEmail &&
+          s.livello === livello &&
+          Number(s.giorno) === giornoInt
       );
+      const nowIso = new Date().toISOString();
       if (existing) {
         existing.stato = "non_iniziato";
-        existing.updated_at = new Date().toISOString();
+        existing.updated_at = nowIso;
       } else {
+        if (!Array.isArray(db.stato_allenamenti)) db.stato_allenamenti = [];
         db.stato_allenamenti.push({
-          email_cliente: currentUser.email,
+          email_cliente: targetEmail,
           livello,
           giorno: giornoInt,
           stato: "non_iniziato",
-          updated_at: new Date().toISOString(),
+          updated_at: nowIso,
         });
       }
       saveData(db);
       return res.end(JSON.stringify({ ok: true, eliminati }));
     }
 
-    // 11. Salva Stato: POST /app-api/stati
+    // 10b. Salva Stato Batch (Atomico): POST /app-api/stati/batch
+    if (pathname === "/app-api/stati/batch" && method === "POST") {
+      const explicitEmail = parsedBody.email_cliente || parsedBody.email;
+      const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+      if (!targetEmail) {
+        res.statusCode = 401;
+        return res.end(JSON.stringify({ ok: false, error: "Utente non identificato" }));
+      }
+
+      const updates: Array<{ livello: string; giorno: number; stato: string }> = parsedBody.updates || [];
+      if (!Array.isArray(updates) || updates.length === 0) {
+        return res.end(JSON.stringify({ ok: true, count: 0 }));
+      }
+
+      if (!Array.isArray(db.stato_allenamenti)) {
+        db.stato_allenamenti = [];
+      }
+
+      const nowIso = new Date().toISOString();
+      for (const item of updates) {
+        const lv = String(item.livello || "");
+        const gNum = Number(item.giorno);
+        const st = String(item.stato || "non_iniziato");
+        if (!lv || isNaN(gNum)) continue;
+
+        const existing = db.stato_allenamenti.find(
+          (s: any) =>
+            (s.email_cliente || "").trim().toLowerCase() === targetEmail &&
+            s.livello === lv &&
+            Number(s.giorno) === gNum
+        );
+        if (existing) {
+          existing.stato = st;
+          existing.updated_at = nowIso;
+        } else {
+          db.stato_allenamenti.push({
+            email_cliente: targetEmail,
+            livello: lv,
+            giorno: gNum,
+            stato: st,
+            updated_at: nowIso,
+          });
+        }
+      }
+
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, count: updates.length }));
+    }
+
+    // 11. Salva Stato Singolo: POST /app-api/stati
     if (pathname === "/app-api/stati" && method === "POST") {
+      const explicitEmail = parsedBody.email_cliente || parsedBody.email;
+      const targetEmail = resolveTargetEmail(req, db, currentUser, explicitEmail);
+      if (!targetEmail) {
+        res.statusCode = 401;
+        return res.end(JSON.stringify({ ok: false, error: "Utente non identificato" }));
+      }
+
       const { livello, giorno, stato } = parsedBody;
+      const giornoNum = Number(giorno);
+      const nowIso = new Date().toISOString();
+
+      if (!Array.isArray(db.stato_allenamenti)) {
+        db.stato_allenamenti = [];
+      }
+
       const existing = db.stato_allenamenti.find(
         (s: any) =>
-          s.email_cliente === currentUser.email &&
+          (s.email_cliente || "").trim().toLowerCase() === targetEmail &&
           s.livello === livello &&
-          s.giorno === Number(giorno)
+          Number(s.giorno) === giornoNum
       );
       if (existing) {
         existing.stato = stato;
-        existing.updated_at = new Date().toISOString();
+        existing.updated_at = nowIso;
       } else {
         db.stato_allenamenti.push({
-          email_cliente: currentUser.email,
+          email_cliente: targetEmail,
           livello,
-          giorno: Number(giorno),
+          giorno: giornoNum,
           stato,
-          updated_at: new Date().toISOString(),
+          updated_at: nowIso,
         });
       }
       saveData(db);
