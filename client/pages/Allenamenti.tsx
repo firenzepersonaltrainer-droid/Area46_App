@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Dumbbell,
   CheckCircle2,
+  CheckSquare,
   Clock,
   Circle,
   Archive,
@@ -33,6 +34,7 @@ import { Button } from "../components/Button";
 import { toast } from "../components/Toast";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { useLivelloMemoria } from "../lib/useLivelloMemoria";
+import { useCurrentUser } from "../lib/useUser";
 
 type Stato = "non_iniziato" | "in_corso" | "completato";
 
@@ -339,6 +341,8 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
   statoMap: Map<string, Stato>;
   onStatoChange: (livello: string, giornoNum: number, stato: Stato) => void;
 }) {
+  const { user } = useCurrentUser();
+  const isCoach = user?.ruolo === "manager";
   const gruppi = raggruppaPerSettimana(giorni);
   // Default: tutti i cicli precedenti chiusi, ultimo ciclo aperto
   const [collapsedSettimane, setCollapsedSettimane] = useState<Set<string>>(() => {
@@ -384,6 +388,24 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
     });
   };
 
+  const handleToggleTuttiCompletatiCiclo = (items: GiornoItem[], e: React.MouseEvent) => {
+    e.stopPropagation();
+    const tuttiCompletati = items.every((item) => {
+      const lv = livelloFiltro || item.livello || "";
+      return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
+    });
+    const nuovoStato: Stato = tuttiCompletati ? "non_iniziato" : "completato";
+    items.forEach((item) => {
+      const lv = livelloFiltro || item.livello || "";
+      onStatoChange(lv, item.giorno_num, nuovoStato);
+    });
+    toast.success(
+      nuovoStato === "completato"
+        ? "Tutti gli allenamenti del ciclo contrassegnati come completati!"
+        : "Allenamenti del ciclo ripristinati!"
+    );
+  };
+
   if (giorni.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-20 text-center">
@@ -398,6 +420,11 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
       {gruppi.map(([settimana, items], index) => {
         const isCollapsed = collapsedSettimane.has(settimana);
         const isLast = index === gruppi.length - 1;
+        const tuttiCompletatiCiclo = items.length > 0 && items.every((item) => {
+          const lv = livelloFiltro || item.livello || "";
+          return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
+        });
+
         return (
           <div key={settimana} ref={isLast ? lastCycleRef : undefined}>
             {mostraHeader && (
@@ -425,7 +452,38 @@ function ListaGiorni({ giorni, livelloFiltro, statoMap, onStatoChange }: {
                     {settimana}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
+                  {/* CASELLA DI SPUNTA COACH: SEGNA TUTTI COME COMPLETATI */}
+                  {isCoach && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleToggleTuttiCompletatiCiclo(items, e)}
+                      title={
+                        tuttiCompletatiCiclo
+                          ? "Ciclo completato. Clicca per deselezionare tutti gli allenamenti"
+                          : "Clicca per contrassegnare tutti gli allenamenti del ciclo come completati"
+                      }
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black transition-all border shadow-2xs ${
+                        tuttiCompletatiCiclo
+                          ? "bg-[#e3ff00] text-zinc-900 border-[#e3ff00]"
+                          : "bg-white/10 hover:bg-white/20 text-white border-white/30"
+                      }`}
+                    >
+                      <span
+                        className={`size-4 rounded flex items-center justify-center border transition-colors ${
+                          tuttiCompletatiCiclo
+                            ? "bg-zinc-950 border-zinc-950 text-[#e3ff00]"
+                            : "border-white/60 bg-transparent"
+                        }`}
+                      >
+                        {tuttiCompletatiCiclo && <CheckSquare className="size-3.5" />}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {tuttiCompletatiCiclo ? "Ciclo Completato" : "Completa Ciclo"}
+                      </span>
+                    </button>
+                  )}
+
                   <span
                     className="text-xs font-black px-2.5 py-0.5 rounded-full"
                     style={{ background: "#09090b", color: "#e3ff00" }}

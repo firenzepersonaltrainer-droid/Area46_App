@@ -29,6 +29,8 @@ import {
   ShieldCheck,
   Ban,
   Sun,
+  Sunrise,
+  Sunset,
   Sparkles,
   Mail,
   MessageCircle,
@@ -449,102 +451,153 @@ export default function ManagerCalendarPage() {
             </p>
           </div>
         ) : (
-          orariGiorno.map((orario) => {
-            const slotInfo = slotDinamici.find((s) => s.orario === orario);
-            const booking = prenotazioniGiorno.find((p) => p.orario === orario);
-            const isOccupato = !!booking;
-            const isBloccato = eccezioniGiorno.some(
-              (e) => e.tipo === "slot_bloccato" && e.orario === orario
-            );
-            const isStraordinario = slotInfo?.is_straordinario;
+          (() => {
+            const renderSlotCard = (orario: string) => {
+              const slotInfo = slotDinamici.find((s) => s.orario === orario);
+              const booking = prenotazioniGiorno.find((p) => p.orario === orario);
+              const isOccupato = !!booking;
+              const isBloccato = eccezioniGiorno.some(
+                (e) => e.tipo === "slot_bloccato" && e.orario === orario
+              );
+              const isStraordinario = slotInfo?.is_straordinario;
 
-            if (isBloccato) {
-              return (
-                <div
-                  key={orario}
-                  className="p-3 rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-400 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Ban className="size-4 text-zinc-400" />
-                    <span className="text-xs sm:text-sm font-bold">{orario}</span>
-                    <span className="text-xs font-semibold text-zinc-500">
-                      Slot Bloccato dal Coach (Non prenotabile)
+              if (isBloccato) {
+                return (
+                  <div
+                    key={orario}
+                    className="p-3 rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-400 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Ban className="size-4 text-zinc-400" />
+                      <span className="text-xs sm:text-sm font-bold">{orario}</span>
+                      <span className="text-xs font-semibold text-zinc-500">
+                        Slot Bloccato dal Coach (Non prenotabile)
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (isOccupato) {
+                return (
+                  <div
+                    key={orario}
+                    onClick={() => setSelectedBooking(booking)}
+                    className="p-3.5 rounded-2xl bg-white border-2 border-[#1c00ff] shadow-xs flex items-center justify-between cursor-pointer hover:bg-blue-50/40 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="size-11 rounded-xl bg-[#1c00ff] text-white flex flex-col items-center justify-center font-black leading-tight shadow-xs">
+                        <Clock className="size-3.5" />
+                        <span className="text-xs">{orario}</span>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm sm:text-base font-black text-zinc-900">
+                            {booking.nome_cliente}
+                          </span>
+                          <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            Prenotazione Confermata
+                          </span>
+                        </div>
+
+                        <div className="text-xs sm:text-sm text-zinc-500 flex items-center gap-2 mt-0.5">
+                          <span>{booking.email_cliente}</span>
+                          {booking.telefono_cliente && <span>• Tel: {booking.telefono_cliente}</span>}
+                        </div>
+                      </div>
+                    </div>
+
+                    <span className="text-xs sm:text-sm font-bold text-[#1c00ff] hover:underline">
+                      Dettagli &rarr;
                     </span>
                   </div>
-                </div>
-              );
-            }
+                );
+              }
 
-            if (isOccupato) {
               return (
                 <div
                   key={orario}
-                  onClick={() => setSelectedBooking(booking)}
-                  className="p-3.5 rounded-2xl bg-white border-2 border-[#1c00ff] shadow-xs flex items-center justify-between cursor-pointer hover:bg-blue-50/40 transition-colors"
+                  onClick={() => {
+                    setManualSlot(orario);
+                    if (atleti.length > 0) setSelectedAtletaId(atleti[0].id);
+                  }}
+                  className={`p-3 rounded-2xl border border-dashed flex items-center justify-between transition-colors cursor-pointer group ${
+                    isStraordinario
+                      ? "bg-purple-50/50 border-purple-300 hover:border-purple-600"
+                      : "bg-zinc-50 hover:bg-white border-zinc-300 hover:border-[#1c00ff]"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="size-11 rounded-xl bg-[#1c00ff] text-white flex flex-col items-center justify-center font-black leading-tight shadow-xs">
-                      <Clock className="size-3.5" />
-                      <span className="text-xs">{orario}</span>
+                    <div className="size-9 rounded-xl bg-zinc-200 text-zinc-700 flex items-center justify-center font-bold text-xs sm:text-sm group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                      {orario}
                     </div>
-
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm sm:text-base font-black text-zinc-900">
-                          {booking.nome_cliente}
+                    <div className="text-xs sm:text-sm text-zinc-600 font-semibold flex items-center gap-1.5">
+                      <span>Slot Libero (1 posto)</span>
+                      {isStraordinario && (
+                        <span className="text-[11px] uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-black">
+                          Straordinario
                         </span>
-                        <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                          Prenotazione Confermata
-                        </span>
-                      </div>
-
-                      <div className="text-xs sm:text-sm text-zinc-500 flex items-center gap-2 mt-0.5">
-                        <span>{booking.email_cliente}</span>
-                        {booking.telefono_cliente && <span>• Tel: {booking.telefono_cliente}</span>}
-                      </div>
+                      )}
                     </div>
                   </div>
 
-                  <span className="text-xs sm:text-sm font-bold text-[#1c00ff] hover:underline">
-                    Dettagli &rarr;
+                  <span className="text-xs sm:text-sm font-bold text-zinc-400 group-hover:text-[#1c00ff] flex items-center gap-1">
+                    <Plus className="size-4" /> Assegna ad Atleta
                   </span>
                 </div>
               );
+            };
+
+            const slotMattina = orariGiorno.filter((o) => {
+              const h = parseInt(o.split(":")[0], 10);
+              return !isNaN(h) && h < 13;
+            });
+            const slotPomeriggio = orariGiorno.filter((o) => {
+              const h = parseInt(o.split(":")[0], 10);
+              return !isNaN(h) && h >= 13;
+            });
+
+            // Se non ci sono sia mattina che pomeriggio/sera, renderizza lista semplice
+            if (slotMattina.length === 0 || slotPomeriggio.length === 0) {
+              return orariGiorno.map(renderSlotCard);
             }
 
             return (
-              <div
-                key={orario}
-                onClick={() => {
-                  setManualSlot(orario);
-                  if (atleti.length > 0) setSelectedAtletaId(atleti[0].id);
-                }}
-                className={`p-3 rounded-2xl border border-dashed flex items-center justify-between transition-colors cursor-pointer group ${
-                  isStraordinario
-                    ? "bg-purple-50/50 border-purple-300 hover:border-purple-600"
-                    : "bg-zinc-50 hover:bg-white border-zinc-300 hover:border-[#1c00ff]"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-zinc-200 text-zinc-700 flex items-center justify-center font-bold text-xs sm:text-sm group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
-                    {orario}
+              <div className="space-y-6">
+                {/* BLOCCO MATTINA */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 px-1 pt-1 text-xs font-black uppercase tracking-wider text-amber-700">
+                    <Sunrise className="size-4 text-amber-500" />
+                    <span>Mattina (fino alle 12:00)</span>
+                    <span className="text-[11px] font-bold text-zinc-400 normal-case">
+                      ({slotMattina.length} slot)
+                    </span>
                   </div>
-                  <div className="text-xs sm:text-sm text-zinc-600 font-semibold flex items-center gap-1.5">
-                    <span>Slot Libero (1 posto)</span>
-                    {isStraordinario && (
-                      <span className="text-[11px] uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-black">
-                        Straordinario
-                      </span>
-                    )}
+                  <div className="space-y-2">
+                    {slotMattina.map(renderSlotCard)}
                   </div>
                 </div>
 
-                <span className="text-xs sm:text-sm font-bold text-zinc-400 group-hover:text-[#1c00ff] flex items-center gap-1">
-                  <Plus className="size-4" /> Assegna ad Atleta
-                </span>
+                {/* SEPARATORE CON SPAZIO LIBERO A VIDEO */}
+                <div className="my-6 border-t-2 border-dashed border-zinc-200" />
+
+                {/* BLOCCO POMERIGGIO / SERA */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 px-1 pt-1 text-xs font-black uppercase tracking-wider text-indigo-700">
+                    <Sunset className="size-4 text-indigo-500" />
+                    <span>Pomeriggio & Sera (dalle 17:00 in poi)</span>
+                    <span className="text-[11px] font-bold text-zinc-400 normal-case">
+                      ({slotPomeriggio.length} slot)
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {slotPomeriggio.map(renderSlotCard)}
+                  </div>
+                </div>
               </div>
             );
-          })
+          })()
         )}
       </div>
 
