@@ -18279,6 +18279,50 @@
       "feedback": null,
       "data_ora": "2026-10-02T14:21:03.096Z",
       "created_at": "2026-10-02T14:21:03.096Z"
+    },
+    {
+      "id": 1791532169719,
+      "email_cliente": "pantanella@gmail.com",
+      "id_esercizio": "218",
+      "nome_esercizio": "Landmine Jerk",
+      "carico_kg": null,
+      "feedback": null,
+      "ripetizioni": null,
+      "serie": null,
+      "sets_json": [
+        {
+          "carico_kg": 20,
+          "ripetizioni": 5,
+          "rpe": "7"
+        }
+      ],
+      "rpe_json": [
+        "7"
+      ],
+      "data_ora": "2026-10-09T07:49:29.719Z",
+      "created_at": "2026-10-09T07:49:29.719Z"
+    },
+    {
+      "id": 1791532481542,
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "id_esercizio": "225",
+      "nome_esercizio": "Ball over shoulder",
+      "carico_kg": null,
+      "feedback": null,
+      "ripetizioni": null,
+      "serie": null,
+      "sets_json": [
+        {
+          "carico_kg": 25,
+          "ripetizioni": 20,
+          "rpe": "8"
+        }
+      ],
+      "rpe_json": [
+        "8"
+      ],
+      "data_ora": "2026-10-09T07:54:41.542Z",
+      "created_at": "2026-10-09T07:54:41.542Z"
     }
   ],
   "stato_allenamenti": [
@@ -18322,7 +18366,7 @@
       "livello": "Level 1",
       "giorno": 10,
       "stato": "completato",
-      "updated_at": "2026-10-08T09:14:12.588Z"
+      "updated_at": "2026-10-08T10:00:21.449Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -18335,43 +18379,743 @@
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 1,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-08T09:54:15.963Z"
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 2,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-08T09:54:15.963Z"
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 3,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-08T09:54:15.963Z"
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 4,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-08T09:54:15.963Z"
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 5,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-08T09:54:15.963Z"
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 1,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 2,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 3,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 4,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 5,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 8,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 9,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 10,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 11,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 12,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 14,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 15,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 16,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 17,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Home Training Beginner",
+      "giorno": 18,
+      "stato": "completato",
+      "updated_at": "2026-10-08T09:59:57.997Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 1,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 2,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 3,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 4,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 5,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 8,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:11.175Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 8,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 9,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 11,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 12,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 14,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 15,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 16,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 17,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 18,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 19,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 20,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Level 1",
+      "giorno": 21,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:21.449Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 1,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 2,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 3,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 4,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 5,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 8,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 9,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 10,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 11,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 12,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 14,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 15,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 16,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 17,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 18,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 19,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 20,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "Advanced",
+      "giorno": 21,
+      "stato": "completato",
+      "updated_at": "2026-10-08T10:00:45.928Z"
+    },
+    {
+      "email_cliente": "silvia.brenzini@gmail.com",
+      "livello": "Level 2",
+      "giorno": 4,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:22:43.410Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 1,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:15.426Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 2,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:15.426Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 3,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:15.426Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 4,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:15.426Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 5,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:15.426Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:15.426Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:59.604Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 8,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:59.604Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 9,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:59.604Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 10,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:59.604Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 11,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:59.604Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 12,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:42:59.604Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:43:02.523Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 14,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:43:02.523Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 15,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:43:02.523Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 16,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:43:02.523Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 17,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:43:02.523Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 18,
+      "stato": "completato",
+      "updated_at": "2026-10-08T13:43:02.523Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 14,
+      "stato": "completato",
+      "updated_at": "2026-10-09T07:11:46.787Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 15,
+      "stato": "completato",
+      "updated_at": "2026-10-09T07:12:00.654Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 16,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:32.337Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 25,
       "stato": "non_iniziato",
-      "updated_at": "2026-10-08T09:54:15.963Z"
+      "updated_at": "2026-10-09T07:20:57.607Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 19,
+      "stato": "completato",
+      "updated_at": "2026-10-09T07:21:11.549Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 1,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:33.591Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 2,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:35.723Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 3,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:38.247Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 4,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:40.173Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 5,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:42.196Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:44.314Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:46.433Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 8,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:48.867Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 9,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:49:51.686Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 10,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:50:00.886Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 11,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:50:03.010Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 12,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:50:05.320Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:50:08.272Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 14,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:50:12.325Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "Advanced",
+      "giorno": 15,
+      "stato": "completato",
+      "updated_at": "2026-10-09T08:50:13.435Z"
     }
   ],
   "preferenze_utente": [
@@ -18382,8 +19126,18 @@
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
-      "memoria_livello": "Level 1",
-      "updated_at": "2026-10-08T08:55:30.713Z"
+      "memoria_livello": "Entry Level",
+      "updated_at": "2026-10-09T09:18:12.534Z"
+    },
+    {
+      "email_cliente": "silvia.brenzini@gmail.com",
+      "memoria_livello": "Level 2",
+      "updated_at": "2026-10-08T11:32:36.811Z"
+    },
+    {
+      "email_cliente": "annap.maddy@gmail.com",
+      "memoria_livello": "Entry Level",
+      "updated_at": "2026-10-08T17:18:08.583Z"
     }
   ],
   "profili_utenti": [
@@ -18484,7 +19238,7 @@
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 0,
       "updated_at": "2026-10-07T14:43:38.330Z",
-      "data_ultimo_accesso": "2026-10-07T14:56:15.756Z"
+      "data_ultimo_accesso": "2026-10-09T10:23:50.617Z"
     },
     {
       "id": "usr-bw-1953979",
@@ -18561,13 +19315,14 @@
       "nickname": "Matte",
       "name": "Matteo Tesse",
       "ruolo": "atleta",
-      "crediti": 6,
+      "crediti": 0,
       "data_scadenza_crediti": "2026-10-31",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 16,
-      "updated_at": "2026-10-07T14:46:15.636Z"
+      "updated_at": "2026-10-07T14:46:15.636Z",
+      "data_ultimo_accesso": "2026-10-09T10:45:26.433Z"
     },
     {
       "id": "usr-bw-2084583",
@@ -19340,19 +20095,6 @@
       "created_at": "2026-08-28T21:42:16.000Z"
     },
     {
-      "id": "bk-1791384759680",
-      "data": "2026-10-09",
-      "orario": "17:00",
-      "atleta_id": "usr-bw-2078480",
-      "email_cliente": "annap.maddy@gmail.com",
-      "nome_cliente": "Anna Paola Maddalena",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "note": "",
-      "created_at": "2026-10-07T14:52:39.680Z"
-    },
-    {
       "id": "bk-1791384870603",
       "data": "2026-10-21",
       "orario": "10:30",
@@ -19806,6 +20548,97 @@
       "credito_scalato": true,
       "note": "",
       "created_at": "2026-10-08T07:31:47.492Z"
+    },
+    {
+      "id": "bk-1791541430617",
+      "data": "2026-10-09",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "Assegnazione diretta dal Coach",
+      "created_at": "2026-10-09T10:23:50.617Z"
+    },
+    {
+      "id": "bk-1791541593338",
+      "data": "2026-10-09",
+      "orario": "17:45",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "Assegnazione diretta dal Coach",
+      "created_at": "2026-10-09T10:26:33.338Z"
+    },
+    {
+      "id": "bk-1791542672680",
+      "data": "2026-10-14",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-09T10:44:32.680Z"
+    },
+    {
+      "id": "bk-1791542688449",
+      "data": "2026-10-16",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-09T10:44:48.449Z"
+    },
+    {
+      "id": "bk-1791542702636",
+      "data": "2026-10-21",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-09T10:45:02.636Z"
+    },
+    {
+      "id": "bk-1791542714147",
+      "data": "2026-10-23",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-09T10:45:14.147Z"
+    },
+    {
+      "id": "bk-1791542726433",
+      "data": "2026-10-28",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-09T10:45:26.433Z"
     }
   ],
   "transazioni_pagamenti": [
@@ -19906,6 +20739,102 @@
   ],
   "active_user_id": null,
   "movimenti_crediti": [
+    {
+      "id": "mov-1791542726433-123",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "data_ora": "2026-10-09T10:45:26.433Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 0,
+      "motivazione": "Prenotazione slot del 2026-10-28 ore 18:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1791542714147-160",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "data_ora": "2026-10-09T10:45:14.147Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 1,
+      "motivazione": "Prenotazione slot del 2026-10-23 ore 18:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1791542702636-880",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "data_ora": "2026-10-09T10:45:02.636Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 2,
+      "motivazione": "Prenotazione slot del 2026-10-21 ore 18:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1791542688449-196",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "data_ora": "2026-10-09T10:44:48.449Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 3,
+      "motivazione": "Prenotazione slot del 2026-10-16 ore 18:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1791542672680-439",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "data_ora": "2026-10-09T10:44:32.680Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 4,
+      "motivazione": "Prenotazione slot del 2026-10-14 ore 18:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1791541593338-771",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "data_ora": "2026-10-09T10:26:33.338Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 5,
+      "motivazione": "Prenotazione slot del 2026-10-09 ore 17:45",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1791541430617-956",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-10-09T10:23:50.617Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 18,
+      "motivazione": "Prenotazione slot del 2026-10-09 ore 18:00",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1791541409764-408",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-10-09T10:23:29.764Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 19,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-10-09 17:00 per Anna Paola Maddalena",
+      "operatore": "coach"
+    },
     {
       "id": "mov-1791444707492-481",
       "atleta_id": "usr-bw-1953985",
@@ -20382,7 +21311,9 @@
       "attiva": true
     }
   ],
-  "prenotazioni_cancellate": [],
+  "prenotazioni_cancellate": [
+    "bk-1791384759680"
+  ],
   "utenti_cancellati": [
     "usr-bw-2056285",
     "bogazziclaudia@gmail.com",
@@ -20392,6 +21323,16 @@
     "vally1069@gmail.com"
   ],
   "notifiche_email": [
+    {
+      "id": "email-1791529861144-670",
+      "destinatario": "pantanella@gmail.com",
+      "oggetto": "Codice di Accesso - Area46 Landmine Lab",
+      "corpo": "Il tuo codice OTP di verifica per accedere ad Area46 Landmine Lab è: 462831",
+      "html": "<div style=\"font-family: sans-serif; padding: 24px; background-color: #f8f9fa; border-radius: 16px;\">\n              <h2 style=\"color: #09090b; margin-top: 0;\">Area46 Landmine Lab</h2>\n              <p style=\"color: #3f3f46; font-size: 14px;\">Inserisci il seguente codice di verifica nell'applicazione per accedere al tuo account:</p>\n              <div style=\"background-color: #ffffff; border: 2px solid #1c00ff; border-radius: 12px; padding: 16px; text-align: center; margin: 20px 0;\">\n                <span style=\"font-family: monospace; font-size: 32px; font-weight: 900; letter-spacing: 6px; color: #1c00ff;\">462831</span>\n              </div>\n              <p style=\"color: #71717a; font-size: 12px;\">Se non hai richiesto tu questo codice, puoi ignorare questa email.</p>\n            </div>",
+      "inviato_il": "2026-10-09T07:11:01.144Z",
+      "tipo": "sistema",
+      "stato": "inviata"
+    },
     {
       "id": "email-1790874914574-778",
       "destinatario": "test_anticipo_1790874914304@area46.test",

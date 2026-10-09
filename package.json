@@ -8,6 +8,11 @@
     "build": "vite build && esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
     "build:api": "esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
     "sync-glide": "node scripts/sync_glide.mjs",
+    "backup": "node scripts/backup_manager.mjs backup",
+    "restore": "node scripts/backup_manager.mjs restore",
+    "verify": "node scripts/backup_manager.mjs verify",
+    "vault:split": "node scripts/backup_manager.mjs split",
+    "vault:merge": "node scripts/backup_manager.mjs merge",
     "preview": "vite preview"
   },
   "dependencies": {

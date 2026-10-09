@@ -105,7 +105,29 @@ function queueDriveSync(data: any): Promise<void> {
   return gdriveSyncQueue;
 }
 
+let lastAutoBackupTime = 0;
+
+function validateDataIntegrity(data: any): boolean {
+  if (!data || typeof data !== "object") return false;
+  // Guardrail 1: controllo profili utenti minimi (impedisce azzeramento anagrafiche e crediti)
+  if (Array.isArray(data.profili_utenti) && data.profili_utenti.length < 3) {
+    console.error(`🚨 [AREA46 SAFETY LOCK] Tentativo di salvataggio anomalo: solo ${data.profili_utenti.length} utenti trovati. Salvataggio bloccato per protezione dati!`);
+    return false;
+  }
+  // Guardrail 2: controllo catalogo esercizi
+  if (Array.isArray(data.database_esercizi) && data.database_esercizi.length < 30) {
+    console.error(`🚨 [AREA46 SAFETY LOCK] Tentativo di salvataggio anomalo: solo ${data.database_esercizi.length} esercizi trovati. Salvataggio bloccato!`);
+    return false;
+  }
+  return true;
+}
+
 function saveData(data: any, skipCloudSync = false) {
+  if (!validateDataIntegrity(data)) {
+    console.warn("⚠️ [AREA46 SAFETY LOCK] Scrittura su disco e cloud ignorata a causa del fallimento delle regole di integrità.");
+    return;
+  }
+
   db = data;
   try {
     fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
@@ -115,10 +137,20 @@ function saveData(data: any, skipCloudSync = false) {
   try {
     const directPath = path.resolve(__dirname, "demo-data.json");
     const parentPath = path.resolve(__dirname, "..", "demo-data.json");
-    if (fs.existsSync(directPath)) {
-      fs.writeFileSync(directPath, JSON.stringify(data, null, 2), "utf-8");
-    } else if (fs.existsSync(parentPath)) {
-      fs.writeFileSync(parentPath, JSON.stringify(data, null, 2), "utf-8");
+    const destPath = fs.existsSync(directPath) ? directPath : fs.existsSync(parentPath) ? parentPath : null;
+    if (destPath) {
+      fs.writeFileSync(destPath, JSON.stringify(data, null, 2), "utf-8");
+      
+      // Auto-backup periodico ogni 4 ore in ambiente locale
+      const now = Date.now();
+      if (now - lastAutoBackupTime > 4 * 3600 * 1000) {
+        lastAutoBackupTime = now;
+        const bkpDir = path.resolve(path.dirname(destPath), "backups");
+        if (fs.existsSync(bkpDir)) {
+          const bkpFile = path.join(bkpDir, `auto_backup_${new Date().toISOString().slice(0, 10)}.json`);
+          fs.writeFileSync(bkpFile, JSON.stringify(data, null, 2), "utf-8");
+        }
+      }
     }
   } catch {
     // Read-only filesystem on Vercel lambda, expected

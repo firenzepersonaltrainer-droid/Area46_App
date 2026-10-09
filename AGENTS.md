@@ -64,3 +64,17 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
 * **Integrità Dati**: MAI toccare, azzerare o sovrascrivere crediti, scadenze carnet, prenotazioni calendario e registrazioni contabili/fisco già governate dal nuovo gestionale Area46.
 * **Segnalazione Problematiche**: Se sorgono problematiche di connessione o assenza dati sorgente da Glide, informare tempestivamente il coach con istruzioni chiare per risolverle.
 * Questa regola resta vincolante e attiva fino a quando Glide non verrà dismessa definitivamente da Stefano Tronconi.
+
+---
+
+## 6. STRUTTURA BLINDATA, CAMERE STAGNE E INTEGRITÀ DATI ASSOLUTA
+* **Backup Obbligatorio Preventivo**: Prima di qualsiasi modifica strutturale o rigenerazione dati, eseguire sempre `npm run backup`.
+* **Guardrail di Integrità Dati**: MAI azzerare, sovrascrivere in blocco o corrompere le collezioni `profili_utenti`, `prenotazioni_slot`, `transazioni_pagamenti`, `movimenti_crediti` e `diario_utente`.
+* **Camere Stagne (Vault)**: I dati del progetto risiedono compartimentati in `data/vault/` in 6 moduli separati:
+  1. `1_gestionale_utenti_crediti.json` (Anagrafiche, crediti e fisco)
+  2. `2_gestionale_calendario.json` (Prenotazioni slot e presenze)
+  3. `3_atleti_diario_progressi.json` (Pesi sollevati, serie, rep e note)
+  4. `4_metodologia_esercizi.json` (163 Esercizi PRO, link video YouTube e correlazioni)
+  5. `5_metodologia_allenamenti_cicli.json` (Periodizzazione e schede dei cicli A/B)
+  6. `6_configurazione_lab.json` (Palinsesto e impostazioni)
+* **Verifica Automatica**: Al termine di qualsiasi sessione di lavoro o script, eseguire sempre `npm run verify` per accertarsi che la soglia minima di atleti, crediti e prenotazioni sia integra al 100%.

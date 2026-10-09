@@ -16,6 +16,8 @@ credenziali.json
 landmine-lab-level-pro-*.json
 *.pem
 *.key
+backups/
+data/vault/
 
 # Logs
 *.log
