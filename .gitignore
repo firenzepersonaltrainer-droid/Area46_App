@@ -18,6 +18,7 @@ landmine-lab-level-pro-*.json
 *.key
 backups/
 data/vault/
+data/sandbox-data.json
 
 # Logs
 *.log

@@ -8,10 +8,18 @@ import defaultData from "./demo-data.json";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const TMP_DATA_FILE = "/tmp/demo-data.json";
+const IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX === "true";
+const SANDBOX_FILE = path.resolve(__dirname, "data", "sandbox-data.json");
+const TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
 
 function loadData() {
   let loaded: any = null;
+  if (IS_SANDBOX && fs.existsSync(SANDBOX_FILE)) {
+    try {
+      const raw = fs.readFileSync(SANDBOX_FILE, "utf-8");
+      return JSON.parse(raw);
+    } catch {}
+  }
   if (fs.existsSync(TMP_DATA_FILE)) {
     try {
       const raw = fs.readFileSync(TMP_DATA_FILE, "utf-8");
@@ -129,6 +137,14 @@ function saveData(data: any, skipCloudSync = false) {
   }
 
   db = data;
+  if (IS_SANDBOX) {
+    try {
+      fs.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+    } catch {}
+    return; // Isolamento assoluto: nessun tocco a demo-data.json reale né sincronizzazione Google Drive!
+  }
+
   try {
     fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch {

@@ -33619,9 +33619,18 @@ firenzepersonaltrainer@gmail.com`,
 // local-api.ts
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = path3.dirname(__filename);
-var TMP_DATA_FILE = "/tmp/demo-data.json";
+var IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX === "true";
+var SANDBOX_FILE = path3.resolve(__dirname, "data", "sandbox-data.json");
+var TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
 function loadData() {
   let loaded = null;
+  if (IS_SANDBOX && fs4.existsSync(SANDBOX_FILE)) {
+    try {
+      const raw = fs4.readFileSync(SANDBOX_FILE, "utf-8");
+      return JSON.parse(raw);
+    } catch {
+    }
+  }
   if (fs4.existsSync(TMP_DATA_FILE)) {
     try {
       const raw = fs4.readFileSync(TMP_DATA_FILE, "utf-8");
@@ -33724,6 +33733,14 @@ function saveData(data, skipCloudSync = false) {
     return;
   }
   db = data;
+  if (IS_SANDBOX) {
+    try {
+      fs4.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs4.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+    } catch {
+    }
+    return;
+  }
   try {
     fs4.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch {

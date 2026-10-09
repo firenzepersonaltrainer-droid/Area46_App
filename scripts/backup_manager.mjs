@@ -330,6 +330,115 @@ export function mergeVaultModules() {
   console.log(`✅ Moduli del Vault riuniti con successo in demo-data.json`);
 }
 
+// ─── 6. AMBIENTE OFFICINA / TEST (SANDBOX) ──────────────────────────────────
+export function createSandboxData() {
+  const d = loadCurrentData();
+  const coach = (d.profili_utenti || []).find(
+    (u) => u.ruolo === "coach" || u.email === "firenzepersonaltrainer@gmail.com"
+  ) || {
+    id: "coach-stefano",
+    nome: "Stefano",
+    cognome: "Tronconi",
+    email: "firenzepersonaltrainer@gmail.com",
+    ruolo: "coach",
+    crediti: 999,
+  };
+
+  const sandboxUsers = [
+    coach,
+    {
+      id: "usr-demo-01",
+      nome: "Mario",
+      cognome: "Rossi",
+      email: "mario.rossi@demo.area46.it",
+      telefono: "3331112233",
+      ruolo: "atleta",
+      livello: "Level PRO",
+      crediti: 10,
+      stato_iscrizione: "attivo",
+      certificato_medico: true,
+      scadenza_certificato: "2027-12-31",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "usr-demo-02",
+      nome: "Luca",
+      cognome: "Bianchi",
+      email: "luca.bianchi@demo.area46.it",
+      telefono: "3334445566",
+      ruolo: "atleta",
+      livello: "Level PRO",
+      crediti: 4,
+      stato_iscrizione: "attivo",
+      certificato_medico: true,
+      scadenza_certificato: "2027-12-31",
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: "usr-demo-03",
+      nome: "Giulia",
+      cognome: "Verdi",
+      email: "giulia.verdi@demo.area46.it",
+      telefono: "3337778899",
+      ruolo: "atleta",
+      livello: "Level PRO",
+      crediti: 1,
+      stato_iscrizione: "attivo",
+      certificato_medico: false,
+      created_at: new Date().toISOString(),
+    },
+  ];
+
+  const sandboxData = {
+    ...d,
+    profili_utenti: sandboxUsers,
+    prenotazioni_slot: [
+      {
+        id: "bk-demo-01",
+        email_cliente: "mario.rossi@demo.area46.it",
+        nome_cliente: "Mario Rossi",
+        data: new Date().toISOString().slice(0, 10),
+        orario: "18:00",
+        attivita_id: "act-landmine-lab",
+        created_at: new Date().toISOString(),
+      },
+    ],
+    transazioni_pagamenti: [],
+    movimenti_crediti: [
+      {
+        id: "mov-demo-01",
+        email_cliente: "mario.rossi@demo.area46.it",
+        tipo: "accredito",
+        quantita: 10,
+        motivo: "Caricamento Carnet Demo",
+        data_ora: new Date().toISOString(),
+      },
+    ],
+    diario_utente: [
+      {
+        id: "diary-demo-01",
+        email_cliente: "mario.rossi@demo.area46.it",
+        id_esercizio: "1",
+        nome_esercizio: "Squat",
+        carico_kg: 40,
+        ripetizioni: 8,
+        serie: 4,
+        data_ora: new Date().toISOString(),
+      },
+    ],
+  };
+
+  const sandboxPath = path.join(ROOT_DIR, "data", "sandbox-data.json");
+  fs.writeFileSync(sandboxPath, JSON.stringify(sandboxData, null, 2), "utf-8");
+  console.log(`=======================================================`);
+  console.log(`🧪 AREA46 — AMBIENTE OFFICINA / TEST GENERATO`);
+  console.log(`=======================================================`);
+  console.log(`📁 File creato: data/sandbox-data.json`);
+  console.log(`👥 Atleti Demo: Mario Rossi (10 cr), Luca Bianchi (4 cr), Giulia Verdi (1 cr)`);
+  console.log(`🔒 Dati reali intatti e isolati al 100%`);
+  console.log(`=======================================================\n`);
+}
+
 // ─── CLI DISPATCHER ─────────────────────────────────────────────────────────
 const cmd = process.argv[2] || "verify";
 
@@ -365,8 +474,11 @@ try {
     case "merge":
       mergeVaultModules();
       break;
+    case "sandbox":
+      createSandboxData();
+      break;
     default:
-      console.log(`Comandi disponibili: backup, restore, verify, split, merge`);
+      console.log(`Comandi disponibili: backup, restore, verify, split, merge, sandbox`);
   }
 } catch (err) {
   console.error("❌ ERRORE:", err.message);

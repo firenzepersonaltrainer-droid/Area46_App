@@ -13,6 +13,8 @@
     "verify": "node scripts/backup_manager.mjs verify",
     "vault:split": "node scripts/backup_manager.mjs split",
     "vault:merge": "node scripts/backup_manager.mjs merge",
+    "dev:sandbox": "AREA46_MODE=sandbox vite",
+    "sandbox:reset": "node scripts/backup_manager.mjs sandbox",
     "preview": "vite preview"
   },
   "dependencies": {
