@@ -18,7 +18,7 @@ import {
 import { Nav } from "./components/Nav";
 import { Toaster } from "./components/Toast";
 import { WalletBar } from "./components/WalletBar";
-import { useCurrentUser } from "./lib/useUser";
+import { useCurrentUser, useLabConfig } from "./lib/useUser";
 import { useLivelloMemoria } from "./lib/useLivelloMemoria";
 
 import AllenamentiPage from "./pages/Allenamenti";
@@ -91,6 +91,7 @@ function MobileHomeIndicator() {
 
 import { ManualeUtenteModal } from "./components/ManualeUtenteModal";
 import { RoleSwitcherModal } from "./components/RoleSwitcherModal";
+import { CalendarNotificationBell } from "./components/CalendarNotificationBell";
 
 function AppHeader({
   onOpenManual,
@@ -100,6 +101,7 @@ function AppHeader({
   onOpenSwitcher?: () => void;
 }) {
   const { user, isManager } = useCurrentUser();
+  const { config } = useLabConfig();
   const { livello: livelloMemoria } = useLivelloMemoria();
   const location = useLocation();
 
@@ -125,6 +127,15 @@ function AppHeader({
       </Link>
 
       <div className="flex items-center gap-1.5">
+        {user && (
+          <CalendarNotificationBell
+            userId={user.id}
+            userNome={user.nome}
+            userPhone={user.telefono}
+            coachPhone={config?.notifica_whatsapp}
+          />
+        )}
+
         {onOpenManual && (
           <button
             type="button"

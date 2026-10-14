@@ -6,7 +6,15 @@ export interface AppUser {
   cognome?: string;
   telefono?: string;
   codice_fiscale?: string;
+  partita_iva?: string;
+  pec?: string;
+  codice_sdi?: string;
   indirizzo?: string;
+  indirizzo_via?: string;
+  civico?: string;
+  cap?: string;
+  citta?: string;
+  provincia?: string;
   ruolo?: "manager" | "atleta";
   crediti?: number;
   data_scadenza_crediti?: string;

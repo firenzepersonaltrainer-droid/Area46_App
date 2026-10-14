@@ -63,6 +63,9 @@ import {
 import { AIBookingConcierge } from "../components/AIBookingConcierge";
 import { InfoContinuativoModal } from "../components/InfoContinuativoModal";
 import { ManualeUtenteModal } from "../components/ManualeUtenteModal";
+import { WaitlistModal } from "../components/WaitlistModal";
+import { getSimulatedSlotState, getStoredWaitlist } from "../lib/useSimulatedCalendar";
+import { Bell } from "lucide-react";
 import { toast } from "sonner";
 
 interface Prenotazione {
@@ -72,7 +75,8 @@ interface Prenotazione {
   email_cliente: string;
   nome_cliente: string;
   telefono_cliente?: string;
-  stato: "confermata" | "cancellata_in_tempo" | "cancellata_tardiva" | "completata";
+  atleta_id?: string;
+  stato: "confermata" | "cancellata_in_tempo" | "cancellata_tardiva" | "completata" | "attiva";
   credito_scalato: boolean;
   created_at: string;
 }
@@ -175,80 +179,7 @@ function hashString(str: string): number {
   return Math.abs(hash);
 }
 
-function getOptionReleaseSeconds(dateStr: string, orario: string, slotIndex: number, currentTimestamp: number): { min: number; sec: number; totalSec: number } {
-  const slotHash = hashString(`${dateStr}-${orario}-${slotIndex}`);
-  const cycleSec = 900; // 15 minuti di ciclo
-  const offset = (slotHash % 600) + 120; // offset tra 2 e 12 minuti
-  const nowSec = Math.floor(currentTimestamp / 1000);
-  const remainingTotal = cycleSec - ((nowSec + offset) % cycleSec);
-  const min = Math.floor(remainingTotal / 60);
-  const sec = remainingTotal % 60;
-  return { min, sec, totalSec: remainingTotal };
-}
-
-function trovaSlotAdiacente(orarioTarget: string, orariDisponibili: string[]): string {
-  if (!orariDisponibili || orariDisponibili.length === 0) return "18:00";
-  const [targetH, targetM] = orarioTarget.split(":").map(Number);
-  const targetMin = targetH * 60 + targetM;
-
-  const candidati = orariDisponibili.filter((o) => o !== orarioTarget);
-  if (candidati.length === 0) return orariDisponibili[0];
-
-  let bestSlot = candidati[0];
-  let minDiff = 9999;
-
-  for (const c of candidati) {
-    const [h, m] = c.split(":").map(Number);
-    const cMin = h * 60 + m;
-    const diff = Math.abs(cMin - targetMin);
-    if (diff < minDiff) {
-      minDiff = diff;
-      bestSlot = c;
-    }
-  }
-  return bestSlot;
-}
-
-function getSimulatedSlotState(dateStr: string, orario: string, slotIndex: number, currentTimestamp: number = Date.now()) {
-  const dateHash = hashString(dateStr);
-  const slotHash = hashString(`${dateStr}-${orario}-${slotIndex}`);
-
-  // Settimana dell'anno (ruota ogni 7 giorni)
-  const d = new Date(dateStr + "T00:00:00");
-  const firstJan = new Date(d.getFullYear(), 0, 1);
-  const weekNumber = Math.ceil(((d.getTime() - firstJan.getTime()) / 86400000 + firstJan.getDay() + 1) / 7);
-
-  // Seme deterministico per il giorno e la settimana
-  const daySeed = (dateHash + weekNumber * 101) % 1000;
-
-  // Valore deterministico per questo slot
-  const val = (slotHash + daySeed) % 100;
-
-  // 15% di slot completi simulati
-  const isSimulatedFull = val < 15;
-  // 20% di slot opzionati temporaneamente da altro atleta (con timer rilascio)
-  const isSimulatedOptioned = !isSimulatedFull && val >= 15 && val < 35;
-  // 25% di slot in scarsità (val tra 35 e 60)
-  const isSimulatedScarce = !isSimulatedFull && !isSimulatedOptioned && val >= 35 && val < 60;
-
-  const copyIndex = (slotHash + weekNumber) % COPY_SCARSITA_VARIANTS.length;
-
-  const { min: optionReleaseMin, sec: optionReleaseSec } = getOptionReleaseSeconds(
-    dateStr,
-    orario,
-    slotIndex,
-    currentTimestamp
-  );
-
-  return {
-    isSimulatedFull,
-    isSimulatedOptioned,
-    isSimulatedScarce,
-    copy: COPY_SCARSITA_VARIANTS[copyIndex],
-    optionReleaseMin,
-    optionReleaseSec,
-  };
-}
+// Il calcolo dello stato simulato e della lista d'attesa è ora gestito dal modulo centralizzato ../lib/useSimulatedCalendar
 
 export default function AreaPersonalePage() {
   const navigate = useNavigate();
@@ -292,13 +223,21 @@ export default function AreaPersonalePage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Modale per slot opzionato da altro atleta
-  const [optionedModalSlot, setOptionedModalSlot] = useState<{
+  // Modale lista d'attesa 'Avvisami se si libera'
+  const [waitlistModalSlot, setWaitlistModalSlot] = useState<{
     data: string;
     orario: string;
-    adiacente: string;
-    slotIndex: number;
+    tipo: "reale" | "simulato";
+    stato: "occupato" | "opzionato";
+    countdownMin?: number;
+    countdownSec?: number;
   } | null>(null);
+  const [waitlistVersion, setWaitlistVersion] = useState(0);
+
+  const myWaitlist = useMemo(() => {
+    if (!user?.id) return [];
+    return getStoredWaitlist(user.id);
+  }, [user?.id, waitlistVersion]);
 
   // Code prioritarie dell'atleta (salvate in localStorage per persistenza)
   const [codePrioritarie, setCodePrioritarie] = useState<Array<{ data: string; orario: string; expiresAt: number }>>(() => {
@@ -394,6 +333,66 @@ export default function AreaPersonalePage() {
   const [codiceFiscale, setCodiceFiscale] = useState(user?.codice_fiscale || "");
   const [indirizzo, setIndirizzo] = useState(user?.indirizzo || "");
   const [completedTx, setCompletedTx] = useState<any | null>(null);
+
+  // ─── STATO ANAGRAFICA FISCALE ATLETA (SGG CONFORME) ─────────────────────────
+  const [fiscalModalOpen, setFiscalModalOpen] = useState(false);
+  const [fiscalForm, setFiscalForm] = useState({
+    telefono: "",
+    codice_fiscale: "",
+    partita_iva: "",
+    pec: "",
+    codice_sdi: "0000000",
+    indirizzo_via: "",
+    civico: "",
+    cap: "",
+    citta: "",
+    provincia: "",
+  });
+
+  const handleOpenFiscalModal = () => {
+    if (user) {
+      setFiscalForm({
+        telefono: user.telefono || "",
+        codice_fiscale: user.codice_fiscale || "",
+        partita_iva: user.partita_iva || "",
+        pec: user.pec || "",
+        codice_sdi: user.codice_sdi || "0000000",
+        indirizzo_via: user.indirizzo_via || "",
+        civico: user.civico || "",
+        cap: user.cap || "",
+        citta: user.citta || "",
+        provincia: user.provincia || "",
+      });
+    }
+    setFiscalModalOpen(true);
+  };
+
+  const updateFiscalMutation = useMutation({
+    mutationFn: async (payload: any) => {
+      if (!user?.id) throw new Error("Utente non identificato");
+      const res = await fetch(`/app-api/profili/${user.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Errore durante il salvataggio dei dati");
+      }
+      return res.json();
+    },
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["profili"] });
+      setFiscalModalOpen(false);
+      if (updated?.codice_fiscale) setCodiceFiscale(updated.codice_fiscale);
+      if (updated?.indirizzo) setIndirizzo(updated.indirizzo);
+      toast.success("Dati anagrafici e fiscali salvati con successo!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Errore aggiornamento dati fiscali");
+    },
+  });
 
   // ─── STATO MODALI (AI CONCIERGE, CONTINUATIVO INFO, MANUALE UTENTE) ────────
   const [showAIModal, setShowAIModal] = useState(false);
@@ -1111,11 +1110,11 @@ export default function AreaPersonalePage() {
                     {isInteroGiornoChiuso
                       ? "Lab Chiuso"
                       : `${
-                          orariGiorno.filter((o, idx) => {
+                          orariGiorno.filter((o) => {
                             const hasReal = prenotazioniGiorno.some((p) => p.orario === o);
                             if (hasReal) return false;
-                            const sim = getSimulatedSlotState(selectedDate, o, idx);
-                            return !sim.isSimulatedFull;
+                            const sim = getSimulatedSlotState(selectedDate, o);
+                            return !sim || sim.stato !== "occupato";
                           }).length
                         } slot liberi`}
                   </span>
@@ -1177,20 +1176,35 @@ export default function AreaPersonalePage() {
                         );
                       }
 
+                      const isWaitlisted = myWaitlist.some((w) => w.data === selectedDate && w.orario === orario);
+
                       if (isOccupato) {
                         return (
                           <div
                             key={orario}
-                            className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-400 select-none"
+                            onClick={() => {
+                              setWaitlistModalSlot({
+                                data: selectedDate,
+                                orario,
+                                tipo: "reale",
+                                stato: "occupato",
+                              });
+                            }}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-500 hover:border-zinc-300 transition-all cursor-pointer"
                           >
                             <div className="flex items-center gap-2">
-                              <Clock className="size-4 text-zinc-300" />
+                              <Clock className="size-4 text-zinc-400" />
                               <span className="text-sm font-bold tabular-nums line-through decoration-zinc-300">
                                 {orario}
                               </span>
+                              <span className="text-xs font-semibold text-zinc-600">Completo</span>
                             </div>
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-600 flex items-center gap-1">
-                              <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                              isWaitlisted
+                                ? "bg-amber-100 text-amber-900 border border-amber-300"
+                                : "bg-zinc-200/80 text-zinc-700 hover:bg-zinc-300"
+                            }`}>
+                              <Bell className="size-3" /> {isWaitlisted ? "Avviso attivo" : "Avvisami se si libera"}
                             </span>
                           </div>
                         );
@@ -1219,40 +1233,54 @@ export default function AreaPersonalePage() {
                         );
                       }
 
-                      // Calcolo stato dinamico rotante (full simulato vs opzionato vs scarsità vs libero)
-                      const sim = getSimulatedSlotState(selectedDate, orario, index, liveNow);
+                      // Simulazione controllata e dinamica Area46 (2-4 slot/settimana max con decadimento a 5 settimane)
+                      const sim = getSimulatedSlotState(selectedDate, orario, liveNow);
 
-                      if (sim.isSimulatedFull) {
+                      if (sim?.stato === "occupato") {
                         return (
                           <div
                             key={orario}
-                            className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-400 select-none"
+                            onClick={() => {
+                              setWaitlistModalSlot({
+                                data: selectedDate,
+                                orario,
+                                tipo: "simulato",
+                                stato: "occupato",
+                              });
+                            }}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-500 hover:border-zinc-300 transition-all cursor-pointer"
                           >
                             <div className="flex items-center gap-2">
-                              <Clock className="size-4 text-zinc-300" />
+                              <Clock className="size-4 text-zinc-400" />
                               <span className="text-sm font-bold tabular-nums line-through decoration-zinc-300">
                                 {orario}
                               </span>
+                              <span className="text-xs font-semibold text-zinc-600">Completo</span>
                             </div>
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-600 flex items-center gap-1">
-                              <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                              isWaitlisted
+                                ? "bg-amber-100 text-amber-900 border border-amber-300"
+                                : "bg-zinc-200/80 text-zinc-700 hover:bg-zinc-300"
+                            }`}>
+                              <Bell className="size-3" /> {isWaitlisted ? "Avviso attivo" : "Avvisami se si libera"}
                             </span>
                           </div>
                         );
                       }
 
-                      if (sim.isSimulatedOptioned) {
+                      if (sim?.stato === "opzionato") {
                         return (
                           <button
                             key={orario}
                             type="button"
                             onClick={() => {
-                              const adiacente = trovaSlotAdiacente(orario, orariGiorno);
-                              setOptionedModalSlot({
+                              setWaitlistModalSlot({
                                 data: selectedDate,
                                 orario,
-                                adiacente,
-                                slotIndex: index,
+                                tipo: "simulato",
+                                stato: "opzionato",
+                                countdownMin: sim.countdownMin,
+                                countdownSec: sim.countdownSec,
                               });
                             }}
                             className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/70 border border-amber-300 hover:border-amber-500 transition-all shadow-2xs group cursor-pointer text-left"
@@ -1268,23 +1296,23 @@ export default function AreaPersonalePage() {
                                   </span>
                                   <span className="text-[9px] font-mono font-black px-1.5 py-0.2 rounded-full bg-amber-200 text-amber-900 border border-amber-300 flex items-center gap-1">
                                     <Clock className="size-2.5 text-amber-800 animate-pulse" />
-                                    Rilascio: {sim.optionReleaseMin}m {sim.optionReleaseSec.toString().padStart(2, "0")}s
+                                    Rilascio: {sim.countdownMin}m {String((sim.countdownSec || 0) % 60).padStart(2, "0")}s
                                   </span>
                                 </div>
                                 <span className="text-[10px] text-amber-900/80">
-                                  Un altro atleta sta completando la conferma
+                                  {isWaitlisted ? "Iscritto alla lista d'attesa" : "Tocca per ricevere l'avviso se si libera"}
                                 </span>
                               </div>
                             </div>
 
                             <span className="text-xs font-black text-amber-900 group-hover:text-[#1c00ff] transition-colors flex items-center gap-0.5">
-                              Opzioni &rarr;
+                              {isWaitlisted ? "Attivo 🔔" : "Avvisami &rarr;"}
                             </span>
                           </button>
                         );
                       }
 
-                      const isScarce = sim.isSimulatedScarce;
+                      const isPeak = ["07:30", "13:00", "17:00", "18:00", "19:00"].includes(orario);
 
                       return (
                         <button
@@ -1307,7 +1335,7 @@ export default function AreaPersonalePage() {
                             setSlotDaPrenotare(orario);
                           }}
                           className={`flex items-center justify-between p-3 rounded-2xl border transition-all shadow-2xs group cursor-pointer text-left ${
-                            isScarce
+                            isPeak
                               ? "bg-amber-50/40 hover:bg-amber-50/70 border-amber-200/90 hover:border-amber-400"
                               : "bg-white hover:bg-zinc-50 border-zinc-200 hover:border-[#1c00ff]/60"
                           }`}
@@ -1315,7 +1343,7 @@ export default function AreaPersonalePage() {
                           <div className="flex items-center gap-2.5">
                             <div
                               className={`size-8 rounded-xl flex items-center justify-center font-bold text-xs transition-colors ${
-                                isScarce
+                                isPeak
                                   ? "bg-amber-200/80 text-amber-950 font-black group-hover:bg-[#1c00ff] group-hover:text-white"
                                   : "bg-zinc-100 text-zinc-800 group-hover:bg-[#1c00ff] group-hover:text-white"
                               }`}
@@ -1325,18 +1353,11 @@ export default function AreaPersonalePage() {
                             <div className="flex flex-col">
                               <div className="flex items-center gap-1.5">
                                 <span className="text-xs font-black text-zinc-900">
-                                  {isScarce ? sim.copy.title : (slotInfo?.nome_attivita || "Landmine Lab")}
+                                  {slotInfo?.nome_attivita || "Landmine Lab"}
                                 </span>
-                                {isScarce && (
-                                  <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                                    {sim.copy.badge}
-                                  </span>
-                                )}
                               </div>
                               <span className="text-[10px] text-zinc-500">
-                                {isScarce
-                                  ? sim.copy.sub
-                                  : `1 Posto • ${slotInfo?.costo_crediti ?? 1} Credito`}
+                                1 Posto • {slotInfo?.costo_crediti ?? 1} Credito
                               </span>
                             </div>
                           </div>
@@ -2235,8 +2256,30 @@ export default function AreaPersonalePage() {
               </div>
               <div className="flex justify-between pt-1.5">
                 <span className="text-zinc-500">Codice Fiscale:</span>
-                <span className="font-mono text-zinc-900">{user?.codice_fiscale || "N/D"}</span>
+                <span className="font-mono text-zinc-900">{user?.codice_fiscale || "Non specificato"}</span>
               </div>
+              {user?.partita_iva && (
+                <div className="flex justify-between pt-1.5">
+                  <span className="text-zinc-500">Partita IVA:</span>
+                  <span className="font-mono text-zinc-900">{user.partita_iva}</span>
+                </div>
+              )}
+              <div className="flex justify-between pt-1.5">
+                <span className="text-zinc-500">PEC (Fattura Elettronica):</span>
+                <span className="text-zinc-900 font-medium">{user?.pec || "Non configurata"}</span>
+              </div>
+              <div className="flex justify-between pt-1.5">
+                <span className="text-zinc-500">Residenza / Sede:</span>
+                <span className="text-zinc-900 text-right max-w-[60%] font-medium">
+                  {user?.indirizzo || "Non specificata"}
+                </span>
+              </div>
+              {user?.codice_sdi && user.codice_sdi !== "0000000" && (
+                <div className="flex justify-between pt-1.5">
+                  <span className="text-zinc-500">Codice SDI:</span>
+                  <span className="font-mono text-zinc-900">{user.codice_sdi}</span>
+                </div>
+              )}
               <div className="flex justify-between pt-1.5">
                 <span className="text-zinc-500">Policy Cancellazione Assegnata:</span>
                 <strong className="text-[#1c00ff]">{policyPersonaleOre} ore di preavviso</strong>
@@ -2246,6 +2289,17 @@ export default function AreaPersonalePage() {
                 <strong className="text-zinc-900">
                   {user?.data_scadenza_crediti || "Senza scadenza"}
                 </strong>
+              </div>
+
+              <div className="pt-2.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleOpenFiscalModal}
+                  className="w-full rounded-2xl text-xs font-bold border-zinc-200 hover:bg-zinc-50 text-zinc-800 flex items-center justify-center gap-1.5 h-9"
+                >
+                  <span>✏️ Aggiorna Dati Fiscali & Residenza</span>
+                </Button>
               </div>
             </div>
           </div>
@@ -3110,134 +3164,23 @@ export default function AreaPersonalePage() {
         </DialogContent>
       </Dialog>
 
-      {/* MODALE SLOT OPZIONATO DA ALTRO ATLETA */}
-      <Dialog
-        open={!!optionedModalSlot}
-        onOpenChange={(open) => {
-          if (!open) setOptionedModalSlot(null);
-        }}
-      >
-        <DialogContent className="max-w-sm bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
-          <div className="mx-auto size-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-2 border border-amber-200">
-            <Clock className="size-6 text-amber-700 animate-pulse" />
-          </div>
-
-          <DialogHeader className="text-center">
-            <DialogTitle className="text-lg font-black text-zinc-900">
-              Posto Provvisoriamente Opzionato
-            </DialogTitle>
-            <DialogDescription className="text-xs text-zinc-500 mt-1">
-              Un altro atleta ha momentaneamente riservato questo turno.
-            </DialogDescription>
-          </DialogHeader>
-
-          {optionedModalSlot && (() => {
-            const rel = getOptionReleaseSeconds(
-              optionedModalSlot.data,
-              optionedModalSlot.orario,
-              optionedModalSlot.slotIndex,
-              liveNow
-            );
-            const userHasCredits = !hasDebt && !isZeroCredits && !isExpired && crediti > 0;
-
-            return (
-              <>
-                <div className="my-4 space-y-3">
-                  <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs space-y-1 text-center">
-                    <div className="text-[10px] font-black uppercase text-amber-800 tracking-wider">
-                      Tempo Rimanente al Rilascio Automatico
-                    </div>
-                    <div className="text-2xl font-black font-mono text-amber-950">
-                      {rel.min}:{rel.sec.toString().padStart(2, "0")} min
-                    </div>
-                    <p className="text-[11px] text-amber-900/80 leading-tight">
-                      Se l&apos;atleta non conferma entro lo scadere del timer, la pedana torna immediatamente prenotabile.
-                    </p>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-2">
-                    <div className="font-black text-zinc-900 flex items-center gap-1.5">
-                      <Sparkles className="size-4 text-[#1c00ff]" />
-                      Le tue opzioni rapide:
-                    </div>
-                    <p className="text-[11px] text-zinc-600 leading-snug">
-                      • <strong>Blocca turno adiacente delle {optionedModalSlot.adiacente}</strong> ({formatGiornoItaliano(optionedModalSlot.data)}).
-                      <br />
-                      • Oppure <strong>Mettiti in Coda Prioritaria</strong> per le {optionedModalSlot.orario} e riceverai il posto appena liberato.
-                    </p>
-                  </div>
-                </div>
-
-                <DialogFooter className="flex flex-col gap-2">
-                  <Button
-                    onClick={() => {
-                      if (!optionedModalSlot) return;
-                      const targetSlot = {
-                        data: optionedModalSlot.data,
-                        orario: optionedModalSlot.adiacente,
-                      };
-                      if (userHasCredits) {
-                        prenotaMutation.mutate(targetSlot);
-                        setOptionedModalSlot(null);
-                      } else {
-                        localStorage.setItem(
-                          "area46_frozen_slot",
-                          JSON.stringify({
-                            data: targetSlot.data,
-                            orario: targetSlot.orario,
-                            expiresAt: Date.now() + 15 * 60 * 1000,
-                          })
-                        );
-                        setOptionedModalSlot(null);
-                        setActiveTab("tariffario");
-                        toast.success(`Postazione delle ${targetSlot.orario} congelata per 15 minuti!`);
-                      }
-                    }}
-                    className="w-full rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black h-10 text-xs cursor-pointer"
-                  >
-                    Blocca Turno Adiacente delle {optionedModalSlot.adiacente} {userHasCredits ? "(-1 Credito)" : "→"}
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      if (!optionedModalSlot) return;
-                      if (userHasCredits) {
-                        aggiungiCodaPrioritaria(optionedModalSlot.data, optionedModalSlot.orario, rel.totalSec);
-                        setOptionedModalSlot(null);
-                        toast.success(`Coda prioritaria registrata per le ${optionedModalSlot.orario}! Ti verrà assegnato allo scadere del timer (${rel.min}m ${rel.sec}s).`);
-                      } else {
-                        localStorage.setItem(
-                          "area46_frozen_slot",
-                          JSON.stringify({
-                            data: optionedModalSlot.data,
-                            orario: optionedModalSlot.orario,
-                            expiresAt: Date.now() + 15 * 60 * 1000,
-                          })
-                        );
-                        setOptionedModalSlot(null);
-                        setActiveTab("tariffario");
-                        toast.success(`Coda prioritaria attivata per le ${optionedModalSlot.orario}!`);
-                      }
-                    }}
-                    className="w-full rounded-xl border-amber-300 bg-amber-50 text-amber-950 font-bold h-9 text-xs hover:bg-amber-100 cursor-pointer"
-                  >
-                    Mettiti in Coda Prioritaria ({optionedModalSlot.orario})
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    onClick={() => setOptionedModalSlot(null)}
-                    className="text-xs text-zinc-500 h-7 cursor-pointer"
-                  >
-                    Resta sul giorno
-                  </Button>
-                </DialogFooter>
-              </>
-            );
-          })()}
-        </DialogContent>
-      </Dialog>
+      {/* MODALE LISTA D'ATTESA E AVVISO SBLOCCO POSTAZIONE */}
+      <WaitlistModal
+        open={!!waitlistModalSlot}
+        onOpenChange={(op) => !op && setWaitlistModalSlot(null)}
+        slot={waitlistModalSlot}
+        userId={user?.id}
+        userNome={user?.nome}
+        userPhone={user?.telefono}
+        coachPhone={config?.notifica_whatsapp}
+        isSubscribed={
+          !!waitlistModalSlot &&
+          myWaitlist.some(
+            (w) => w.data === waitlistModalSlot.data && w.orario === waitlistModalSlot.orario
+          )
+        }
+        onSubscriptionChange={() => setWaitlistVersion((v) => v + 1)}
+      />
 
       {/* MODALE INSERIMENTO PIN COACH */}
       <Dialog open={coachPinModal} onOpenChange={setCoachPinModal}>
@@ -3288,6 +3231,207 @@ export default function AreaPersonalePage() {
               Sblocca
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── MODALE AGGIORNAMENTO ANAGRAFICA FISCALE & RESIDENZA (SGG CONFORME) ─── */}
+      <Dialog open={fiscalModalOpen} onOpenChange={setFiscalModalOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
+              <Receipt className="size-5 text-[#1c00ff]" />
+              Dati Fiscali & Residenza
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500">
+              Inserisci o aggiorna i tuoi recapiti per la fatturazione elettronica e le ricevute del Lab.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateFiscalMutation.mutate({
+                telefono: fiscalForm.telefono.trim(),
+                codice_fiscale: fiscalForm.codice_fiscale.trim().toUpperCase(),
+                partita_iva: fiscalForm.partita_iva.trim(),
+                pec: fiscalForm.pec.trim().toLowerCase(),
+                codice_sdi: fiscalForm.codice_sdi.trim().toUpperCase() || "0000000",
+                indirizzo_via: fiscalForm.indirizzo_via.trim(),
+                civico: fiscalForm.civico.trim(),
+                cap: fiscalForm.cap.trim(),
+                citta: fiscalForm.citta.trim(),
+                provincia: fiscalForm.provincia.trim().toUpperCase(),
+              });
+            }}
+            className="my-3 space-y-3 text-xs"
+          >
+            {/* TELEFONO */}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                Telefono (WhatsApp)
+              </label>
+              <Input
+                type="tel"
+                value={fiscalForm.telefono}
+                onChange={(e) => setFiscalForm({ ...fiscalForm, telefono: e.target.value })}
+                placeholder="+39 333 1234567"
+              />
+            </div>
+
+            {/* SEZIONE FISCALE */}
+            <div className="p-3 bg-zinc-50 border border-zinc-200/90 rounded-2xl space-y-2.5">
+              <span className="text-[10px] font-bold uppercase text-zinc-700 block">
+                🏛️ Codice Fiscale & Fattura Elettronica
+              </span>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    Codice Fiscale *
+                  </label>
+                  <Input
+                    required
+                    value={fiscalForm.codice_fiscale}
+                    onChange={(e) =>
+                      setFiscalForm({ ...fiscalForm, codice_fiscale: e.target.value.toUpperCase() })
+                    }
+                    placeholder="RSSMRA80A01H501U"
+                    className="font-mono text-xs uppercase"
+                  />
+                </div>
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    Partita IVA (Opzionale)
+                  </label>
+                  <Input
+                    value={fiscalForm.partita_iva}
+                    onChange={(e) => setFiscalForm({ ...fiscalForm, partita_iva: e.target.value })}
+                    placeholder="12345678901"
+                    className="font-mono text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    PEC (Professionisti/Aziende)
+                  </label>
+                  <Input
+                    type="email"
+                    value={fiscalForm.pec}
+                    onChange={(e) => setFiscalForm({ ...fiscalForm, pec: e.target.value.toLowerCase() })}
+                    placeholder="nome@pec.it"
+                    className="text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    Codice SDI (7 caratteri)
+                  </label>
+                  <Input
+                    maxLength={7}
+                    value={fiscalForm.codice_sdi}
+                    onChange={(e) =>
+                      setFiscalForm({ ...fiscalForm, codice_sdi: e.target.value.toUpperCase() })
+                    }
+                    placeholder="0000000"
+                    className="font-mono text-xs uppercase"
+                  />
+                </div>
+              </div>
+
+              {/* RESIDENZA STRUTTURATA */}
+              <div className="pt-2 border-t border-zinc-200 space-y-2">
+                <span className="text-[9px] font-bold uppercase text-zinc-600 block">
+                  📍 Residenza Fiscale
+                </span>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="col-span-2">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      Indirizzo (Via / Piazza)
+                    </label>
+                    <Input
+                      value={fiscalForm.indirizzo_via}
+                      onChange={(e) => setFiscalForm({ ...fiscalForm, indirizzo_via: e.target.value })}
+                      placeholder="Es. Via de' Tornabuoni"
+                      className="text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      Civico
+                    </label>
+                    <Input
+                      value={fiscalForm.civico}
+                      onChange={(e) => setFiscalForm({ ...fiscalForm, civico: e.target.value })}
+                      placeholder="15/B"
+                      className="text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2">
+                  <div className="col-span-1">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      CAP
+                    </label>
+                    <Input
+                      maxLength={5}
+                      value={fiscalForm.cap}
+                      onChange={(e) => setFiscalForm({ ...fiscalForm, cap: e.target.value })}
+                      placeholder="50123"
+                      className="text-xs font-mono"
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      Città / Comune
+                    </label>
+                    <Input
+                      value={fiscalForm.citta}
+                      onChange={(e) => setFiscalForm({ ...fiscalForm, citta: e.target.value })}
+                      placeholder="Firenze"
+                      className="text-xs"
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      Prov.
+                    </label>
+                    <Input
+                      maxLength={2}
+                      value={fiscalForm.provincia}
+                      onChange={(e) =>
+                        setFiscalForm({ ...fiscalForm, provincia: e.target.value.toUpperCase() })
+                      }
+                      placeholder="FI"
+                      className="text-xs font-mono uppercase"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="flex gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setFiscalModalOpen(false)}
+                className="flex-1 rounded-xl"
+              >
+                Annulla
+              </Button>
+              <Button
+                type="submit"
+                disabled={updateFiscalMutation.isPending}
+                className="flex-1 rounded-xl bg-[#1c00ff] text-white hover:bg-[#1600cc] font-black"
+              >
+                {updateFiscalMutation.isPending ? "Salvataggio..." : "Salva Dati"}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 

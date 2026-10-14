@@ -8,6 +8,7 @@
     "build": "vite build && esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
     "build:api": "esbuild api-src/index.ts --bundle --platform=node --format=esm --outfile=api/index.js",
     "sync-glide": "node scripts/sync_glide.mjs",
+    "sync-sgg": "python3 scripts/sync_to_sgg.py",
     "backup": "node scripts/backup_manager.mjs backup",
     "restore": "node scripts/backup_manager.mjs restore",
     "verify": "node scripts/backup_manager.mjs verify",

@@ -182,7 +182,7 @@ export default function ManagerFiscoPage() {
 
   const handleConfirmDeleteTx = async () => {
     if (!txDaCancellare) return;
-    await eliminaTxMutation.mutateAsync(txDaCancellare.codice_transazione || txDaCancellare.id);
+    await eliminaTxMutation.mutateAsync(txDaCancellare.codice_transazione || (txDaCancellare as any).id);
   };
 
   // Sync with config on load - non sovrascrive mai dati locali validi con stringhe vuote

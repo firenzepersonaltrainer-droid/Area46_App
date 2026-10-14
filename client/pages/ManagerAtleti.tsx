@@ -265,6 +265,16 @@ export default function ManagerAtletiPage() {
     if (atleta) {
       setEditForm({
         ...atleta,
+        codice_fiscale: atleta.codice_fiscale || "",
+        partita_iva: atleta.partita_iva || "",
+        pec: atleta.pec || "",
+        codice_sdi: atleta.codice_sdi || "0000000",
+        indirizzo: atleta.indirizzo || "",
+        indirizzo_via: atleta.indirizzo_via || "",
+        civico: atleta.civico || "",
+        cap: atleta.cap || "",
+        citta: atleta.citta || "",
+        provincia: atleta.provincia || "",
         tipo_abbonamento: atleta.tipo_abbonamento || "standard",
         stato_iscrizione: atleta.stato_iscrizione || "attivo",
         shared_wallet_with: atleta.shared_wallet_with || "",
@@ -278,7 +288,15 @@ export default function ManagerAtletiPage() {
         email: "",
         telefono: "",
         codice_fiscale: "",
+        partita_iva: "",
+        pec: "",
+        codice_sdi: "0000000",
         indirizzo: "",
+        indirizzo_via: "",
+        civico: "",
+        cap: "",
+        citta: "",
+        provincia: "",
         crediti: 10,
         tipo_abbonamento: "standard",
         stato_iscrizione: "attivo",
@@ -596,6 +614,19 @@ export default function ManagerAtletiPage() {
                       Anticipo: <strong>{atleta.tempo_anticipo_prenotazione_ore ?? 24}h</strong>
                     </span>
                   </div>
+                  {(atleta.codice_fiscale || atleta.indirizzo || atleta.pec) && (
+                    <div className="text-[10px] text-zinc-500 font-mono flex items-center gap-1.5 flex-wrap mt-0.5">
+                      {atleta.codice_fiscale && (
+                        <span>CF: <strong className="text-zinc-700">{atleta.codice_fiscale}</strong></span>
+                      )}
+                      {atleta.pec && (
+                        <span>• PEC: <strong className="text-zinc-700">{atleta.pec}</strong></span>
+                      )}
+                      {atleta.indirizzo && (
+                        <span>• 📍 <span className="text-zinc-700 font-sans">{atleta.indirizzo}</span></span>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-1.5 flex-wrap">
@@ -871,22 +902,23 @@ export default function ManagerAtletiPage() {
 
       {/* MODALE ANAGRAFICA ATLETA */}
       <Dialog open={anagraficaModalOpen} onOpenChange={setAnagraficaModalOpen}>
-        <DialogContent className="max-w-md bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl p-6 border border-zinc-200 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
               <Users className="size-5 text-[#1c00ff]" />
               {editForm.id ? "Modifica Anagrafica Atleta" : "Registra Nuovo Atleta"}
             </DialogTitle>
             <DialogDescription className="text-xs text-zinc-500">
-              Dati anagrafici e recapiti per notifiche e ricevute Lab.
+              Dati anagrafici, recapiti e residenza fiscale per ricevute Lab e conformità SGG.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="my-3 space-y-2.5 text-xs">
+          <div className="my-3 space-y-3 text-xs">
+            {/* NOME E COGNOME */}
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                  Nome
+                  Nome *
                 </label>
                 <Input
                   value={editForm.nome || ""}
@@ -896,7 +928,7 @@ export default function ManagerAtletiPage() {
               </div>
               <div>
                 <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                  Cognome
+                  Cognome *
                 </label>
                 <Input
                   value={editForm.cognome || ""}
@@ -906,42 +938,182 @@ export default function ManagerAtletiPage() {
               </div>
             </div>
 
-            <div>
-              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                Email
-              </label>
-              <Input
-                type="email"
-                value={editForm.email || ""}
-                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                placeholder="atleta@example.com"
-              />
-            </div>
-
-            <div>
-              <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                Telefono (WhatsApp)
-              </label>
-              <Input
-                value={editForm.telefono || ""}
-                onChange={(e) => setEditForm({ ...editForm, telefono: e.target.value })}
-                placeholder="+39 333 1234567"
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-2">
+            {/* EMAIL E TELEFONO */}
+            <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                  Codice Fiscale
+                  Email Ordinaria
                 </label>
                 <Input
-                  value={editForm.codice_fiscale || ""}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, codice_fiscale: e.target.value.toUpperCase() })
-                  }
-                  placeholder="Codice Fiscale"
+                  type="email"
+                  value={editForm.email || ""}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  placeholder="atleta@example.com"
                 />
               </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
+                  Telefono (WhatsApp)
+                </label>
+                <Input
+                  value={editForm.telefono || ""}
+                  onChange={(e) => setEditForm({ ...editForm, telefono: e.target.value })}
+                  placeholder="+39 333 1234567"
+                />
+              </div>
+            </div>
+
+            {/* SEZIONE DATI FISCALI & FATTURAZIONE ELETTRONICA (SGG CONFORME) */}
+            <div className="p-3 bg-zinc-50 border border-zinc-200/90 rounded-2xl space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase text-zinc-700 flex items-center gap-1.5">
+                  🏛️ Dati Fiscali (Sincronizzati con SGG)
+                </span>
+                <span className="text-[9px] font-bold text-zinc-400">SDI / Ricevute</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    Codice Fiscale
+                  </label>
+                  <Input
+                    value={editForm.codice_fiscale || ""}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, codice_fiscale: e.target.value.toUpperCase() })
+                    }
+                    placeholder="RSSMRA80A01H501U"
+                    className="font-mono text-xs uppercase"
+                  />
+                </div>
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    Partita IVA (Opzionale)
+                  </label>
+                  <Input
+                    value={editForm.partita_iva || ""}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, partita_iva: e.target.value })
+                    }
+                    placeholder="12345678901"
+                    className="font-mono text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    PEC (Fattura Elettronica)
+                  </label>
+                  <Input
+                    type="email"
+                    value={editForm.pec || ""}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, pec: e.target.value.toLowerCase() })
+                    }
+                    placeholder="atleta@pec.it"
+                    className="text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-[9px] font-bold uppercase text-zinc-500 block mb-1">
+                    Codice Destinatario SDI
+                  </label>
+                  <Input
+                    maxLength={7}
+                    value={editForm.codice_sdi || ""}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, codice_sdi: e.target.value.toUpperCase() })
+                    }
+                    placeholder="0000000"
+                    className="font-mono text-xs uppercase"
+                  />
+                </div>
+              </div>
+
+              {/* RESIDENZA FISCALE STRUTTURATA */}
+              <div className="pt-2 border-t border-zinc-200 space-y-2">
+                <span className="text-[9px] font-bold uppercase text-zinc-600 block">
+                  📍 Residenza / Domicilio Fiscale
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="col-span-2">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      Indirizzo (Via / Piazza)
+                    </label>
+                    <Input
+                      value={editForm.indirizzo_via || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, indirizzo_via: e.target.value })
+                      }
+                      placeholder="Es. Via del Landmine"
+                      className="text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      N. Civico
+                    </label>
+                    <Input
+                      value={editForm.civico || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, civico: e.target.value })
+                      }
+                      placeholder="46/B"
+                      className="text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2">
+                  <div className="col-span-1">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      CAP
+                    </label>
+                    <Input
+                      maxLength={5}
+                      value={editForm.cap || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, cap: e.target.value })
+                      }
+                      placeholder="50123"
+                      className="text-xs font-mono"
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      Comune / Città
+                    </label>
+                    <Input
+                      value={editForm.citta || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, citta: e.target.value })
+                      }
+                      placeholder="Firenze"
+                      className="text-xs"
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <label className="text-[9px] font-medium text-zinc-500 block mb-0.5">
+                      Prov.
+                    </label>
+                    <Input
+                      maxLength={2}
+                      value={editForm.provincia || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, provincia: e.target.value.toUpperCase() })
+                      }
+                      placeholder="FI"
+                      className="text-xs font-mono uppercase"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CREDITI & ANTICIPI */}
+            <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
                   Saldo Crediti

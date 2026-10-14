@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { neon, types } from "@neondatabase/serverless";
 import crypto from "node:crypto";
 import { auth } from "./auth";
+import { createGoogleCalendarLabSlot, deleteGoogleCalendarLabSlot } from "./local-api";
 
 types.setTypeParser(types.builtins.NUMERIC, (value) => Number(value));
 
@@ -636,10 +637,12 @@ app.post("/app-api/profili", async (c) => {
   const id = body.id || `usr-atleta-${Date.now()}`;
   const rows = await sql`
     INSERT INTO profili_utenti (
-      id, email, nome, cognome, telefono, codice_fiscale, indirizzo, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach, shared_wallet_with, tipo_abbonamento, stato_iscrizione
+      id, email, nome, cognome, telefono, codice_fiscale, partita_iva, pec, codice_sdi, indirizzo, indirizzo_via, civico, cap, citta, provincia, ruolo, crediti, tempo_cancellazione_ore, data_scadenza_crediti, note_coach, shared_wallet_with, tipo_abbonamento, stato_iscrizione
     ) VALUES (
-      ${id}, ${body.email}, ${body.nome}, ${body.cognome}, ${body.telefono || null}, ${body.codice_fiscale || null},
-      ${body.indirizzo || null}, 'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}, ${body.shared_wallet_with || null},
+      ${id}, ${body.email}, ${body.nome}, ${body.cognome}, ${body.telefono || null}, ${body.codice_fiscale ? String(body.codice_fiscale).trim().toUpperCase() : null},
+      ${body.partita_iva || null}, ${body.pec ? String(body.pec).trim().toLowerCase() : null}, ${body.codice_sdi || '0000000'},
+      ${body.indirizzo || null}, ${body.indirizzo_via || null}, ${body.civico || null}, ${body.cap || null}, ${body.citta || null}, ${body.provincia ? String(body.provincia).trim().toUpperCase() : null},
+      'atleta', ${Number(body.crediti || 0)}, ${Number(body.tempo_cancellazione_ore || 24)}, ${body.data_scadenza_crediti || null}, ${body.note_coach || null}, ${body.shared_wallet_with || null},
       ${body.tipo_abbonamento || 'standard'}, ${body.stato_iscrizione || 'attivo'}
     )
     ON CONFLICT (email) DO UPDATE SET
@@ -647,7 +650,15 @@ app.post("/app-api/profili", async (c) => {
       cognome = EXCLUDED.cognome,
       telefono = COALESCE(EXCLUDED.telefono, profili_utenti.telefono),
       codice_fiscale = COALESCE(EXCLUDED.codice_fiscale, profili_utenti.codice_fiscale),
+      partita_iva = COALESCE(EXCLUDED.partita_iva, profili_utenti.partita_iva),
+      pec = COALESCE(EXCLUDED.pec, profili_utenti.pec),
+      codice_sdi = COALESCE(EXCLUDED.codice_sdi, profili_utenti.codice_sdi),
       indirizzo = COALESCE(EXCLUDED.indirizzo, profili_utenti.indirizzo),
+      indirizzo_via = COALESCE(EXCLUDED.indirizzo_via, profili_utenti.indirizzo_via),
+      civico = COALESCE(EXCLUDED.civico, profili_utenti.civico),
+      cap = COALESCE(EXCLUDED.cap, profili_utenti.cap),
+      citta = COALESCE(EXCLUDED.citta, profili_utenti.citta),
+      provincia = COALESCE(EXCLUDED.provincia, profili_utenti.provincia),
       crediti = EXCLUDED.crediti,
       tempo_cancellazione_ore = EXCLUDED.tempo_cancellazione_ore,
       data_scadenza_crediti = COALESCE(EXCLUDED.data_scadenza_crediti, profili_utenti.data_scadenza_crediti),
@@ -672,8 +683,16 @@ app.put("/app-api/profili/:id", async (c) => {
       cognome = COALESCE(${body.cognome}, cognome),
       email = COALESCE(${body.email}, email),
       telefono = COALESCE(${body.telefono}, telefono),
-      codice_fiscale = COALESCE(${body.codice_fiscale}, codice_fiscale),
+      codice_fiscale = COALESCE(${body.codice_fiscale ? String(body.codice_fiscale).trim().toUpperCase() : null}, codice_fiscale),
+      partita_iva = COALESCE(${body.partita_iva}, partita_iva),
+      pec = COALESCE(${body.pec ? String(body.pec).trim().toLowerCase() : null}, pec),
+      codice_sdi = COALESCE(${body.codice_sdi}, codice_sdi),
       indirizzo = COALESCE(${body.indirizzo}, indirizzo),
+      indirizzo_via = COALESCE(${body.indirizzo_via}, indirizzo_via),
+      civico = COALESCE(${body.civico}, civico),
+      cap = COALESCE(${body.cap}, cap),
+      citta = COALESCE(${body.citta}, citta),
+      provincia = COALESCE(${body.provincia ? String(body.provincia).trim().toUpperCase() : null}, provincia),
       crediti = COALESCE(${body.crediti !== undefined ? Number(body.crediti) : null}, crediti),
       tempo_cancellazione_ore = COALESCE(${body.tempo_cancellazione_ore !== undefined ? Number(body.tempo_cancellazione_ore) : null}, tempo_cancellazione_ore),
       data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti}, data_scadenza_crediti),
@@ -1057,13 +1076,23 @@ app.post("/app-api/prenotazioni/batch", async (c) => {
   for (let i = 0; i < requestedSlots.length; i++) {
     const s = requestedSlots[i];
     const id = `bk-${now}-${i}`;
+    const nomeCliente = atleta ? `${atleta.nome} ${atleta.cognome}` : (user?.name || "Atleta");
+    const gcalId = await createGoogleCalendarLabSlot({
+      bookingId: id,
+      data: s.data,
+      orario: s.orario,
+      nomeCliente,
+      emailCliente: atletaEmail,
+      note: s.note || "Prenotazione Multipla",
+    }).catch(() => null);
+
     const rows = await sql`
       INSERT INTO prenotazioni_slot (
-        id, data, orario, atleta_id, email_cliente, nome_cliente, telefono_cliente, stato, credito_scalato, note
+        id, data, orario, atleta_id, email_cliente, nome_cliente, telefono_cliente, stato, credito_scalato, note, google_event_id
       ) VALUES (
         ${id}, ${s.data}::date, ${s.orario}, ${atleta?.id || null}, ${atletaEmail},
-        ${atleta ? `${atleta.nome} ${atleta.cognome}` : (user?.name || "Atleta")},
-        ${atleta?.telefono || null}, 'confermata', true, ${s.note || "Prenotazione Multipla"}
+        ${nomeCliente},
+        ${atleta?.telefono || null}, 'confermata', true, ${s.note || "Prenotazione Multipla"}, ${gcalId || null}
       )
       RETURNING *
     `;
@@ -1142,13 +1171,23 @@ app.post("/app-api/prenotazioni", async (c) => {
   }
 
   const id = `bk-${Date.now()}`;
+  const nomeCliente = atleta ? `${atleta.nome} ${atleta.cognome}` : (user?.name || "Atleta");
+  const gcalId = await createGoogleCalendarLabSlot({
+    bookingId: id,
+    data: body.data,
+    orario: body.orario,
+    nomeCliente,
+    emailCliente: atletaEmail,
+    note: body.note || null,
+  }).catch(() => null);
+
   const rows = await sql`
     INSERT INTO prenotazioni_slot (
-      id, data, orario, atleta_id, email_cliente, nome_cliente, telefono_cliente, stato, credito_scalato, note
+      id, data, orario, atleta_id, email_cliente, nome_cliente, telefono_cliente, stato, credito_scalato, note, google_event_id
     ) VALUES (
       ${id}, ${body.data}::date, ${body.orario}, ${atleta?.id || null}, ${atletaEmail},
-      ${atleta ? `${atleta.nome} ${atleta.cognome}` : (user?.name || "Atleta")},
-      ${atleta?.telefono || null}, 'confermata', true, ${body.note || null}
+      ${nomeCliente},
+      ${atleta?.telefono || null}, 'confermata', true, ${body.note || null}, ${gcalId || null}
     )
     RETURNING *
   `;
@@ -1251,6 +1290,14 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
     SET stato = ${statoFinale}, cancellato_il = NOW() 
     WHERE id = ${id}
   `;
+
+  // Cancellazione immediata da Google Calendar
+  const bkDateStrFinal = typeof bk.data === "string" ? bk.data : bk.data.toISOString().slice(0, 10);
+  await deleteGoogleCalendarLabSlot(bk.google_event_id, {
+    data: bkDateStrFinal,
+    orario: bk.orario,
+    nomeCliente: bk.nome_cliente,
+  }).catch(() => null);
 
   return c.json({
     ok: true,

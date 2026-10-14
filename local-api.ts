@@ -249,8 +249,205 @@ async function getGoogleDriveAccessToken() {
   }
 }
 
+const GCAL_CALENDAR_ID = "firenzepersonaltrainer@gmail.com";
+
+async function getGoogleCalendarAccessToken(): Promise<string | null> {
+  let creds: any = null;
+  if (fs.existsSync(CREDENZIALI_PATH)) {
+    try {
+      creds = JSON.parse(fs.readFileSync(CREDENZIALI_PATH, "utf-8"));
+    } catch {}
+  }
+  if (!creds && process.env.GOOGLE_SERVICE_ACCOUNT) {
+    try {
+      creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+    } catch {}
+  }
+  if (!creds) {
+    creds = FALLBACK_SERVICE_ACCOUNT;
+  }
+  if (!creds || !creds.client_email || !creds.private_key) return null;
+
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    const header = { alg: "RS256", typ: "JWT" };
+    const claim = {
+      iss: creds.client_email,
+      scope: "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
+      aud: creds.token_uri,
+      exp: now + 3600,
+      iat: now,
+    };
+    const signInput = `${base64url(JSON.stringify(header))}.${base64url(JSON.stringify(claim))}`;
+    const signer = crypto.createSign("RSA-SHA256");
+    signer.update(signInput);
+    const jwt = `${signInput}.${signer.sign(creds.private_key, "base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_")}`;
+
+    const res = await fetch(creds.token_uri, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        assertion: jwt,
+      }),
+    });
+    if (!res.ok) {
+      console.error("[GCAL AUTH] Errore richiesta token:", res.status, await res.text());
+      return null;
+    }
+    const data = await res.json();
+    return data.access_token || null;
+  } catch (err) {
+    console.error("[GCAL AUTH ERROR]", err);
+    return null;
+  }
+}
+
+function calculateSlotEndTime(startTime: string): string {
+  try {
+    const parts = startTime.split(":");
+    const h = parseInt(parts[0], 10);
+    const m = parseInt(parts[1] || "0", 10);
+    const tot = h * 60 + m + 15;
+    const endH = Math.floor(tot / 60) % 24;
+    const endM = tot % 60;
+    return `${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`;
+  } catch {
+    return startTime;
+  }
+}
+
+export async function createGoogleCalendarLabSlot(slot: {
+  bookingId: string;
+  data: string;
+  orario: string;
+  nomeCliente: string;
+  emailCliente?: string;
+  note?: string;
+}): Promise<string | null> {
+  try {
+    const token = await getGoogleCalendarAccessToken();
+    if (!token) return null;
+
+    const endOrario = calculateSlotEndTime(slot.orario);
+    const summary = `🏋️ [LAB] ${slot.nomeCliente || "Atleta Landmine"}`;
+    const description = `Prenotazione slot da Area46 Landmine Lab\nAtleta: ${slot.nomeCliente || "Atleta"}\nEmail: ${slot.emailCliente || ""}\nNote: ${slot.note || "Nessuna"}\n[ID Prenotazione: ${slot.bookingId}]`;
+
+    const payload = {
+      summary,
+      description,
+      colorId: "6", // Tangerine / Arancione Google Calendar
+      start: {
+        dateTime: `${slot.data}T${slot.orario}:00+02:00`,
+        timeZone: "Europe/Rome",
+      },
+      end: {
+        dateTime: `${slot.data}T${endOrario}:00+02:00`,
+        timeZone: "Europe/Rome",
+      },
+      extendedProperties: {
+        private: {
+          origin: "AREA46_LAB",
+          booking_id: slot.bookingId,
+          athlete_name: slot.nomeCliente || "",
+        },
+      },
+    };
+
+    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log(`[GCAL SYNC] Creato slot arancione 15m (${slot.data} ${slot.orario}-${endOrario}) per ${slot.nomeCliente}. EventId: ${data.id}`);
+      return data.id || null;
+    } else {
+      console.error(`[GCAL SYNC ERROR] Errore creazione evento: ${res.status}`, await res.text());
+      return null;
+    }
+  } catch (err) {
+    console.error("[GCAL SYNC ERROR] Eccezione:", err);
+    return null;
+  }
+}
+
+export async function deleteGoogleCalendarLabSlot(
+  googleEventId?: string,
+  fallbackInfo?: { data: string; orario: string; nomeCliente: string }
+): Promise<boolean> {
+  try {
+    const token = await getGoogleCalendarAccessToken();
+    if (!token) return false;
+
+    if (googleEventId) {
+      const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events/${googleEventId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 200 || res.status === 204 || res.status === 404 || res.status === 410) {
+        console.log(`[GCAL SYNC] Cancellato con successo slot GCal EventId: ${googleEventId}`);
+        return true;
+      }
+    }
+
+    if (fallbackInfo?.data && fallbackInfo?.orario) {
+      const timeMin = `${fallbackInfo.data}T00:00:00Z`;
+      const timeMax = `${fallbackInfo.data}T23:59:59Z`;
+      const searchRes = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&q=${encodeURIComponent("[LAB]")}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (searchRes.ok) {
+        const searchData = await searchRes.json();
+        const startTarget = `${fallbackInfo.data}T${fallbackInfo.orario}`;
+        for (const it of searchData.items || []) {
+          if (
+            it.start?.dateTime?.startsWith(startTarget) ||
+            (fallbackInfo.nomeCliente && it.summary?.includes(fallbackInfo.nomeCliente))
+          ) {
+            await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events/${it.id}`, {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            console.log(`[GCAL SYNC FALLBACK] Cancellato evento corrispondente trovato su GCal: ${it.id} (${it.summary})`);
+          }
+        }
+      }
+    }
+    return true;
+  } catch (err) {
+    console.error("[GCAL SYNC DELETE ERROR]", err);
+    return false;
+  }
+}
+
 async function syncConfigToGoogleDrive(config: any) {
   return syncDataToGoogleDrive({ configurazione_lab: config });
+}
+
+function triggerSggSyncAsync() {
+  try {
+    const direct = path.resolve(__dirname, "scripts", "sync_to_sgg.py");
+    const parent = path.resolve(__dirname, "..", "scripts", "sync_to_sgg.py");
+    const scriptPath = fs.existsSync(direct) ? direct : fs.existsSync(parent) ? parent : null;
+    if (scriptPath) {
+      import("node:child_process").then(({ exec }) => {
+        exec(`python3 "${scriptPath}"`, (err) => {
+          if (err) {
+            console.warn("⚠️ [SGG SYNC] Background sync SGG:", err.message);
+          } else {
+            console.log("🔄 [SGG SYNC] Sincronizzazione automatica SGG completata con successo.");
+          }
+        });
+      }).catch(() => {});
+    }
+  } catch {}
 }
 
 let lastCloudFetchTime = 0;
@@ -1296,8 +1493,29 @@ direttamente dal Pannello Manager Atleti.
         cognome: (parsedBody.cognome || "Atleta").trim(),
         email: email,
         telefono: (parsedBody.telefono || "").trim(),
-        codice_fiscale: (parsedBody.codice_fiscale || "").trim(),
-        indirizzo: (parsedBody.indirizzo || "").trim(),
+        codice_fiscale: (parsedBody.codice_fiscale || "").trim().toUpperCase(),
+        partita_iva: (parsedBody.partita_iva || "").trim(),
+        pec: (parsedBody.pec || "").trim().toLowerCase(),
+        codice_sdi: (parsedBody.codice_sdi || "0000000").trim().toUpperCase(),
+        indirizzo: (() => {
+          const rawVia = (parsedBody.indirizzo_via || "").trim();
+          const rawCiv = (parsedBody.civico || "").trim();
+          const rawCap = (parsedBody.cap || "").trim();
+          const rawCit = (parsedBody.citta || "").trim();
+          const rawPrv = (parsedBody.provincia || "").trim().toUpperCase();
+          if (rawVia) {
+            return [
+              `${rawVia}${rawCiv ? " " + rawCiv : ""}`,
+              [rawCap, rawCit].filter(Boolean).join(" ") + (rawPrv ? ` (${rawPrv})` : "")
+            ].filter(Boolean).join(", ");
+          }
+          return (parsedBody.indirizzo || "").trim();
+        })(),
+        indirizzo_via: (parsedBody.indirizzo_via || "").trim(),
+        civico: (parsedBody.civico || "").trim(),
+        cap: (parsedBody.cap || "").trim(),
+        citta: (parsedBody.citta || "").trim(),
+        provincia: (parsedBody.provincia || "").trim().toUpperCase(),
         ruolo: parsedBody.ruolo || "atleta",
         crediti: creditiIniziali,
         anticipi_da_scontare: Number(parsedBody.anticipi_da_scontare || 0),
@@ -1419,6 +1637,7 @@ firenzepersonaltrainer@gmail.com
       }
 
       saveData(db);
+      triggerSggSyncAsync();
       await syncDataToGoogleDrive(db);
       res.statusCode = 201;
       return res.end(JSON.stringify({ ...nuovo, notifica_email: notificaEmail, isNew: existingIndex < 0 }));
@@ -1531,8 +1750,55 @@ firenzepersonaltrainer@gmail.com
       if (parsedBody.cognome !== undefined) profilo.cognome = parsedBody.cognome;
       if (parsedBody.email !== undefined) profilo.email = parsedBody.email;
       if (parsedBody.telefono !== undefined) profilo.telefono = parsedBody.telefono;
-      if (parsedBody.codice_fiscale !== undefined) profilo.codice_fiscale = parsedBody.codice_fiscale;
-      if (parsedBody.indirizzo !== undefined) profilo.indirizzo = parsedBody.indirizzo;
+      if (parsedBody.codice_fiscale !== undefined) {
+        profilo.codice_fiscale = parsedBody.codice_fiscale ? String(parsedBody.codice_fiscale).trim().toUpperCase() : "";
+      }
+      if (parsedBody.partita_iva !== undefined) {
+        profilo.partita_iva = parsedBody.partita_iva ? String(parsedBody.partita_iva).trim() : "";
+      }
+      if (parsedBody.pec !== undefined) {
+        profilo.pec = parsedBody.pec ? String(parsedBody.pec).trim().toLowerCase() : "";
+      }
+      if (parsedBody.codice_sdi !== undefined) {
+        profilo.codice_sdi = parsedBody.codice_sdi ? String(parsedBody.codice_sdi).trim().toUpperCase() : "0000000";
+      }
+      if (parsedBody.indirizzo_via !== undefined) {
+        profilo.indirizzo_via = parsedBody.indirizzo_via ? String(parsedBody.indirizzo_via).trim() : "";
+      }
+      if (parsedBody.civico !== undefined) {
+        profilo.civico = parsedBody.civico ? String(parsedBody.civico).trim() : "";
+      }
+      if (parsedBody.cap !== undefined) {
+        profilo.cap = parsedBody.cap ? String(parsedBody.cap).trim() : "";
+      }
+      if (parsedBody.citta !== undefined) {
+        profilo.citta = parsedBody.citta ? String(parsedBody.citta).trim() : "";
+      }
+      if (parsedBody.provincia !== undefined) {
+        profilo.provincia = parsedBody.provincia ? String(parsedBody.provincia).trim().toUpperCase() : "";
+      }
+
+      if (
+        parsedBody.indirizzo_via !== undefined ||
+        parsedBody.civico !== undefined ||
+        parsedBody.cap !== undefined ||
+        parsedBody.citta !== undefined ||
+        parsedBody.provincia !== undefined
+      ) {
+        const vVia = (profilo.indirizzo_via || "").trim();
+        const vCiv = (profilo.civico || "").trim();
+        const vCap = (profilo.cap || "").trim();
+        const vCit = (profilo.citta || "").trim();
+        const vPrv = (profilo.provincia || "").trim();
+        if (vVia) {
+          profilo.indirizzo = [
+            `${vVia}${vCiv ? " " + vCiv : ""}`,
+            [vCap, vCit].filter(Boolean).join(" ") + (vPrv ? ` (${vPrv})` : "")
+          ].filter(Boolean).join(", ");
+        }
+      } else if (parsedBody.indirizzo !== undefined) {
+        profilo.indirizzo = parsedBody.indirizzo;
+      }
       if (parsedBody.crediti !== undefined) {
         profilo.crediti = Number(parsedBody.crediti);
         if (isShared && walletOwner) walletOwner.crediti = Number(parsedBody.crediti);
@@ -1566,6 +1832,7 @@ firenzepersonaltrainer@gmail.com
       profilo.updated_at = new Date().toISOString();
       if (isShared && walletOwner) walletOwner.updated_at = new Date().toISOString();
       saveData(db);
+      triggerSggSyncAsync();
       await syncDataToGoogleDrive(db);
       return res.end(JSON.stringify(profilo));
     }
@@ -2450,6 +2717,23 @@ CALENDARIO E PRENOTAZIONI:
         createPrenotazioni.push(bk);
       });
 
+      // Sincronizzazione automatica degli slot Landmine Lab su Google Calendar (15 min, arancione)
+      for (const bk of createPrenotazioni) {
+        try {
+          const gcalId = await createGoogleCalendarLabSlot({
+            bookingId: bk.id,
+            data: bk.data,
+            orario: bk.orario,
+            nomeCliente: bk.nome_cliente,
+            emailCliente: bk.email_cliente,
+            note: bk.note,
+          });
+          bk.google_event_id = gcalId || null;
+        } catch (gErr) {
+          console.warn("[GCAL BATCH WARNING] Impossibile creare evento Google Calendar per slot:", bk.id, gErr);
+        }
+      }
+
       // Tracciamento movimento crediti unico cumulativo
       addMovimentoCrediti(db, {
         atleta_id: walletOwner.id,
@@ -2614,6 +2898,21 @@ CALENDARIO E PRENOTAZIONI:
         created_at: new Date().toISOString(),
       };
 
+      // Sincronizzazione automatica dello slot Landmine Lab su Google Calendar (15 min, arancione)
+      try {
+        const gcalId = await createGoogleCalendarLabSlot({
+          bookingId: nuovaPrenotazione.id,
+          data: dataSlot,
+          orario: orarioSlot,
+          nomeCliente: nuovaPrenotazione.nome_cliente,
+          emailCliente: nuovaPrenotazione.email_cliente,
+          note: nuovaPrenotazione.note,
+        });
+        (nuovaPrenotazione as any).google_event_id = gcalId || null;
+      } catch (gErr) {
+        console.warn("[GCAL SYNC WARNING] Impossibile creare evento Google Calendar per slot:", nuovaPrenotazione.id, gErr);
+      }
+
       db.prenotazioni_slot.push(nuovaPrenotazione);
 
       // Tracciamento nel registro movimenti crediti
@@ -2760,6 +3059,17 @@ CALENDARIO E PRENOTAZIONI:
       if (!db.prenotazioni_cancellate.includes(bkId)) {
         db.prenotazioni_cancellate.push(bkId);
       }
+      // Eliminazione istantanea da Google Calendar (lo slot sparisce all'istante sia da GCal che da SGG)
+      try {
+        await deleteGoogleCalendarLabSlot((bk as any).google_event_id, {
+          data: bk.data,
+          orario: bk.orario,
+          nomeCliente: bk.nome_cliente,
+        });
+      } catch (gErr) {
+        console.warn("[GCAL DELETE WARNING] Errore cancellazione da Google Calendar:", gErr);
+      }
+
       db.prenotazioni_slot = (db.prenotazioni_slot || []).filter((p: any) => p.id !== bkId);
 
       saveData(db);
@@ -3532,6 +3842,9 @@ CALENDARIO E PRENOTAZIONI:
         nome_cliente:
           `${atleta.nome || ""} ${atleta.cognome || ""}`.trim() || atleta.name || "Atleta",
         codice_fiscale: parsedBody.codice_fiscale || atleta.codice_fiscale || "",
+        partita_iva: parsedBody.partita_iva || atleta.partita_iva || "",
+        pec: parsedBody.pec || atleta.pec || "",
+        codice_sdi: parsedBody.codice_sdi || atleta.codice_sdi || "0000000",
         indirizzo: parsedBody.indirizzo || atleta.indirizzo || "",
         id_pacchetto: pacchetto.id,
         nome_pacchetto: pacchetto.nome,

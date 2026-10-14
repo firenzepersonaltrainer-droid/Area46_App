@@ -244,7 +244,15 @@ CREATE TABLE IF NOT EXISTS profili_utenti (
   cognome                 text NOT NULL,
   telefono                text,
   codice_fiscale          text,
+  partita_iva             text,
+  pec                     text,
+  codice_sdi              text DEFAULT '0000000',
   indirizzo               text,
+  indirizzo_via           text,
+  civico                  text,
+  cap                     text,
+  citta                   text,
+  provincia               text,
   ruolo                   text NOT NULL DEFAULT 'atleta', -- 'manager' | 'atleta'
   crediti                 integer NOT NULL DEFAULT 0, -- supporta valori negativi per debiti
   tempo_cancellazione_ore integer NOT NULL DEFAULT 24, -- policy personalizzata per atleta: 12, 24, 36, 48 ore
@@ -290,6 +298,7 @@ CREATE TABLE IF NOT EXISTS prenotazioni_slot (
   credito_scalato   boolean NOT NULL DEFAULT true,
   note              text,
   cancellato_il     timestamptz,
+  google_event_id   text,
   created_at        timestamptz DEFAULT now(),
   UNIQUE (data, orario, stato) -- garantisce slot 1:1 rigoroso
 );

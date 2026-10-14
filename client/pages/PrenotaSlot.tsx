@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useCurrentUser, useLabConfig, saveDeletedBookingId, isBookingDeleted } from "../lib/useUser";
+import { getSimulatedSlotState, getStoredWaitlist } from "../lib/useSimulatedCalendar";
+import { WaitlistModal } from "../components/WaitlistModal";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -16,6 +18,7 @@ import {
   XCircle,
   Target,
   ArrowRight,
+  Bell,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import {
@@ -35,7 +38,8 @@ interface Prenotazione {
   email_cliente: string;
   nome_cliente: string;
   telefono_cliente?: string;
-  stato: "confermata" | "cancellata_in_tempo" | "cancellata_tardiva" | "completata";
+  atleta_id?: string;
+  stato: "confermata" | "cancellata_in_tempo" | "cancellata_tardiva" | "completata" | "attiva";
   credito_scalato: boolean;
   created_at: string;
 }
@@ -58,12 +62,17 @@ function formatGiornoItaliano(dateStr: string): string {
 
 export default function PrenotaSlotPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const paramDate = searchParams.get("date");
+  const paramSlot = searchParams.get("slot");
+
   const queryClient = useQueryClient();
   const { user, crediti, hasDebt, isZeroCredits, isExpired } = useCurrentUser();
   const { config } = useLabConfig();
 
-  // Data selezionata (default: domani o oggi)
+  // Data selezionata (default: da URL, oppure domani/oggi)
   const [selectedDate, setSelectedDate] = useState(() => {
+    if (paramDate && /^\d{4}-\d{2}-\d{2}$/.test(paramDate)) return paramDate;
     const d = new Date();
     d.setDate(d.getDate() + 1);
     return formatDateISO(d);
@@ -73,9 +82,32 @@ export default function PrenotaSlotPage() {
   const [weekOffset, setWeekOffset] = useState(0);
 
   // Modali
-  const [slotDaPrenotare, setSlotDaPrenotare] = useState<string | null>(null);
+  const [slotDaPrenotare, setSlotDaPrenotare] = useState<string | null>(() => paramSlot || null);
   const [prenotazioneDaAnnullare, setPrenotazioneDaAnnullare] = useState<Prenotazione | null>(null);
   const [showBlockModal, setShowBlockModal] = useState(false);
+
+  // Modale lista d'attesa 'Avvisami se si libera'
+  const [waitlistModalSlot, setWaitlistModalSlot] = useState<{
+    data: string;
+    orario: string;
+    tipo: "reale" | "simulato";
+    stato: "occupato" | "opzionato";
+    countdownMin?: number;
+    countdownSec?: number;
+  } | null>(null);
+  const [waitlistVersion, setWaitlistVersion] = useState(0);
+
+  // Orologio live al secondo per countdown dinamico
+  const [liveNow, setLiveNow] = useState(Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => setLiveNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const myWaitlist = useMemo(() => {
+    if (!user?.id) return [];
+    return getStoredWaitlist(user.id);
+  }, [user?.id, waitlistVersion]);
 
   // Scanner e congelamento temporaneo (15 minuti) per utenti con 0 crediti o scaduti
   const [scannerSlot, setScannerSlot] = useState<{ data: string; orario: string } | null>(null);
@@ -551,22 +583,116 @@ export default function PrenotaSlotPage() {
               );
             }
 
+            const isWaitlisted = myWaitlist.some((w) => w.data === selectedDate && w.orario === orario);
+
             if (isOccupato) {
               return (
                 <div
                   key={orario}
-                  className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-400 select-none"
+                  onClick={() => {
+                    setWaitlistModalSlot({
+                      data: selectedDate,
+                      orario,
+                      tipo: "reale",
+                      stato: "occupato",
+                    });
+                  }}
+                  className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-500 hover:border-zinc-300 transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-2">
-                    <Clock className="size-4 text-zinc-300" />
+                    <Clock className="size-4 text-zinc-400" />
                     <span className="text-sm font-bold tabular-nums line-through decoration-zinc-300">
                       {orario}
                     </span>
+                    <span className="text-xs font-semibold text-zinc-600">Completo</span>
                   </div>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-600 flex items-center gap-1">
-                    <Lock className="size-3 text-zinc-500" /> Completo • Capienza esaurita
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                    isWaitlisted
+                      ? "bg-amber-100 text-amber-900 border border-amber-300"
+                      : "bg-zinc-200/80 text-zinc-700 hover:bg-zinc-300"
+                  }`}>
+                    <Bell className="size-3" /> {isWaitlisted ? "Avviso attivo" : "Avvisami se si libera"}
                   </span>
                 </div>
+              );
+            }
+
+            // Simulazione controllata e dinamica Area46 (2-4 slot/settimana max con decadimento a 5 settimane)
+            const sim = getSimulatedSlotState(selectedDate, orario, liveNow);
+
+            if (sim?.stato === "occupato") {
+              return (
+                <div
+                  key={orario}
+                  onClick={() => {
+                    setWaitlistModalSlot({
+                      data: selectedDate,
+                      orario,
+                      tipo: "simulato",
+                      stato: "occupato",
+                    });
+                  }}
+                  className="flex items-center justify-between p-3 rounded-2xl bg-zinc-100/70 border border-zinc-200 text-zinc-500 hover:border-zinc-300 transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Clock className="size-4 text-zinc-400" />
+                    <span className="text-sm font-bold tabular-nums line-through decoration-zinc-300">
+                      {orario}
+                    </span>
+                    <span className="text-xs font-semibold text-zinc-600">Completo</span>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                    isWaitlisted
+                      ? "bg-amber-100 text-amber-900 border border-amber-300"
+                      : "bg-zinc-200/80 text-zinc-700 hover:bg-zinc-300"
+                  }`}>
+                    <Bell className="size-3" /> {isWaitlisted ? "Avviso attivo" : "Avvisami se si libera"}
+                  </span>
+                </div>
+              );
+            }
+
+            if (sim?.stato === "opzionato") {
+              return (
+                <button
+                  key={orario}
+                  type="button"
+                  onClick={() => {
+                    setWaitlistModalSlot({
+                      data: selectedDate,
+                      orario,
+                      tipo: "simulato",
+                      stato: "opzionato",
+                      countdownMin: sim.countdownMin,
+                      countdownSec: sim.countdownSec,
+                    });
+                  }}
+                  className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/70 border border-amber-300 hover:border-amber-500 transition-all shadow-2xs group cursor-pointer text-left"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-xl bg-amber-200 text-amber-950 flex items-center justify-center font-bold text-xs shrink-0 border border-amber-300 group-hover:bg-[#1c00ff] group-hover:text-white transition-colors">
+                      {orario}
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-black text-amber-950">
+                          Posto Opzionato
+                        </span>
+                        <span className="text-[9px] font-mono font-black px-1.5 py-0.2 rounded-full bg-amber-200 text-amber-900 border border-amber-300 flex items-center gap-1">
+                          <Clock className="size-2.5 text-amber-800 animate-pulse" />
+                          Rilascio: {sim.countdownMin}m {String((sim.countdownSec || 0) % 60).padStart(2, "0")}s
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-amber-900/80">
+                        {isWaitlisted ? "Iscritto alla lista d'attesa" : "Tocca per ricevere l'avviso se si libera"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <span className="text-xs font-black text-amber-900 group-hover:text-[#1c00ff] transition-colors flex items-center gap-0.5">
+                    {isWaitlisted ? "Attivo 🔔" : "Avvisami &rarr;"}
+                  </span>
+                </button>
               );
             }
 
@@ -958,6 +1084,24 @@ export default function PrenotaSlotPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* MODALE LISTA D'ATTESA E AVVISO SBLOCCO POSTAZIONE */}
+      <WaitlistModal
+        open={!!waitlistModalSlot}
+        onOpenChange={(op) => !op && setWaitlistModalSlot(null)}
+        slot={waitlistModalSlot}
+        userId={user?.id}
+        userNome={user?.nome}
+        userPhone={user?.telefono}
+        coachPhone={config?.notifica_whatsapp}
+        isSubscribed={
+          !!waitlistModalSlot &&
+          myWaitlist.some(
+            (w) => w.data === waitlistModalSlot.data && w.orario === waitlistModalSlot.orario
+          )
+        }
+        onSubscriptionChange={() => setWaitlistVersion((v) => v + 1)}
+      />
     </div>
   );
 }

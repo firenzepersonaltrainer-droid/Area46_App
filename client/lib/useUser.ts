@@ -17,7 +17,15 @@ export interface UserProfile {
   cognome: string;
   telefono?: string;
   codice_fiscale?: string;
+  partita_iva?: string;
+  pec?: string;
+  codice_sdi?: string;
   indirizzo?: string;
+  indirizzo_via?: string;
+  civico?: string;
+  cap?: string;
+  citta?: string;
+  provincia?: string;
   ruolo: "manager" | "atleta";
   crediti: number;
   tempo_cancellazione_ore?: number; // 12, 24, 36, 48

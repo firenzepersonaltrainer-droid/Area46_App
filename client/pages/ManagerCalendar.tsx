@@ -54,7 +54,8 @@ interface Prenotazione {
   email_cliente: string;
   nome_cliente: string;
   telefono_cliente?: string;
-  stato: "confermata" | "cancellata_in_tempo" | "cancellata_tardiva" | "completata";
+  atleta_id?: string;
+  stato: "confermata" | "cancellata_in_tempo" | "cancellata_tardiva" | "completata" | "attiva";
   credito_scalato: boolean;
   note?: string;
   created_at: string;
