@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { handleLocalApi, createGoogleCalendarLabSlot, deleteGoogleCalendarLabSlot } from "../local-api";
+import { handleLocalApi, createGoogleCalendarLabSlot, deleteGoogleCalendarLabSlot, pullGoogleCalendarLabSlots } from "../local-api";
 
-export { createGoogleCalendarLabSlot, deleteGoogleCalendarLabSlot };
+export { createGoogleCalendarLabSlot, deleteGoogleCalendarLabSlot, pullGoogleCalendarLabSlots };
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {

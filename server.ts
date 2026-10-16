@@ -1293,11 +1293,16 @@ app.delete("/app-api/prenotazioni/:id", async (c) => {
 
   // Cancellazione immediata da Google Calendar
   const bkDateStrFinal = typeof bk.data === "string" ? bk.data : bk.data.toISOString().slice(0, 10);
-  await deleteGoogleCalendarLabSlot(bk.google_event_id, {
-    data: bkDateStrFinal,
-    orario: bk.orario,
-    nomeCliente: bk.nome_cliente,
-  }).catch(() => null);
+  try {
+    await deleteGoogleCalendarLabSlot(bk.google_event_id, {
+      data: bkDateStrFinal,
+      orario: bk.orario,
+      nomeCliente: bk.nome_cliente,
+      bookingId: bk.id || id,
+    });
+  } catch (gErr) {
+    console.error("[GCAL DELETE ERROR] Errore cancellazione da Google Calendar:", gErr);
+  }
 
   return c.json({
     ok: true,

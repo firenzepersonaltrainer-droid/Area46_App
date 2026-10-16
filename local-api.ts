@@ -130,10 +130,10 @@ function validateDataIntegrity(data: any): boolean {
   return true;
 }
 
-function saveData(data: any, skipCloudSync = false) {
+function saveData(data: any, skipCloudSync = false): Promise<void> {
   if (!validateDataIntegrity(data)) {
     console.warn("⚠️ [AREA46 SAFETY LOCK] Scrittura su disco e cloud ignorata a causa del fallimento delle regole di integrità.");
-    return;
+    return Promise.resolve();
   }
 
   db = data;
@@ -142,7 +142,7 @@ function saveData(data: any, skipCloudSync = false) {
       fs.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
       fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
     } catch {}
-    return; // Isolamento assoluto: nessun tocco a demo-data.json reale né sincronizzazione Google Drive!
+    return Promise.resolve(); // Isolamento assoluto: nessun tocco a demo-data.json reale né sincronizzazione Google Drive!
   }
 
   try {
@@ -174,8 +174,9 @@ function saveData(data: any, skipCloudSync = false) {
 
   // Sincronizzazione cloud automatica su Google Drive con serializzazione
   if (!skipCloudSync) {
-    queueDriveSync(data).catch(() => {});
+    return queueDriveSync(data).catch(() => {});
   }
+  return Promise.resolve();
 }
 
 const FALLBACK_SERVICE_ACCOUNT = {
@@ -317,6 +318,24 @@ function calculateSlotEndTime(startTime: string): string {
   }
 }
 
+function getRomeOffsetString(dateStr: string): string {
+  try {
+    const d = new Date(`${dateStr}T12:00:00Z`);
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Europe/Rome",
+      timeZoneName: "shortOffset",
+    }).formatToParts(d);
+    const tzPart = parts.find((p) => p.type === "timeZoneName")?.value || "";
+    const match = tzPart.match(/([+-]\d+)/);
+    if (match) {
+      const h = parseInt(match[1], 10);
+      const sign = h >= 0 ? "+" : "-";
+      return `${sign}${String(Math.abs(h)).padStart(2, "0")}:00`;
+    }
+  } catch {}
+  return "+01:00";
+}
+
 export async function createGoogleCalendarLabSlot(slot: {
   bookingId: string;
   data: string;
@@ -332,17 +351,18 @@ export async function createGoogleCalendarLabSlot(slot: {
     const endOrario = calculateSlotEndTime(slot.orario);
     const summary = `🏋️ [LAB] ${slot.nomeCliente || "Atleta Landmine"}`;
     const description = `Prenotazione slot da Area46 Landmine Lab\nAtleta: ${slot.nomeCliente || "Atleta"}\nEmail: ${slot.emailCliente || ""}\nNote: ${slot.note || "Nessuna"}\n[ID Prenotazione: ${slot.bookingId}]`;
+    const romeOffset = getRomeOffsetString(slot.data);
 
     const payload = {
       summary,
       description,
       colorId: "6", // Tangerine / Arancione Google Calendar
       start: {
-        dateTime: `${slot.data}T${slot.orario}:00+02:00`,
+        dateTime: `${slot.data}T${slot.orario}:00${romeOffset}`,
         timeZone: "Europe/Rome",
       },
       end: {
-        dateTime: `${slot.data}T${endOrario}:00+02:00`,
+        dateTime: `${slot.data}T${endOrario}:00${romeOffset}`,
         timeZone: "Europe/Rome",
       },
       extendedProperties: {
@@ -379,43 +399,62 @@ export async function createGoogleCalendarLabSlot(slot: {
 
 export async function deleteGoogleCalendarLabSlot(
   googleEventId?: string,
-  fallbackInfo?: { data: string; orario: string; nomeCliente: string }
+  fallbackInfo?: { data: string; orario: string; nomeCliente: string; bookingId?: string }
 ): Promise<boolean> {
   try {
     const token = await getGoogleCalendarAccessToken();
     if (!token) return false;
 
+    let directDeleted = false;
     if (googleEventId) {
       const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events/${googleEventId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 200 || res.status === 204 || res.status === 404 || res.status === 410) {
-        console.log(`[GCAL SYNC] Cancellato con successo slot GCal EventId: ${googleEventId}`);
+        console.log(`[GCAL DELETE OK] Evento ${googleEventId} cancellato con successo da Google Calendar (chiamata diretta)`);
+        directDeleted = true;
         return true;
+      } else {
+        console.warn(`[GCAL DELETE WARNING] DELETE diretta non completata (${res.status}) per EventId: ${googleEventId}, avvio fallback...`);
       }
     }
 
-    if (fallbackInfo?.data && fallbackInfo?.orario) {
+    if (!directDeleted && fallbackInfo?.data) {
       const timeMin = `${fallbackInfo.data}T00:00:00Z`;
       const timeMax = `${fallbackInfo.data}T23:59:59Z`;
       const searchRes = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&q=${encodeURIComponent("[LAB]")}`,
+        `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&maxResults=250`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (searchRes.ok) {
         const searchData = await searchRes.json();
-        const startTarget = `${fallbackInfo.data}T${fallbackInfo.orario}`;
+        const startTarget = fallbackInfo.orario ? `${fallbackInfo.data}T${fallbackInfo.orario}` : "";
+        const cleanName = (fallbackInfo.nomeCliente || "").toLowerCase().trim();
+
         for (const it of searchData.items || []) {
-          if (
-            it.start?.dateTime?.startsWith(startTarget) ||
-            (fallbackInfo.nomeCliente && it.summary?.includes(fallbackInfo.nomeCliente))
-          ) {
-            await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events/${it.id}`, {
+          if (it.status === "cancelled") continue;
+
+          const priv = it.extendedProperties?.private || {};
+          const itBookingId = priv.booking_id || priv.slot_id;
+          const descHasBookingId = fallbackInfo.bookingId && (it.description || "").includes(fallbackInfo.bookingId);
+          const bookingIdMatch = fallbackInfo.bookingId && (itBookingId === fallbackInfo.bookingId || descHasBookingId);
+
+          const timeMatch = startTarget && it.start?.dateTime?.startsWith(startTarget);
+          const summaryLower = (it.summary || "").toLowerCase();
+          const nameMatch = cleanName && (summaryLower.includes(cleanName) || cleanName.includes(summaryLower.replace("🏋️ [lab]", "").trim()));
+
+          if (bookingIdMatch || (timeMatch && nameMatch)) {
+            const delRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events/${it.id}`, {
               method: "DELETE",
               headers: { Authorization: `Bearer ${token}` },
             });
-            console.log(`[GCAL SYNC FALLBACK] Cancellato evento corrispondente trovato su GCal: ${it.id} (${it.summary})`);
+            if (delRes.status === 200 || delRes.status === 204 || delRes.status === 404 || delRes.status === 410) {
+              console.log(`[GCAL DELETE OK] Evento ${it.id} (${it.summary}) cancellato con successo da Google Calendar (fallback search)`);
+              return true;
+            } else {
+              console.error(`[GCAL DELETE ERROR] Errore cancellazione evento fallback ${it.id}: status ${delRes.status}`);
+            }
           }
         }
       }
@@ -424,6 +463,275 @@ export async function deleteGoogleCalendarLabSlot(
   } catch (err) {
     console.error("[GCAL SYNC DELETE ERROR]", err);
     return false;
+  }
+}
+
+export async function cleanupOrphanLabSlots(): Promise<{ checked: number; deleted: number; errors: number; details: string[] }> {
+  const result = { checked: 0, deleted: 0, errors: 0, details: [] as string[] };
+  try {
+    const token = await getGoogleCalendarAccessToken();
+    if (!token) {
+      result.details.push("Token Google Calendar non disponibile");
+      return result;
+    }
+
+    const db = loadData();
+    const confirmedSlots = (db.prenotazioni_slot || []).filter(
+      (p: any) => p && (p.stato === "confermata" || p.stato === "CONFIRMED" || p.stato === "CONFERMATA")
+    );
+    const activeBookingIds = new Set(confirmedSlots.map((p: any) => p.id));
+    const activeGcalIds = new Set(confirmedSlots.map((p: any) => p.google_event_id).filter(Boolean));
+    const cancelledBookingIds = new Set([
+      ...(db.prenotazioni_cancellate || []),
+      ...(db.prenotazioni_slot || [])
+        .filter((p: any) => p && (p.stato === "cancellata" || p.stato === "CANCELLED"))
+        .map((p: any) => p.id)
+    ]);
+
+    const now = new Date();
+    const timeMin = new Date(now.getTime() - 7 * 86400000).toISOString();
+    const timeMax = new Date(now.getTime() + 35 * 86400000).toISOString();
+
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&maxResults=250`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) {
+      result.details.push(`Errore richiesta eventi Google: ${res.status}`);
+      return result;
+    }
+
+    const data = await res.json();
+    const items = data.items || [];
+    result.checked = items.length;
+
+    for (const it of items) {
+      if (it.status === "cancelled") continue;
+      const isLab = (
+        it.extendedProperties?.private?.origin === "AREA46_LAB" ||
+        (it.summary && (it.summary.startsWith("🏋️") || it.summary.includes("[LAB]")))
+      );
+      if (!isLab) continue;
+
+      const gcalEventId = it.id;
+      const bookingId = it.extendedProperties?.private?.booking_id || it.extendedProperties?.private?.slot_id;
+      const descMatch = (it.description || "").match(/\[ID Prenotazione: ([^\]]+)\]/);
+      const parsedBookingId = bookingId || (descMatch ? descMatch[1] : null);
+
+      const startDt = it.start?.dateTime || "";
+      const datePart = startDt.slice(0, 10);
+      const timePart = startDt.slice(11, 16);
+      const summary = it.summary || "";
+
+      let isOrphan = false;
+      let reason = "";
+
+      const cleanBookingId = (parsedBookingId || "").replace(/^lab_/, "");
+      const isBookingCancelled = (parsedBookingId && cancelledBookingIds.has(parsedBookingId)) || (cleanBookingId && cancelledBookingIds.has(cleanBookingId));
+      const isBookingActive = (parsedBookingId && activeBookingIds.has(parsedBookingId)) || (cleanBookingId && activeBookingIds.has(cleanBookingId));
+
+      if (isBookingCancelled) {
+        isOrphan = true;
+        reason = `Booking ID ${parsedBookingId} presente in prenotazioni_cancellate`;
+      } else if (cleanBookingId && !isBookingActive) {
+        isOrphan = true;
+        reason = `Booking ID ${parsedBookingId} non presente in prenotazioni attive`;
+      } else if (!activeGcalIds.has(gcalEventId) && !isBookingActive) {
+        const hasMatchingActiveSlot = confirmedSlots.some((p: any) =>
+          p.data === datePart && p.orario === timePart && (
+            summary.toLowerCase().includes((p.nome_cliente || "").toLowerCase()) ||
+            (p.nome_cliente || "").toLowerCase().includes(summary.toLowerCase().replace("🏋️ [lab]", "").trim())
+          )
+        );
+        if (!hasMatchingActiveSlot) {
+          isOrphan = true;
+          reason = `Nessuna prenotazione attiva corrispondente per ${datePart} ${timePart} (${summary})`;
+        }
+      }
+
+      if (isOrphan) {
+        console.log(`[GCAL CLEANUP ORPHAN] Trovato slot orfano: ${it.id} (${summary} del ${datePart} ${timePart}) - Motivo: ${reason}`);
+        const delRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events/${it.id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (delRes.status === 200 || delRes.status === 204 || delRes.status === 404 || delRes.status === 410) {
+          result.deleted++;
+          result.details.push(`Eliminato: ${summary} (${datePart} ${timePart}) - ID ${it.id} - ${reason}`);
+        } else {
+          result.errors++;
+          result.details.push(`Errore eliminazione ${it.id}: status ${delRes.status}`);
+        }
+      }
+    }
+  } catch (err: any) {
+    result.errors++;
+    result.details.push(`Eccezione cleanup: ${err.message || String(err)}`);
+  }
+  return result;
+}
+
+let lastGcalPullTime = 0;
+
+export async function pullGoogleCalendarLabSlots(
+  options: { daysBack?: number; daysAhead?: number; force?: boolean } = {}
+): Promise<{ synced: number; added: number; updated: number; removed: number }> {
+  const { daysBack = 14, daysAhead = 60, force = false } = options;
+  const now = Date.now();
+  if (!force && lastGcalPullTime > 0 && now - lastGcalPullTime < 8000) {
+    return { synced: 0, added: 0, updated: 0, removed: 0 };
+  }
+  lastGcalPullTime = now;
+
+  try {
+    const token = await getGoogleCalendarAccessToken();
+    if (!token) return { synced: 0, added: 0, updated: 0, removed: 0 };
+
+    const timeMin = new Date(now - daysBack * 86400000).toISOString();
+    const timeMax = new Date(now + daysAhead * 86400000).toISOString();
+
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events?timeMin=${encodeURIComponent(
+      timeMin
+    )}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&showDeleted=true&maxResults=2500`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) {
+      console.warn("[GCAL PULL ERROR] Status:", res.status);
+      return { synced: 0, added: 0, updated: 0, removed: 0 };
+    }
+    const data = await res.json();
+    const items = data.items || [];
+
+    db.prenotazioni_slot = db.prenotazioni_slot || [];
+    db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
+    const users: any[] = db.profili_utenti || [];
+
+    let added = 0;
+    let updated = 0;
+    let removed = 0;
+    let changed = false;
+
+    for (const ev of items) {
+      const gcalId = ev.id;
+      const isCancelled = ev.status === "cancelled";
+      const summary = ev.summary || "";
+      const isLab = summary.includes("[LAB]") || ev.extendedProperties?.private?.origin === "AREA46_LAB";
+
+      if (!isLab) continue;
+
+      const bookingId = ev.extendedProperties?.private?.booking_id || ev.extendedProperties?.private?.slot_id;
+
+      if (isCancelled) {
+        // NON rimuovere prenotazioni dal database master di Area46:
+        // Se un evento è cancellato su GCal, non intacchiamo le prenotazioni confermate di Area46.
+        continue;
+      }
+
+      const startDateTime = ev.start?.dateTime;
+      if (!startDateTime) continue;
+
+      const slotDate = startDateTime.slice(0, 10);
+      const slotTime = startDateTime.slice(11, 16);
+
+      let athleteName = ev.extendedProperties?.private?.athlete_name || "";
+      if (!athleteName && summary) {
+        athleteName = summary.replace(/🏋️\s*\[LAB\]\s*/i, "").replace(/\[LAB\]\s*/i, "").trim();
+      }
+
+      let email = "";
+      const desc = ev.description || "";
+      const emailMatch = desc.match(/Email:\s*([^\s\n\r]+)/i);
+      if (emailMatch) email = emailMatch[1].trim().toLowerCase();
+
+      let note = "";
+      const noteMatch = desc.match(/Note:\s*([^\n\r]+)/i);
+      if (noteMatch) {
+        note = noteMatch[1].trim();
+        if (note === "Nessuna") note = "";
+      }
+
+      const matchedUser = users.find(
+        (u: any) =>
+          (email && u.email && u.email.toLowerCase() === email) ||
+          (athleteName &&
+            ((u.name && u.name.toLowerCase() === athleteName.toLowerCase()) ||
+              (`${u.nome || ""} ${u.cognome || ""}`.trim().toLowerCase() === athleteName.toLowerCase())))
+      );
+
+      const existing = db.prenotazioni_slot.find(
+        (b: any) =>
+          b.google_event_id === gcalId ||
+          (bookingId && b.id === bookingId) ||
+          (b.data === slotDate &&
+            b.orario === slotTime &&
+            ((matchedUser && b.atleta_id === matchedUser.id) ||
+              (email && b.email_cliente?.toLowerCase() === email) ||
+              (athleteName && b.nome_cliente?.toLowerCase() === athleteName.toLowerCase())))
+      );
+
+      if (existing) {
+        let itemChanged = false;
+        if (!existing.google_event_id) {
+          existing.google_event_id = gcalId;
+          itemChanged = true;
+        }
+        if (existing.data !== slotDate || existing.orario !== slotTime) {
+          existing.data = slotDate;
+          existing.orario = slotTime;
+          itemChanged = true;
+        }
+        if (matchedUser && (!existing.atleta_id || existing.atleta_id.startsWith("usr-gcal"))) {
+          existing.atleta_id = matchedUser.id;
+          itemChanged = true;
+        }
+        if (itemChanged) {
+          updated++;
+          changed = true;
+        }
+      } else {
+        const newBkId = bookingId || `bk-${gcalId}`;
+        const newBk = {
+          id: newBkId,
+          data: slotDate,
+          orario: slotTime,
+          atleta_id: matchedUser ? matchedUser.id : `usr-gcal-${Date.now()}`,
+          email_cliente: matchedUser ? matchedUser.email : email || "",
+          nome_cliente: athleteName || (matchedUser ? matchedUser.name : "Atleta"),
+          telefono_cliente: matchedUser ? matchedUser.telefono || "" : "",
+          stato: "confermata",
+          credito_scalato: true,
+          note: note || (athleteName ? "Assegnazione diretta dal Coach" : ""),
+          google_event_id: gcalId,
+          created_at: ev.created || new Date().toISOString(),
+        };
+        db.prenotazioni_slot.push(newBk);
+        added++;
+        changed = true;
+        console.log(
+          `[GCAL PULL] Inserito nuovo slot da Google Calendar: ${slotDate} ${slotTime} per ${newBk.nome_cliente} (ID: ${newBk.id})`
+        );
+      }
+    }
+
+    if (changed) {
+      db.prenotazioni_slot.sort((a: any, b: any) => (a.data + a.orario).localeCompare(b.data + b.orario));
+      await saveData(db);
+      try {
+        const vaultCalFile = path.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json");
+        const altVaultCalFile = path.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json");
+        const targetVault = fs.existsSync(vaultCalFile) ? vaultCalFile : fs.existsSync(altVaultCalFile) ? altVaultCalFile : null;
+        if (targetVault) {
+          const vData = JSON.parse(fs.readFileSync(targetVault, "utf-8"));
+          vData.prenotazioni_slot = db.prenotazioni_slot;
+          vData.prenotazioni_cancellate = db.prenotazioni_cancellate;
+          fs.writeFileSync(targetVault, JSON.stringify(vData, null, 2), "utf-8");
+        }
+      } catch (vErr) {
+        console.warn("[GCAL PULL] Vault file update:", vErr);
+      }
+    }
+
+    return { synced: items.length, added, updated, removed };
+  } catch (err) {
+    console.error("[GCAL PULL EXCEPTION]", err);
+    return { synced: 0, added: 0, updated: 0, removed: 0 };
   }
 }
 
@@ -2545,8 +2853,19 @@ CALENDARIO E PRENOTAZIONI:
     // PRENOTAZIONI SLOT 1:1
     // ─────────────────────────────────────────────────────────────────────────
 
+    // POST /app-api/sync-gcal (Sincronizzazione manuale o forzata con Google Calendar)
+    if (pathname === "/app-api/sync-gcal" && method === "POST") {
+      const result = await pullGoogleCalendarLabSlots({ force: true });
+      res.setHeader("Content-Type", "application/json");
+      return res.end(JSON.stringify({ ok: true, ...result }));
+    }
+
     // GET /app-api/prenotazioni
     if (pathname === "/app-api/prenotazioni" && method === "GET") {
+      const syncParam = url.searchParams.get("sync");
+      const forceSync = syncParam === "true" || syncParam === "1";
+      await pullGoogleCalendarLabSlots({ force: forceSync });
+
       const dataFilter = url.searchParams.get("data");
       const emailFilter = url.searchParams.get("email");
       const atletaIdFilter = url.searchParams.get("atleta_id");
@@ -3065,6 +3384,7 @@ CALENDARIO E PRENOTAZIONI:
           data: bk.data,
           orario: bk.orario,
           nomeCliente: bk.nome_cliente,
+          bookingId: bk.id,
         });
       } catch (gErr) {
         console.warn("[GCAL DELETE WARNING] Errore cancellazione da Google Calendar:", gErr);
