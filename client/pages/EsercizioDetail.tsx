@@ -16,7 +16,6 @@ import {
   Check,
   LayoutList,
   Bookmark,
-  Save,
   ArrowLeft,
 } from "lucide-react";
 import { Button } from "../components/Button";
@@ -367,11 +366,6 @@ export default function EsercizioDetailPage() {
     } finally {
       setSaving(false);
     }
-  }
-
-  function handleSalvaBozzaManuale() {
-    saveDraftToStore(draftKey, { sets, feedback });
-    toast.success("Bozza salvata! I tuoi carichi sono salvati su questo dispositivo.");
   }
 
   const modalScrollRef = useRef<HTMLDivElement | null>(null);
@@ -848,17 +842,10 @@ export default function EsercizioDetailPage() {
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="flex size-2 rounded-full bg-[#1c00ff] animate-ping shrink-0" />
                       <span className="font-bold text-zinc-900 leading-tight">
-                        Bozza salvata in sospeso: i dati rimangono memorizzati sul tuo dispositivo.
+                        Bozza salvata in automatico sul tuo dispositivo.
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 flex-wrap">
-                      <button
-                        type="button"
-                        onClick={handleSalvaBozzaManuale}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1c00ff] text-white text-xs font-black shadow-xs hover:bg-[#1600cc] transition-colors cursor-pointer"
-                      >
-                        <Save className="size-3" /> Salva ora
-                      </button>
+                    <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
                       <button
                         type="button"
                         onClick={handleClearDraft}
@@ -1029,28 +1016,16 @@ export default function EsercizioDetailPage() {
                   )}
                 </button>
 
-                {/* Seconda riga a due colonne perfettamente simmetriche */}
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={handleSalvaBozzaManuale}
-                    disabled={saving}
-                    className="flex items-center justify-center gap-1.5 rounded-xl border-2 border-[#1c00ff] bg-blue-50/90 py-2.5 px-3 text-xs sm:text-sm font-black text-[#1c00ff] hover:bg-blue-100 transition-colors shadow-xs cursor-pointer"
-                  >
-                    <Save className="size-3.5 shrink-0" />
-                    <span className="truncate">Salva Bozza</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setDialogOpen(false)}
-                    disabled={saving}
-                    className="flex items-center justify-center gap-1.5 rounded-xl border border-zinc-300 bg-white py-2.5 px-3 text-xs sm:text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors shadow-xs cursor-pointer"
-                  >
-                    <ArrowLeft className="size-3.5 shrink-0 text-[#1c00ff]" />
-                    <span className="truncate">Torna all'esercizio</span>
-                  </button>
-                </div>
+                {/* Bottone Secondario: Torna all'esercizio */}
+                <button
+                  type="button"
+                  onClick={() => setDialogOpen(false)}
+                  disabled={saving}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white py-3 px-4 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors shadow-xs cursor-pointer"
+                >
+                  <ArrowLeft className="size-4 shrink-0 text-[#1c00ff]" />
+                  <span>Torna all'esercizio</span>
+                </button>
 
                 {/* Link Cancella Bozza */}
                 {hasDraftContent && (

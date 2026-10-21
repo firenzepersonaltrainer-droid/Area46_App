@@ -30950,14 +30950,14 @@ var demo_data_default = {
       livello: "PRO",
       giorno: 25,
       stato: "completato",
-      updated_at: "2026-10-21T07:18:16.128Z"
+      updated_at: "2026-10-21T07:44:32.664Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 19,
       stato: "completato",
-      updated_at: "2026-10-09T07:21:11.549Z"
+      updated_at: "2026-10-21T07:44:18.328Z"
     },
     {
       email_cliente: "pantanella@gmail.com",
@@ -31264,43 +31264,78 @@ var demo_data_default = {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 26,
-      stato: "completato",
-      updated_at: "2026-10-21T07:09:55.856Z"
+      stato: "non_iniziato",
+      updated_at: "2026-10-21T07:44:28.572Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 27,
-      stato: "completato",
-      updated_at: "2026-10-21T07:09:55.856Z"
+      stato: "non_iniziato",
+      updated_at: "2026-10-21T07:44:28.572Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 28,
-      stato: "completato",
-      updated_at: "2026-10-21T07:09:55.856Z"
+      stato: "non_iniziato",
+      updated_at: "2026-10-21T07:44:28.572Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 29,
-      stato: "completato",
-      updated_at: "2026-10-21T07:09:55.856Z"
+      stato: "non_iniziato",
+      updated_at: "2026-10-21T07:44:28.572Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 30,
-      stato: "completato",
-      updated_at: "2026-10-21T07:09:55.856Z"
+      stato: "non_iniziato",
+      updated_at: "2026-10-21T07:44:28.572Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 20,
-      stato: "non_iniziato",
-      updated_at: "2026-10-21T07:18:35.210Z"
+      stato: "completato",
+      updated_at: "2026-10-21T07:44:18.328Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 21,
+      stato: "completato",
+      updated_at: "2026-10-21T07:44:18.328Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 22,
+      stato: "completato",
+      updated_at: "2026-10-21T07:44:18.328Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 23,
+      stato: "completato",
+      updated_at: "2026-10-21T07:44:18.328Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 24,
+      stato: "completato",
+      updated_at: "2026-10-21T07:44:18.328Z"
+    },
+    {
+      email_cliente: "annap.maddy@gmail.com",
+      livello: "Entry Level",
+      giorno: 4,
+      stato: "completato",
+      updated_at: "2026-10-21T07:53:50.088Z"
     }
   ],
   preferenze_utente: [
