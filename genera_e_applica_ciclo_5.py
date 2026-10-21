@@ -226,17 +226,42 @@ C4_B = [
 ]
 
 # CICLO 5 (Intensificazione e Picco Mesociclo 2)
-# Correzioni applicate su indicazione coach:
-# - Cat-cow: 3x12 (range 10-15 rep)
-# - neutral Clubbell T/S 90° e 180°: 3x15+15 (range 15-20 rep x lato)
-# - Flag Bearer ISOINERZIALE: 4x30"+30" (a tempo >= 30", oppure >=15 rep a 2s/rep)
-C5_A = [
-    ("1a", 22,  "Coiled Cable Punch", "3x8+8", "", "jump set"),
-    ("1b", 42,  "Push the wall squat", "3x8", '45"', "jump set"),
-    ("2",  129, "COMBO: Landmine Clean & Jerk High hand switch T/GO", "4x5+5", 'RBS 75"', "RPE 8.5"),
+# Correzioni e progressione didattica applicate su indicazione coach:
+# - Coiled cable punch: 3x40"+40"
+# - Dumbbell biker's squat (sostituisce Push the wall squat): ID 82, 3x12, recupero eliminato, nota riscaldamento manubrio
+# - COMBO Clean & Jerk high hand switch: 4x10, avvicinamento corretto
+# - Allenamento 25: Salto alfiere singolo (studio 5-10 min), coiled Ax Sit up + skierg in JS
+# - Allenamento 27: Salto alfiere in JS con skierg, coiled Ax Sit up singolo
+# - Allenamento 29: Triset/circuito completo con Salto alfiere a 5+5
+C5_A_25 = [
+    ("1a", 22,  "Coiled Cable Punch", '3x40"+40"', "", "jump set"),
+    ("1b", 82,  "Dumbbell biker's squat", "3x12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento"),
+    ("2",  129, "COMBO: Landmine Clean & Jerk High hand switch T/GO", "4x10", 'RBS 75"', "RPE 8.5 | fare un corretto avvicinamento"),
     ("3a", 52,  "Dumbell Jerk", "4x6+6", "", "jump set | RPE 8"),
     ("3b", 193, "Endless rope Half kneeling lateral pull", '4x20"+20"', '60"', "jump set | RPE 8"),
-    ("4a", 135, "Salto alfiere", "3x6+6", "", "circuito (3 round)"),
+    ("4",  135, "Salto alfiere", "studio progressivo 5-10 minuti", "", "Dal momento che è un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito."),
+    ("5a", 96,  "coiled Ax Sit up", "3x8+8", "", "jump set"),
+    ("5b", 3,   "skierg pagaia alternato", '3x30"+30"', '60"', "jump set")
+]
+
+C5_A_27 = [
+    ("1a", 22,  "Coiled Cable Punch", '3x40"+40"', "", "jump set"),
+    ("1b", 82,  "Dumbbell biker's squat", "3x12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento"),
+    ("2",  129, "COMBO: Landmine Clean & Jerk High hand switch T/GO", "4x10", 'RBS 75"', "RPE 8.5 | fare un corretto avvicinamento"),
+    ("3a", 52,  "Dumbell Jerk", "4x6+6", "", "jump set | RPE 8"),
+    ("3b", 193, "Endless rope Half kneeling lateral pull", '4x20"+20"', '60"', "jump set | RPE 8"),
+    ("4a", 135, "Salto alfiere", "3x5+5", "", "jump set"),
+    ("4b", 3,   "skierg pagaia alternato", '3x30"+30"', '60"', "jump set"),
+    ("5",  96,  "coiled Ax Sit up", "3x8+8", '45"', "")
+]
+
+C5_A_29 = [
+    ("1a", 22,  "Coiled Cable Punch", '3x40"+40"', "", "jump set"),
+    ("1b", 82,  "Dumbbell biker's squat", "3x12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento"),
+    ("2",  129, "COMBO: Landmine Clean & Jerk High hand switch T/GO", "4x10", 'RBS 75"', "RPE 8.5 | fare un corretto avvicinamento"),
+    ("3a", 52,  "Dumbell Jerk", "4x6+6", "", "jump set | RPE 8"),
+    ("3b", 193, "Endless rope Half kneeling lateral pull", '4x20"+20"', '60"', "jump set | RPE 8"),
+    ("4a", 135, "Salto alfiere", "3x5+5", "", "circuito (3 round)"),
     ("4b", 96,  "coiled Ax Sit up", "3x8+8", "", "circuito (3 round)"),
     ("4c", 3,   "skierg pagaia alternato", '3x30"+30"', '60"', "circuito (3 round)")
 ]
@@ -281,9 +306,9 @@ def generate_all_rows():
             (23, "A", C4_A), (24, "B", C4_B)
         ]),
         ("Ciclo 5", [
-            (25, "A", C5_A), (26, "B", C5_B),
-            (27, "A", C5_A), (28, "B", C5_B),
-            (29, "A", C5_A), (30, "B", C5_B)
+            (25, "A", C5_A_25), (26, "B", C5_B),
+            (27, "A", C5_A_27), (28, "B", C5_B),
+            (29, "A", C5_A_29), (30, "B", C5_B)
         ])
     ]
 
@@ -475,6 +500,44 @@ def update_demo_data_json(all_rows):
     print(f"-> demo-data.json aggiornato con {len(all_rows)} righe PRO (Cicli 1, 2, 3, 4, 5).")
 
 
+def update_vault_modulo_5(all_rows):
+    """Sincronizza data/vault/5_metodologia_allenamenti_cicli.json con tutte le righe PRO (Cicli 1, 2, 3, 4, 5)."""
+    vault_file = "data/vault/5_metodologia_allenamenti_cicli.json"
+    if not os.path.exists(vault_file):
+        return
+
+    with open(vault_file, "r") as f:
+        vault_data = json.load(f)
+
+    # Rimuovi vecchie righe PRO
+    vault_data["allenamenti"] = [a for a in vault_data["allenamenti"] if a.get("livello") != "PRO"]
+
+    existing_ids = [a.get("id", 0) for a in vault_data["allenamenti"]]
+    max_id = max(existing_ids) if existing_ids else 500
+
+    for r in all_rows:
+        max_id += 1
+        vault_data["allenamenti"].append({
+            "id": max_id,
+            "livello": r[0],
+            "settimana": r[1],
+            "giorno": r[2],
+            "sequenza": r[3],
+            "id_esercizio": f"{int(r[4]):03d}",
+            "nome_esercizio": r[5],
+            "parametri": r[6],
+            "recupero": r[7],
+            "minutaggio_blocco": "",
+            "note_tecniche": r[9],
+            "link_video": r[10],
+            "data_pubblicazione": None
+        })
+
+    with open(vault_file, "w") as f:
+        json.dump(vault_data, f, indent=2, ensure_ascii=False)
+    print(f"-> {vault_file} aggiornato con {len(all_rows)} righe PRO (Cicli 1, 2, 3, 4, 5).")
+
+
 def update_register_json():
     """Aggiorna registro_periodizzazione_pro.json con il Ciclo 5."""
     if not os.path.exists(REGISTER_JSON):
@@ -487,21 +550,25 @@ def update_register_json():
     reg["storico_cicli"]["Ciclo 5"] = {
         "status": "attivo / programmato",
         "sessioni": 6,
-        "focus": "Picco Mesociclo 2: COMBO Landmine C&J high hand switch, KB snatch to lunge, Flag Bearer isoinerziale time under tension, Pliometria e Skierg pagaia"
+        "focus": "Picco Mesociclo 2: COMBO Landmine C&J high hand switch, Dumbbell biker's squat, KB snatch to lunge, Flag Bearer isoinerziale time under tension, Pliometria e Skierg pagaia"
     }
     reg["ciclo_attivo_da_pianificare"] = "Ciclo 6 (Scarico e Trasformazione Mesociclo 2)"
     reg["pattern_status"]["spinta_orizzontale"]["stato"] = "SCARICO SELETTIVO (Modalità B attiva - coiled Ax Sit up)"
     reg["pattern_status"]["cerniera_anca"]["stato"] = "picco di potenza e coordinazione (COMBO Landmine C&J, KB Snatch lunge)"
     reg["pattern_status"]["braccia_spalle"]["stato"] = "sviluppo verticale e trazione spiralizzata (Dumbell Jerk, Endless rope half kneeling pull, Skierg pagaia alternato)"
-    reg["pattern_status"]["accosciata_squat"]["stato"] = "stabilità monolaterale e dinamica (Kettlebell skater swing, Salto alfiere)"
+    reg["pattern_status"]["accosciata_squat"]["stato"] = "stabilità monolaterale e dinamica (Dumbbell biker's squat, Salto alfiere)"
 
-    c5_unique_ids = {"22", "42", "129", "52", "193", "135", "96", "3", "32", "183", "224", "171", "24", "86", "189", "238", "11"}
+    c5_unique_ids = {"22", "82", "129", "52", "193", "135", "96", "3", "32", "183", "224", "171", "24", "86", "189", "238", "11"}
 
     for ex in reg.get("esercizi", []):
         eid = str(int(ex["id"])) if ex["id"].isdigit() else ex["id"]
-        if eid in c5_unique_ids:
-            ex["usage_count"] = ex.get("usage_count", 0) + 1
-            ex["last_cycle_used"] = "Ciclo 5"
+        if eid == "42" and ex.get("last_cycle_used") == "Ciclo 5":
+            ex["usage_count"] = max(0, ex.get("usage_count", 1) - 1)
+            ex["last_cycle_used"] = None
+        elif eid in c5_unique_ids:
+            if ex.get("last_cycle_used") != "Ciclo 5":
+                ex["usage_count"] = ex.get("usage_count", 0) + 1
+                ex["last_cycle_used"] = "Ciclo 5"
 
     reg["esercizi_utilizzati"] = sum(1 for ex in reg.get("esercizi", []) if ex.get("usage_count", 0) > 0)
 
@@ -551,9 +618,10 @@ def main():
     update_excel_file(LOCAL_LAB_EXCEL, "Pro", all_rows, meta)
     update_excel_file(LOCAL_PRO_EXCEL, "PRO", all_rows, meta)
 
-    # 5. Aggiorna demo-data.json per l'App
-    print("\n[Fase 5] Aggiornamento demo-data.json per l'App...")
+    # 5. Aggiorna demo-data.json e Vault Modulo 5 per l'App
+    print("\n[Fase 5] Aggiornamento demo-data.json e Vault Modulo 5 per l'App...")
     update_demo_data_json(all_rows)
+    update_vault_modulo_5(all_rows)
 
     # 6. Aggiorna registro periodizzazione
     print("\n[Fase 6] Aggiornamento registro periodizzazione...")
