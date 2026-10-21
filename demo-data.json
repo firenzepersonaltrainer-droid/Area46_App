@@ -19134,8 +19134,8 @@
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "PRO",
       "giorno": 25,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-09T07:20:57.607Z"
+      "stato": "in_corso",
+      "updated_at": "2026-10-21T07:09:59.156Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -19444,6 +19444,41 @@
       "giorno": 4,
       "stato": "completato",
       "updated_at": "2026-10-20T18:42:07.938Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 26,
+      "stato": "completato",
+      "updated_at": "2026-10-21T07:09:55.856Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 27,
+      "stato": "completato",
+      "updated_at": "2026-10-21T07:09:55.856Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 28,
+      "stato": "completato",
+      "updated_at": "2026-10-21T07:09:55.856Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 29,
+      "stato": "completato",
+      "updated_at": "2026-10-21T07:09:55.856Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 30,
+      "stato": "completato",
+      "updated_at": "2026-10-21T07:09:55.856Z"
     }
   ],
   "preferenze_utente": [

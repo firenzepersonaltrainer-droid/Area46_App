@@ -35,25 +35,13 @@ import { toast } from "../components/Toast";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { useLivelloMemoria } from "../lib/useLivelloMemoria";
 import { useCurrentUser, getActiveUserId } from "../lib/useUser";
-
-export function fetchWithAuth(url: string, options: RequestInit = {}) {
-  const storedId = getActiveUserId();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...((options.headers as Record<string, string>) || {}),
-  };
-  if (storedId) {
-    headers["x-area46-user"] = storedId;
-    headers["x-user-id"] = storedId;
-  }
-  return fetch(url, {
-    ...options,
-    headers,
-    credentials: "include",
-  });
-}
-
-type Stato = "non_iniziato" | "in_corso" | "completato";
+import {
+  useAllenamentiStati,
+  statoKey,
+  fetchWithAuth,
+  type StatoAllenamento as Stato,
+  type StatoRecord,
+} from "../lib/useAllenamentiStati";
 
 interface GiornoItem {
   giorno: string;
@@ -62,19 +50,8 @@ interface GiornoItem {
   livello?: string;
 }
 
-interface StatoRecord {
-  livello: string;
-  giorno: number;
-  stato: Stato;
-  updated_at: string;
-}
-
 function labelGiornoTesto(item: GiornoItem): string {
   return item.giorno || `Giorno ${item.giorno_num}`;
-}
-
-function statoKey(livello: string, giornoNum: number): string {
-  return `${livello}-${giornoNum}`;
 }
 
 interface ApprofondimentoItem {
@@ -375,9 +352,9 @@ function ListaGiorni({
   statoMap: Map<string, Stato>;
   onStatoChange: (livello: string, giornoNum: number, stato: Stato) => void;
   onBatchStatoChange?: (updates: Array<{ livello: string; giornoNum: number; stato: Stato }>) => void;
+  toggleCiclo?: (items: GiornoItem[], targetLivello?: string) => Promise<boolean>;
 }) {
   const { user } = useCurrentUser();
-  const isCoach = user?.ruolo === "manager";
   const gruppi = raggruppaPerSettimana(giorni);
   // Default: tutti i cicli precedenti chiusi, ultimo ciclo aperto
   const [collapsedSettimane, setCollapsedSettimane] = useState<Set<string>>(() => {
@@ -423,15 +400,27 @@ function ListaGiorni({
     });
   };
 
-  const handleToggleTuttiCompletatiCiclo = (items: GiornoItem[], e: React.MouseEvent) => {
+  const handleToggleTuttiCompletatiCiclo = async (items: GiornoItem[], e: React.MouseEvent) => {
     e.stopPropagation();
+    const lv = livelloFiltro || items[0]?.livello || "";
+
+    if (toggleCiclo) {
+      const isCompletatoOra = await toggleCiclo(items, lv);
+      toast.success(
+        isCompletatoOra
+          ? "Tutti gli allenamenti del ciclo contrassegnati come completati!"
+          : "Allenamenti del ciclo ripristinati come da svolgere!"
+      );
+      return;
+    }
+
     const tuttiCompletati = items.every((item) => {
-      const lv = livelloFiltro || item.livello || "";
-      return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
+      const l = lv || item.livello || "";
+      return statoMap.get(statoKey(l, item.giorno_num)) === "completato";
     });
     const nuovoStato: Stato = tuttiCompletati ? "non_iniziato" : "completato";
     const updates = items.map((item) => ({
-      livello: livelloFiltro || item.livello || "",
+      livello: lv || item.livello || "",
       giornoNum: item.giorno_num,
       stato: nuovoStato,
     }));
@@ -440,8 +429,7 @@ function ListaGiorni({
       onBatchStatoChange(updates);
     } else {
       items.forEach((item) => {
-        const lv = livelloFiltro || item.livello || "";
-        onStatoChange(lv, item.giorno_num, nuovoStato);
+        onStatoChange(lv || item.livello || "", item.giorno_num, nuovoStato);
       });
     }
 
@@ -499,36 +487,34 @@ function ListaGiorni({
                   </span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  {/* CASELLA DI SPUNTA COACH: SEGNA TUTTI COME COMPLETATI */}
-                  {isCoach && (
-                    <button
-                      type="button"
-                      onClick={(e) => handleToggleTuttiCompletatiCiclo(items, e)}
-                      title={
+                  {/* CASELLA DI SPUNTA CICLO: SEGNA TUTTI COME COMPLETATI (ATTIVA PER TUTTI) */}
+                  <button
+                    type="button"
+                    onClick={(e) => handleToggleTuttiCompletatiCiclo(items, e)}
+                    title={
+                      tuttiCompletatiCiclo
+                        ? "Ciclo completato. Clicca per deselezionare tutti gli allenamenti"
+                        : "Clicca per contrassegnare tutti gli allenamenti del ciclo come completati"
+                    }
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black transition-all border shadow-2xs cursor-pointer ${
+                      tuttiCompletatiCiclo
+                        ? "bg-[#e3ff00] text-zinc-900 border-[#e3ff00]"
+                        : "bg-white/10 hover:bg-white/20 text-white border-white/30"
+                    }`}
+                  >
+                    <span
+                      className={`size-4 rounded flex items-center justify-center border transition-colors ${
                         tuttiCompletatiCiclo
-                          ? "Ciclo completato. Clicca per deselezionare tutti gli allenamenti"
-                          : "Clicca per contrassegnare tutti gli allenamenti del ciclo come completati"
-                      }
-                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black transition-all border shadow-2xs ${
-                        tuttiCompletatiCiclo
-                          ? "bg-[#e3ff00] text-zinc-900 border-[#e3ff00]"
-                          : "bg-white/10 hover:bg-white/20 text-white border-white/30"
+                          ? "bg-zinc-950 border-zinc-950 text-[#e3ff00]"
+                          : "border-white/60 bg-transparent text-transparent"
                       }`}
                     >
-                      <span
-                        className={`size-4 rounded flex items-center justify-center border transition-colors ${
-                          tuttiCompletatiCiclo
-                            ? "bg-zinc-950 border-zinc-950 text-[#e3ff00]"
-                            : "border-white/60 bg-transparent"
-                        }`}
-                      >
-                        {tuttiCompletatiCiclo && <CheckSquare className="size-3.5" />}
-                      </span>
-                      <span className="hidden sm:inline">
-                        {tuttiCompletatiCiclo ? "Ciclo Completato" : "Completa Ciclo"}
-                      </span>
-                    </button>
-                  )}
+                      {tuttiCompletatiCiclo && <CheckSquare className="size-3.5 stroke-[3]" />}
+                    </span>
+                    <span className="hidden sm:inline">
+                      {tuttiCompletatiCiclo ? "Ciclo Completato" : "Completa Ciclo"}
+                    </span>
+                  </button>
 
                   <span
                     className="text-xs font-black px-2.5 py-0.5 rounded-full"
@@ -584,19 +570,9 @@ export function ArchivioAllenamentiPage() {
     queryKey: ["allenamenti", livelloEffettivo],
     queryFn: () => fetch(`/app-api/allenamenti${livelloEffettivo ? `?livello=${encodeURIComponent(livelloEffettivo)}` : ""}`).then((r) => r.json()),
   });
-  const { data: rawStati = [], isLoading: loadingStati } = useQuery<StatoRecord[]>({
-    queryKey: ["stati", user?.id || user?.email || "active"],
-    queryFn: async () => {
-      const res = await fetchWithAuth("/app-api/stati");
-      if (!res.ok) return [];
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
-    },
-    refetchInterval: 30000,
-  });
-  const stati = Array.isArray(rawStati) ? rawStati : [];
+
+  const { stati, statoMap, isLoading: loadingStati, setStato, setBatchStato, toggleCiclo } = useAllenamentiStati();
   const isLoading = loadingGiorni || loadingStati;
-  const statoMap = new Map<string, Stato>((stati || []).map((s) => [statoKey(s.livello, s.giorno), s.stato]));
 
   async function handleStatoChange(lv: string, giornoNum: number, stato: Stato) {
     const statoCorrente = statoMap.get(statoKey(lv, giornoNum)) ?? "non_iniziato";
@@ -604,64 +580,11 @@ export function ArchivioAllenamentiPage() {
       await reset.richiediReset(lv, giornoNum);
       return;
     }
-
-    const nowIso = new Date().toISOString();
-    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO (0ms latenza)
-    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
-      const safeOld = Array.isArray(old) ? old : [];
-      const filtered = safeOld.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
-      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: nowIso }];
-    });
-
-    try {
-      const res = await fetchWithAuth("/app-api/stati", {
-        method: "POST",
-        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato, email_cliente: user?.email }),
-      });
-      if (!res.ok) throw new Error("Errore salvataggio stato");
-      queryClient.invalidateQueries({ queryKey: ["diario"] });
-    } catch {
-      toast.error("Errore di sincronizzazione. Lo stato verrà risincronizzato.");
-      queryClient.invalidateQueries({ queryKey: ["stati"] });
-    }
+    await setStato(lv, giornoNum, stato);
   }
 
   async function handleBatchStatoChange(updates: Array<{ livello: string; giornoNum: number; stato: Stato }>) {
-    if (!updates || updates.length === 0) return;
-    const updateMap = new Map(updates.map((u) => [statoKey(u.livello, u.giornoNum), u.stato]));
-    const nowIso = new Date().toISOString();
-
-    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO IN BLOCCO (0ms)
-    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
-      const safeOld = Array.isArray(old) ? old : [];
-      const updatedExisting = safeOld.map((s) => {
-        const key = statoKey(s.livello, s.giorno);
-        if (updateMap.has(key)) {
-          return { ...s, stato: updateMap.get(key)!, updated_at: nowIso };
-        }
-        return s;
-      });
-      const existingKeys = new Set(safeOld.map((s) => statoKey(s.livello, s.giorno)));
-      const newRecords = updates
-        .filter((u) => !existingKeys.has(statoKey(u.livello, u.giornoNum)))
-        .map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato, updated_at: nowIso }));
-      return [...updatedExisting, ...newRecords];
-    });
-
-    try {
-      const res = await fetchWithAuth("/app-api/stati/batch", {
-        method: "POST",
-        body: JSON.stringify({
-          email_cliente: user?.email,
-          updates: updates.map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato })),
-        }),
-      });
-      if (!res.ok) throw new Error("Errore salvataggio ciclo");
-      queryClient.invalidateQueries({ queryKey: ["diario"] });
-    } catch {
-      toast.error("Errore di sincronizzazione del ciclo. Riprova.");
-      queryClient.invalidateQueries({ queryKey: ["stati"] });
-    }
+    await setBatchStato(updates);
   }
 
   return (
@@ -693,6 +616,7 @@ export function ArchivioAllenamentiPage() {
             statoMap={statoMap}
             onStatoChange={handleStatoChange}
             onBatchStatoChange={handleBatchStatoChange}
+            toggleCiclo={toggleCiclo}
           />
         )}
       </div>
@@ -713,19 +637,9 @@ export default function AllenamentiPage() {
     queryKey: ["allenamenti", livello],
     queryFn: () => fetch(`/app-api/allenamenti${livello ? `?livello=${encodeURIComponent(livello)}` : ""}`).then((r) => r.json()),
   });
-  const { data: rawStati = [], isLoading: loadingStati } = useQuery<StatoRecord[]>({
-    queryKey: ["stati", user?.id || user?.email || "active"],
-    queryFn: async () => {
-      const res = await fetchWithAuth("/app-api/stati");
-      if (!res.ok) return [];
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
-    },
-    refetchInterval: 30000,
-  });
-  const stati = Array.isArray(rawStati) ? rawStati : [];
+
+  const { stati, statoMap, isLoading: loadingStati, setStato, setBatchStato, toggleCiclo } = useAllenamentiStati();
   const isLoading = loadingGiorni || loadingStati;
-  const statoMap = new Map<string, Stato>((stati || []).map((s) => [statoKey(s.livello, s.giorno), s.stato]));
 
   async function handleStatoChange(lv: string, giornoNum: number, stato: Stato) {
     const statoCorrente = statoMap.get(statoKey(lv, giornoNum)) ?? "non_iniziato";
@@ -733,64 +647,11 @@ export default function AllenamentiPage() {
       await reset.richiediReset(lv, giornoNum);
       return;
     }
-
-    const nowIso = new Date().toISOString();
-    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO (0ms latenza)
-    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
-      const safeOld = Array.isArray(old) ? old : [];
-      const filtered = safeOld.filter((s) => !(s.livello === lv && s.giorno === giornoNum));
-      return [...filtered, { livello: lv, giorno: giornoNum, stato, updated_at: nowIso }];
-    });
-
-    try {
-      const res = await fetchWithAuth("/app-api/stati", {
-        method: "POST",
-        body: JSON.stringify({ livello: lv, giorno: giornoNum, stato, email_cliente: user?.email }),
-      });
-      if (!res.ok) throw new Error("Salvataggio fallito");
-      queryClient.invalidateQueries({ queryKey: ["diario"] });
-    } catch {
-      toast.error("Errore di sincronizzazione. Lo stato verrà risincronizzato.");
-      queryClient.invalidateQueries({ queryKey: ["stati"] });
-    }
+    await setStato(lv, giornoNum, stato);
   }
 
   async function handleBatchStatoChange(updates: Array<{ livello: string; giornoNum: number; stato: Stato }>) {
-    if (!updates || updates.length === 0) return;
-    const updateMap = new Map(updates.map((u) => [statoKey(u.livello, u.giornoNum), u.stato]));
-    const nowIso = new Date().toISOString();
-
-    // ⚡ AGGIORNAMENTO OTTIMISTICO ISTANTANEO IN BLOCCO (0ms)
-    queryClient.setQueriesData<StatoRecord[]>({ queryKey: ["stati"] }, (old = []) => {
-      const safeOld = Array.isArray(old) ? old : [];
-      const updatedExisting = safeOld.map((s) => {
-        const key = statoKey(s.livello, s.giorno);
-        if (updateMap.has(key)) {
-          return { ...s, stato: updateMap.get(key)!, updated_at: nowIso };
-        }
-        return s;
-      });
-      const existingKeys = new Set(safeOld.map((s) => statoKey(s.livello, s.giorno)));
-      const newRecords = updates
-        .filter((u) => !existingKeys.has(statoKey(u.livello, u.giornoNum)))
-        .map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato, updated_at: nowIso }));
-      return [...updatedExisting, ...newRecords];
-    });
-
-    try {
-      const res = await fetchWithAuth("/app-api/stati/batch", {
-        method: "POST",
-        body: JSON.stringify({
-          email_cliente: user?.email,
-          updates: updates.map((u) => ({ livello: u.livello, giorno: u.giornoNum, stato: u.stato })),
-        }),
-      });
-      if (!res.ok) throw new Error("Salvataggio in blocco fallito");
-      queryClient.invalidateQueries({ queryKey: ["diario"] });
-    } catch {
-      toast.error("Errore di sincronizzazione del ciclo. Riprova.");
-      queryClient.invalidateQueries({ queryKey: ["stati"] });
-    }
+    await setBatchStato(updates);
   }
 
   const lista = giorni || [];

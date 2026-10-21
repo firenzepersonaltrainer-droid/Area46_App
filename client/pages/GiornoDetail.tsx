@@ -7,8 +7,16 @@ import {
   Dumbbell,
   PlayCircle,
   Zap,
+  CheckSquare,
+  Square,
+  CheckCircle2,
+  Clock,
+  Circle,
+  ArrowLeft,
 } from "lucide-react";
 import { getLivelloColors } from "../lib/livelloStyle";
+import { toast } from "../components/Toast";
+import { useAllenamentiStati, type StatoAllenamento } from "../lib/useAllenamentiStati";
 
 interface Esercizio {
   id: number;
@@ -174,6 +182,7 @@ function WodBlocco({ blocco, livello, giorno }: { blocco: Blocco; livello: strin
 
 export default function GiornoDetailPage() {
   const { livello, giorno } = useParams<{ livello: string; giorno: string }>();
+  const navigate = useNavigate();
   const colors = getLivelloColors(livello ?? "");
 
   const { data: esercizi = [], isLoading } = useQuery<Esercizio[]>({
@@ -189,6 +198,34 @@ export default function GiornoDetailPage() {
   const giornoLabel = primoEsercizio?.giorno ? String(primoEsercizio.giorno) : `Giorno ${giornoDisplay}`;
   const cicloLabel = primoEsercizio?.settimana;
 
+  // Estrazione del numero giorno intero
+  const numMatch = String(giornoDisplay).match(/[0-9]+/);
+  const giornoNum = numMatch ? parseInt(numMatch[0], 10) : parseInt(giornoDisplay, 10) || 1;
+
+  const { getStato, setStato, toggleGiorno } = useAllenamentiStati();
+  const statoCorrente: StatoAllenamento = getStato(livello ?? "", giornoNum);
+  const isCompletato = statoCorrente === "completato";
+
+  const handleToggle = async () => {
+    const next = await toggleGiorno(livello ?? "", giornoNum);
+    if (next === "completato") {
+      toast.success(`Allenamento contrassegnato come completato!`);
+    } else {
+      toast.success(`Allenamento ripristinato come da svolgere.`);
+    }
+  };
+
+  const handleSelectStato = async (s: StatoAllenamento) => {
+    await setStato(livello ?? "", giornoNum, s);
+    if (s === "completato") {
+      toast.success(`Allenamento contrassegnato come completato!`);
+    } else if (s === "in_corso") {
+      toast.success(`Allenamento contrassegnato come in corso!`);
+    } else {
+      toast.success(`Allenamento ripristinato come da svolgere.`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <nav className="flex items-center gap-1 text-sm text-secondary flex-wrap">
@@ -197,6 +234,7 @@ export default function GiornoDetailPage() {
         <span className="text-primary font-medium">{cicloLabel ? `${cicloLabel} — ${giornoLabel}` : giornoLabel}</span>
       </nav>
 
+      {/* Header Info Giorno */}
       <div className="rounded-2xl bg-white border border-zinc-200 p-4 shadow-xs relative overflow-hidden">
         <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-[#1c00ff]" />
         <div className="pl-1">
@@ -218,6 +256,75 @@ export default function GiornoDetailPage() {
                 {cicloLabel}
               </span>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* CASELLA DI SPUNTA E CONTROLLO STATO ALLENAMENTO */}
+      <div
+        className="rounded-2xl border-2 bg-white p-4 shadow-xs transition-all"
+        style={{
+          borderColor: isCompletato ? "#34c759" : statoCorrente === "in_corso" ? "#ff9500" : "#e4e4e7",
+        }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Casella di Spunta Principale */}
+          <button
+            type="button"
+            onClick={handleToggle}
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-black text-sm transition-all cursor-pointer shadow-xs select-none ${
+              isCompletato
+                ? "bg-[#e3ff00] text-zinc-950 border-2 border-zinc-950 hover:bg-[#d6f000]"
+                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-2 border-zinc-300"
+            }`}
+            title={isCompletato ? "Clicca per deselezionare l'allenamento" : "Clicca per segnare come completato"}
+          >
+            <span
+              className={`size-6 rounded-lg flex items-center justify-center border-2 transition-all ${
+                isCompletato
+                  ? "bg-zinc-950 border-zinc-950 text-[#e3ff00]"
+                  : "bg-white border-zinc-400 text-transparent"
+              }`}
+            >
+              {isCompletato ? <CheckSquare className="size-4.5 stroke-[3]" /> : <Square className="size-4.5" />}
+            </span>
+            <span>
+              {isCompletato ? "Allenamento Completato" : "Segna come completato"}
+            </span>
+          </button>
+
+          {/* Selettore 3 Stati Rapido */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-xs font-bold text-zinc-500 uppercase mr-1">Stato:</span>
+            {[
+              { id: "non_iniziato" as StatoAllenamento, label: "Da svolgere", color: "#ff3b30", bg: "rgba(255,59,48,0.10)", icon: Circle },
+              { id: "in_corso" as StatoAllenamento, label: "In corso", color: "#ff9500", bg: "rgba(255,149,0,0.12)", icon: Clock },
+              { id: "completato" as StatoAllenamento, label: "Completato", color: "#34c759", bg: "rgba(52,199,89,0.12)", icon: CheckCircle2 },
+            ].map((cfg) => {
+              const attivo = statoCorrente === cfg.id;
+              const Icon = cfg.icon;
+              return (
+                <button
+                  key={cfg.id}
+                  type="button"
+                  onClick={() => handleSelectStato(cfg.id)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer shadow-2xs ${
+                    attivo
+                      ? "ring-2 ring-offset-1 font-black"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                  style={{
+                    backgroundColor: attivo ? cfg.bg : "#ffffff",
+                    borderColor: cfg.color,
+                    color: cfg.color,
+                  }}
+                >
+                  <Icon className="size-3.5" />
+                  {cfg.label}
+                  {attivo && <span className="ml-1 text-[10px]">✓</span>}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
