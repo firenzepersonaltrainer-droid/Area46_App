@@ -22854,7 +22854,7 @@ var demo_data_default = {
       giorno: "2 allenamento B",
       sequenza: "4a",
       id_esercizio: "205",
-      nome_esercizio: "Kick-through progression",
+      nome_esercizio: "Kick-through",
       parametri: '4x30"',
       recupero: '60"',
       minutaggio_blocco: "",
@@ -23139,7 +23139,7 @@ var demo_data_default = {
       giorno: "4 allenamento B",
       sequenza: "4a",
       id_esercizio: "205",
-      nome_esercizio: "Kick-through progression",
+      nome_esercizio: "Kick-through",
       parametri: '4x30"',
       recupero: '60"',
       minutaggio_blocco: "",
@@ -23424,7 +23424,7 @@ var demo_data_default = {
       giorno: "6 allenamento B",
       sequenza: "4a",
       id_esercizio: "205",
-      nome_esercizio: "Kick-through progression",
+      nome_esercizio: "Kick-through",
       parametri: '4x30"',
       recupero: '60"',
       minutaggio_blocco: "",
@@ -25780,7 +25780,7 @@ var demo_data_default = {
       sequenza: "1a",
       id_esercizio: "022",
       nome_esercizio: "Coiled Cable Punch",
-      parametri: "3x8+8",
+      parametri: '3x40"+40"',
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
@@ -25793,13 +25793,13 @@ var demo_data_default = {
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
       sequenza: "1b",
-      id_esercizio: "042",
-      nome_esercizio: "Push the wall squat",
-      parametri: "3x8",
-      recupero: '45"',
+      id_esercizio: "082",
+      nome_esercizio: "Dumbbell biker's squat",
+      parametri: "3x12",
+      recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/3a_ww0jGYsM",
+      note_tecniche: "jump set | usare un manubrio di peso adeguato al riscaldamento",
+      link_video: "https://youtu.be/jqhow36DTdg",
       data_pubblicazione: null
     },
     {
@@ -25810,10 +25810,10 @@ var demo_data_default = {
       sequenza: "2",
       id_esercizio: "129",
       nome_esercizio: "COMBO: Landmine Clean & Jerk High hand switch T/GO",
-      parametri: "4x5+5",
+      parametri: "4x10",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "RPE 8.5",
+      note_tecniche: "RPE 8.5 | fare un corretto avvicinamento",
       link_video: "https://youtube.com/shorts/bB_a5s46QaU",
       data_pubblicazione: null
     },
@@ -25852,13 +25852,13 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
-      sequenza: "4a",
+      sequenza: "4",
       id_esercizio: "135",
       nome_esercizio: "Salto alfiere",
-      parametri: "3x6+6",
+      parametri: "studio progressivo 5-10 minuti",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
+      note_tecniche: "Dal momento che \xE8 un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito.",
       link_video: "https://youtu.be/Gw0ZwJs6AuQ?si=Pn8lHPgqN_A4nDxA",
       data_pubblicazione: null
     },
@@ -25867,13 +25867,13 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
-      sequenza: "4b",
+      sequenza: "5a",
       id_esercizio: "096",
       nome_esercizio: "coiled Ax Sit up",
       parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
+      note_tecniche: "jump set",
       link_video: "",
       data_pubblicazione: null
     },
@@ -25882,13 +25882,13 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
-      sequenza: "4c",
+      sequenza: "5b",
       id_esercizio: "003",
       nome_esercizio: "skierg pagaia alternato",
       parametri: '3x30"+30"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
@@ -26035,7 +26035,7 @@ var demo_data_default = {
       sequenza: "1a",
       id_esercizio: "022",
       nome_esercizio: "Coiled Cable Punch",
-      parametri: "3x8+8",
+      parametri: '3x40"+40"',
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
@@ -26048,13 +26048,13 @@ var demo_data_default = {
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
       sequenza: "1b",
-      id_esercizio: "042",
-      nome_esercizio: "Push the wall squat",
-      parametri: "3x8",
-      recupero: '45"',
+      id_esercizio: "082",
+      nome_esercizio: "Dumbbell biker's squat",
+      parametri: "3x12",
+      recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/3a_ww0jGYsM",
+      note_tecniche: "jump set | usare un manubrio di peso adeguato al riscaldamento",
+      link_video: "https://youtu.be/jqhow36DTdg",
       data_pubblicazione: null
     },
     {
@@ -26065,10 +26065,10 @@ var demo_data_default = {
       sequenza: "2",
       id_esercizio: "129",
       nome_esercizio: "COMBO: Landmine Clean & Jerk High hand switch T/GO",
-      parametri: "4x5+5",
+      parametri: "4x10",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "RPE 8.5",
+      note_tecniche: "RPE 8.5 | fare un corretto avvicinamento",
       link_video: "https://youtube.com/shorts/bB_a5s46QaU",
       data_pubblicazione: null
     },
@@ -26110,10 +26110,10 @@ var demo_data_default = {
       sequenza: "4a",
       id_esercizio: "135",
       nome_esercizio: "Salto alfiere",
-      parametri: "3x6+6",
+      parametri: "3x5+5",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
+      note_tecniche: "jump set",
       link_video: "https://youtu.be/Gw0ZwJs6AuQ?si=Pn8lHPgqN_A4nDxA",
       data_pubblicazione: null
     },
@@ -26123,13 +26123,13 @@ var demo_data_default = {
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
       sequenza: "4b",
-      id_esercizio: "096",
-      nome_esercizio: "coiled Ax Sit up",
-      parametri: "3x8+8",
-      recupero: "",
+      id_esercizio: "003",
+      nome_esercizio: "skierg pagaia alternato",
+      parametri: '3x30"+30"',
+      recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
-      link_video: "",
+      note_tecniche: "jump set",
+      link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
     {
@@ -26137,14 +26137,14 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
-      sequenza: "4c",
-      id_esercizio: "003",
-      nome_esercizio: "skierg pagaia alternato",
-      parametri: '3x30"+30"',
-      recupero: '60"',
+      sequenza: "5",
+      id_esercizio: "096",
+      nome_esercizio: "coiled Ax Sit up",
+      parametri: "3x8+8",
+      recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
-      link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
+      note_tecniche: "",
+      link_video: "",
       data_pubblicazione: null
     },
     {
@@ -26290,7 +26290,7 @@ var demo_data_default = {
       sequenza: "1a",
       id_esercizio: "022",
       nome_esercizio: "Coiled Cable Punch",
-      parametri: "3x8+8",
+      parametri: '3x40"+40"',
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
@@ -26303,13 +26303,13 @@ var demo_data_default = {
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
       sequenza: "1b",
-      id_esercizio: "042",
-      nome_esercizio: "Push the wall squat",
-      parametri: "3x8",
-      recupero: '45"',
+      id_esercizio: "082",
+      nome_esercizio: "Dumbbell biker's squat",
+      parametri: "3x12",
+      recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/3a_ww0jGYsM",
+      note_tecniche: "jump set | usare un manubrio di peso adeguato al riscaldamento",
+      link_video: "https://youtu.be/jqhow36DTdg",
       data_pubblicazione: null
     },
     {
@@ -26320,10 +26320,10 @@ var demo_data_default = {
       sequenza: "2",
       id_esercizio: "129",
       nome_esercizio: "COMBO: Landmine Clean & Jerk High hand switch T/GO",
-      parametri: "4x5+5",
+      parametri: "4x10",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "RPE 8.5",
+      note_tecniche: "RPE 8.5 | fare un corretto avvicinamento",
       link_video: "https://youtube.com/shorts/bB_a5s46QaU",
       data_pubblicazione: null
     },
@@ -26365,7 +26365,7 @@ var demo_data_default = {
       sequenza: "4a",
       id_esercizio: "135",
       nome_esercizio: "Salto alfiere",
-      parametri: "3x6+6",
+      parametri: "3x5+5",
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "circuito (3 round)",
@@ -31269,8 +31269,8 @@ var demo_data_default = {
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
-      memoria_livello: "Level 2",
-      updated_at: "2026-10-20T11:32:31.414Z"
+      memoria_livello: "PRO",
+      updated_at: "2026-10-21T06:03:00.426Z"
     },
     {
       email_cliente: "silvia.brenzini@gmail.com",
@@ -35191,7 +35191,11 @@ function saveData(data, skipCloudSync = false) {
     const parentPath = path3.resolve(__dirname, "..", "demo-data.json");
     const destPath = fs4.existsSync(directPath) ? directPath : fs4.existsSync(parentPath) ? parentPath : null;
     if (destPath) {
-      fs4.writeFileSync(destPath, JSON.stringify(data, null, 2), "utf-8");
+      const sanitized = JSON.parse(JSON.stringify(data));
+      if (sanitized.configurazione_lab && sanitized.configurazione_lab.stripe_secret_key) {
+        sanitized.configurazione_lab.stripe_secret_key = "";
+      }
+      fs4.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
       const now = Date.now();
       if (now - lastAutoBackupTime > 4 * 3600 * 1e3) {
         lastAutoBackupTime = now;
@@ -35679,6 +35683,9 @@ async function syncDataToGoogleDrive(fullDb) {
     if (fullDb.attivita_lab !== void 0) {
       driveDb.attivita_lab = fullDb.attivita_lab || [];
     }
+    if (fullDb.allenamenti !== void 0 && Array.isArray(fullDb.allenamenti) && fullDb.allenamenti.length > 50) {
+      driveDb.allenamenti = fullDb.allenamenti;
+    }
     if (fullDb.configurazione_lab) {
       driveDb.configurazione_lab = {
         ...driveDb.configurazione_lab || {},
@@ -35779,6 +35786,9 @@ async function tryLoadConfigFromGoogleDrive() {
     }
     if (driveDb.attivita_lab && Array.isArray(driveDb.attivita_lab)) {
       db.attivita_lab = driveDb.attivita_lab;
+    }
+    if (driveDb.allenamenti && Array.isArray(driveDb.allenamenti) && driveDb.allenamenti.length > 50) {
+      db.allenamenti = driveDb.allenamenti;
     }
     saveData(db, true);
   } catch {

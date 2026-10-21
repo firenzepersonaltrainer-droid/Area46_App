@@ -155,7 +155,11 @@ function saveData(data: any, skipCloudSync = false): Promise<void> {
     const parentPath = path.resolve(__dirname, "..", "demo-data.json");
     const destPath = fs.existsSync(directPath) ? directPath : fs.existsSync(parentPath) ? parentPath : null;
     if (destPath) {
-      fs.writeFileSync(destPath, JSON.stringify(data, null, 2), "utf-8");
+      const sanitized = JSON.parse(JSON.stringify(data));
+      if (sanitized.configurazione_lab && sanitized.configurazione_lab.stripe_secret_key) {
+        sanitized.configurazione_lab.stripe_secret_key = "";
+      }
+      fs.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
       
       // Auto-backup periodico ogni 4 ore in ambiente locale
       const now = Date.now();
@@ -814,6 +818,9 @@ async function syncDataToGoogleDrive(fullDb: any) {
     if (fullDb.attivita_lab !== undefined) {
       driveDb.attivita_lab = fullDb.attivita_lab || [];
     }
+    if (fullDb.allenamenti !== undefined && Array.isArray(fullDb.allenamenti) && fullDb.allenamenti.length > 50) {
+      driveDb.allenamenti = fullDb.allenamenti;
+    }
     if (fullDb.configurazione_lab) {
       driveDb.configurazione_lab = {
         ...(driveDb.configurazione_lab || {}),
@@ -917,6 +924,9 @@ async function tryLoadConfigFromGoogleDrive() {
     }
     if (driveDb.attivita_lab && Array.isArray(driveDb.attivita_lab)) {
       db.attivita_lab = driveDb.attivita_lab;
+    }
+    if (driveDb.allenamenti && Array.isArray(driveDb.allenamenti) && driveDb.allenamenti.length > 50) {
+      db.allenamenti = driveDb.allenamenti;
     }
     saveData(db, true);
   } catch {
