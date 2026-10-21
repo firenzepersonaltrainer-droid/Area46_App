@@ -340,6 +340,86 @@ function raggruppaPerSettimana(giorni: GiornoItem[]): Array<[string, GiornoItem[
   return Array.from(map.entries());
 }
 
+function calcolaCicliApertiDefault(
+  gruppi: Array<[string, GiornoItem[]]>,
+  statoMap: Map<string, Stato>,
+  livelloFiltro?: string
+): Set<string> {
+  if (gruppi.length <= 1) {
+    return new Set<string>();
+  }
+
+  const cicliDaAprire = new Set<string>();
+
+  const analisiCicli = gruppi.map(([settimana, items]) => {
+    let haInCorso = false;
+    let completati = 0;
+
+    for (const item of items) {
+      const lv = item.livello || livelloFiltro || "";
+      const s = statoMap.get(statoKey(lv, item.giorno_num));
+      if (s === "in_corso") {
+        haInCorso = true;
+      }
+      if (s === "completato") {
+        completati++;
+      }
+    }
+
+    const tuttiCompletati = items.length > 0 && completati === items.length;
+    const parziale = completati > 0 && completati < items.length;
+
+    return {
+      settimana,
+      items,
+      haInCorso,
+      completati,
+      totali: items.length,
+      tuttiCompletati,
+      parziale,
+    };
+  });
+
+  // CASO 1: Uno o più cicli contengono un allenamento con stato "in_corso".
+  // Soluzione per utente che lavora su più cicli contemporaneamente:
+  // se ha sessioni in corso in più cicli, manteniamo aperti TUTTI i cicli con sessioni in corso!
+  const cicliConInCorso = analisiCicli.filter((c) => c.haInCorso);
+  if (cicliConInCorso.length > 0) {
+    for (const c of cicliConInCorso) {
+      cicliDaAprire.add(c.settimana);
+    }
+  } else {
+    // CASO 2: Nessun allenamento è esplicitamente contrassegnato "in_corso".
+    // 2A: Verifichiamo se ci sono cicli parzialmente completati (iniziati ma non finiti).
+    // Se l'atleta sta lavorando su più cicli contemporaneamente, apriamo tutti i cicli parziali!
+    const cicliParziali = analisiCicli.filter((c) => c.parziale);
+    if (cicliParziali.length > 0) {
+      for (const c of cicliParziali) {
+        cicliDaAprire.add(c.settimana);
+      }
+    } else {
+      // 2B: Troviamo il PRIMO ciclo che ha allenamenti ancora da svolgere (prossimo ciclo attivo da iniziare).
+      const primoNonCompletato = analisiCicli.find((c) => !c.tuttiCompletati);
+      if (primoNonCompletato) {
+        cicliDaAprire.add(primoNonCompletato.settimana);
+      } else {
+        // 2C: Tutti i cicli sono completati al 100%: teniamo aperto l'ultimo come completamento.
+        cicliDaAprire.add(gruppi[gruppi.length - 1][0]);
+      }
+    }
+  }
+
+  // Set dei cicli collassati (chiusi) per esclusione
+  const collapsed = new Set<string>();
+  for (const [settimana] of gruppi) {
+    if (!cicliDaAprire.has(settimana)) {
+      collapsed.add(settimana);
+    }
+  }
+
+  return collapsed;
+}
+
 function ListaGiorni({
   giorni,
   livelloFiltro,
@@ -357,32 +437,25 @@ function ListaGiorni({
 }) {
   const { user } = useCurrentUser();
   const gruppi = raggruppaPerSettimana(giorni);
-  // Default: tutti i cicli precedenti chiusi, ultimo ciclo aperto
-  const [collapsedSettimane, setCollapsedSettimane] = useState<Set<string>>(() => {
-    if (gruppi.length > 1) {
-      const set = new Set<string>();
-      for (let i = 0; i < gruppi.length - 1; i++) {
-        set.add(gruppi[i][0]);
-      }
-      return set;
-    }
-    return new Set();
-  });
+  // Default: tutti i menu a tendina chiusi tranne quello/i dell'allenamento in corso
+  const [collapsedSettimane, setCollapsedSettimane] = useState<Set<string>>(() =>
+    calcolaCicliApertiDefault(gruppi, statoMap, livelloFiltro)
+  );
 
-  const lastCycleRef = React.useRef<HTMLDivElement | null>(null);
+  const primoCicloApertoRef = React.useRef<HTMLDivElement | null>(null);
 
-  // Quando cambia il livello o la lista giorni, chiudi i precedenti e scorri all'ultimo ciclo in corso
+  // Trova il primo ciclo che risulta aperto per posizionare la vista
+  const primoCicloApertoNome = gruppi.find(([settimana]) => !collapsedSettimane.has(settimana))?.[0];
+
+  // Quando cambia il livello o la lista giorni, ricalcola i cicli aperti e posiziona la vista sul ciclo in corso
   React.useEffect(() => {
     if (gruppi.length > 1) {
-      const set = new Set<string>();
-      for (let i = 0; i < gruppi.length - 1; i++) {
-        set.add(gruppi[i][0]);
-      }
-      setCollapsedSettimane(set);
+      const nuoviCollapsed = calcolaCicliApertiDefault(gruppi, statoMap, livelloFiltro);
+      setCollapsedSettimane(nuoviCollapsed);
 
       const timer = setTimeout(() => {
-        if (lastCycleRef.current) {
-          lastCycleRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (primoCicloApertoRef.current) {
+          primoCicloApertoRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }, 200);
       return () => clearTimeout(timer);
@@ -455,14 +528,22 @@ function ListaGiorni({
     <div className="space-y-6">
       {gruppi.map(([settimana, items], index) => {
         const isCollapsed = collapsedSettimane.has(settimana);
-        const isLast = index === gruppi.length - 1;
+        const isPrimoAperto = settimana === primoCicloApertoNome;
         const tuttiCompletatiCiclo = items.length > 0 && items.every((item) => {
+          const lv = item.livello || livelloFiltro || "";
+          return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
+        });
+        const haInCorsoCiclo = items.some((item) => {
+          const lv = item.livello || livelloFiltro || "";
+          return statoMap.get(statoKey(lv, item.giorno_num)) === "in_corso";
+        });
+        const parzialeCiclo = !tuttiCompletatiCiclo && items.some((item) => {
           const lv = item.livello || livelloFiltro || "";
           return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
         });
 
         return (
-          <div key={settimana} ref={isLast ? lastCycleRef : undefined}>
+          <div key={settimana} ref={isPrimoAperto ? primoCicloApertoRef : undefined}>
             {mostraHeader && (
               <div
                 onClick={() => toggleSettimana(settimana)}
@@ -478,15 +559,36 @@ function ListaGiorni({
                 style={{ background: "#1c00ff", borderLeft: "5px solid #e3ff00" }}
                 title="Clicca per aprire o comprimere questo ciclo"
               >
-                <div className="flex items-center gap-2.5">
-                  <ChevronDown
-                    className={`size-4 text-[#e3ff00] transition-transform duration-200 ${
-                      isCollapsed ? "-rotate-90" : "rotate-0"
-                    }`}
-                  />
-                  <span className="text-sm font-black uppercase tracking-wider text-white">
-                    {settimana}
-                  </span>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <ChevronDown
+                      className={`size-4 text-[#e3ff00] transition-transform duration-200 ${
+                        isCollapsed ? "-rotate-90" : "rotate-0"
+                      }`}
+                    />
+                    <span className="text-sm font-black uppercase tracking-wider text-white">
+                      {settimana}
+                    </span>
+                  </div>
+
+                  {/* Badge visuale: In corso */}
+                  {haInCorsoCiclo && (
+                    <span
+                      className="inline-flex items-center gap-1 text-[11px] font-black uppercase px-2 py-0.5 rounded-full shadow-2xs animate-pulse"
+                      style={{ background: "#ea580c", color: "#ffffff" }}
+                    >
+                      <Clock className="size-3" />
+                      In corso
+                    </span>
+                  )}
+                  {!haInCorsoCiclo && parzialeCiclo && (
+                    <span
+                      className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-0.5 rounded-full"
+                      style={{ background: "rgba(227,255,0,0.18)", color: "#e3ff00", border: "1px solid rgba(227,255,0,0.4)" }}
+                    >
+                      In corso
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2.5">
                   {/* CASELLA DI SPUNTA CICLO: SEGNA TUTTI COME COMPLETATI (ATTIVA PER TUTTI) */}
