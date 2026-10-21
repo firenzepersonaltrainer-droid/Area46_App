@@ -13,7 +13,9 @@ export interface StatoRecord {
 }
 
 export function statoKey(livello: string, giornoNum: number): string {
-  return `${livello || ""}-${giornoNum}`;
+  const cleanLivello = (livello || "").trim().toLowerCase();
+  const num = Number(giornoNum) || 0;
+  return `${cleanLivello}-${num}`;
 }
 
 const LOCAL_STORAGE_KEY_PREFIX = "area46_stati_v2_";
@@ -161,8 +163,8 @@ export function useAllenamentiStati() {
     async (livello: string, giornoNum: number, nuovoStato: StatoAllenamento) => {
       const nowIso = new Date().toISOString();
       const updatedItem: StatoRecord = {
-        livello,
-        giorno: giornoNum,
+        livello: (livello || "").trim(),
+        giorno: Number(giornoNum),
         stato: nuovoStato,
         updated_at: nowIso,
         email_cliente: effectiveEmail,
@@ -170,8 +172,9 @@ export function useAllenamentiStati() {
 
       // 1. Aggiornamento sincrono LocalStorage (Immediato & Permanente)
       const current = loadLocalStati(effectiveEmail);
+      const targetKey = statoKey(livello, giornoNum);
       const filtered = current.filter(
-        (s) => !(s.livello === livello && Number(s.giorno) === giornoNum)
+        (s) => statoKey(s.livello, Number(s.giorno)) !== targetKey
       );
       const nextRecords = [...filtered, updatedItem];
       saveLocalStati(effectiveEmail, nextRecords);
@@ -192,8 +195,9 @@ export function useAllenamentiStati() {
         await fetchWithAuth("/app-api/stati", {
           method: "POST",
           body: JSON.stringify({
-            livello,
-            giorno: giornoNum,
+            livello: (livello || "").trim(),
+            giorno: Number(giornoNum),
+            giornoNum: Number(giornoNum),
             stato: nuovoStato,
             email_cliente: effectiveEmail,
           }),
@@ -245,8 +249,8 @@ export function useAllenamentiStati() {
       const newItems = updates
         .filter((u) => !existingKeys.has(statoKey(u.livello, u.giornoNum)))
         .map((u) => ({
-          livello: u.livello,
-          giorno: u.giornoNum,
+          livello: (u.livello || "").trim(),
+          giorno: Number(u.giornoNum),
           stato: u.stato,
           updated_at: nowIso,
           email_cliente: effectiveEmail,
@@ -273,8 +277,9 @@ export function useAllenamentiStati() {
           body: JSON.stringify({
             email_cliente: effectiveEmail,
             updates: updates.map((u) => ({
-              livello: u.livello,
-              giorno: u.giornoNum,
+              livello: (u.livello || "").trim(),
+              giorno: Number(u.giornoNum),
+              giornoNum: Number(u.giornoNum),
               stato: u.stato,
             })),
           }),
@@ -295,7 +300,7 @@ export function useAllenamentiStati() {
     ): boolean => {
       if (!items || items.length === 0) return false;
       return items.every((item) => {
-        const lv = targetLivello || item.livello || "";
+        const lv = (item.livello || targetLivello || "").trim();
         return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
       });
     },
@@ -310,13 +315,13 @@ export function useAllenamentiStati() {
     ): Promise<boolean> => {
       if (!items || items.length === 0) return false;
       const tuttiCompletati = items.every((item) => {
-        const lv = targetLivello || item.livello || "";
+        const lv = (item.livello || targetLivello || "").trim();
         return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
       });
 
       const nuovoStato: StatoAllenamento = tuttiCompletati ? "non_iniziato" : "completato";
       const updates = items.map((item) => ({
-        livello: targetLivello || item.livello || "",
+        livello: (item.livello || targetLivello || "").trim(),
         giornoNum: item.giorno_num,
         stato: nuovoStato,
       }));

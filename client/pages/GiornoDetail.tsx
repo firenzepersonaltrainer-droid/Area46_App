@@ -9,7 +9,6 @@ import {
   Zap,
   CheckSquare,
   Square,
-  CheckCircle2,
   Clock,
   Circle,
   ArrowLeft,
@@ -299,7 +298,6 @@ export default function GiornoDetailPage() {
             {[
               { id: "non_iniziato" as StatoAllenamento, label: "Da svolgere", color: "#ff3b30", bg: "rgba(255,59,48,0.10)", icon: Circle },
               { id: "in_corso" as StatoAllenamento, label: "In corso", color: "#ff9500", bg: "rgba(255,149,0,0.12)", icon: Clock },
-              { id: "completato" as StatoAllenamento, label: "Completato", color: "#34c759", bg: "rgba(52,199,89,0.12)", icon: CheckCircle2 },
             ].map((cfg) => {
               const attivo = statoCorrente === cfg.id;
               const Icon = cfg.icon;

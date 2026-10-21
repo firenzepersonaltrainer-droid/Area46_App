@@ -346,6 +346,7 @@ function ListaGiorni({
   statoMap,
   onStatoChange,
   onBatchStatoChange,
+  toggleCiclo,
 }: {
   giorni: GiornoItem[];
   livelloFiltro: string;
@@ -402,7 +403,8 @@ function ListaGiorni({
 
   const handleToggleTuttiCompletatiCiclo = async (items: GiornoItem[], e: React.MouseEvent) => {
     e.stopPropagation();
-    const lv = livelloFiltro || items[0]?.livello || "";
+    e.preventDefault();
+    const lv = items[0]?.livello || livelloFiltro || "";
 
     if (toggleCiclo) {
       const isCompletatoOra = await toggleCiclo(items, lv);
@@ -415,21 +417,21 @@ function ListaGiorni({
     }
 
     const tuttiCompletati = items.every((item) => {
-      const l = lv || item.livello || "";
+      const l = item.livello || lv || "";
       return statoMap.get(statoKey(l, item.giorno_num)) === "completato";
     });
     const nuovoStato: Stato = tuttiCompletati ? "non_iniziato" : "completato";
     const updates = items.map((item) => ({
-      livello: lv || item.livello || "",
+      livello: (item.livello || lv || "").trim(),
       giornoNum: item.giorno_num,
       stato: nuovoStato,
     }));
 
     if (onBatchStatoChange) {
-      onBatchStatoChange(updates);
+      await onBatchStatoChange(updates);
     } else {
       items.forEach((item) => {
-        onStatoChange(lv || item.livello || "", item.giorno_num, nuovoStato);
+        onStatoChange((item.livello || lv || "").trim(), item.giorno_num, nuovoStato);
       });
     }
 
@@ -455,7 +457,7 @@ function ListaGiorni({
         const isCollapsed = collapsedSettimane.has(settimana);
         const isLast = index === gruppi.length - 1;
         const tuttiCompletatiCiclo = items.length > 0 && items.every((item) => {
-          const lv = livelloFiltro || item.livello || "";
+          const lv = item.livello || livelloFiltro || "";
           return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
         });
 

@@ -37,6 +37,7 @@ app.get("/app-api/allenamenti", async (c) => {
   const rows = livello
     ? await sql`
         SELECT
+          ${livello} AS livello,
           MIN(giorno) AS giorno,
           COALESCE(NULLIF(settimana, ''), 'Ciclo unico') AS settimana,
           (regexp_match(MIN(giorno), '[0-9]+'))[1]::integer AS giorno_num

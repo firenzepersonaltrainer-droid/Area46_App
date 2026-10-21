@@ -30949,8 +30949,8 @@ var demo_data_default = {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 25,
-      stato: "in_corso",
-      updated_at: "2026-10-21T07:09:59.156Z"
+      stato: "completato",
+      updated_at: "2026-10-21T07:18:16.128Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
@@ -31294,6 +31294,13 @@ var demo_data_default = {
       giorno: 30,
       stato: "completato",
       updated_at: "2026-10-21T07:09:55.856Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 20,
+      stato: "non_iniziato",
+      updated_at: "2026-10-21T07:18:35.210Z"
     }
   ],
   preferenze_utente: [
@@ -38835,12 +38842,12 @@ CALENDARIO E PRENOTAZIONI:
     }
     const nowIso = (/* @__PURE__ */ new Date()).toISOString();
     for (const item of updates) {
-      const lv = String(item.livello || "");
+      const lv = String(item.livello || "").trim();
       const gNum = Number(item.giorno ?? item.giornoNum);
       const st = String(item.stato || "non_iniziato");
       if (!lv || isNaN(gNum)) continue;
       const existing = db.stato_allenamenti.find(
-        (s) => (s.email_cliente || "").trim().toLowerCase() === targetEmail && s.livello === lv && Number(s.giorno) === gNum
+        (s) => (s.email_cliente || "").trim().toLowerCase() === targetEmail && (s.livello || "").trim().toLowerCase() === lv.toLowerCase() && Number(s.giorno) === gNum
       );
       if (existing) {
         existing.stato = st;

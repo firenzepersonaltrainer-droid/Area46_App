@@ -4657,7 +4657,7 @@ CALENDARIO E PRENOTAZIONI:
 
       const nowIso = new Date().toISOString();
       for (const item of updates) {
-        const lv = String(item.livello || "");
+        const lv = String(item.livello || "").trim();
         const gNum = Number(item.giorno ?? item.giornoNum);
         const st = String(item.stato || "non_iniziato");
         if (!lv || isNaN(gNum)) continue;
@@ -4665,7 +4665,7 @@ CALENDARIO E PRENOTAZIONI:
         const existing = db.stato_allenamenti.find(
           (s: any) =>
             (s.email_cliente || "").trim().toLowerCase() === targetEmail &&
-            s.livello === lv &&
+            (s.livello || "").trim().toLowerCase() === lv.toLowerCase() &&
             Number(s.giorno) === gNum
         );
         if (existing) {
