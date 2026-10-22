@@ -35140,6 +35140,13 @@ var __dirname = path3.dirname(__filename);
 var IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX === "true";
 var SANDBOX_FILE = path3.resolve(__dirname, "data", "sandbox-data.json");
 var TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
+function isBookingIdCancelled(id, cancelledList) {
+  if (!id || !cancelledList || !Array.isArray(cancelledList) || cancelledList.length === 0) return false;
+  const raw = String(id).trim();
+  const clean = raw.startsWith("lab_") ? raw.slice(4) : raw;
+  const lab = raw.startsWith("lab_") ? raw : `lab_${raw}`;
+  return cancelledList.includes(raw) || cancelledList.includes(clean) || cancelledList.includes(lab);
+}
 function loadData() {
   let loaded = null;
   if (IS_SANDBOX && fs4.existsSync(SANDBOX_FILE)) {
@@ -35190,7 +35197,7 @@ function loadData() {
   if (loaded.prenotazioni_cancellate && Array.isArray(loaded.prenotazioni_cancellate)) {
     const delBks = loaded.prenotazioni_cancellate;
     loaded.prenotazioni_slot = (loaded.prenotazioni_slot || []).filter(
-      (p) => !delBks.includes(p.id)
+      (p) => !isBookingIdCancelled(p.id, delBks)
     );
   }
   return loaded;
@@ -35841,12 +35848,12 @@ async function tryLoadConfigFromGoogleDrive() {
         /* @__PURE__ */ new Set([...db.prenotazioni_cancellate || [], ...driveDb.prenotazioni_cancellate])
       );
       db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
-        (p) => !db.prenotazioni_cancellate.includes(p.id)
+        (p) => !isBookingIdCancelled(p.id, db.prenotazioni_cancellate)
       );
     }
     if (driveDb.prenotazioni_slot && Array.isArray(driveDb.prenotazioni_slot)) {
       db.prenotazioni_slot = driveDb.prenotazioni_slot.filter(
-        (p) => !db.prenotazioni_cancellate?.includes(p.id)
+        (p) => !isBookingIdCancelled(p.id, db.prenotazioni_cancellate)
       );
     }
     if (driveDb.movimenti_crediti && Array.isArray(driveDb.movimenti_crediti)) {
@@ -37477,7 +37484,7 @@ CALENDARIO E PRENOTAZIONI:
     const atletaIdFilter = url.searchParams.get("atleta_id");
     const delBks = db.prenotazioni_cancellate || [];
     let prenotazioni = (db.prenotazioni_slot || []).filter(
-      (p) => !delBks.includes(p.id) && (p.stato === "confermata" || !p.stato || p.stato === "attiva") && !p.stato?.startsWith("cancellata")
+      (p) => !isBookingIdCancelled(p.id, delBks) && (p.stato === "confermata" || !p.stato || p.stato === "attiva") && !p.stato?.startsWith("cancellata")
     );
     if (dataFilter) {
       prenotazioni = prenotazioni.filter((p) => p.data === dataFilter);
@@ -37876,8 +37883,12 @@ CALENDARIO E PRENOTAZIONI:
       )}h). In accordo con il regolamento di Area46 Lab, il credito della seduta viene trattenuto.`;
     }
     db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
-    if (!db.prenotazioni_cancellate.includes(bkId)) {
-      db.prenotazioni_cancellate.push(bkId);
+    const cleanBkId = String(bkId).replace(/^lab_/, "");
+    if (!db.prenotazioni_cancellate.includes(cleanBkId)) {
+      db.prenotazioni_cancellate.push(cleanBkId);
+    }
+    if (!db.prenotazioni_cancellate.includes(`lab_${cleanBkId}`)) {
+      db.prenotazioni_cancellate.push(`lab_${cleanBkId}`);
     }
     try {
       await deleteGoogleCalendarLabSlot(bk.google_event_id, {

@@ -12,6 +12,14 @@ const IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX 
 const SANDBOX_FILE = path.resolve(__dirname, "data", "sandbox-data.json");
 const TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
 
+export function isBookingIdCancelled(id: any, cancelledList?: any[]): boolean {
+  if (!id || !cancelledList || !Array.isArray(cancelledList) || cancelledList.length === 0) return false;
+  const raw = String(id).trim();
+  const clean = raw.startsWith("lab_") ? raw.slice(4) : raw;
+  const lab = raw.startsWith("lab_") ? raw : `lab_${raw}`;
+  return cancelledList.includes(raw) || cancelledList.includes(clean) || cancelledList.includes(lab);
+}
+
 function loadData() {
   let loaded: any = null;
   if (IS_SANDBOX && fs.existsSync(SANDBOX_FILE)) {
@@ -53,6 +61,7 @@ function loadData() {
       };
     }
   }
+
   if (loaded.utenti_cancellati && Array.isArray(loaded.utenti_cancellati)) {
     const delUsers = loaded.utenti_cancellati;
     loaded.profili_utenti = (loaded.profili_utenti || []).filter(
@@ -62,7 +71,7 @@ function loadData() {
   if (loaded.prenotazioni_cancellate && Array.isArray(loaded.prenotazioni_cancellate)) {
     const delBks = loaded.prenotazioni_cancellate;
     loaded.prenotazioni_slot = (loaded.prenotazioni_slot || []).filter(
-      (p: any) => !delBks.includes(p.id)
+      (p: any) => !isBookingIdCancelled(p.id, delBks)
     );
   }
   return loaded;
@@ -903,12 +912,12 @@ async function tryLoadConfigFromGoogleDrive() {
         new Set([...(db.prenotazioni_cancellate || []), ...driveDb.prenotazioni_cancellate])
       );
       db.prenotazioni_slot = (db.prenotazioni_slot || []).filter(
-        (p: any) => !db.prenotazioni_cancellate.includes(p.id)
+        (p: any) => !isBookingIdCancelled(p.id, db.prenotazioni_cancellate)
       );
     }
     if (driveDb.prenotazioni_slot && Array.isArray(driveDb.prenotazioni_slot)) {
       db.prenotazioni_slot = driveDb.prenotazioni_slot.filter(
-        (p: any) => !db.prenotazioni_cancellate?.includes(p.id)
+        (p: any) => !isBookingIdCancelled(p.id, db.prenotazioni_cancellate)
       );
     }
     if (driveDb.movimenti_crediti && Array.isArray(driveDb.movimenti_crediti)) {
@@ -2895,7 +2904,7 @@ CALENDARIO E PRENOTAZIONI:
       const delBks = db.prenotazioni_cancellate || [];
       let prenotazioni = (db.prenotazioni_slot || []).filter(
         (p: any) =>
-          !delBks.includes(p.id) &&
+          !isBookingIdCancelled(p.id, delBks) &&
           (p.stato === "confermata" || !p.stato || p.stato === "attiva") &&
           !p.stato?.startsWith("cancellata")
       );
@@ -3398,8 +3407,12 @@ CALENDARIO E PRENOTAZIONI:
 
       // Traccia ID cancellato ed elimina fisicamente lo slot attivo
       db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
-      if (!db.prenotazioni_cancellate.includes(bkId)) {
-        db.prenotazioni_cancellate.push(bkId);
+      const cleanBkId = String(bkId).replace(/^lab_/, "");
+      if (!db.prenotazioni_cancellate.includes(cleanBkId)) {
+        db.prenotazioni_cancellate.push(cleanBkId);
+      }
+      if (!db.prenotazioni_cancellate.includes(`lab_${cleanBkId}`)) {
+        db.prenotazioni_cancellate.push(`lab_${cleanBkId}`);
       }
       // Eliminazione istantanea da Google Calendar (lo slot sparisce all'istante sia da GCal che da SGG)
       try {

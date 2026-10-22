@@ -834,7 +834,10 @@ export function saveDeletedBookingId(id: string) {
 export function isBookingDeleted(id?: string): boolean {
   if (!id) return false;
   const deleted = getDeletedBookingIds();
-  return deleted.includes(id.trim());
+  const raw = id.trim();
+  const clean = raw.startsWith("lab_") ? raw.slice(4) : raw;
+  const lab = raw.startsWith("lab_") ? raw : `lab_${raw}`;
+  return deleted.includes(raw) || deleted.includes(clean) || deleted.includes(lab);
 }
 
 
