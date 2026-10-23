@@ -203,5 +203,91 @@ def sync_athletes():
     print(f"   • Atleti aggiornati con nuovi dati/PEC/residenza: {updated_count}")
     print("============================================================")
 
+def sync_payments():
+    print("=" * 60)
+    print("🔄 AVVIO SINCRONIZZAZIONE VERSAMENTI: AREA46 LAB ➡️ SGG")
+    print("=" * 60)
+
+    if not os.path.exists(DEMO_DATA_FILE) or not os.path.exists(SGG_DB_FILE):
+        return
+
+    with open(DEMO_DATA_FILE, "r", encoding="utf-8") as f:
+        area46_data = json.load(f)
+
+    txs = area46_data.get("transazioni_pagamenti", [])
+    atleti_map = {a.get("id"): a for a in area46_data.get("profili_utenti", []) if a.get("id")}
+    for a in area46_data.get("profili_utenti", []):
+        if a.get("email"):
+            atleti_map[a["email"].lower()] = a
+
+    sys.path.insert(0, SGG_DIR)
+    try:
+        from database import process_landmine_lab_payment
+    except Exception as e:
+        print(f"⚠️ Impossibile importare process_landmine_lab_payment da SGG: {e}")
+        return
+
+    processed_count = 0
+    skipped_count = 0
+
+    for tx in txs:
+        tx_code = tx.get("codice_transazione") or tx.get("id")
+        nome = (tx.get("nome_cliente") or "").strip()
+        email = (tx.get("email_cliente") or "").strip().lower()
+        importo = tx.get("importo_euro", 0.0)
+
+        if not tx_code or importo <= 0:
+            continue
+
+        if is_test_athlete(nome, email):
+            continue
+
+        atleta = atleti_map.get(tx.get("atleta_id")) or atleti_map.get(email)
+        created_at_str = tx.get("created_at") or datetime.now().isoformat()
+        pay_date = created_at_str[:10]
+
+        metodo_raw = (tx.get("metodo") or "Bonifico").lower()
+        metodo_map = {
+            "bonifico": "Bonifico",
+            "contanti": "Contanti",
+            "pos": "POS",
+            "stripe": "Stripe"
+        }
+        pay_method = metodo_map.get(metodo_raw, metodo_raw.capitalize())
+
+        payload = {
+            "transaction_id": tx_code,
+            "amount": float(importo),
+            "payment_date": pay_date,
+            "payment_method": pay_method,
+            "description": tx.get("nome_pacchetto") or "Pacchetto Landmine Lab",
+            "athlete_name": nome,
+            "athlete_email": email,
+            "athlete_fiscal_code": (tx.get("codice_fiscale") or (atleta.get("codice_fiscale") if atleta else "") or "").strip().upper(),
+            "athlete_address": (tx.get("indirizzo") or (atleta.get("indirizzo") if atleta else "") or "").strip(),
+            "athlete_phone": (atleta.get("telefono") if atleta else "") or "",
+            "athlete_id": tx.get("atleta_id") or "",
+            "package_expiry_date": atleta.get("data_scadenza_crediti") if atleta else None,
+        }
+
+        try:
+            res = process_landmine_lab_payment(payload)
+            status = res.get("status")
+            if status == "ALREADY_PROCESSED":
+                skipped_count += 1
+            else:
+                processed_count += 1
+                print(f"   💶 Registrato incasso: {nome} € {importo:.2f} ({tx_code}) -> {res.get('message')}")
+        except Exception as err:
+            print(f"   ❌ Errore sync transazione {tx_code}: {err}")
+
+    print("------------------------------------------------------------")
+    print(f"🎯 RISULTATO SINCRONIZZAZIONE VERSAMENTI:")
+    print(f"   • Nuovi incassi/movimenti registrati in SGG: {processed_count}")
+    print(f"   • Incassi già presenti (idempotenza confermata): {skipped_count}")
+    print("============================================================")
+
 if __name__ == "__main__":
     sync_athletes()
+    sync_payments()
+

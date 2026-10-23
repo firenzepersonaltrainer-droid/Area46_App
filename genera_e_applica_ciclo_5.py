@@ -267,14 +267,14 @@ C5_A_29 = [
 ]
 
 C5_B = [
-    ("1a", 32,  "Cat-cow", "3x12", "", "jump set"),
+    ("1a", 29,  "Ground Stretch", "3x10+10", "", "jump set"),
     ("1b", 183, "neutral Clubbell T/S 90° e 180°", "3x15+15", '45"', "jump set"),
-    ("2a", 224, "Kettlebell snatch swing to snatch lunge", "4x5+5", 'RBS 60"', "RPE 8.5"),
-    ("2b", 171, "Kettlebell Skater Swing", "4x6+6", 'RBS 60"', "jump set | RPE 8"),
-    ("3a", 24,  "Flag Bearer ISOINERZIALE", '4x30"+30"', "", "jump set | RPE 8"),
+    ("2a", 224, "Kettlebell snatch swing to snatch lunge", "4x5+5", 'Rec 60"', "RPE 8.5"),
+    ("2b", 171, "Kettlebell Skater Swing", "4x12", 'Rec 60"', "jump set | RPE 8"),
+    ("3a", 24,  "Flag Bearer ISOINERZIALE", '4x40"+40"', "", "jump set | RPE 8"),
     ("3b", 86,  "Power Coiled plank progressioni", '4x30"+30"', '45"', "jump set"),
     ("4a", 189, "Kettlebell Coiled Thruster", "x 6+6", "", "AMRAP 12'"),
-    ("4b", 238, "medball side kick thrue", "x 8", "", "AMRAP 12'"),
+    ("4b", 238, "medball side kick through", "x 8+8", "", "AMRAP 12'"),
     ("4c", 11,  "Air bike regular", "x 15 cal", "", "AMRAP 12'")
 ]
 

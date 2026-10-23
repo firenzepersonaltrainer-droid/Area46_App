@@ -170,16 +170,34 @@ function saveData(data: any, skipCloudSync = false): Promise<void> {
       }
       fs.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
       
-      // Allinea modulo vault 3_atleti_diario_progressi.json
+      // Allinea moduli vault
       try {
-        const vaultPath = path.resolve(path.dirname(destPath), "data", "vault", "3_atleti_diario_progressi.json");
-        if (fs.existsSync(vaultPath)) {
+        const vaultDir = path.resolve(path.dirname(destPath), "data", "vault");
+        if (fs.existsSync(vaultDir)) {
+          const mod1 = {
+            profili_utenti: data.profili_utenti || [],
+            movimenti_crediti: data.movimenti_crediti || [],
+            transazioni_pagamenti: data.transazioni_pagamenti || [],
+            transazioni_cancellate: data.transazioni_cancellate || [],
+            utenti_cancellati: data.utenti_cancellati || [],
+            tariffario_pacchetti: data.tariffario_pacchetti || [],
+          };
+          fs.writeFileSync(path.join(vaultDir, "1_gestionale_utenti_crediti.json"), JSON.stringify(mod1, null, 2), "utf-8");
+
+          const mod2 = {
+            prenotazioni_slot: data.prenotazioni_slot || [],
+            prenotazioni_cancellate: data.prenotazioni_cancellate || [],
+            eccezioni_calendario: data.eccezioni_calendario || [],
+            regole_palinsesto: data.regole_palinsesto || [],
+          };
+          fs.writeFileSync(path.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
+
           const modDiario = {
             diario_utente: data.diario_utente || [],
             stato_allenamenti: data.stato_allenamenti || [],
             preferenze_utente: data.preferenze_utente || [],
           };
-          fs.writeFileSync(vaultPath, JSON.stringify(modDiario, null, 2), "utf-8");
+          fs.writeFileSync(path.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
         }
       } catch {}
       
@@ -4136,8 +4154,9 @@ CALENDARIO E PRENOTAZIONI:
         );
       }
       db.transazioni_pagamenti.unshift(nuovaTransazione);
-      saveData(db);
-      syncDataToGoogleDrive(db).catch(() => {});
+      await saveData(db);
+      await syncDataToGoogleDrive(db).catch(() => {});
+      triggerSggSyncAsync();
 
       res.statusCode = 201;
       return res.end(
@@ -4329,7 +4348,9 @@ CALENDARIO E PRENOTAZIONI:
 
       tx.stato = "completato";
       tx.approvato_il = new Date().toISOString();
-      saveData(db);
+      await saveData(db);
+      await syncDataToGoogleDrive(db).catch(() => {});
+      triggerSggSyncAsync();
 
       return res.end(JSON.stringify({ ok: true, tx, crediti_atleta: atleta?.crediti }));
     }
@@ -4346,8 +4367,9 @@ CALENDARIO E PRENOTAZIONI:
       db.transazioni_pagamenti = (db.transazioni_pagamenti || []).filter((t: any) => {
         return t.id !== targetParam && t.codice_transazione !== targetParam;
       });
-      saveData(db);
-      syncDataToGoogleDrive(db).catch(() => {});
+      await saveData(db);
+      await syncDataToGoogleDrive(db).catch(() => {});
+      triggerSggSyncAsync();
       return res.end(
         JSON.stringify({
           success: true,
