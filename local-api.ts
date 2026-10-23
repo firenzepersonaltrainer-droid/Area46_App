@@ -814,9 +814,11 @@ async function sendPaymentToSggCloud(tx: any) {
   }
 }
 
-function triggerSggSyncAsync(singleTx?: any) {
+async function triggerSggSyncAsync(singleTx?: any) {
   if (singleTx) {
-    sendPaymentToSggCloud(singleTx).catch(() => {});
+    await sendPaymentToSggCloud(singleTx).catch((e: any) => {
+      console.warn("⚠️ [SGG SYNC] Errore push a Render:", e?.message);
+    });
   }
   try {
     const direct = path.resolve(__dirname, "scripts", "sync_to_sgg.py");
@@ -4190,7 +4192,7 @@ CALENDARIO E PRENOTAZIONI:
       db.transazioni_pagamenti.unshift(nuovaTransazione);
       await saveData(db);
       await syncDataToGoogleDrive(db).catch(() => {});
-      triggerSggSyncAsync(nuovaTransazione);
+      await triggerSggSyncAsync(nuovaTransazione);
 
       res.statusCode = 201;
       return res.end(
@@ -4384,7 +4386,7 @@ CALENDARIO E PRENOTAZIONI:
       tx.approvato_il = new Date().toISOString();
       await saveData(db);
       await syncDataToGoogleDrive(db).catch(() => {});
-      triggerSggSyncAsync(tx);
+      await triggerSggSyncAsync(tx);
 
       return res.end(JSON.stringify({ ok: true, tx, crediti_atleta: atleta?.crediti }));
     }

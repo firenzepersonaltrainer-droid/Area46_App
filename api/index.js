@@ -33288,6 +33288,52 @@ var demo_data_default = {
   ],
   transazioni_pagamenti: [
     {
+      id: "tx-man-1792737623635",
+      codice_transazione: "TX-MAN-46-623635",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-8",
+      nome_pacchetto: "Pacchetto Lab 8",
+      importo_euro: 280,
+      metodo: "bonifico",
+      crediti_acquistati: 0,
+      debiti_decurtati: 0,
+      anticipi_decurtati: 0,
+      crediti_effettivi_aggiunti: 0,
+      causale_bonifico: "AREA46-USAI-3635",
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-10-23T00:00:00.000Z",
+      note: "",
+      inserito_da: "coach_manuale"
+    },
+    {
+      id: "tx-man-1792737586500",
+      codice_transazione: "TX-MAN-46-586500",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-36",
+      nome_pacchetto: "Pacchetto Lab 36 senza scadenza",
+      importo_euro: 850,
+      metodo: "bonifico",
+      crediti_acquistati: 0,
+      debiti_decurtati: 0,
+      anticipi_decurtati: 0,
+      crediti_effettivi_aggiunti: 0,
+      causale_bonifico: "AREA46-CASCI-6500",
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-10-23T00:00:00.000Z",
+      note: "",
+      inserito_da: "coach_manuale"
+    },
+    {
       id: "tx-man-1792707695076",
       codice_transazione: "TX-MAN-46-695076",
       atleta_id: "usr-bw-2078480",
@@ -35987,9 +36033,10 @@ async function sendPaymentToSggCloud(tx) {
     console.warn("\u26A0\uFE0F [SGG CLOUD SYNC] Errore invio webhook a Render:", err.message);
   }
 }
-function triggerSggSyncAsync(singleTx) {
+async function triggerSggSyncAsync(singleTx) {
   if (singleTx) {
-    sendPaymentToSggCloud(singleTx).catch(() => {
+    await sendPaymentToSggCloud(singleTx).catch((e) => {
+      console.warn("\u26A0\uFE0F [SGG SYNC] Errore push a Render:", e?.message);
     });
   }
   try {
@@ -38748,7 +38795,7 @@ CALENDARIO E PRENOTAZIONI:
     await saveData(db);
     await syncDataToGoogleDrive(db).catch(() => {
     });
-    triggerSggSyncAsync(nuovaTransazione);
+    await triggerSggSyncAsync(nuovaTransazione);
     res.statusCode = 201;
     return res.end(
       JSON.stringify({
@@ -38917,7 +38964,7 @@ CALENDARIO E PRENOTAZIONI:
     await saveData(db);
     await syncDataToGoogleDrive(db).catch(() => {
     });
-    triggerSggSyncAsync(tx);
+    await triggerSggSyncAsync(tx);
     return res.end(JSON.stringify({ ok: true, tx, crediti_atleta: atleta?.crediti }));
   }
   const txDeleteMatch = pathname.match(/^\/app-api\/transazioni\/([a-zA-Z0-9_@.-]+)$/);
