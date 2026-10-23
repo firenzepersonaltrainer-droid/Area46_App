@@ -289,7 +289,12 @@ export default function ManagerFiscoPage() {
 
   const handleOpenManualModal = (preselectedAthleteIdOrEmail?: string) => {
     let target = preselectedAthleteIdOrEmail;
-    if (!target && atleti.length > 0) {
+    if (target && profili.length > 0) {
+      const match = profili.find(
+        (p) => p.id === target || p.email?.toLowerCase() === String(target).toLowerCase()
+      );
+      if (match) target = match.id;
+    } else if (!target && atleti.length > 0) {
       target = atleti[0].id;
     }
     setManualAtletaId(target || "");
@@ -304,6 +309,20 @@ export default function ManagerFiscoPage() {
     setManualNote("");
     setManualModalOpen(true);
   };
+
+  // Sincronizza l'ID atleta selezionato non appena la lista profili finisce di caricarsi
+  useEffect(() => {
+    if (manualModalOpen && manualAtletaId && profili.length > 0) {
+      const match = profili.find(
+        (p) =>
+          p.id === manualAtletaId ||
+          p.email?.toLowerCase() === manualAtletaId.toLowerCase()
+      );
+      if (match && manualAtletaId !== match.id) {
+        setManualAtletaId(match.id);
+      }
+    }
+  }, [profili, manualModalOpen, manualAtletaId]);
 
   const handlePackChange = (packId: string) => {
     setManualPackId(packId);
@@ -344,8 +363,16 @@ export default function ManagerFiscoPage() {
       return;
     }
 
+    // Risolvi in modo blindato l'ID reale dell'atleta (sia che sia stato passato ID che email)
+    const targetProfile = profili.find(
+      (p) =>
+        p.id === manualAtletaId ||
+        p.email?.toLowerCase() === manualAtletaId.toLowerCase()
+    );
+    const finalAtletaId = targetProfile ? targetProfile.id : manualAtletaId;
+
     await registraVersamentoMutation.mutateAsync({
-      atleta_id: manualAtletaId,
+      atleta_id: finalAtletaId,
       importo_euro: imp,
       metodo: manualMetodo,
       id_pacchetto: manualPackId,
@@ -365,7 +392,9 @@ export default function ManagerFiscoPage() {
         (p) => p.email?.toLowerCase() === emailParam.toLowerCase() || p.id === emailParam
       );
       handleOpenManualModal(found?.id || emailParam);
-      setSearchParams({}, { replace: true });
+      if (profili.length > 0) {
+        setSearchParams({}, { replace: true });
+      }
     }
   }, [searchParams, profili]);
 
@@ -1405,6 +1434,13 @@ export default function ManagerFiscoPage() {
                 className="w-full text-xs font-bold bg-white border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 focus:outline-[#1c00ff] focus:ring-1 focus:ring-[#1c00ff]"
               >
                 <option value="">-- Seleziona Atleta --</option>
+                {!atleti.some((a) => a.id === manualAtletaId) && manualAtletaId && (
+                  <option value={manualAtletaId}>
+                    {profili.find((p) => p.id === manualAtletaId || p.email?.toLowerCase() === manualAtletaId.toLowerCase())
+                      ? `${profili.find((p) => p.id === manualAtletaId || p.email?.toLowerCase() === manualAtletaId.toLowerCase())?.nome} ${profili.find((p) => p.id === manualAtletaId || p.email?.toLowerCase() === manualAtletaId.toLowerCase())?.cognome} (${manualAtletaId})`
+                      : `${manualAtletaId} (Selezionato)`}
+                  </option>
+                )}
                 {atleti.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.nome} {a.cognome} ({a.crediti} crediti attivi) — {a.email}

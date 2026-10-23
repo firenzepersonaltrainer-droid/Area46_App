@@ -10,6 +10,7 @@ import sys
 import json
 import uuid
 import sqlite3
+import urllib.request
 from datetime import datetime
 
 AREA46_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -279,7 +280,22 @@ def sync_payments():
                 processed_count += 1
                 print(f"   💶 Registrato incasso: {nome} € {importo:.2f} ({tx_code}) -> {res.get('message')}")
         except Exception as err:
-            print(f"   ❌ Errore sync transazione {tx_code}: {err}")
+            print(f"   ❌ Errore sync locale transazione {tx_code}: {err}")
+
+        # Invia anche al server cloud di SGG su Render
+        try:
+            req = urllib.request.Request(
+                "https://sistema-gestionale-globale.onrender.com/api/integrations/landmine-lab/payment",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=12) as cloud_res:
+                cloud_data = json.loads(cloud_res.read().decode("utf-8"))
+                cloud_status = cloud_data.get("data", {}).get("status")
+                print(f"   ☁️ Cloud SGG (Render): {nome} ({tx_code}) -> {cloud_status}")
+        except Exception as e_cloud:
+            print(f"   ⚠️ Cloud SGG (Render): {nome} ({tx_code}) -> {e_cloud}")
 
     print("------------------------------------------------------------")
     print(f"🎯 RISULTATO SINCRONIZZAZIONE VERSAMENTI:")

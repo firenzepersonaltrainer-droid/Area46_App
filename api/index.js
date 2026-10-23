@@ -35959,7 +35959,39 @@ async function pullGoogleCalendarLabSlots(options = {}) {
 async function syncConfigToGoogleDrive(config) {
   return syncDataToGoogleDrive({ configurazione_lab: config });
 }
-function triggerSggSyncAsync() {
+async function sendPaymentToSggCloud(tx) {
+  if (!tx) return;
+  try {
+    const importo = Number(tx.importo_euro || tx.importo || 0);
+    if (isNaN(importo) || importo <= 0) return;
+    const payload = {
+      transaction_id: tx.codice_transazione || tx.id,
+      amount: importo,
+      payment_date: tx.created_at ? tx.created_at.slice(0, 10) : (/* @__PURE__ */ new Date()).toISOString().slice(0, 10),
+      payment_method: tx.metodo === "bonifico" ? "Bonifico" : tx.metodo === "contanti" ? "Contanti" : tx.metodo === "pos" ? "POS" : "Stripe",
+      description: tx.nome_pacchetto || tx.descrizione || "Pacchetto Landmine Lab",
+      athlete_name: tx.nome_cliente || tx.atleta_nome || "Atleta Landmine",
+      athlete_email: tx.email_cliente || tx.atleta_email || "",
+      athlete_fiscal_code: tx.codice_fiscale || "",
+      athlete_address: tx.indirizzo || "",
+      athlete_id: tx.atleta_id || ""
+    };
+    const res = await fetch("https://sistema-gestionale-globale.onrender.com/api/integrations/landmine-lab/payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    console.log("\u{1F4E1} [SGG CLOUD SYNC] Risultato sync Render:", res.status, data?.data?.message || data?.message || data?.status);
+  } catch (err) {
+    console.warn("\u26A0\uFE0F [SGG CLOUD SYNC] Errore invio webhook a Render:", err.message);
+  }
+}
+function triggerSggSyncAsync(singleTx) {
+  if (singleTx) {
+    sendPaymentToSggCloud(singleTx).catch(() => {
+    });
+  }
   try {
     const direct = path3.resolve(__dirname, "scripts", "sync_to_sgg.py");
     const parent = path3.resolve(__dirname, "..", "scripts", "sync_to_sgg.py");
@@ -38716,7 +38748,7 @@ CALENDARIO E PRENOTAZIONI:
     await saveData(db);
     await syncDataToGoogleDrive(db).catch(() => {
     });
-    triggerSggSyncAsync();
+    triggerSggSyncAsync(nuovaTransazione);
     res.statusCode = 201;
     return res.end(
       JSON.stringify({
@@ -38885,7 +38917,7 @@ CALENDARIO E PRENOTAZIONI:
     await saveData(db);
     await syncDataToGoogleDrive(db).catch(() => {
     });
-    triggerSggSyncAsync();
+    triggerSggSyncAsync(tx);
     return res.end(JSON.stringify({ ok: true, tx, crediti_atleta: atleta?.crediti }));
   }
   const txDeleteMatch = pathname.match(/^\/app-api\/transazioni\/([a-zA-Z0-9_@.-]+)$/);
