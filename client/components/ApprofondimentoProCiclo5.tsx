@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   BookOpen,
   ChevronDown,
+  ChevronUp,
   Maximize2,
   Clock,
   Target,
@@ -19,11 +20,20 @@ import {
 export function ApprofondimentoProCiclo5() {
   const [aperto, setAperto] = useState(false);
   const [modalAperta, setModalAperta] = useState(false);
+  const barraRef = useRef<HTMLDivElement>(null);
+
+  function chiudiTesto() {
+    setAperto(false);
+    setTimeout(() => {
+      barraRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 50);
+  }
 
   return (
     <div className="mt-3">
       {/* BARRA MENU PRINCIPALE - STESSA DIMENSIONE DEI MENU CICLI, COLORI BRAND E SOLO DICITURA "APPROFONDIMENTI" */}
       <div
+        ref={barraRef}
         onClick={() => setAperto((prev) => !prev)}
         role="button"
         tabIndex={0}
@@ -78,6 +88,21 @@ export function ApprofondimentoProCiclo5() {
           </div>
 
           <ArticoloMaturitaAtletica />
+
+          {/* COMANDO AL TERMINE PER CHIUDERE IL TESTO E TORNARE ALLA SOLA BARRA MENU */}
+          <div className="mt-8 pt-5 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={chiudiTesto}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-zinc-950 bg-[#e3ff00] hover:bg-[#d6f000] border border-[#1c00ff] shadow-xs transition-all active:scale-[0.99] cursor-pointer"
+            >
+              <ChevronUp className="size-4 text-[#1c00ff] stroke-[2.5]" />
+              Chiudi Approfondimenti
+            </button>
+            <span className="text-xs text-zinc-500 font-medium">
+              Torna alla sola barra menù
+            </span>
+          </div>
         </div>
       )}
 
@@ -95,6 +120,16 @@ export function ApprofondimentoProCiclo5() {
           </DialogHeader>
 
           <ArticoloMaturitaAtletica />
+
+          <div className="mt-8 pt-5 border-t border-zinc-200 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setModalAperta(false)}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-zinc-950 bg-[#e3ff00] hover:bg-[#d6f000] border border-[#1c00ff] shadow-xs transition-all active:scale-[0.99] cursor-pointer"
+            >
+              Chiudi
+            </button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
