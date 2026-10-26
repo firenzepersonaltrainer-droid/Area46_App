@@ -196,6 +196,16 @@ export default function GiornoDetailPage() {
   const primoEsercizio = esercizi[0];
   const giornoLabel = primoEsercizio?.giorno ? String(primoEsercizio.giorno) : `Giorno ${giornoDisplay}`;
   const cicloLabel = primoEsercizio?.settimana;
+  const isCicloScarico = React.useMemo(() => {
+    const s = (cicloLabel || "").toLowerCase();
+    if (s.includes("scarico") || s.includes("deload")) return true;
+    const match = s.match(/ciclo\s*(\d+)/i);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (num >= 6 && num % 3 === 0) return true;
+    }
+    return false;
+  }, [cicloLabel]);
 
   // Estrazione del numero giorno intero
   const numMatch = String(giornoDisplay).match(/[0-9]+/);
@@ -235,7 +245,10 @@ export default function GiornoDetailPage() {
 
       {/* Header Info Giorno */}
       <div className="rounded-2xl bg-white border border-zinc-200 p-4 shadow-xs relative overflow-hidden">
-        <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-[#1c00ff]" />
+        <div
+          className="absolute top-0 left-0 bottom-0 w-1.5"
+          style={{ background: isCicloScarico ? "#3b82f6" : "#1c00ff" }}
+        />
         <div className="pl-1">
           <h1 className="text-2xl font-black tracking-tight text-zinc-900">{giornoLabel}</h1>
           <div className="flex items-center gap-2 mt-2 flex-wrap">
@@ -250,7 +263,7 @@ export default function GiornoDetailPage() {
             {cicloLabel && (
               <span
                 className="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-black uppercase tracking-wider"
-                style={{ background: "#1c00ff", color: "#e3ff00" }}
+                style={{ background: isCicloScarico ? "#3b82f6" : "#1c00ff", color: "#e3ff00" }}
               >
                 {cicloLabel}
               </span>

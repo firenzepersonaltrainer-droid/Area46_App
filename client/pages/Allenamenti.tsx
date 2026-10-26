@@ -544,9 +544,16 @@ function ListaGiorni({
           return statoMap.get(statoKey(lv, item.giorno_num)) === "completato";
         });
 
-        const isCicloScarico =
-          (settimana || "").toLowerCase().includes("scarico") ||
-          /ciclo\s*(6|9|12|15|18)\b/i.test(settimana);
+        const isCicloScarico = (() => {
+          const s = (settimana || "").toLowerCase();
+          if (s.includes("scarico") || s.includes("deload")) return true;
+          const match = s.match(/ciclo\s*(\d+)/i);
+          if (match) {
+            const num = parseInt(match[1], 10);
+            if (num >= 6 && num % 3 === 0) return true;
+          }
+          return false;
+        })();
 
         return (
           <div key={settimana} ref={isPrimoAperto ? primoCicloApertoRef : undefined}>
@@ -561,7 +568,7 @@ function ListaGiorni({
                     toggleSettimana(settimana);
                   }
                 }}
-                className="rounded-xl px-4 py-2.5 mb-3 flex items-center justify-between shadow-xs cursor-pointer select-none transition-all hover:brightness-105 active:scale-[0.995]"
+                className="rounded-xl px-4 py-2 mb-3 flex items-center justify-between shadow-xs cursor-pointer select-none transition-all hover:brightness-105 active:scale-[0.995]"
                 style={{ background: isCicloScarico ? "#3b82f6" : "#1c00ff", borderLeft: "5px solid #e3ff00" }}
                 title="Clicca per aprire o comprimere questo ciclo"
               >
@@ -606,7 +613,7 @@ function ListaGiorni({
                         ? "Ciclo completato. Clicca per deselezionare tutti gli allenamenti"
                         : "Clicca per contrassegnare tutti gli allenamenti del ciclo come completati"
                     }
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black transition-all border shadow-2xs cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 rounded-lg text-xs font-black transition-all border shadow-2xs cursor-pointer ${
                       tuttiCompletatiCiclo
                         ? "bg-[#e3ff00] text-zinc-900 border-[#e3ff00]"
                         : "bg-white/10 hover:bg-white/20 text-white border-white/30"
