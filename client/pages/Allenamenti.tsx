@@ -562,38 +562,20 @@ function ListaGiorni({
                   }
                 }}
                 className="rounded-xl px-4 py-2.5 mb-3 flex items-center justify-between shadow-xs cursor-pointer select-none transition-all hover:brightness-105 active:scale-[0.995]"
-                style={{
-                  background: isCicloScarico ? "linear-gradient(135deg, #1e293b 0%, #334155 100%)" : "#1c00ff",
-                  borderLeft: isCicloScarico ? "5px solid #38bdf8" : "5px solid #e3ff00",
-                }}
+                style={{ background: isCicloScarico ? "#3b82f6" : "#1c00ff", borderLeft: "5px solid #e3ff00" }}
                 title="Clicca per aprire o comprimere questo ciclo"
               >
                 <div className="flex items-center gap-2.5 flex-wrap">
                   <div className="flex items-center gap-2">
                     <ChevronDown
-                      className={`size-4 transition-transform duration-200 ${
-                        isCicloScarico ? "text-[#38bdf8]" : "text-[#e3ff00]"
-                      } ${isCollapsed ? "-rotate-90" : "rotate-0"}`}
+                      className={`size-4 text-[#e3ff00] transition-transform duration-200 ${
+                        isCollapsed ? "-rotate-90" : "rotate-0"
+                      }`}
                     />
                     <span className="text-sm font-black uppercase tracking-wider text-white">
                       {settimana}
                     </span>
                   </div>
-
-                  {/* Badge visuale per Cicli di Scarico & Trasformazione */}
-                  {isCicloScarico && (
-                    <span
-                      className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-0.5 rounded-full"
-                      style={{
-                        background: "rgba(56, 189, 248, 0.18)",
-                        color: "#38bdf8",
-                        border: "1px solid rgba(56, 189, 248, 0.4)",
-                      }}
-                    >
-                      <Sparkles className="size-3" />
-                      Scarico & Trasformazione
-                    </span>
-                  )}
 
                   {/* Badge visuale: In corso */}
                   {haInCorsoCiclo && (
@@ -626,7 +608,7 @@ function ListaGiorni({
                     }
                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black transition-all border shadow-2xs cursor-pointer ${
                       tuttiCompletatiCiclo
-                        ? isCicloScarico ? "bg-[#38bdf8] text-zinc-900 border-[#38bdf8]" : "bg-[#e3ff00] text-zinc-900 border-[#e3ff00]"
+                        ? "bg-[#e3ff00] text-zinc-900 border-[#e3ff00]"
                         : "bg-white/10 hover:bg-white/20 text-white border-white/30"
                     }`}
                   >
@@ -646,7 +628,7 @@ function ListaGiorni({
 
                   <span
                     className="text-xs font-black px-2.5 py-0.5 rounded-full"
-                    style={{ background: "#09090b", color: isCicloScarico ? "#38bdf8" : "#e3ff00" }}
+                    style={{ background: "#09090b", color: "#e3ff00" }}
                   >
                     {items.length} {items.length === 1 ? "allenamento" : "allenamenti"}
                   </span>
