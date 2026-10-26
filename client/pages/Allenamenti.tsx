@@ -32,6 +32,7 @@ import {
 } from "../components/Dialog";
 import { Button } from "../components/Button";
 import { toast } from "../components/Toast";
+import { ApprofondimentoProCiclo5 } from "../components/ApprofondimentoProCiclo5";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { useLivelloMemoria } from "../lib/useLivelloMemoria";
 import { useCurrentUser, getActiveUserId } from "../lib/useUser";
@@ -651,6 +652,11 @@ function ListaGiorni({
                 })}
               </div>
             )}
+            {/* APPROFONDIMENTI METODOLOGICI LIVELLO PRO (DOPO CICLO 5, FRA CICLO 5 E 6) */}
+            {(livelloFiltro || items[0]?.livello || "").trim().toUpperCase() === "PRO" &&
+              settimana === "Ciclo 5" && (
+                <ApprofondimentoProCiclo5 />
+              )}
           </div>
         );
       })}
@@ -885,6 +891,11 @@ export default function AllenamentiPage() {
                   })}
                 </div>
               </div>
+            )}
+            {/* BARRA APPROFONDIMENTI METODOLOGICI LIVELLO PRO */}
+            {((livello || "").trim().toUpperCase() === "PRO" ||
+              (correnteItem?.item.livello || "").trim().toUpperCase() === "PRO") && (
+              <ApprofondimentoProCiclo5 />
             )}
             {(() => {
               const recenti = lista.filter((item) => { const lv = livello || item.livello || ""; const s = statoMap.get(statoKey(lv, item.giorno_num)); return s === "in_corso" || s === "completato"; }).slice(-4).reverse();
