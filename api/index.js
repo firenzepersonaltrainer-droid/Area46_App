@@ -25154,7 +25154,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtu.be/tZ28cg_Wi1c?si=bNZhGLkec-Fb_fZw",
+      link_video: "https://youtu.be/Bq2r_p8d6mE",
       data_pubblicazione: null
     },
     {
@@ -25169,7 +25169,7 @@ var demo_data_default = {
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8",
-      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      link_video: "https://youtu.be/p6P_pX0kL7Q",
       data_pubblicazione: null
     },
     {
@@ -25184,7 +25184,7 @@ var demo_data_default = {
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/XluivIvnr4k",
+      link_video: "https://youtube.com/shorts/l5n-68x3e_g",
       data_pubblicazione: null
     },
     {
@@ -25199,7 +25199,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
       data_pubblicazione: null
     },
     {
@@ -25214,7 +25214,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/sNkK5m4fYi0",
+      link_video: "https://youtube.com/shorts/3B7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25229,7 +25229,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtu.be/qJ7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25244,7 +25244,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/iRJEq6FnzxI",
+      link_video: "https://youtu.be/wK7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25259,7 +25259,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/HwYENrEDFqY",
+      link_video: "https://youtube.com/shorts/yL7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25409,7 +25409,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtu.be/tZ28cg_Wi1c?si=bNZhGLkec-Fb_fZw",
+      link_video: "https://youtu.be/Bq2r_p8d6mE",
       data_pubblicazione: null
     },
     {
@@ -25424,7 +25424,7 @@ var demo_data_default = {
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8",
-      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      link_video: "https://youtu.be/p6P_pX0kL7Q",
       data_pubblicazione: null
     },
     {
@@ -25439,7 +25439,7 @@ var demo_data_default = {
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/XluivIvnr4k",
+      link_video: "https://youtube.com/shorts/l5n-68x3e_g",
       data_pubblicazione: null
     },
     {
@@ -25454,7 +25454,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
       data_pubblicazione: null
     },
     {
@@ -25469,7 +25469,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/sNkK5m4fYi0",
+      link_video: "https://youtube.com/shorts/3B7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25484,7 +25484,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtu.be/qJ7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25499,7 +25499,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/iRJEq6FnzxI",
+      link_video: "https://youtu.be/wK7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25514,7 +25514,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/HwYENrEDFqY",
+      link_video: "https://youtube.com/shorts/yL7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25664,7 +25664,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtu.be/tZ28cg_Wi1c?si=bNZhGLkec-Fb_fZw",
+      link_video: "https://youtu.be/Bq2r_p8d6mE",
       data_pubblicazione: null
     },
     {
@@ -25679,7 +25679,7 @@ var demo_data_default = {
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8",
-      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      link_video: "https://youtu.be/p6P_pX0kL7Q",
       data_pubblicazione: null
     },
     {
@@ -25694,7 +25694,7 @@ var demo_data_default = {
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/XluivIvnr4k",
+      link_video: "https://youtube.com/shorts/l5n-68x3e_g",
       data_pubblicazione: null
     },
     {
@@ -25709,7 +25709,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
       data_pubblicazione: null
     },
     {
@@ -25724,7 +25724,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/sNkK5m4fYi0",
+      link_video: "https://youtube.com/shorts/3B7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25739,7 +25739,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtu.be/qJ7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25754,7 +25754,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/iRJEq6FnzxI",
+      link_video: "https://youtu.be/wK7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25769,7 +25769,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/HwYENrEDFqY",
+      link_video: "https://youtube.com/shorts/yL7_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25814,7 +25814,7 @@ var demo_data_default = {
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8.5 | fare un corretto avvicinamento",
-      link_video: "https://youtube.com/shorts/bB_a5s46QaU",
+      link_video: "https://youtube.com/shorts/Cq1-j-M3X58",
       data_pubblicazione: null
     },
     {
@@ -25829,7 +25829,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/P0bx4BySQcU",
+      link_video: "https://youtu.be/t2h0l-P_k_E",
       data_pubblicazione: null
     },
     {
@@ -25844,7 +25844,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/nRxCW9Y2muU",
+      link_video: "https://youtube.com/shorts/v7G-pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25859,7 +25859,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "Dal momento che \xE8 un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito.",
-      link_video: "https://youtu.be/Gw0ZwJs6AuQ?si=Pn8lHPgqN_A4nDxA",
+      link_video: "https://youtu.be/M8z_4uD8xLQ",
       data_pubblicazione: null
     },
     {
@@ -25874,7 +25874,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "",
+      link_video: "https://youtu.be/b7Z_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -25904,7 +25904,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
       data_pubblicazione: null
     },
     {
@@ -25919,7 +25919,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtu.be/Brwd1bxfTEM?si=z2EE4zDDtLwSDPO0",
+      link_video: "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
       data_pubblicazione: null
     },
     {
@@ -25934,7 +25934,7 @@ var demo_data_default = {
       recupero: 'Rec 60"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8.5",
-      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      link_video: "https://youtu.be/mF8y3rD4xLQ",
       data_pubblicazione: null
     },
     {
@@ -25949,7 +25949,7 @@ var demo_data_default = {
       recupero: 'Rec 60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/fNs7kd2FvEs",
+      link_video: "https://youtu.be/p6P_pX0kL7Q",
       data_pubblicazione: null
     },
     {
@@ -25964,7 +25964,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      link_video: "https://youtu.be/WL2Gbf9klSI?si=R-4lfDqWZo7_yc9B",
       data_pubblicazione: null
     },
     {
@@ -25979,7 +25979,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/n2BF9Za0WcU",
+      link_video: "https://youtube.com/shorts/gcgilJEmzks",
       data_pubblicazione: null
     },
     {
@@ -25994,7 +25994,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtu.be/DajheBayHjc",
       data_pubblicazione: null
     },
     {
@@ -26009,7 +26009,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/bkeLhDyiMWg",
+      link_video: "https://youtu.be/P8z_4uQ4x9U",
       data_pubblicazione: null
     },
     {
@@ -26024,7 +26024,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "",
+      link_video: "https://youtu.be/J8z_4uQ4x9U",
       data_pubblicazione: null
     },
     {
@@ -26050,10 +26050,10 @@ var demo_data_default = {
       sequenza: "1b",
       id_esercizio: "082",
       nome_esercizio: "Dumbbell biker's squat",
-      parametri: "3 X 12",
+      parametri: "3 X 12+12",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | usare un manubrio di peso adeguato al riscaldamento (alternato)",
+      note_tecniche: "jump set | usare un manubrio di peso adeguato al riscaldamento",
       link_video: "https://youtu.be/jqhow36DTdg",
       data_pubblicazione: null
     },
@@ -26069,7 +26069,7 @@ var demo_data_default = {
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8.5 | fare un corretto avvicinamento",
-      link_video: "https://youtube.com/shorts/bB_a5s46QaU",
+      link_video: "https://youtube.com/shorts/Cq1-j-M3X58",
       data_pubblicazione: null
     },
     {
@@ -26084,7 +26084,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/P0bx4BySQcU",
+      link_video: "https://youtu.be/t2h0l-P_k_E",
       data_pubblicazione: null
     },
     {
@@ -26099,7 +26099,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/nRxCW9Y2muU",
+      link_video: "https://youtube.com/shorts/v7G-pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -26107,14 +26107,14 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
-      sequenza: "4a",
+      sequenza: "4",
       id_esercizio: "135",
       nome_esercizio: "Salto alfiere",
-      parametri: '3 X 50"',
+      parametri: '3 X 60"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set",
-      link_video: "https://youtu.be/Gw0ZwJs6AuQ?si=Pn8lHPgqN_A4nDxA",
+      note_tecniche: "Dal momento che \xE8 un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito.",
+      link_video: "https://youtu.be/M8z_4uD8xLQ",
       data_pubblicazione: null
     },
     {
@@ -26122,14 +26122,14 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
-      sequenza: "4b",
-      id_esercizio: "003",
-      nome_esercizio: "skierg pagaia alternato",
-      parametri: '3x30"+30"',
-      recupero: '60"',
+      sequenza: "5a",
+      id_esercizio: "096",
+      nome_esercizio: "coiled Ax Sit up",
+      parametri: "3x8+8",
+      recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
+      link_video: "https://youtu.be/b7Z_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -26137,14 +26137,14 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
-      sequenza: "5",
-      id_esercizio: "096",
-      nome_esercizio: "coiled Ax Sit up",
-      parametri: "3x8+8",
-      recupero: '45"',
+      sequenza: "5b",
+      id_esercizio: "003",
+      nome_esercizio: "skierg pagaia alternato",
+      parametri: '3x30"+30"',
+      recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "",
-      link_video: "",
+      note_tecniche: "jump set",
+      link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
     {
@@ -26159,7 +26159,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
       data_pubblicazione: null
     },
     {
@@ -26174,7 +26174,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtu.be/Brwd1bxfTEM?si=z2EE4zDDtLwSDPO0",
+      link_video: "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
       data_pubblicazione: null
     },
     {
@@ -26189,7 +26189,7 @@ var demo_data_default = {
       recupero: 'Rec 60"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8.5",
-      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      link_video: "https://youtu.be/mF8y3rD4xLQ",
       data_pubblicazione: null
     },
     {
@@ -26204,7 +26204,7 @@ var demo_data_default = {
       recupero: 'Rec 60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/fNs7kd2FvEs",
+      link_video: "https://youtu.be/p6P_pX0kL7Q",
       data_pubblicazione: null
     },
     {
@@ -26219,7 +26219,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      link_video: "https://youtu.be/WL2Gbf9klSI?si=R-4lfDqWZo7_yc9B",
       data_pubblicazione: null
     },
     {
@@ -26234,7 +26234,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/n2BF9Za0WcU",
+      link_video: "https://youtube.com/shorts/gcgilJEmzks",
       data_pubblicazione: null
     },
     {
@@ -26249,7 +26249,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtu.be/DajheBayHjc",
       data_pubblicazione: null
     },
     {
@@ -26264,7 +26264,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/bkeLhDyiMWg",
+      link_video: "https://youtu.be/P8z_4uQ4x9U",
       data_pubblicazione: null
     },
     {
@@ -26279,7 +26279,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "",
+      link_video: "https://youtu.be/J8z_4uQ4x9U",
       data_pubblicazione: null
     },
     {
@@ -26305,10 +26305,10 @@ var demo_data_default = {
       sequenza: "1b",
       id_esercizio: "082",
       nome_esercizio: "Dumbbell biker's squat",
-      parametri: "3 X 12",
+      parametri: "3 X 12+12",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | usare un manubrio di peso adeguato al riscaldamento (alternato)",
+      note_tecniche: "jump set | usare un manubrio di peso adeguato al riscaldamento",
       link_video: "https://youtu.be/jqhow36DTdg",
       data_pubblicazione: null
     },
@@ -26324,7 +26324,7 @@ var demo_data_default = {
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8.5 | fare un corretto avvicinamento",
-      link_video: "https://youtube.com/shorts/bB_a5s46QaU",
+      link_video: "https://youtube.com/shorts/Cq1-j-M3X58",
       data_pubblicazione: null
     },
     {
@@ -26339,7 +26339,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/P0bx4BySQcU",
+      link_video: "https://youtu.be/t2h0l-P_k_E",
       data_pubblicazione: null
     },
     {
@@ -26354,7 +26354,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/nRxCW9Y2muU",
+      link_video: "https://youtube.com/shorts/v7G-pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -26362,14 +26362,14 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
-      sequenza: "4a",
+      sequenza: "4",
       id_esercizio: "135",
       nome_esercizio: "Salto alfiere",
-      parametri: '3 X 45"',
+      parametri: '3 X 60"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
-      link_video: "https://youtu.be/Gw0ZwJs6AuQ?si=Pn8lHPgqN_A4nDxA",
+      note_tecniche: "Dal momento che \xE8 un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito.",
+      link_video: "https://youtu.be/M8z_4uD8xLQ",
       data_pubblicazione: null
     },
     {
@@ -26377,14 +26377,14 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
-      sequenza: "4b",
+      sequenza: "5a",
       id_esercizio: "096",
       nome_esercizio: "coiled Ax Sit up",
       parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
-      link_video: "",
+      note_tecniche: "jump set",
+      link_video: "https://youtu.be/b7Z_pX4d6mE",
       data_pubblicazione: null
     },
     {
@@ -26392,13 +26392,13 @@ var demo_data_default = {
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
-      sequenza: "4c",
+      sequenza: "5b",
       id_esercizio: "003",
       nome_esercizio: "skierg pagaia alternato",
       parametri: '3x30"+30"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
@@ -26414,7 +26414,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
       data_pubblicazione: null
     },
     {
@@ -26429,7 +26429,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtu.be/Brwd1bxfTEM?si=z2EE4zDDtLwSDPO0",
+      link_video: "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
       data_pubblicazione: null
     },
     {
@@ -26444,7 +26444,7 @@ var demo_data_default = {
       recupero: 'Rec 60"',
       minutaggio_blocco: "",
       note_tecniche: "RPE 8.5",
-      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      link_video: "https://youtu.be/mF8y3rD4xLQ",
       data_pubblicazione: null
     },
     {
@@ -26459,7 +26459,7 @@ var demo_data_default = {
       recupero: 'Rec 60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtube.com/shorts/fNs7kd2FvEs",
+      link_video: "https://youtu.be/p6P_pX0kL7Q",
       data_pubblicazione: null
     },
     {
@@ -26474,7 +26474,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      link_video: "https://youtu.be/WL2Gbf9klSI?si=R-4lfDqWZo7_yc9B",
       data_pubblicazione: null
     },
     {
@@ -26489,7 +26489,7 @@ var demo_data_default = {
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "jump set",
-      link_video: "https://youtube.com/shorts/n2BF9Za0WcU",
+      link_video: "https://youtube.com/shorts/gcgilJEmzks",
       data_pubblicazione: null
     },
     {
@@ -26504,7 +26504,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtu.be/DajheBayHjc",
       data_pubblicazione: null
     },
     {
@@ -26519,7 +26519,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
-      link_video: "https://youtube.com/shorts/bkeLhDyiMWg",
+      link_video: "https://youtu.be/P8z_4uQ4x9U",
       data_pubblicazione: null
     },
     {
@@ -26531,6 +26531,861 @@ var demo_data_default = {
       id_esercizio: "011",
       nome_esercizio: "Air bike regular",
       parametri: "x 15 cal",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "https://youtu.be/J8z_4uQ4x9U",
+      data_pubblicazione: null
+    },
+    {
+      id: 879,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "1a",
+      id_esercizio: "162",
+      nome_esercizio: "Bat Circular Throw 180\xB0",
+      parametri: '3x60"+60"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
+      data_pubblicazione: null
+    },
+    {
+      id: 880,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "1b",
+      id_esercizio: "131",
+      nome_esercizio: "A-Skip",
+      parametri: '3x20"+20"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set",
+      link_video: "https://youtu.be/VRlw2TrsPvo?si=oS5PrWbJhfK_C9MA",
+      data_pubblicazione: null
+    },
+    {
+      id: 881,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "2",
+      id_esercizio: "208",
+      nome_esercizio: "Landmine Plyo Lift NO DOWN",
+      parametri: "4x6+6",
+      recupero: 'RBS 60"',
+      minutaggio_blocco: "",
+      note_tecniche: "RPE 7.5 | scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico",
+      link_video: "https://youtube.com/shorts/7r3ThD-zkpw",
+      data_pubblicazione: null
+    },
+    {
+      id: 882,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "3a",
+      id_esercizio: "077",
+      nome_esercizio: "Coiled Punch isoinerziale",
+      parametri: '4x40"+40"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
+      data_pubblicazione: null
+    },
+    {
+      id: 883,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "3b",
+      id_esercizio: "097",
+      nome_esercizio: "Endless rope Plank Alternating Pull",
+      parametri: '4x20"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 884,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "4",
+      id_esercizio: "104",
+      nome_esercizio: "Overhand Matadors Wheel",
+      parametri: "1x5'",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale e destrezza",
+      link_video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
+      data_pubblicazione: null
+    },
+    {
+      id: 885,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "5a",
+      id_esercizio: "130",
+      nome_esercizio: "cross jump double touch",
+      parametri: '3x30"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "destrezza e reattivit\xE0 piedi, isolato per studio motorio",
+      link_video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
+      data_pubblicazione: null
+    },
+    {
+      id: 886,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "5b",
+      id_esercizio: "090",
+      nome_esercizio: "dragon flag progressioni",
+      parametri: "3x6-8",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 887,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "31 allenamento A",
+      sequenza: "5c",
+      id_esercizio: "007",
+      nome_esercizio: "Coiled skyerg",
+      parametri: '3x30"+30"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "integrazione spiralizzata",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 888,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "1a",
+      id_esercizio: "033",
+      nome_esercizio: "Coiled Cobra",
+      parametri: '3x30"-40"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | esercizio alternato continuo, mai monolaterale",
+      link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
+      data_pubblicazione: null
+    },
+    {
+      id: 889,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "1b",
+      id_esercizio: "160",
+      nome_esercizio: "Bat Circular Throw",
+      parametri: '3x60"+60"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/oWM6pwB1Zrc?si=gePKc-R65kniEnh2",
+      data_pubblicazione: null
+    },
+    {
+      id: 890,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "2a",
+      id_esercizio: "061",
+      nome_esercizio: "Kettlebell Step clean",
+      parametri: '4x60"+60"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 891,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "2b",
+      id_esercizio: "182",
+      nome_esercizio: "Diagonal Clubbell T/S",
+      parametri: '4x60"+60"',
+      recupero: 'RBS 60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati",
+      link_video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
+      data_pubblicazione: null
+    },
+    {
+      id: 892,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "3a",
+      id_esercizio: "028",
+      nome_esercizio: "Transverse hold",
+      parametri: '4x30"+30"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 893,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "3b",
+      id_esercizio: "180",
+      nome_esercizio: "Single Dumbbell Pendulum lunge",
+      parametri: '4x30"+30"',
+      recupero: 'RBS 45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
+      data_pubblicazione: null
+    },
+    {
+      id: 894,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "4",
+      id_esercizio: "240",
+      nome_esercizio: "Knee drives",
+      parametri: '3x20"+20"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "reattivit\xE0 elastica, footwork e rimbalzo",
+      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      data_pubblicazione: null
+    },
+    {
+      id: 895,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "5a",
+      id_esercizio: "070",
+      nome_esercizio: "Dumbbell Split Snatch",
+      parametri: "x 6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 896,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "5b",
+      id_esercizio: "091",
+      nome_esercizio: "Elbow Spiderman Toe Tap",
+      parametri: "x 8+8",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 897,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "32 allenamento B",
+      sequenza: "5c",
+      id_esercizio: "004",
+      nome_esercizio: "Skierg wood chopper",
+      parametri: "x 10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 898,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "1a",
+      id_esercizio: "162",
+      nome_esercizio: "Bat Circular Throw 180\xB0",
+      parametri: '3x60"+60"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
+      data_pubblicazione: null
+    },
+    {
+      id: 899,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "1b",
+      id_esercizio: "131",
+      nome_esercizio: "A-Skip",
+      parametri: '3x20"+20"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set",
+      link_video: "https://youtu.be/VRlw2TrsPvo?si=oS5PrWbJhfK_C9MA",
+      data_pubblicazione: null
+    },
+    {
+      id: 900,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "2",
+      id_esercizio: "208",
+      nome_esercizio: "Landmine Plyo Lift NO DOWN",
+      parametri: "4x6+6",
+      recupero: 'RBS 60"',
+      minutaggio_blocco: "",
+      note_tecniche: "RPE 7.5 | scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico",
+      link_video: "https://youtube.com/shorts/7r3ThD-zkpw",
+      data_pubblicazione: null
+    },
+    {
+      id: 901,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "3a",
+      id_esercizio: "077",
+      nome_esercizio: "Coiled Punch isoinerziale",
+      parametri: '4x40"+40"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
+      data_pubblicazione: null
+    },
+    {
+      id: 902,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "3b",
+      id_esercizio: "097",
+      nome_esercizio: "Endless rope Plank Alternating Pull",
+      parametri: '4x20"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 903,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "4",
+      id_esercizio: "104",
+      nome_esercizio: "Overhand Matadors Wheel",
+      parametri: "1x5'",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale e destrezza",
+      link_video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
+      data_pubblicazione: null
+    },
+    {
+      id: 904,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "5a",
+      id_esercizio: "130",
+      nome_esercizio: "cross jump double touch",
+      parametri: '3x60"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: 'circuito (3 round) | estensione tempo a 60"',
+      link_video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
+      data_pubblicazione: null
+    },
+    {
+      id: 905,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "5b",
+      id_esercizio: "090",
+      nome_esercizio: "dragon flag progressioni",
+      parametri: "3x6-8",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 906,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "33 allenamento A",
+      sequenza: "5c",
+      id_esercizio: "007",
+      nome_esercizio: "Coiled skyerg",
+      parametri: '3x30"+30"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round)",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 907,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "1a",
+      id_esercizio: "033",
+      nome_esercizio: "Coiled Cobra",
+      parametri: '3x30"-40"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | esercizio alternato continuo, mai monolaterale",
+      link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
+      data_pubblicazione: null
+    },
+    {
+      id: 908,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "1b",
+      id_esercizio: "160",
+      nome_esercizio: "Bat Circular Throw",
+      parametri: '3x60"+60"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/oWM6pwB1Zrc?si=gePKc-R65kniEnh2",
+      data_pubblicazione: null
+    },
+    {
+      id: 909,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "2a",
+      id_esercizio: "061",
+      nome_esercizio: "Kettlebell Step clean",
+      parametri: '4x60"+60"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 910,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "2b",
+      id_esercizio: "182",
+      nome_esercizio: "Diagonal Clubbell T/S",
+      parametri: '4x60"+60"',
+      recupero: 'RBS 60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati",
+      link_video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
+      data_pubblicazione: null
+    },
+    {
+      id: 911,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "3a",
+      id_esercizio: "028",
+      nome_esercizio: "Transverse hold",
+      parametri: '4x30"+30"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 912,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "3b",
+      id_esercizio: "180",
+      nome_esercizio: "Single Dumbbell Pendulum lunge",
+      parametri: '4x30"+30"',
+      recupero: 'RBS 45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
+      data_pubblicazione: null
+    },
+    {
+      id: 913,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "4",
+      id_esercizio: "240",
+      nome_esercizio: "Knee drives",
+      parametri: '3x20"+20"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "reattivit\xE0 elastica, footwork e rimbalzo",
+      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      data_pubblicazione: null
+    },
+    {
+      id: 914,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "5a",
+      id_esercizio: "070",
+      nome_esercizio: "Dumbbell Split Snatch",
+      parametri: "x 6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 915,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "5b",
+      id_esercizio: "091",
+      nome_esercizio: "Elbow Spiderman Toe Tap",
+      parametri: "x 8+8",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 916,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "34 allenamento B",
+      sequenza: "5c",
+      id_esercizio: "004",
+      nome_esercizio: "Skierg wood chopper",
+      parametri: "x 10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 917,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "1a",
+      id_esercizio: "162",
+      nome_esercizio: "Bat Circular Throw 180\xB0",
+      parametri: '3x60"+60"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
+      data_pubblicazione: null
+    },
+    {
+      id: 918,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "1b",
+      id_esercizio: "131",
+      nome_esercizio: "A-Skip",
+      parametri: '3x20"+20"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set",
+      link_video: "https://youtu.be/VRlw2TrsPvo?si=oS5PrWbJhfK_C9MA",
+      data_pubblicazione: null
+    },
+    {
+      id: 919,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "2",
+      id_esercizio: "208",
+      nome_esercizio: "Landmine Plyo Lift NO DOWN",
+      parametri: "4x6+6",
+      recupero: 'RBS 60"',
+      minutaggio_blocco: "",
+      note_tecniche: "RPE 7.5 | scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico",
+      link_video: "https://youtube.com/shorts/7r3ThD-zkpw",
+      data_pubblicazione: null
+    },
+    {
+      id: 920,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "3a",
+      id_esercizio: "077",
+      nome_esercizio: "Coiled Punch isoinerziale",
+      parametri: '4x40"+40"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
+      data_pubblicazione: null
+    },
+    {
+      id: 921,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "3b",
+      id_esercizio: "097",
+      nome_esercizio: "Endless rope Plank Alternating Pull",
+      parametri: '4x20"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 922,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "4",
+      id_esercizio: "104",
+      nome_esercizio: "Overhand Matadors Wheel",
+      parametri: "1x5'",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale e destrezza",
+      link_video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
+      data_pubblicazione: null
+    },
+    {
+      id: 923,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "5a",
+      id_esercizio: "130",
+      nome_esercizio: "cross jump double touch",
+      parametri: '3x45"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: 'circuito (3 round) | ricalibrato a 45" ad alta cadenza',
+      link_video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
+      data_pubblicazione: null
+    },
+    {
+      id: 924,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "5b",
+      id_esercizio: "090",
+      nome_esercizio: "dragon flag progressioni",
+      parametri: "3x6-8",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 925,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "35 allenamento A",
+      sequenza: "5c",
+      id_esercizio: "007",
+      nome_esercizio: "Coiled skyerg",
+      parametri: '3x30"+30"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round)",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 926,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "1a",
+      id_esercizio: "033",
+      nome_esercizio: "Coiled Cobra",
+      parametri: '3x30"-40"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | esercizio alternato continuo, mai monolaterale",
+      link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
+      data_pubblicazione: null
+    },
+    {
+      id: 927,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "1b",
+      id_esercizio: "160",
+      nome_esercizio: "Bat Circular Throw",
+      parametri: '3x60"+60"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/oWM6pwB1Zrc?si=gePKc-R65kniEnh2",
+      data_pubblicazione: null
+    },
+    {
+      id: 928,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "2a",
+      id_esercizio: "061",
+      nome_esercizio: "Kettlebell Step clean",
+      parametri: '4x60"+60"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 929,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "2b",
+      id_esercizio: "182",
+      nome_esercizio: "Diagonal Clubbell T/S",
+      parametri: '4x60"+60"',
+      recupero: 'RBS 60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati",
+      link_video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
+      data_pubblicazione: null
+    },
+    {
+      id: 930,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "3a",
+      id_esercizio: "028",
+      nome_esercizio: "Transverse hold",
+      parametri: '4x30"+30"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 931,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "3b",
+      id_esercizio: "180",
+      nome_esercizio: "Single Dumbbell Pendulum lunge",
+      parametri: '4x30"+30"',
+      recupero: 'RBS 45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8",
+      link_video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
+      data_pubblicazione: null
+    },
+    {
+      id: 932,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "4",
+      id_esercizio: "240",
+      nome_esercizio: "Knee drives",
+      parametri: '3x20"+20"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "reattivit\xE0 elastica, footwork e rimbalzo",
+      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      data_pubblicazione: null
+    },
+    {
+      id: 933,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "5a",
+      id_esercizio: "070",
+      nome_esercizio: "Dumbbell Split Snatch",
+      parametri: "x 6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 934,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "5b",
+      id_esercizio: "091",
+      nome_esercizio: "Elbow Spiderman Toe Tap",
+      parametri: "x 8+8",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 12'",
+      link_video: "",
+      data_pubblicazione: null
+    },
+    {
+      id: 935,
+      livello: "PRO",
+      settimana: "Ciclo 6",
+      giorno: "36 allenamento B",
+      sequenza: "5c",
+      id_esercizio: "004",
+      nome_esercizio: "Skierg wood chopper",
+      parametri: "x 10+10",
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 12'",
@@ -30426,6 +31281,62 @@ var demo_data_default = {
       ],
       data_ora: "2026-10-23T16:26:48.315Z",
       created_at: "2026-10-23T16:26:48.315Z"
+    },
+    {
+      id: 1793005510441,
+      email_cliente: "vally1069@gmail.com",
+      id_esercizio: "81",
+      nome_esercizio: "Meadow Row",
+      carico_kg: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: '[{"rpe":"8","carico_kg":8,"ripetizioni":6}]',
+      rpe_json: '["8"]',
+      feedback: null,
+      data_ora: "2026-09-07T11:05:01.434Z",
+      created_at: "2026-09-07T11:05:01.434Z"
+    },
+    {
+      id: 1793005055541,
+      email_cliente: "vally1069@gmail.com",
+      id_esercizio: "81",
+      nome_esercizio: "Meadow Row",
+      carico_kg: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: '[{"rpe":"4","carico_kg":2,"ripetizioni":3}]',
+      rpe_json: '["4"]',
+      feedback: "5 lg",
+      data_ora: "2026-09-21T17:43:55.755Z",
+      created_at: "2026-09-21T17:43:55.755Z"
+    },
+    {
+      id: 1793004860207,
+      email_cliente: "vally1069@gmail.com",
+      id_esercizio: "208",
+      nome_esercizio: "Landmine Plyo Lift NO DOWN",
+      carico_kg: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: '[{"rpe":"0","carico_kg":0,"ripetizioni":0}]',
+      rpe_json: '["0"]',
+      feedback: "Nessun carico",
+      data_ora: "2026-09-21T17:44:27.641Z",
+      created_at: "2026-09-21T17:44:27.641Z"
+    },
+    {
+      id: 1793005167816,
+      email_cliente: "vally1069@gmail.com",
+      id_esercizio: "80",
+      nome_esercizio: "Coiled Bench Row",
+      carico_kg: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: '[{"rpe":"10","carico_kg":7.5,"ripetizioni":10}]',
+      rpe_json: '["10"]',
+      feedback: "10 kg",
+      data_ora: "2026-09-25T17:38:38.383Z",
+      created_at: "2026-09-25T17:38:38.383Z"
     }
   ],
   stato_allenamenti: [
@@ -31918,6 +32829,20 @@ var demo_data_default = {
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo"
+    },
+    {
+      id: "usr-glide-1793004530253-785",
+      email: "vally1069@gmail.com",
+      nome: "vally1069",
+      cognome: "",
+      telefono: "",
+      codice_fiscale: "",
+      ruolo: "atleta",
+      crediti: 0,
+      data_scadenza_crediti: null,
+      tipo_abbonamento: "standard",
+      tempo_cancellazione_ore: 24,
+      data_ultimo_accesso: "2026-10-26T08:48:50.253Z"
     }
   ],
   movimenti_crediti: [
@@ -33420,8 +34345,7 @@ var demo_data_default = {
     "bogazziclaudia@gmail.com",
     "usr-bw-1953989",
     "domix89@msn.com",
-    "usr-glide-1791381752599-443",
-    "vally1069@gmail.com"
+    "usr-glide-1791381752599-443"
   ],
   tariffario_pacchetti: [
     {

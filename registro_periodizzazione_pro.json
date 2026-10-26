@@ -2,7 +2,7 @@
   "programma": "Landmine Lab - Livello PRO",
   "fonte_catalogo_esclusiva": "PRO database esercizi (escluso foglio elenco completo)",
   "macrociclo_attuale": "Sviluppo Multicompetenze e Rotazione Catalogo PRO (163 esercizi)",
-  "mesociclo_attuale": "Mesociclo 2 (Cicli 4, 5, 6)",
+  "mesociclo_attuale": "Mesociclo 2 (Cicli 4, 5, 6) - COMPLETATO",
   "ciclo_attivo_da_pianificare": "Ciclo 7 (Inizio Mesociclo 3)",
   "storico_cicli": {
     "Ciclo 1": {
@@ -52,7 +52,7 @@
     }
   },
   "totale_esercizi_catalogo": 163,
-  "esercizi_utilizzati": 79,
+  "esercizi_utilizzati": 96,
   "esercizi": [
     {
       "id": "43",
@@ -111,8 +111,8 @@
       "pattern": "cerniera d'anca, trazione verticale dal basso",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "188",
@@ -231,8 +231,8 @@
       "pattern": "core training",
       "ruolo": "complementare a tutto",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "91",
@@ -241,8 +241,8 @@
       "pattern": "core training",
       "ruolo": "complementare a tutto",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "92",
@@ -261,8 +261,8 @@
       "pattern": "core stablity in piedi",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "93",
@@ -301,8 +301,8 @@
       "pattern": "core stablity catene crociate e spirali in spinta monolaterale",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": "Ciclo 4",
-      "usage_count": 1
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 2
     },
     {
       "id": "219",
@@ -331,8 +331,8 @@
       "pattern": "core training in trazione verticale monolaterale alternato",
       "ruolo": "accessrio",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "191",
@@ -461,8 +461,8 @@
       "pattern": "cerniera d'anca asimmetrico",
       "ruolo": "accessorio",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "221",
@@ -551,8 +551,8 @@
       "pattern": "cerniera d'anca, core stability",
       "ruolo": "propedeutico L master",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "52",
@@ -571,8 +571,8 @@
       "pattern": "trazione verticale dal basso, affondo, cerniera d'anca",
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "174",
@@ -591,8 +591,8 @@
       "pattern": "cerniera d'anca, core stability, affondo",
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "187",
@@ -821,8 +821,8 @@
       "pattern": "rope flow",
       "ruolo": "complementare",
       "categoria": "skill e combo",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "105",
@@ -991,8 +991,8 @@
       "pattern": "stabilizzazione core in pattern biomeccanico funzonale",
       "ruolo": "engine",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "5",
@@ -1021,8 +1021,8 @@
       "pattern": "integrazione di tutte le linee ed i vettori di forza in un movimento spiralizzato",
       "ruolo": "engine",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "8",
@@ -1271,8 +1271,8 @@
       "pattern": "destrezza, saltello",
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "131",
@@ -1281,8 +1281,8 @@
       "pattern": "saltello",
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "135",
@@ -1311,8 +1311,8 @@
       "pattern": "pliometria, saltelli, multidirezionale",
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "46",
@@ -1451,8 +1451,8 @@
       "pattern": "lancio, ciclico",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "162",
@@ -1461,8 +1461,8 @@
       "pattern": "lancio, ciclico, rotazione piano trasverso",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 1
     },
     {
       "id": "183",
@@ -1541,8 +1541,8 @@
       "pattern": "mobilità anche, allungamento catena flessoria anteriore",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": "Ciclo 3",
-      "usage_count": 1
+      "last_cycle_used": "Ciclo 6",
+      "usage_count": 2
     },
     {
       "id": "42",
