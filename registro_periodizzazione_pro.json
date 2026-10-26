@@ -3,7 +3,7 @@
   "fonte_catalogo_esclusiva": "PRO database esercizi (escluso foglio elenco completo)",
   "macrociclo_attuale": "Sviluppo Multicompetenze e Rotazione Catalogo PRO (163 esercizi)",
   "mesociclo_attuale": "Mesociclo 2 (Cicli 4, 5, 6)",
-  "ciclo_attivo_da_pianificare": "Ciclo 6 (Scarico e Trasformazione Mesociclo 2)",
+  "ciclo_attivo_da_pianificare": "Ciclo 7 (Inizio Mesociclo 3)",
   "storico_cicli": {
     "Ciclo 1": {
       "status": "completato / transizione",
@@ -27,6 +27,11 @@
       "status": "attivo / programmato",
       "sessioni": 6,
       "focus": "Picco Mesociclo 2: COMBO Landmine C&J high hand switch, Dumbbell biker's squat, KB snatch to lunge, Flag Bearer isoinerziale time under tension, Pliometria e Skierg pagaia"
+    },
+    "Ciclo 6": {
+      "status": "attivo / programmato",
+      "sessioni": 6,
+      "focus": "Chiusura Mesociclo 2: Scarico Selettivo Mod. B, Heavy Rope Flow 1x5', Bat Circular 60\"+60\", Coiled Punch Isoinerziale 40\"+40\", Pliometria e Stabilità Asimmetrica"
     }
   },
   "pattern_status": {
