@@ -550,7 +550,7 @@ function ListaGiorni({
           const match = s.match(/ciclo\s*(\d+)/i);
           if (match) {
             const num = parseInt(match[1], 10);
-            if (num >= 6 && num % 3 === 0) return true;
+            if (num >= 3 && num % 3 === 0) return true;
           }
           return false;
         })();
