@@ -11,3 +11,5 @@ Regole Tassative:
 6. Notazione asimmetrica obbligatoria con `+` (es. `8+8`). Nessuna speed ladder nei circuiti/AMRAP.
 7. Sincronizzazione Glide: Ad ogni apertura della conversazione eseguire `npm run sync-glide` per sincronizzare SOLO anagrafica e diario atleti da Glide fino a sua dismissione. Preservare crediti, scadenze e fisco.
 8. Struttura Blindata: Eseguire `npm run verify` e `npm run backup` prima di modifiche strutturali. Dati atleti, crediti, prenotazioni e storico carichi non possono mai essere sovrascritti o cancellati. Rispetto rigoroso dei moduli in data/vault/.
+9. Agente Guardiano e Regole Esecutive: Il database `data/vault/regole_esercizi_metodologia.json` governa i vincoli di tutti i 163 esercizi PRO (es. Coiled Cobra solo a tempo continuo alternato senza '+', notazione '+' obbligatoria per unilaterali, avvisi sicurezza clave, no speed ladder in AMRAP). Eseguire obbligatoriamente `npm run guardian` prima di convalidare o pubblicare nuovi cicli.
+

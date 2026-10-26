@@ -78,3 +78,18 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
   5. `5_metodologia_allenamenti_cicli.json` (Periodizzazione e schede dei cicli A/B)
   6. `6_configurazione_lab.json` (Palinsesto e impostazioni)
 * **Verifica Automatica**: Al termine di qualsiasi sessione di lavoro o script, eseguire sempre `npm run verify` per accertarsi che la soglia minima di atleti, crediti e prenotazioni sia integra al 100%.
+
+---
+
+## 7. DATABASE REGOLE ESECUTIVE E GUARDIANO METODOLOGICO (LIVELLO PRO)
+* **Database di Memoria Vincolante**: Il file `data/vault/regole_esercizi_metodologia.json` costituisce la fonte di verità assoluta per i vincoli esecutivi e le modalità di prescrizione di tutti i **163 esercizi PRO**:
+  1. *Esercizi alternati continui* (es. `Coiled Cobra`, `skierg pagaia alternato`, `Endless rope alternating pull`): **DIVIETO ASSOLUTO** di prescrizione a ripetizioni fisse o notazione con `+`. Devono essere prescritti solo a tempo continuo (es. `30"-40"`).
+  2. *Esercizi asimmetrici / monolaterali*: Obbligo della notazione con `+` (es. `4x8+8`, `3x60"+60"`) e specificazione di `RBS` (Rest Between Sides) ove pertinente.
+  3. *Attrezzi rotazionali pesanti (Clave / Bat / Clubbell)*: Obbligo di avviso tecnico nelle note (`utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo`).
+  4. *Pliometria e destrezza neurale*: Divieto assoluto di RPE massimale a cedimento (> 8.5).
+  5. *Divieto Speed Ladder*: Nessuna scaletta di velocità o footwork dentro blocchi AMRAP o circuiti ad alta densità.
+* **Agente Guardiano Metodologico (`npm run guardian`)**:
+  - Script guardiano CLI `scripts/guardian_methodology_pro.mjs` invocabile con `npm run guardian` (oppure `npm run guardian -- --all` o `--ciclo=X`).
+  - L'Agente `pro_methodology_guardian` verifica automaticamente ogni riga di programmazione, le stime di durata rispetto al tetto dei 60 minuti e la corretta rotazione di scarico in Modalità B.
+  - **Regola Tassativa**: Nessun nuovo ciclo PRO può essere validato o pubblicato senza prima aver eseguito con successo `npm run guardian` con zero errori critici.
+

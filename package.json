@@ -12,6 +12,7 @@
     "backup": "node scripts/backup_manager.mjs backup",
     "restore": "node scripts/backup_manager.mjs restore",
     "verify": "node scripts/backup_manager.mjs verify",
+    "guardian": "node scripts/guardian_methodology_pro.mjs",
     "vault:split": "node scripts/backup_manager.mjs split",
     "vault:merge": "node scripts/backup_manager.mjs merge",
     "dev:sandbox": "AREA46_MODE=sandbox vite",
