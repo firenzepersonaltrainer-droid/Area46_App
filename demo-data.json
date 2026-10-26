@@ -13980,7 +13980,7 @@
       "sequenza": "1b",
       "id_esercizio": "082",
       "nome_esercizio": "Dumbbell biker's squat",
-      "parametri": "3x12",
+      "parametri": "3 X 12+12",
       "recupero": "",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set | usare un manubrio di peso adeguato al riscaldamento",
@@ -14040,7 +14040,7 @@
       "sequenza": "4",
       "id_esercizio": "135",
       "nome_esercizio": "Salto alfiere",
-      "parametri": "studio progressivo 5-10 minuti",
+      "parametri": "3 X 60\"",
       "recupero": "",
       "minutaggio_blocco": "",
       "note_tecniche": "Dal momento che è un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito.",
@@ -14089,7 +14089,7 @@
       "recupero": "",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set",
-      "link_video": "https://youtube.com/shorts/2mSUTq--DY0",
+      "link_video": "",
       "data_pubblicazione": null
     },
     {
@@ -14116,7 +14116,7 @@
       "id_esercizio": "224",
       "nome_esercizio": "Kettlebell snatch swing to snatch lunge",
       "parametri": "4x5+5",
-      "recupero": "rec 60",
+      "recupero": "Rec 60\"",
       "minutaggio_blocco": "",
       "note_tecniche": "RPE 8.5",
       "link_video": "https://youtu.be/rE8lJ9TxbEQ",
@@ -14131,7 +14131,7 @@
       "id_esercizio": "171",
       "nome_esercizio": "Kettlebell Skater Swing",
       "parametri": "4x12",
-      "recupero": "rec 60",
+      "recupero": "Rec 60\"",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set | RPE 8",
       "link_video": "https://youtube.com/shorts/fNs7kd2FvEs",
@@ -14160,7 +14160,7 @@
       "sequenza": "3b",
       "id_esercizio": "086",
       "nome_esercizio": "Power Coiled plank progressioni",
-      "parametri": "4x30\"",
+      "parametri": "4x30\"+30\"",
       "recupero": "45\"",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set",
@@ -14235,10 +14235,10 @@
       "sequenza": "1b",
       "id_esercizio": "082",
       "nome_esercizio": "Dumbbell biker's squat",
-      "parametri": "3x12",
+      "parametri": "3 X 12",
       "recupero": "",
       "minutaggio_blocco": "",
-      "note_tecniche": "jump set | usare un manubrio di peso adeguato al riscaldamento",
+      "note_tecniche": "jump set | usare un manubrio di peso adeguato al riscaldamento (alternato)",
       "link_video": "https://youtu.be/jqhow36DTdg",
       "data_pubblicazione": null
     },
@@ -14295,7 +14295,7 @@
       "sequenza": "4a",
       "id_esercizio": "135",
       "nome_esercizio": "Salto alfiere",
-      "parametri": "3x5+5",
+      "parametri": "3 X 50\"",
       "recupero": "",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set",
@@ -14344,7 +14344,7 @@
       "recupero": "",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set",
-      "link_video": "https://youtube.com/shorts/2mSUTq--DY0",
+      "link_video": "",
       "data_pubblicazione": null
     },
     {
@@ -14371,7 +14371,7 @@
       "id_esercizio": "224",
       "nome_esercizio": "Kettlebell snatch swing to snatch lunge",
       "parametri": "4x5+5",
-      "recupero": "rec 60",
+      "recupero": "Rec 60\"",
       "minutaggio_blocco": "",
       "note_tecniche": "RPE 8.5",
       "link_video": "https://youtu.be/rE8lJ9TxbEQ",
@@ -14386,7 +14386,7 @@
       "id_esercizio": "171",
       "nome_esercizio": "Kettlebell Skater Swing",
       "parametri": "4x12",
-      "recupero": "rec 60",
+      "recupero": "Rec 60\"",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set | RPE 8",
       "link_video": "https://youtube.com/shorts/fNs7kd2FvEs",
@@ -14415,7 +14415,7 @@
       "sequenza": "3b",
       "id_esercizio": "086",
       "nome_esercizio": "Power Coiled plank progressioni",
-      "parametri": "4x35\"",
+      "parametri": "4x30\"+30\"",
       "recupero": "45\"",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set",
@@ -14490,10 +14490,10 @@
       "sequenza": "1b",
       "id_esercizio": "082",
       "nome_esercizio": "Dumbbell biker's squat",
-      "parametri": "3x12",
+      "parametri": "3 X 12",
       "recupero": "",
       "minutaggio_blocco": "",
-      "note_tecniche": "jump set | usare un manubrio di peso adeguato al riscaldamento",
+      "note_tecniche": "jump set | usare un manubrio di peso adeguato al riscaldamento (alternato)",
       "link_video": "https://youtu.be/jqhow36DTdg",
       "data_pubblicazione": null
     },
@@ -14550,7 +14550,7 @@
       "sequenza": "4a",
       "id_esercizio": "135",
       "nome_esercizio": "Salto alfiere",
-      "parametri": "3x5+5",
+      "parametri": "3 X 45\"",
       "recupero": "",
       "minutaggio_blocco": "",
       "note_tecniche": "circuito (3 round)",
@@ -14599,7 +14599,7 @@
       "recupero": "",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set",
-      "link_video": "https://youtube.com/shorts/2mSUTq--DY0",
+      "link_video": "",
       "data_pubblicazione": null
     },
     {
@@ -14626,7 +14626,7 @@
       "id_esercizio": "224",
       "nome_esercizio": "Kettlebell snatch swing to snatch lunge",
       "parametri": "4x5+5",
-      "recupero": "rec 60",
+      "recupero": "Rec 60\"",
       "minutaggio_blocco": "",
       "note_tecniche": "RPE 8.5",
       "link_video": "https://youtu.be/rE8lJ9TxbEQ",
@@ -14641,7 +14641,7 @@
       "id_esercizio": "171",
       "nome_esercizio": "Kettlebell Skater Swing",
       "parametri": "4x12",
-      "recupero": "rec 60",
+      "recupero": "Rec 60\"",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set | RPE 8",
       "link_video": "https://youtube.com/shorts/fNs7kd2FvEs",
@@ -14670,7 +14670,7 @@
       "sequenza": "3b",
       "id_esercizio": "086",
       "nome_esercizio": "Power Coiled plank progressioni",
-      "parametri": "4x40\"",
+      "parametri": "4x30\"+30\"",
       "recupero": "45\"",
       "minutaggio_blocco": "",
       "note_tecniche": "jump set",
@@ -18457,28 +18457,6 @@
       "created_at": "2026-10-21T05:22:55.105Z"
     },
     {
-      "id": 1792598846525,
-      "email_cliente": "daniele.casci@gmail.com",
-      "id_esercizio": "076",
-      "nome_esercizio": "Push the wall row",
-      "carico_kg": null,
-      "feedback": null,
-      "ripetizioni": null,
-      "serie": null,
-      "sets_json": [
-        {
-          "carico_kg": 15,
-          "ripetizioni": 8,
-          "rpe": "8"
-        }
-      ],
-      "rpe_json": [
-        "8"
-      ],
-      "data_ora": "2026-10-21T16:07:26.525Z",
-      "created_at": "2026-10-21T16:07:26.525Z"
-    },
-    {
       "id": 1792672090444,
       "email_cliente": "silvia.brenzini@gmail.com",
       "id_esercizio": "079",
@@ -18511,6 +18489,128 @@
       ],
       "data_ora": "2026-10-22T12:28:10.444Z",
       "created_at": "2026-10-22T12:28:10.444Z"
+    },
+    {
+      "id": 1792741891613,
+      "email_cliente": "pantanella@gmail.com",
+      "id_esercizio": "082",
+      "nome_esercizio": "Landmine Biker's Squat",
+      "carico_kg": null,
+      "feedback": null,
+      "ripetizioni": null,
+      "serie": null,
+      "sets_json": [
+        {
+          "carico_kg": 40,
+          "ripetizioni": 8,
+          "rpe": "8"
+        }
+      ],
+      "rpe_json": [
+        "8"
+      ],
+      "data_ora": "2026-10-23T07:51:31.613Z",
+      "created_at": "2026-10-23T07:51:31.613Z"
+    },
+    {
+      "id": 1792747854839,
+      "email_cliente": "pierpaolaciancia@gmail.com",
+      "id_esercizio": "079",
+      "nome_esercizio": "Bench press",
+      "carico_kg": null,
+      "feedback": "Roe 8.5",
+      "ripetizioni": null,
+      "serie": null,
+      "sets_json": [
+        {
+          "carico_kg": 29,
+          "ripetizioni": 6,
+          "rpe": null
+        }
+      ],
+      "rpe_json": null,
+      "data_ora": "2026-10-23T09:30:54.839Z",
+      "created_at": "2026-10-23T09:30:54.839Z"
+    },
+    {
+      "id": 1792771122818,
+      "email_cliente": "daniele.casci@gmail.com",
+      "id_esercizio": "079",
+      "nome_esercizio": "Bench press",
+      "carico_kg": null,
+      "feedback": null,
+      "ripetizioni": null,
+      "serie": null,
+      "sets_json": [
+        {
+          "carico_kg": 42,
+          "ripetizioni": 8,
+          "rpe": "7"
+        },
+        {
+          "carico_kg": 46,
+          "ripetizioni": 8,
+          "rpe": "9"
+        }
+      ],
+      "rpe_json": [
+        "7",
+        "9"
+      ],
+      "data_ora": "2026-10-23T15:58:42.818Z",
+      "created_at": "2026-10-23T15:58:42.818Z"
+    },
+    {
+      "id": 1792772516037,
+      "email_cliente": "tebog1887@gmail.com",
+      "id_esercizio": "038",
+      "nome_esercizio": "Rotational Blade Position",
+      "carico_kg": null,
+      "feedback": null,
+      "ripetizioni": null,
+      "serie": null,
+      "sets_json": [
+        {
+          "carico_kg": 25,
+          "ripetizioni": 1,
+          "rpe": null
+        },
+        {
+          "carico_kg": 25,
+          "ripetizioni": 1,
+          "rpe": null
+        },
+        {
+          "carico_kg": 30,
+          "ripetizioni": 1,
+          "rpe": null
+        }
+      ],
+      "rpe_json": null,
+      "data_ora": "2026-10-23T16:21:56.037Z",
+      "created_at": "2026-10-23T16:21:56.037Z"
+    },
+    {
+      "id": 1792772808315,
+      "email_cliente": "daniele.casci@gmail.com",
+      "id_esercizio": "081",
+      "nome_esercizio": "Meadow Row",
+      "carico_kg": null,
+      "feedback": null,
+      "ripetizioni": null,
+      "serie": null,
+      "sets_json": [
+        {
+          "carico_kg": 25,
+          "ripetizioni": 8,
+          "rpe": "8"
+        }
+      ],
+      "rpe_json": [
+        "8"
+      ],
+      "data_ora": "2026-10-23T16:26:48.315Z",
+      "created_at": "2026-10-23T16:26:48.315Z"
     }
   ],
   "stato_allenamenti": [
@@ -19191,7 +19291,7 @@
       "livello": "PRO",
       "giorno": 25,
       "stato": "completato",
-      "updated_at": "2026-10-21T07:44:32.664Z"
+      "updated_at": "2026-10-26T06:34:58.776Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -19506,35 +19606,35 @@
       "livello": "PRO",
       "giorno": 26,
       "stato": "completato",
-      "updated_at": "2026-10-23T05:04:55.480Z"
+      "updated_at": "2026-10-26T06:34:58.776Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "PRO",
       "giorno": 27,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-21T07:44:28.572Z"
+      "stato": "completato",
+      "updated_at": "2026-10-26T06:34:58.776Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "PRO",
       "giorno": 28,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-21T07:44:28.572Z"
+      "stato": "completato",
+      "updated_at": "2026-10-26T06:34:58.776Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "PRO",
       "giorno": 29,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-21T07:44:28.572Z"
+      "stato": "completato",
+      "updated_at": "2026-10-26T06:34:58.776Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "PRO",
       "giorno": 30,
-      "stato": "non_iniziato",
-      "updated_at": "2026-10-21T07:44:28.572Z"
+      "stato": "completato",
+      "updated_at": "2026-10-26T06:34:58.776Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -19612,6 +19712,146 @@
       "giorno": 5,
       "stato": "completato",
       "updated_at": "2026-10-22T22:05:24.469Z"
+    },
+    {
+      "email_cliente": "sil_ba@hotmail.it",
+      "livello": "Entry Level",
+      "giorno": 2,
+      "stato": "completato",
+      "updated_at": "2026-10-23T07:08:48.827Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 17,
+      "stato": "completato",
+      "updated_at": "2026-10-23T07:22:01.382Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 18,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:27.105Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 5,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:28.847Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:29.674Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:30.520Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 8,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:31.407Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 9,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:32.123Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 10,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:32.861Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 11,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:33.607Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 12,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:35.845Z"
+    },
+    {
+      "email_cliente": "pantanella@gmail.com",
+      "livello": "PRO",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-10-23T08:27:38.967Z"
+    },
+    {
+      "email_cliente": "pierpaolaciancia@gmail.com",
+      "livello": "PRO",
+      "giorno": 12,
+      "stato": "completato",
+      "updated_at": "2026-10-23T09:04:20.074Z"
+    },
+    {
+      "email_cliente": "annap.maddy@gmail.com",
+      "livello": "Entry Level",
+      "giorno": 6,
+      "stato": "completato",
+      "updated_at": "2026-10-23T09:37:47.395Z"
+    },
+    {
+      "email_cliente": "pierpaolaciancia@gmail.com",
+      "livello": "PRO",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-10-23T10:21:02.330Z"
+    },
+    {
+      "email_cliente": "daniele.casci@gmail.com",
+      "livello": "PRO",
+      "giorno": 10,
+      "stato": "completato",
+      "updated_at": "2026-10-23T15:17:11.033Z"
+    },
+    {
+      "email_cliente": "tebog1887@gmail.com",
+      "livello": "Level 2",
+      "giorno": 7,
+      "stato": "completato",
+      "updated_at": "2026-10-23T16:02:43.628Z"
+    },
+    {
+      "email_cliente": "daniele.casci@gmail.com",
+      "livello": "PRO",
+      "giorno": 11,
+      "stato": "non_iniziato",
+      "updated_at": "2026-10-23T16:54:16.737Z"
+    },
+    {
+      "email_cliente": "daniele.casci@gmail.com",
+      "livello": "PRO",
+      "giorno": 12,
+      "stato": "non_iniziato",
+      "updated_at": "2026-10-23T16:54:38.968Z"
+    },
+    {
+      "email_cliente": "matteo.calosci@gmail.com",
+      "livello": "Level 2",
+      "giorno": 15,
+      "stato": "in_corso",
+      "updated_at": "2026-10-23T16:54:27.652Z"
     }
   ],
   "preferenze_utente": [
@@ -19623,7 +19863,7 @@
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "memoria_livello": "PRO",
-      "updated_at": "2026-10-21T06:03:00.426Z"
+      "updated_at": "2026-10-23T09:17:21.955Z"
     },
     {
       "email_cliente": "silvia.brenzini@gmail.com",
@@ -19749,7 +19989,7 @@
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 0,
       "updated_at": "2026-10-07T14:43:38.330Z",
-      "data_ultimo_accesso": "2026-10-22T22:13:02.046Z"
+      "data_ultimo_accesso": "2026-10-25T08:00:20.249Z"
     },
     {
       "id": "usr-bw-1953979",
@@ -19767,7 +20007,7 @@
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 0,
       "updated_at": "2026-10-07T14:44:36.455Z",
-      "data_ultimo_accesso": "2026-10-20T14:11:58.660Z"
+      "data_ultimo_accesso": "2026-10-25T13:58:30.641Z"
     },
     {
       "id": "usr-bw-1953992",
@@ -19778,12 +20018,12 @@
       "nickname": "Il Calo",
       "name": "Matteo Calosci",
       "ruolo": "atleta",
-      "crediti": 18,
+      "crediti": 17,
       "data_scadenza_crediti": "2026-12-07",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "data_ultimo_accesso": "2026-10-22T11:13:52.839Z"
+      "data_ultimo_accesso": "2026-10-25T08:33:55.839Z"
     },
     {
       "id": "usr-bw-1953938",
@@ -21093,34 +21333,6 @@
       "google_event_id": "kl7h9qiktfehlbbe1v9v4nm4e8"
     },
     {
-      "id": "bk-1792683000000-maddy-0",
-      "data": "2026-10-26",
-      "orario": "10:30",
-      "atleta_id": "usr-bw-2078480",
-      "email_cliente": "annap.maddy@gmail.com",
-      "nome_cliente": "Anna Paola Maddalena",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "note": "Assegnazione diretta dal Coach",
-      "google_event_id": "2j14f6gqfbeg5k7dldun06taf8",
-      "created_at": "2026-10-22T16:50:22.000Z"
-    },
-    {
-      "id": "bk-1792305817512",
-      "data": "2026-10-26",
-      "orario": "18:30",
-      "atleta_id": "usr-bw-1953979",
-      "email_cliente": "vallycamera@hotmail.it",
-      "nome_cliente": "Valeria Camera",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "note": "",
-      "created_at": "2026-10-18T06:43:37.512Z",
-      "google_event_id": "c317qv7uqh7ru06mhn47f3rio0"
-    },
-    {
       "id": "bk-1792683000000-usai-0",
       "data": "2026-10-28",
       "orario": "09:45",
@@ -21469,9 +21681,88 @@
       "note": "Prenotazione Multipla Rapida",
       "google_event_id": "jsmm29huk1p3nphp8hor3vvndo",
       "created_at": "2026-10-22T16:50:17.000Z"
+    },
+    {
+      "id": "bk-1792683000000-casci-16",
+      "data": "2026-12-23",
+      "orario": "17:15",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "Prenotazione Multipla Rapida",
+      "google_event_id": "ne0ctsgickjirl8tqva1ikrgkg",
+      "created_at": "2026-10-22T16:50:18.000Z"
+    },
+    {
+      "id": "bk-1792915220249",
+      "data": "2026-10-26",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-25T08:00:20.249Z",
+      "google_event_id": "6c4ahrh796lur42lr7goelr4tk"
+    },
+    {
+      "id": "bk-1792917235839",
+      "data": "2026-10-26",
+      "orario": "19:00",
+      "atleta_id": "usr-bw-1953992",
+      "email_cliente": "matteo.calosci@gmail.com",
+      "nome_cliente": "Matteo Calosci",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-25T08:33:55.839Z",
+      "google_event_id": "7klp8nhp8t6uf0v1aga5699lpo"
+    },
+    {
+      "id": "bk-1792936710641",
+      "data": "2026-11-04",
+      "orario": "18:30",
+      "atleta_id": "usr-bw-1953979",
+      "email_cliente": "vallycamera@hotmail.it",
+      "nome_cliente": "Valeria Camera",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-10-25T13:58:30.641Z",
+      "google_event_id": "0bt6l4jl453ig1j8tn05jiacbk"
     }
   ],
   "transazioni_pagamenti": [
+    {
+      "id": "tx-man-1792778886093",
+      "codice_transazione": "TX-MAN-46-886093",
+      "atleta_id": "usr-bw-2080725",
+      "email_cliente": "tebog1887@gmail.com",
+      "nome_cliente": "Matteo Tesse",
+      "codice_fiscale": "",
+      "indirizzo": "",
+      "id_pacchetto": "manuale",
+      "nome_pacchetto": "8 allenamenti",
+      "importo_euro": 150,
+      "metodo": "contanti",
+      "crediti_acquistati": 0,
+      "debiti_decurtati": 0,
+      "anticipi_decurtati": 0,
+      "crediti_effettivi_aggiunti": 0,
+      "causale_bonifico": null,
+      "stato": "completato",
+      "stato_fattura": "da_emettere",
+      "created_at": "2026-10-23T00:00:00.000Z",
+      "note": "8x20€ on sconto di 10€",
+      "inserito_da": "coach_manuale"
+    },
     {
       "id": "tx-man-1792737623635",
       "codice_transazione": "TX-MAN-46-623635",
@@ -21623,6 +21914,66 @@
   ],
   "active_user_id": null,
   "movimenti_crediti": [
+    {
+      "id": "mov-1792936711460-248",
+      "atleta_id": "usr-bw-1953979",
+      "email_cliente": "vallycamera@hotmail.it",
+      "nome_cliente": "Valeria Camera",
+      "data_ora": "2026-10-25T13:58:31.460Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 0,
+      "motivazione": "Prenotazione slot del 2026-11-04 ore 18:30",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1792936656204-473",
+      "atleta_id": "usr-bw-1953979",
+      "email_cliente": "vallycamera@hotmail.it",
+      "nome_cliente": "Valeria Camera",
+      "data_ora": "2026-10-25T13:57:36.204Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 1,
+      "motivazione": "Rimborso per cancellazione in tempo slot del 2026-10-26 18:30",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1792917236640-383",
+      "atleta_id": "usr-bw-1953992",
+      "email_cliente": "matteo.calosci@gmail.com",
+      "nome_cliente": "Matteo Calosci",
+      "data_ora": "2026-10-25T08:33:56.640Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 17,
+      "motivazione": "Prenotazione slot del 2026-10-26 ore 19:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1792915221152-724",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-10-25T08:00:21.152Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 15,
+      "motivazione": "Prenotazione slot del 2026-10-26 ore 18:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1792915189535-712",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-10-25T07:59:49.535Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 16,
+      "motivazione": "Rimborso per cancellazione in tempo slot del 2026-10-26 10:30",
+      "operatore": "atleta"
+    },
     {
       "id": "mov-1792707182764-542",
       "atleta_id": "usr-bw-2078480",
@@ -23115,7 +23466,11 @@
     "bk-1792388185851",
     "bk-1792515409111",
     "lab_bk-1791403232280-4",
-    "lab_bk-1791801449814"
+    "lab_bk-1791801449814",
+    "bk-1792683000000-maddy-0",
+    "lab_bk-1792683000000-maddy-0",
+    "bk-1792305817512",
+    "lab_bk-1792305817512"
   ],
   "utenti_cancellati": [
     "usr-bw-2056285",

@@ -232,36 +232,38 @@ C4_B = [
 # - COMBO Clean & Jerk high hand switch: 4x10, avvicinamento corretto
 # - Allenamento 25: Salto alfiere singolo (studio 5-10 min), coiled Ax Sit up + skierg in JS
 # - Allenamento 27: Salto alfiere in JS con skierg, coiled Ax Sit up singolo
-# - Allenamento 29: Triset/circuito completo con Salto alfiere a 5+5
+# - Allenamento 25: Biker's squat 3 X 12+12, Salto alfiere 3 X 60"
+# - Allenamento 27: Biker's squat alternato 3 X 12, Salto alfiere in JS 3 X 50"
+# - Allenamento 29: Biker's squat alternato 3 X 12, Salto alfiere in circuito 3 X 45"
 C5_A_25 = [
     ("1a", 22,  "Coiled Cable Punch", '3x40"+40"', "", "jump set"),
-    ("1b", 82,  "Dumbbell biker's squat", "3x12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento"),
+    ("1b", 82,  "Dumbbell biker's squat", "3 X 12+12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento"),
     ("2",  129, "COMBO: Landmine Clean & Jerk High hand switch T/GO", "4x10", 'RBS 75"', "RPE 8.5 | fare un corretto avvicinamento"),
     ("3a", 52,  "Dumbell Jerk", "4x6+6", "", "jump set | RPE 8"),
     ("3b", 193, "Endless rope Half kneeling lateral pull", '4x20"+20"', '60"', "jump set | RPE 8"),
-    ("4",  135, "Salto alfiere", "studio progressivo 5-10 minuti", "", "Dal momento che è un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito."),
+    ("4",  135, "Salto alfiere", '3 X 60"', "", "Dal momento che è un esercizio di impatto e affrontato per la prima volta, viene richiesto un lavoro preventivo di studio progressivo fino a realizzare il movimento intero e proseguito."),
     ("5a", 96,  "coiled Ax Sit up", "3x8+8", "", "jump set"),
     ("5b", 3,   "skierg pagaia alternato", '3x30"+30"', '60"', "jump set")
 ]
 
 C5_A_27 = [
     ("1a", 22,  "Coiled Cable Punch", '3x40"+40"', "", "jump set"),
-    ("1b", 82,  "Dumbbell biker's squat", "3x12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento"),
+    ("1b", 82,  "Dumbbell biker's squat", "3 X 12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento (alternato)"),
     ("2",  129, "COMBO: Landmine Clean & Jerk High hand switch T/GO", "4x10", 'RBS 75"', "RPE 8.5 | fare un corretto avvicinamento"),
     ("3a", 52,  "Dumbell Jerk", "4x6+6", "", "jump set | RPE 8"),
     ("3b", 193, "Endless rope Half kneeling lateral pull", '4x20"+20"', '60"', "jump set | RPE 8"),
-    ("4a", 135, "Salto alfiere", "3x5+5", "", "jump set"),
+    ("4a", 135, "Salto alfiere", '3 X 50"', "", "jump set"),
     ("4b", 3,   "skierg pagaia alternato", '3x30"+30"', '60"', "jump set"),
     ("5",  96,  "coiled Ax Sit up", "3x8+8", '45"', "")
 ]
 
 C5_A_29 = [
     ("1a", 22,  "Coiled Cable Punch", '3x40"+40"', "", "jump set"),
-    ("1b", 82,  "Dumbbell biker's squat", "3x12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento"),
+    ("1b", 82,  "Dumbbell biker's squat", "3 X 12", "", "jump set | usare un manubrio di peso adeguato al riscaldamento (alternato)"),
     ("2",  129, "COMBO: Landmine Clean & Jerk High hand switch T/GO", "4x10", 'RBS 75"', "RPE 8.5 | fare un corretto avvicinamento"),
     ("3a", 52,  "Dumbell Jerk", "4x6+6", "", "jump set | RPE 8"),
     ("3b", 193, "Endless rope Half kneeling lateral pull", '4x20"+20"', '60"', "jump set | RPE 8"),
-    ("4a", 135, "Salto alfiere", "3x5+5", "", "circuito (3 round)"),
+    ("4a", 135, "Salto alfiere", '3 X 45"', "", "circuito (3 round)"),
     ("4b", 96,  "coiled Ax Sit up", "3x8+8", "", "circuito (3 round)"),
     ("4c", 3,   "skierg pagaia alternato", '3x30"+30"', '60"', "circuito (3 round)")
 ]
@@ -622,6 +624,12 @@ def main():
     print("\n[Fase 5] Aggiornamento demo-data.json e Vault Modulo 5 per l'App...")
     update_demo_data_json(all_rows)
     update_vault_modulo_5(all_rows)
+    if os.path.exists("/tmp/demo-data.json"):
+        try:
+            os.remove("/tmp/demo-data.json")
+            print("-> Cache /tmp/demo-data.json rimossa per recepire subito i nuovi parametri.")
+        except Exception:
+            pass
 
     # 6. Aggiorna registro periodizzazione
     print("\n[Fase 6] Aggiornamento registro periodizzazione...")
