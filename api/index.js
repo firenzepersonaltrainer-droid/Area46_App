@@ -36116,14 +36116,6 @@ var demo_data_default = {
       tipo: "slot_bloccato",
       motivo: "Chiusura per ferie / imprevisto",
       created_at: "2026-10-22T15:36:24.364Z"
-    },
-    {
-      id: "exc-1792683384364-xsjw",
-      data: "2026-10-28",
-      orario: "18:00",
-      tipo: "slot_bloccato",
-      motivo: "Chiusura per ferie / imprevisto",
-      created_at: "2026-10-22T15:36:24.364Z"
     }
   ],
   regole_palinsesto: [

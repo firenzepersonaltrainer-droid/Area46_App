@@ -457,27 +457,10 @@ export default function ManagerCalendarPage() {
               const slotInfo = slotDinamici.find((s) => s.orario === orario);
               const booking = prenotazioniGiorno.find((p) => p.orario === orario);
               const isOccupato = !!booking;
-              const isBloccato = eccezioniGiorno.some(
+              const isBloccato = !isOccupato && eccezioniGiorno.some(
                 (e) => e.tipo === "slot_bloccato" && e.orario === orario
               );
               const isStraordinario = slotInfo?.is_straordinario;
-
-              if (isBloccato) {
-                return (
-                  <div
-                    key={orario}
-                    className="p-3 rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-400 flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Ban className="size-4 text-zinc-400" />
-                      <span className="text-xs sm:text-sm font-bold">{orario}</span>
-                      <span className="text-xs font-semibold text-zinc-500">
-                        Slot Bloccato dal Coach (Non prenotabile)
-                      </span>
-                    </div>
-                  </div>
-                );
-              }
 
               if (isOccupato) {
                 return (
@@ -512,6 +495,23 @@ export default function ManagerCalendarPage() {
                     <span className="text-xs sm:text-sm font-bold text-[#1c00ff] hover:underline">
                       Dettagli &rarr;
                     </span>
+                  </div>
+                );
+              }
+
+              if (isBloccato) {
+                return (
+                  <div
+                    key={orario}
+                    className="p-3 rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-400 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Ban className="size-4 text-zinc-400" />
+                      <span className="text-xs sm:text-sm font-bold">{orario}</span>
+                      <span className="text-xs font-semibold text-zinc-500">
+                        Slot Bloccato dal Coach (Non prenotabile)
+                      </span>
+                    </div>
                   </div>
                 );
               }
