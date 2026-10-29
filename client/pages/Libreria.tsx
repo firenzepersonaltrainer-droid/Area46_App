@@ -73,12 +73,15 @@ export default function LibreriaPage() {
             className="pl-9 bg-white rounded-xl border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff]"
           />
         </div>
-        <Select value={attrezzo} onValueChange={setAttrezzo}>
+        <Select
+          value={attrezzo || "ALL"}
+          onValueChange={(val) => setAttrezzo(val === "ALL" ? "" : val)}
+        >
           <SelectTrigger className="w-full sm:w-48 bg-white rounded-xl border-zinc-200">
             <SelectValue placeholder="Tutti gli attrezzi" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tutti gli attrezzi</SelectItem>
+            <SelectItem value="ALL">Tutti gli attrezzi</SelectItem>
             {attrezzi.map((a) => (
               <SelectItem key={a} value={a}>{a}</SelectItem>
             ))}

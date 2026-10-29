@@ -37,12 +37,12 @@ export function Nav({ items, className }: NavProps) {
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex flex-col items-center justify-center relative",
-                "rounded-full px-2.5 py-1.5",
-                "min-w-[60px] flex-1 shrink-0",
-                "text-xs font-bold tracking-tight",
+                "rounded-full px-1.5 sm:px-2.5 py-1.5",
+                "min-w-[44px] sm:min-w-[56px] flex-1 shrink-0",
+                "text-[10px] sm:text-xs font-bold tracking-tight",
                 "transition-all duration-200",
                 "outline-none focus-visible:ring-focus-ring/50 focus-visible:ring-[2px]",
-                "[&_svg]:size-5",
+                "[&_svg]:size-4 sm:[&_svg]:size-5",
                 active
                   ? "bg-[#1c00ff] text-white shadow-lg"
                   : "text-zinc-400 hover:text-white",

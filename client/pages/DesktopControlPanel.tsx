@@ -21,6 +21,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   Zap,
+  BookOpen,
 } from "lucide-react";
 import { useCurrentUser, useProfili, useLabConfig } from "../lib/useUser";
 import ManagerCalendarPage from "./ManagerCalendar";
@@ -252,6 +253,17 @@ export default function DesktopControlPanel() {
               </div>
               {activeTab === "fisco" && <ChevronRight className="size-4 text-[#e3ff00]" />}
             </button>
+
+            <Link
+              to="/libreria"
+              className="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all text-left text-zinc-300 hover:bg-zinc-900 hover:text-white cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <BookOpen className="size-4 text-[#e3ff00]" />
+                <span>Database Esercizi</span>
+              </div>
+              <ExternalLink className="size-3.5 text-zinc-500" />
+            </Link>
           </nav>
 
           {/* SUMMARY CARDS IN SIDEBAR */}

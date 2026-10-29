@@ -134,7 +134,7 @@ app.get("/app-api/esercizi/:idEsercizio", async (c) => {
 app.get("/app-api/libreria", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const attrezzo = c.req.query("attrezzo");
-  const q = c.req.query("q");
+  const q = c.req.query("q") || c.req.query("search");
 
   const rows =
     attrezzo && q

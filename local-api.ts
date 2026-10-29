@@ -4556,36 +4556,52 @@ CALENDARIO E PRENOTAZIONI:
     // 6. Libreria Attrezzi: GET /app-api/libreria/attrezzi
     if (pathname === "/app-api/libreria/attrezzi" && method === "GET") {
       const attrezzi = new Set<string>();
-      for (const ex of db.database_esercizi) {
-        if (ex.attrezzatura) {
-          for (const item of ex.attrezzatura.split(",")) {
+      for (const ex of db.database_esercizi || []) {
+        const att = ex.attrezzo || ex.attrezzatura;
+        if (att) {
+          for (const item of String(att).split(",")) {
             const trimmed = item.trim();
             if (trimmed) attrezzi.add(trimmed);
           }
         }
       }
-      return res.end(JSON.stringify(Array.from(attrezzi).sort()));
+      return res.end(JSON.stringify(Array.from(attrezzi).sort((a, b) => a.localeCompare(b))));
     }
 
     // 7. Libreria Esercizi: GET /app-api/libreria
     if (pathname === "/app-api/libreria" && method === "GET") {
-      const search = url.searchParams.get("search")?.toLowerCase() || "";
+      const search = (url.searchParams.get("search") || url.searchParams.get("q") || "").toLowerCase().trim();
       const target = url.searchParams.get("target") || "";
-      const attrezzo = url.searchParams.get("attrezzo") || "";
+      const attrezzo = (url.searchParams.get("attrezzo") || "").toLowerCase().trim();
       const livello = url.searchParams.get("livello") || "";
 
-      let filtered = db.database_esercizi.filter((ex: any) => {
-        if (search && !ex.nome_esercizio?.toLowerCase().includes(search)) return false;
-        if (target && ex.target !== target) return false;
-        if (attrezzo && !ex.attrezzatura?.toLowerCase().includes(attrezzo.toLowerCase()))
-          return false;
+      let filtered = (db.database_esercizi || []).filter((ex: any) => {
+        const nome = (ex.nome_reale || ex.nome_esercizio || "").toLowerCase();
+        const tag = (ex.tag_biomeccanici || "").toLowerCase();
+        const pattern = (ex.pattern_biomeccanico || "").toLowerCase();
+        const exAttrezzo = (ex.attrezzo || ex.attrezzatura || "").toLowerCase();
+
+        if (search) {
+          const match =
+            nome.includes(search) ||
+            tag.includes(search) ||
+            pattern.includes(search) ||
+            exAttrezzo.includes(search) ||
+            String(ex.id_esercizio || "").includes(search);
+          if (!match) return false;
+        }
+
+        if (target && ex.target !== target && ex.ruolo !== target) return false;
+        if (attrezzo && !exAttrezzo.includes(attrezzo)) return false;
         if (livello && ex.livello !== livello) return false;
         return true;
       });
 
-      filtered.sort((a: any, b: any) =>
-        (a.nome_esercizio ?? "").localeCompare(b.nome_esercizio ?? "")
-      );
+      filtered.sort((a: any, b: any) => {
+        const nomeA = a.nome_reale || a.nome_esercizio || "";
+        const nomeB = b.nome_reale || b.nome_esercizio || "";
+        return nomeA.localeCompare(nomeB);
+      });
       return res.end(JSON.stringify(filtered));
     }
 
