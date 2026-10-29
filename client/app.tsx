@@ -273,7 +273,6 @@ function AppContent() {
         { href: "/manager/calendario", label: "Calendario", icon: <CalendarCheck /> },
         { href: "/manager/atleti", label: "Atleti", icon: <Users /> },
         { href: "/", label: "Allenamenti", icon: <Dumbbell /> },
-        { href: "/libreria", label: "Database", icon: <BookOpen /> },
         { href: "/diario", label: "Diario", icon: <BookMarked /> },
         { href: "/manager/fisco", label: "Fisco", icon: <Settings /> },
       ]

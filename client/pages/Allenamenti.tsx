@@ -794,9 +794,32 @@ export default function AllenamentiPage() {
     <>
       <DialogConfermaReset pending={reset.pending} resetting={reset.resetting} onConferma={reset.confermaReset} onAnnulla={reset.annullaReset} />
       <div className="space-y-6">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <h1 className="text-2xl font-semibold tracking-tight text-primary">Allenamenti</h1>
-          <Link to={archivioHref}><Button variant="secondary" size="sm"><Archive className="size-4" />Archivio completo</Button></Link>
+        <div className="flex items-center justify-between gap-2.5 flex-wrap">
+          <h1 className="text-2xl font-black tracking-tight text-zinc-900">Allenamenti</h1>
+          <div className="flex items-center gap-2">
+            <Link to="/libreria">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="rounded-xl font-bold bg-[#1c00ff]/10 hover:bg-[#1c00ff]/20 text-[#1c00ff] border border-[#1c00ff]/30 shadow-2xs cursor-pointer flex items-center gap-1.5"
+                title="Catalogo ed Esercizi del Lab"
+              >
+                <BookOpen className="size-4 text-[#1c00ff]" />
+                <span>Database Esercizi</span>
+              </Button>
+            </Link>
+            <Link to={archivioHref}>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="rounded-xl font-bold border-zinc-200 shadow-2xs cursor-pointer flex items-center gap-1.5"
+                title="Archivio completo allenamenti"
+              >
+                <Archive className="size-4 text-zinc-500" />
+                <span className="hidden sm:inline">Archivio</span>
+              </Button>
+            </Link>
+          </div>
         </div>
         {(livelli || []).length > 1 && (
           <Select value={livello} onValueChange={setLivello}>
