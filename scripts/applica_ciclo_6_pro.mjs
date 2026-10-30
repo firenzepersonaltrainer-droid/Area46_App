@@ -46,7 +46,7 @@ function getEserciziA(round) {
       param: '4x40"+40"',
       rec: "",
       note: "jump set | RPE 8",
-      video: "https://youtu.be/-j07Q_jaTOA",
+      video: "https://youtube.com/shorts/mifz_6oZJlw",
     },
     {
       seq: "3b",
@@ -166,99 +166,117 @@ function getEserciziA(round) {
   return base;
 }
 
-// Esercizi Seduta B (fissa per 32, 34, 36)
-const eserciziB = [
-  {
-    seq: "1a",
-    id: "033",
-    nome: "Coiled Cobra",
-    param: '3x30"-40"',
-    rec: "",
-    note: "jump set | esercizio alternato continuo, mai monolaterale",
-    video: "https://youtube.com/shorts/GU3ePuvJwMk",
-  },
-  {
-    seq: "1b",
-    id: "160",
-    nome: "Bat Circular Throw",
-    param: '3x60"+60"',
-    rec: '45"',
-    note: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
-    video: "https://youtu.be/oWM6pwB1Zrc?si=gePKc-R65kniEnh2",
-  },
-  {
-    seq: "2a",
-    id: "061",
-    nome: "Kettlebell Step clean",
-    param: '4x60"+60"',
-    rec: "",
-    note: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
-    video: "https://youtu.be/DajheBayHjc",
-  },
-  {
-    seq: "2b",
-    id: "182",
-    nome: "Diagonal Clubbell T/S",
-    param: '4x60"+60"',
-    rec: 'RBS 60"',
-    note: "jump set | senza pausa tra i lati",
-    video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
-  },
-  {
-    seq: "3a",
-    id: "028",
-    nome: "Transverse hold",
-    param: '4x30"+30"',
-    rec: "",
-    note: "jump set | RPE 8",
-    video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
-  },
-  {
-    seq: "3b",
-    id: "180",
-    nome: "Single Dumbbell Pendulum lunge",
-    param: '4x30"+30"',
-    rec: 'RBS 45"',
-    note: "jump set | RPE 8",
-    video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
-  },
-  {
-    seq: "4",
-    id: "240",
-    nome: "Knee drives",
-    param: '3x20"+20"',
-    rec: '45"',
-    note: "reattività elastica, footwork e rimbalzo",
-    video: "https://youtube.com/shorts/mifz_6oZJlw",
-  },
-  {
-    seq: "5a",
-    id: "070",
-    nome: "Dumbbell Split Snatch",
-    param: "x 6+6",
-    rec: "",
-    note: "AMRAP 12'",
-    video: "https://youtu.be/rE8lJ9TxbEQ",
-  },
-  {
-    seq: "5b",
-    id: "091",
-    nome: "Elbow Spiderman Toe Tap",
-    param: "x 8+8",
-    rec: "",
-    note: "AMRAP 12'",
-    video: "https://youtu.be/ktgDSN7EnhI",
-  },
-  {
-    seq: "5c",
-    id: "004",
-    nome: "Skierg wood chopper",
-    param: "x 10+10",
-    rec: "",
-    note: "AMRAP 12'",
-    video: "https://youtube.com/shorts/7n-hAJAXoYU",
-  },
-];
+// Esercizi Seduta B con progressione B1 (32), B2 (34), B3 (36)
+function getEserciziB(round) {
+  const amrapTime = round === 1 ? "10'" : round === 2 ? "11'" : "13'";
+  const woodChopperParam = round === 1 ? "x 15+15" : round === 2 ? "x 20+20" : "x 25+25";
+
+  let kneeDrivesParam = '3x20"+20"';
+  let kneeDrivesNote = "reattività elastica, footwork e rimbalzo";
+  if (round === 1) {
+    kneeDrivesParam = "costruzione motoria";
+    kneeDrivesNote = "costruzione dell’esercizio: dedica il tempo necessario all’apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello";
+  } else if (round === 2) {
+    kneeDrivesParam = "4x10";
+    kneeDrivesNote = "lavora con calma e lentezza, dai la precedenza alla tecnica anziché sull’intensità";
+  } else {
+    kneeDrivesParam = '3x20"+20"';
+    kneeDrivesNote = "cerca la massima esplosività adeguata al tuo livello";
+  }
+
+  return [
+    {
+      seq: "1a",
+      id: "033",
+      nome: "Coiled Cobra",
+      param: '3x30"-40"',
+      rec: "",
+      note: "jump set | esercizio alternato continuo, mai monolaterale",
+      video: "https://youtube.com/shorts/GU3ePuvJwMk",
+    },
+    {
+      seq: "1b",
+      id: "160",
+      nome: "Bat Circular Throw",
+      param: '3x60"+60"',
+      rec: '45"',
+      note: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      video: "https://youtu.be/oWM6pwB1Zrc?si=gePKc-R65kniEnh2",
+    },
+    {
+      seq: "2a",
+      id: "061",
+      nome: "Kettlebell Step clean",
+      param: '4x60"+60"',
+      rec: "",
+      note: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
+      video: "https://youtu.be/DajheBayHjc",
+    },
+    {
+      seq: "2b",
+      id: "182",
+      nome: "Diagonal Clubbell T/S",
+      param: '4x60"+60"',
+      rec: 'RBS 60"',
+      note: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
+    },
+    {
+      seq: "3a",
+      id: "028",
+      nome: "Transverse hold",
+      param: '4x30"+30"',
+      rec: "",
+      note: "jump set | creare contro-rotazione del bacino su torace (chiedi all’istruttore)",
+      video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
+    },
+    {
+      seq: "3b",
+      id: "180",
+      nome: "Single Dumbbell Pendulum lunge",
+      param: '4x30"+30"',
+      rec: 'RBS 45"',
+      note: "jump set | RPE 8 (se il movimento è incerto non tenere conto dell’RPE indicato, concentrati sugli aspetti tecnici)",
+      video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
+    },
+    {
+      seq: "4",
+      id: "240",
+      nome: "Knee drives",
+      param: kneeDrivesParam,
+      rec: '45"',
+      note: kneeDrivesNote,
+      video: "https://www.youtube.com/shorts/2LBsvhVglwA",
+    },
+    {
+      seq: "5a",
+      id: "070",
+      nome: "Dumbbell Split Snatch",
+      param: "x 6+6",
+      rec: "",
+      note: `AMRAP ${amrapTime}`,
+      video: "https://youtu.be/rE8lJ9TxbEQ",
+    },
+    {
+      seq: "5b",
+      id: "091",
+      nome: "Elbow Spiderman Toe Tap",
+      param: "x 8+8",
+      rec: "",
+      note: `AMRAP ${amrapTime}`,
+      video: "https://youtu.be/ktgDSN7EnhI",
+    },
+    {
+      seq: "5c",
+      id: "004",
+      nome: "Skierg wood chopper",
+      param: woodChopperParam,
+      rec: "",
+      note: `AMRAP ${amrapTime}`,
+      video: "https://youtube.com/shorts/7n-hAJAXoYU",
+    },
+  ];
+}
 
 // Carica Vault 5
 const vault5 = JSON.parse(fs.readFileSync(VAULT_5_FILE, "utf-8"));
@@ -281,7 +299,7 @@ const plan = [
 let nuoveRighe = 0;
 for (const s of plan) {
   const giornoStr = `${s.num} allenamento ${s.tipo}`;
-  const list = s.tipo === "A" ? getEserciziA(s.round) : eserciziB;
+  const list = s.tipo === "A" ? getEserciziA(s.round) : getEserciziB(s.round);
 
   for (const ex of list) {
     allenamenti.push({

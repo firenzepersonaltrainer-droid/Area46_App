@@ -14452,7 +14452,7 @@ var demo_data_default = {
       pattern_biomeccanico: "pliometria, saltelli, multidirezionale",
       ruolo: "accessorio",
       tag_biomeccanici: "pliometria, saltelli, multidirezionale \u2022 Multi-planare, Spinta Orizzontale, Connessione Controlaterale, linee spirali, spinta orizzontale",
-      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      link_video: "https://www.youtube.com/shorts/2LBsvhVglwA",
       data_pubblicazione: null
     },
     {
@@ -26594,7 +26594,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtu.be/-j07Q_jaTOA",
+      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
       data_pubblicazione: null
     },
     {
@@ -26609,7 +26609,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/gcgilJEmzks",
       data_pubblicazione: null
     },
     {
@@ -26654,7 +26654,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
-      link_video: "",
+      link_video: "https://youtu.be/LjHUx2MFcR8",
       data_pubblicazione: null
     },
     {
@@ -26669,7 +26669,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "integrazione spiralizzata",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/hML7iVaIBaU",
       data_pubblicazione: null
     },
     {
@@ -26714,7 +26714,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
-      link_video: "",
+      link_video: "https://youtu.be/DajheBayHjc",
       data_pubblicazione: null
     },
     {
@@ -26728,7 +26728,7 @@ var demo_data_default = {
       parametri: '4x60"+60"',
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | senza pausa tra i lati",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
       link_video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
       data_pubblicazione: null
     },
@@ -26743,8 +26743,8 @@ var demo_data_default = {
       parametri: '4x30"+30"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      note_tecniche: "jump set | creare contro-rotazione del bacino su torace (chiedi all\u2019istruttore)",
+      link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
       data_pubblicazione: null
     },
     {
@@ -26758,7 +26758,7 @@ var demo_data_default = {
       parametri: '4x30"+30"',
       recupero: 'RBS 45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | RPE 8",
+      note_tecniche: "jump set | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
       link_video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
       data_pubblicazione: null
     },
@@ -26770,11 +26770,11 @@ var demo_data_default = {
       sequenza: "4",
       id_esercizio: "240",
       nome_esercizio: "Knee drives",
-      parametri: '3x20"+20"',
+      parametri: "costruzione motoria",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "reattivit\xE0 elastica, footwork e rimbalzo",
-      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      note_tecniche: "costruzione dell\u2019esercizio: dedica il tempo necessario all\u2019apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello",
+      link_video: "https://www.youtube.com/shorts/2LBsvhVglwA",
       data_pubblicazione: null
     },
     {
@@ -26788,8 +26788,8 @@ var demo_data_default = {
       parametri: "x 6+6",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 10'",
+      link_video: "https://youtu.be/rE8lJ9TxbEQ",
       data_pubblicazione: null
     },
     {
@@ -26803,8 +26803,8 @@ var demo_data_default = {
       parametri: "x 8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 10'",
+      link_video: "https://youtu.be/ktgDSN7EnhI",
       data_pubblicazione: null
     },
     {
@@ -26815,11 +26815,11 @@ var demo_data_default = {
       sequenza: "5c",
       id_esercizio: "004",
       nome_esercizio: "Skierg wood chopper",
-      parametri: "x 10+10",
+      parametri: "x 15+15",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 10'",
+      link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
     {
@@ -26879,7 +26879,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtu.be/-j07Q_jaTOA",
+      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
       data_pubblicazione: null
     },
     {
@@ -26894,7 +26894,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/gcgilJEmzks",
       data_pubblicazione: null
     },
     {
@@ -26939,7 +26939,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
-      link_video: "",
+      link_video: "https://youtu.be/LjHUx2MFcR8",
       data_pubblicazione: null
     },
     {
@@ -26954,7 +26954,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "circuito (3 round)",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/hML7iVaIBaU",
       data_pubblicazione: null
     },
     {
@@ -26999,7 +26999,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
-      link_video: "",
+      link_video: "https://youtu.be/DajheBayHjc",
       data_pubblicazione: null
     },
     {
@@ -27013,7 +27013,7 @@ var demo_data_default = {
       parametri: '4x60"+60"',
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | senza pausa tra i lati",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
       link_video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
       data_pubblicazione: null
     },
@@ -27028,8 +27028,8 @@ var demo_data_default = {
       parametri: '4x30"+30"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      note_tecniche: "jump set | creare contro-rotazione del bacino su torace (chiedi all\u2019istruttore)",
+      link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
       data_pubblicazione: null
     },
     {
@@ -27043,7 +27043,7 @@ var demo_data_default = {
       parametri: '4x30"+30"',
       recupero: 'RBS 45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | RPE 8",
+      note_tecniche: "jump set | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
       link_video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
       data_pubblicazione: null
     },
@@ -27055,11 +27055,11 @@ var demo_data_default = {
       sequenza: "4",
       id_esercizio: "240",
       nome_esercizio: "Knee drives",
-      parametri: '3x20"+20"',
+      parametri: "4x10",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "reattivit\xE0 elastica, footwork e rimbalzo",
-      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      note_tecniche: "lavora con calma e lentezza, dai la precedenza alla tecnica anzich\xE9 sull\u2019intensit\xE0",
+      link_video: "https://www.youtube.com/shorts/2LBsvhVglwA",
       data_pubblicazione: null
     },
     {
@@ -27073,8 +27073,8 @@ var demo_data_default = {
       parametri: "x 6+6",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 11'",
+      link_video: "https://youtu.be/rE8lJ9TxbEQ",
       data_pubblicazione: null
     },
     {
@@ -27088,8 +27088,8 @@ var demo_data_default = {
       parametri: "x 8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 11'",
+      link_video: "https://youtu.be/ktgDSN7EnhI",
       data_pubblicazione: null
     },
     {
@@ -27100,11 +27100,11 @@ var demo_data_default = {
       sequenza: "5c",
       id_esercizio: "004",
       nome_esercizio: "Skierg wood chopper",
-      parametri: "x 10+10",
+      parametri: "x 20+20",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 11'",
+      link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
     {
@@ -27164,7 +27164,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "https://youtu.be/-j07Q_jaTOA",
+      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
       data_pubblicazione: null
     },
     {
@@ -27179,7 +27179,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/gcgilJEmzks",
       data_pubblicazione: null
     },
     {
@@ -27224,7 +27224,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
-      link_video: "",
+      link_video: "https://youtu.be/LjHUx2MFcR8",
       data_pubblicazione: null
     },
     {
@@ -27239,7 +27239,7 @@ var demo_data_default = {
       recupero: '60"',
       minutaggio_blocco: "",
       note_tecniche: "circuito (3 round)",
-      link_video: "",
+      link_video: "https://youtube.com/shorts/hML7iVaIBaU",
       data_pubblicazione: null
     },
     {
@@ -27284,7 +27284,7 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B",
-      link_video: "",
+      link_video: "https://youtu.be/DajheBayHjc",
       data_pubblicazione: null
     },
     {
@@ -27298,7 +27298,7 @@ var demo_data_default = {
       parametri: '4x60"+60"',
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | senza pausa tra i lati",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
       link_video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
       data_pubblicazione: null
     },
@@ -27313,8 +27313,8 @@ var demo_data_default = {
       parametri: '4x30"+30"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | RPE 8",
-      link_video: "",
+      note_tecniche: "jump set | creare contro-rotazione del bacino su torace (chiedi all\u2019istruttore)",
+      link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
       data_pubblicazione: null
     },
     {
@@ -27328,7 +27328,7 @@ var demo_data_default = {
       parametri: '4x30"+30"',
       recupero: 'RBS 45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | RPE 8",
+      note_tecniche: "jump set | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
       link_video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
       data_pubblicazione: null
     },
@@ -27343,8 +27343,8 @@ var demo_data_default = {
       parametri: '3x20"+20"',
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "reattivit\xE0 elastica, footwork e rimbalzo",
-      link_video: "https://youtube.com/shorts/mifz_6oZJlw",
+      note_tecniche: "cerca la massima esplosivit\xE0 adeguata al tuo livello",
+      link_video: "https://www.youtube.com/shorts/2LBsvhVglwA",
       data_pubblicazione: null
     },
     {
@@ -27358,8 +27358,8 @@ var demo_data_default = {
       parametri: "x 6+6",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 13'",
+      link_video: "https://youtu.be/rE8lJ9TxbEQ",
       data_pubblicazione: null
     },
     {
@@ -27373,8 +27373,8 @@ var demo_data_default = {
       parametri: "x 8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 13'",
+      link_video: "https://youtu.be/ktgDSN7EnhI",
       data_pubblicazione: null
     },
     {
@@ -27385,11 +27385,11 @@ var demo_data_default = {
       sequenza: "5c",
       id_esercizio: "004",
       nome_esercizio: "Skierg wood chopper",
-      parametri: "x 10+10",
+      parametri: "x 25+25",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 12'",
-      link_video: "",
+      note_tecniche: "AMRAP 13'",
+      link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     }
   ],
@@ -36789,8 +36789,7 @@ firenzepersonaltrainer@gmail.com`,
       tipo: "benvenuto_nuovo_atleta",
       stato: "inviata"
     }
-  ],
-  active_user_id: null
+  ]
 };
 
 // local-api.ts

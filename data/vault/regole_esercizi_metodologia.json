@@ -693,7 +693,9 @@
       "ruolo": "complementare",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
       "vincolo_notazione": "OBBLIGATORIO_PIU",
-      "note_obbligatorie": [],
+      "note_obbligatorie": [
+        "se il movimento è incerto non tenere conto dell’RPE indicato, concentrati sugli aspetti tecnici"
+      ],
       "divieti_tassativi": [],
       "didattica_primo_utilizzo": null
     },
@@ -1247,7 +1249,7 @@
       "divieti_tassativi": [
         "VIETATO_RPE_MASSIMALE: priorità a reattività elastica e freschezza neurale."
       ],
-      "didattica_primo_utilizzo": null
+      "didattica_primo_utilizzo": "1ª seduta costruzione con coach (studio motorio, dedicare tempo all'apprendimento) -> 2ª seduta 4x10 lento/tecnico con calma -> 3ª seduta 3x20\"+20\" a tempo con massima esplosività"
     },
     "043": {
       "id": "043",
@@ -1455,8 +1457,12 @@
       "ruolo": "complementare",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
       "vincolo_notazione": "STANDARD",
-      "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "note_obbligatorie": [
+        "creare contro-rotazione del bacino su torace (chiedi all’istruttore)"
+      ],
+      "divieti_tassativi": [
+        "VIETATO_RPE: nessuna indicazione di RPE, focus su allineamento e contro-rotazione del bacino su torace"
+      ],
       "didattica_primo_utilizzo": null
     },
     "093": {

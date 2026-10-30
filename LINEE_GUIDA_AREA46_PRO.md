@@ -84,3 +84,36 @@ Nell'arco del Mesociclo, il totale delle serie allenanti (*hard sets*) deve risp
    * Esercizi asimmetrici/unilaterali con annotazione esplicita `+` (es. `3x8+8` o `3x15"+15"`).
    * MAI scalette di velocità (speed ladder) all'interno di circuiti ad alta intensità o AMRAP.
    * Accoppiamenti e propedeutiche guidati dalle colonne del database: `ID complementare`, `ID propedeutica`, `ID alternativa scalata`, `ID Target`.
+
+---
+
+## 5. FILOSOFIA DIDATTICA SUL CAMPO DEL COACH (LOGICHE DI PRESCRIZIONE E APPRENDIMENTO)
+
+### 5.1 Introduzione di un Nuovo Esercizio: Progressione a 3 Fasi nel Ciclo
+Quando un esercizio viene prescritto per la prima volta e necessita di studio motorio (pliometria, footwork, schemi incrociati o propedeutiche complesse), non imporre subito carichi pesanti o timer rigidi. Applicare la progressione didattica a gradini:
+* **1ª Seduta del Ciclo (Fase Costruzione)**:
+  * Parametri: `costruzione motoria` (nessun timer o rep restrittivo).
+  * Note obbligatorie: *"costruzione dell’esercizio: dedica il tempo necessario all’apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello"*.
+* **2ª Seduta del Ciclo (Fase Controllo Lento)**:
+  * Parametri: Volume a ripetizioni fisse e controllate (es. `4x10` o `4x8+8`).
+  * Note obbligatorie: *"lavora con calma e lentezza, dai la precedenza alla tecnica anziché sull’intensità"*.
+* **3ª Seduta del Ciclo (Fase Espressione Dinamica)**:
+  * Parametri: Target a tempo o esplosivo (es. `3x20"+20"`).
+  * Note obbligatorie: *"cerca la massima esplosività adeguata al tuo livello"*.
+
+### 5.2 RPE e Sensazioni Cinestesiche vs Teoria Accademica
+* **Esercizi di Tenuta / Stabilità del Core (es. Transverse Hold, Pallof)**:
+  * **DIVIETO DI RPE NUMERICO**: Su movimenti di pura stabilità isometrica e allineamento l'RPE è fuorviante. 
+  * Sostituire sempre con indicazioni cinestesiche concrete: *"creare contro-rotazione del bacino su torace (chiedi all’istruttore)"*.
+* **Esercizi Tecnici ad Asimmetria Dinamica (es. Pendulum Lunge, Swing complessi)**:
+  * Accompagnare l'indicazione di RPE con la clausola di svincolo per l'amatore: *"(se il movimento è incerto non tenere conto dell’RPE indicato, concentrati sugli aspetti tecnici)"*.
+
+### 5.3 Progressione dei Blocchi di Condizionamento (AMRAP)
+La densità dell'AMRAP all'interno delle 3 sedute del ciclo progredisce linearmente sia nei minuti sia nelle ripetizioni degli accessori:
+* **Round 1 (Seduta B1)**: 10' AMRAP | volume base (es. Wood Chopper `x 15+15`).
+* **Round 2 (Seduta B2)**: 11' AMRAP (+1 min) | volume medio (es. Wood Chopper `x 20+20`).
+* **Round 3 (Seduta B3)**: 13' AMRAP (+2 min) | volume picco (es. Wood Chopper `x 25+25`).
+
+### 5.4 Integrità Assoluta dei Link Video Dimostrativi
+* Vietato associare link video per similitudine o per copia-incolla rapido. Ogni esercizio deve rimandare al video registrato dal coach per quel preciso pattern (es. Knee Drives ha video YouTube dedicato `https://www.youtube.com/shorts/2LBsvhVglwA`, mai linkare video di altri esercizi come Coiled Punch).
+

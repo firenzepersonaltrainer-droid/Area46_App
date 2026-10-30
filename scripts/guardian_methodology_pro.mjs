@@ -9,6 +9,18 @@ const ROOT_DIR = path.resolve(__dirname, "..");
 
 const VAULT_CYCLES_FILE = path.join(ROOT_DIR, "data", "vault", "5_metodologia_allenamenti_cicli.json");
 const VAULT_RULES_FILE = path.join(ROOT_DIR, "data", "vault", "regole_esercizi_metodologia.json");
+const VAULT_EXERCISES_FILE = path.join(ROOT_DIR, "data", "vault", "4_metodologia_esercizi.json");
+
+export function loadCatalogExercises() {
+  if (!fs.existsSync(VAULT_EXERCISES_FILE)) return {};
+  const data = JSON.parse(fs.readFileSync(VAULT_EXERCISES_FILE, "utf-8"));
+  const map = {};
+  for (const ex of (data.database_esercizi || [])) {
+    const id = normalizeId(ex.id_esercizio);
+    if (id) map[id] = ex;
+  }
+  return map;
+}
 
 export function loadRules() {
   if (!fs.existsSync(VAULT_RULES_FILE)) {
@@ -165,7 +177,7 @@ function checkRequiredNoteMatches(requiredNote, actualNote) {
 /**
  * Valida un ciclo PRO
  */
-export function validateProCycle(workouts, cycleName, rules) {
+export function validateProCycle(workouts, cycleName, rules, catalogMap = null) {
   const specificRules = rules.regole_specifiche_esercizi || {};
   const guardrails = rules.guardrails_generali || {};
 
@@ -293,6 +305,21 @@ export function validateProCycle(workouts, cycleName, rules) {
           }
         }
       }
+
+      // Controllo coerenza Link Video con catalogo esercizi
+      if (catalogMap) {
+        const normId = normalizeId(row.id_esercizio);
+        const catEx = catalogMap[normId];
+        if (catEx && catEx.link_video) {
+          const rowVid = (row.link_video || "").trim();
+          const catVid = (catEx.link_video || "").trim();
+          if (rowVid && catVid && rowVid !== catVid) {
+            const msg = `DISCREPANZA VIDEO: '${rowName}' ha link video '${rowVid}' differente da quello di catalogo ('${catVid}').`;
+            sessionRes.warnings.push(msg);
+            report.warnings.push(msg);
+          }
+        }
+      }
     }
 
     const durationMin = Math.round(totalDurationSec / 60);
@@ -325,6 +352,7 @@ async function main() {
   console.log("================================================================================\n");
 
   const rules = loadRules();
+  const catalogMap = loadCatalogExercises();
   const allWorkouts = loadWorkouts();
   const proWorkouts = allWorkouts.filter((w) => w.livello === "PRO");
 
@@ -350,7 +378,7 @@ async function main() {
 
   for (const cName of targetCycles) {
     const cycleWorkouts = proWorkouts.filter((w) => w.settimana === cName);
-    const rep = validateProCycle(cycleWorkouts, cName, rules);
+    const rep = validateProCycle(cycleWorkouts, cName, rules, catalogMap);
 
     console.log(`📋 ANALISI: ${cName} (${rep.totale_righe} righe di programmazione)`);
     console.log("--------------------------------------------------------------------------------");

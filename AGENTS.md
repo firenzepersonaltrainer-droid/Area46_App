@@ -93,3 +93,22 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
   - L'Agente `pro_methodology_guardian` verifica automaticamente ogni riga di programmazione, le stime di durata rispetto al tetto dei 60 minuti e la corretta rotazione di scarico in Modalità B.
   - **Regola Tassativa**: Nessun nuovo ciclo PRO può essere validato o pubblicato senza prima aver eseguito con successo `npm run guardian` con zero errori critici.
 
+---
+
+## 8. FILOSOFIA DIDATTICA SUL CAMPO DEL COACH (LOGICHE DI PRESCRIZIONE E MEMORIA)
+* **Introduzione di un Nuovo Esercizio (Progressione a 3 Fasi nel Ciclo)**:
+  1. *1ª Seduta (Costruzione)*: Parametri `costruzione motoria` / `studio`. Note obbligatorie: `"costruzione dell’esercizio: dedica il tempo necessario all’apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello"`. Nessun vincolo rigido di tempo o serie x rep.
+  2. *2ª Seduta (Controllo Lento)*: Volume controllato e cadenza lenta a rep fisse (es. `4x10` o `4x8+8`). Note obbligatorie: `"lavora con calma e lentezza, dai la precedenza alla tecnica anziché sull’intensità"`.
+  3. *3ª Seduta (Espressione Dinamica)*: Target a tempo o esplosività (es. `3x20"+20"`). Note obbligatorie: `"cerca la massima esplosività adeguata al tuo livello"`.
+* **RPE e Sensazioni Cinestesiche**:
+  - Esercizi isometrici o di tenuta rotazionale/anti-rotazionale (es. `Transverse hold`): **DIVIETO DI RPE NUMERICO**. Sostituire con indicazioni cinestesiche concrete: `"creare contro-rotazione del bacino su torace (chiedi all’istruttore)"`.
+  - Movimenti asimmetrici o dinamici incerti (es. `Single Dumbbell Pendulum lunge`): Inserire sempre clausola tecnica di salvaguardia per l'amatore: `"(se il movimento è incerto non tenere conto dell’RPE indicato, concentrati sugli aspetti tecnici)"`.
+* **Progressione AMRAP nei Cicli**:
+  - L'AMRAP progredisce all'interno delle 3 sedute del ciclo sia in durata (minuti) sia in ripetizioni degli accessori:
+    - 1ª seduta B: 10' AMRAP (volume base, es. Skierg wood chopper `x 15+15`).
+    - 2ª seduta B: 11' AMRAP (+1 min, volume intermedio `x 20+20`).
+    - 3ª seduta B: 13' AMRAP (+2 min, picco di volume `x 25+25`).
+* **Integrità Video Link Dimostrativi**:
+  - Divieto assoluto di riutilizzare o copiare per convenienza link video tra esercizi differenti. Ogni ID catalogo ha un solo video corrispondente registrato per quel pattern.
+
+

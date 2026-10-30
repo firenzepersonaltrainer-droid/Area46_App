@@ -142,7 +142,7 @@ VIDEO_MAP = {
     "182": "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
     "028": "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
     "180": "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
-    "240": "https://youtube.com/shorts/mifz_6oZJlw",
+    "240": "https://www.youtube.com/shorts/2LBsvhVglwA",
     "070": "https://youtu.be/rE8lJ9TxbEQ",
     "091": "https://youtu.be/ktgDSN7EnhI",
     "004": "https://youtube.com/shorts/7n-hAJAXoYU",
