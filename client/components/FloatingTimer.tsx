@@ -309,6 +309,9 @@ export default function FloatingTimer() {
 
       function onPointerMove(moveEvent: MouseEvent | TouchEvent) {
         if (!isDraggingRef.current) return;
+        if (moveEvent.cancelable) {
+          moveEvent.preventDefault();
+        }
         const currentX =
           "touches" in moveEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
         const currentY =
@@ -337,8 +340,10 @@ export default function FloatingTimer() {
         window.removeEventListener("mouseup", onPointerUp);
         window.removeEventListener("touchmove", onPointerMove);
         window.removeEventListener("touchend", onPointerUp);
+        document.body.style.userSelect = "";
       }
 
+      document.body.style.userSelect = "none";
       window.addEventListener("mousemove", onPointerMove);
       window.addEventListener("mouseup", onPointerUp);
       window.addEventListener("touchmove", onPointerMove, { passive: false });
@@ -373,6 +378,9 @@ export default function FloatingTimer() {
 
     function onPointerMove(moveEvent: MouseEvent | TouchEvent) {
       if (!iconDragRef.current.isDragging) return;
+      if (moveEvent.cancelable) {
+        moveEvent.preventDefault();
+      }
       const curX = "touches" in moveEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
       const curY = "touches" in moveEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
       const deltaX = curX - iconDragRef.current.startX;
@@ -402,8 +410,10 @@ export default function FloatingTimer() {
       window.removeEventListener("mouseup", onPointerUp);
       window.removeEventListener("touchmove", onPointerMove);
       window.removeEventListener("touchend", onPointerUp);
+      document.body.style.userSelect = "";
     }
 
+    document.body.style.userSelect = "none";
     window.addEventListener("mousemove", onPointerMove);
     window.addEventListener("mouseup", onPointerUp);
     window.addEventListener("touchmove", onPointerMove, { passive: false });
@@ -512,6 +522,7 @@ export default function FloatingTimer() {
         className="fixed sm:absolute flex size-13 cursor-grab active:cursor-grabbing items-center justify-center rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95 z-50 select-none"
         style={{
           ...iconStyle,
+          touchAction: "none",
           background: "#1c00ff",
           border: "2.5px solid #e3ff00",
           color: "#e3ff00",
@@ -545,8 +556,8 @@ export default function FloatingTimer() {
       <div
         onMouseDown={onPointerDownDrag}
         onTouchStart={onPointerDownDrag}
-        className="flex items-center justify-between px-3.5 py-2.5 cursor-grab active:cursor-grabbing"
-        style={{ borderBottom: "1px solid #232332", background: "#15151e" }}
+        className="flex items-center justify-between px-3.5 py-2.5 cursor-grab active:cursor-grabbing select-none"
+        style={{ borderBottom: "1px solid #232332", background: "#15151e", touchAction: "none" }}
         title="Trascina per spostare il timer"
       >
         <div className="flex items-center gap-2 pointer-events-none">
@@ -756,7 +767,7 @@ function CountdownPanel({
             <button
               key={d}
               onClick={() => adjustTime(d)}
-              className="rounded-xl px-3 py-1.5 text-xs font-black cursor-pointer transition-all hover:scale-105 active:scale-95"
+              className="rounded-xl px-3.5 py-1.5 text-sm font-black tracking-wide cursor-pointer transition-all hover:scale-105 active:scale-95"
               style={{
                 background: d > 0 ? "rgba(28,0,255,0.3)" : "#181822",
                 color: d > 0 ? "#e3ff00" : "#d4d4d8",
@@ -965,17 +976,17 @@ function IntervalMultiPhasePanel({
                     <button
                       type="button"
                       onClick={() => adjustStepTime(step.id, -5)}
-                      className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
+                      className="size-7 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm font-black cursor-pointer active:scale-95"
                     >
                       -
                     </button>
-                    <span className="text-xs font-black tabular-nums w-10 text-center text-white">
+                    <span className="text-sm font-black tabular-nums w-11 text-center text-white">
                       {step.durataSecs}"
                     </span>
                     <button
                       type="button"
                       onClick={() => adjustStepTime(step.id, +5)}
-                      className="size-6 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-black cursor-pointer active:scale-95"
+                      className="size-7 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm font-black cursor-pointer active:scale-95"
                     >
                       +
                     </button>

@@ -51,8 +51,8 @@
       "stato": "sviluppo verticale e trazione spiralizzata (Dumbell Jerk, Endless rope half kneeling pull, Skierg pagaia alternato)"
     }
   },
-  "totale_esercizi_catalogo": 163,
-  "esercizi_utilizzati": 96,
+  "totale_esercizi_catalogo": 165,
+  "esercizi_utilizzati": 98,
   "esercizi": [
     {
       "id": "43",
@@ -112,7 +112,7 @@
       "ruolo": "complementare",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "188",
@@ -232,7 +232,7 @@
       "ruolo": "complementare a tutto",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "91",
@@ -242,7 +242,7 @@
       "ruolo": "complementare a tutto",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "92",
@@ -262,7 +262,7 @@
       "ruolo": "complementare",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "93",
@@ -302,7 +302,7 @@
       "ruolo": "complementare",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 2
+      "usage_count": 3
     },
     {
       "id": "219",
@@ -332,7 +332,7 @@
       "ruolo": "accessrio",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "191",
@@ -462,7 +462,7 @@
       "ruolo": "accessorio",
       "categoria": "potenza e balistica",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "221",
@@ -552,7 +552,7 @@
       "ruolo": "propedeutico L master",
       "categoria": "potenza e balistica",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "52",
@@ -572,7 +572,7 @@
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "174",
@@ -592,7 +592,7 @@
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "187",
@@ -992,7 +992,7 @@
       "ruolo": "engine",
       "categoria": "engine e benchmark",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "5",
@@ -1272,7 +1272,7 @@
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "131",
@@ -1282,7 +1282,7 @@
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "135",
@@ -1312,7 +1312,7 @@
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "46",
@@ -1452,7 +1452,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "162",
@@ -1462,7 +1462,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "183",
@@ -1542,7 +1542,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 6",
-      "usage_count": 2
+      "usage_count": 3
     },
     {
       "id": "42",
@@ -1683,6 +1683,30 @@
       "categoria": "warm up e mobilità",
       "last_cycle_used": null,
       "usage_count": 0
+    },
+    {
+      "id": "242",
+      "nome": "Underhand/Overhand Matador Transitions",
+      "attrezzo": "heavy rope",
+      "pattern": "rope flow, rotazione su piano traverso",
+      "ruolo": "complementare",
+      "ultimo_ciclo_usato": "Ciclo 6",
+      "presenze_totali": 1,
+      "stato": "USATO",
+      "usage_count": 1,
+      "last_cycle_used": "Ciclo 6"
+    },
+    {
+      "id": "243",
+      "nome": "vogatore",
+      "attrezzo": "vogatore",
+      "pattern": "hip hinge, catena estensoria, monoplanare",
+      "ruolo": "engine, benchmark",
+      "ultimo_ciclo_usato": "Ciclo 6",
+      "presenze_totali": 1,
+      "stato": "USATO",
+      "usage_count": 1,
+      "last_cycle_used": "Ciclo 6"
     }
   ]
 }

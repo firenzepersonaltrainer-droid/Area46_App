@@ -9,7 +9,8 @@
     "scarico_selettivo": "Modalità B di default (sostituzione del fondamentale pesante con destrezza/mobilità/qualità per 1 ciclo)",
     "sicurezza_articolare": "Mai sovraccarico contiguo cerniera d anca; stimolo prioritario costante per braccia e spalle",
     "divieto_speed_ladder_in_amrap": true,
-    "divieto_rpe_cedimento_su_pliometria": true
+    "divieto_rpe_cedimento_su_pliometria": true,
+    "divieto_rpe_esercizi_pliometrici": "Gli esercizi che hanno come prima finalità quella di sviluppare pliometria non devono avere indicazione di RPE (è fuorviante poiché rimanda a un RIR). Devono prevedere un carico che permetta in ogni ripetizione l'espressione di massima velocità di movimento senza rallentare."
   },
   "modalita_prescrizione_tipologie": {
     "RIPETIZIONI_BILATERALI": {
@@ -946,9 +947,12 @@
       "ruolo": "accessorio",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
       "vincolo_notazione": "OBBLIGATORIO_PIU",
-      "note_obbligatorie": [],
+      "note_obbligatorie": [
+        "utilizza dei carichi che, seppur impegnativi, non facciano rallentare la velocità del movimento"
+      ],
       "divieti_tassativi": [],
-      "didattica_primo_utilizzo": null
+      "didattica_primo_utilizzo": null,
+      "divieto_rpe": true
     },
     "218": {
       "id": "218",
@@ -2239,6 +2243,35 @@
       "pattern": "cerniera d'anca, affondo, posizione coiled",
       "ruolo": "",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
+      "vincolo_notazione": "STANDARD",
+      "note_obbligatorie": [],
+      "divieti_tassativi": [],
+      "didattica_primo_utilizzo": null
+    },
+    "242": {
+      "id": "242",
+      "nome": "Underhand/Overhand Matador Transitions",
+      "attrezzo": "heavy rope",
+      "categoria": "skill e combo",
+      "pattern": "rope flow, rotazione su piano traverso",
+      "ruolo": "complementare",
+      "modalita_prescrizione_predefinita": "FLOW_TIME_BASED",
+      "vincolo_notazione": "STANDARD",
+      "note_obbligatorie": [
+        "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso"
+      ],
+      "divieti_tassativi": [],
+      "didattica_primo_utilizzo": null,
+      "regola_sostituzione": "Sostituisce definitivamente Overhand e Underhand Matadors Wheels dal ciclo PRO in avanti."
+    },
+    "243": {
+      "id": "243",
+      "nome": "vogatore",
+      "attrezzo": "vogatore",
+      "categoria": "engine e benchmark",
+      "pattern": "hip hinge, catena estensoria, monoplanare",
+      "ruolo": "engine, benchmark",
+      "modalita_prescrizione_predefinita": "TEMPO_ALTERNATO_CONTINUO",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [],

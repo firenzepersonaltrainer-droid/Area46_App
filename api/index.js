@@ -14465,6 +14465,39 @@ var demo_data_default = {
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/HGsz2eixUxk",
       data_pubblicazione: null
+    },
+    {
+      id: 242,
+      id_esercizio: "242",
+      nome_reale: "Underhand/Overhand Matador Transitions",
+      attrezzo: "heavy rope",
+      pattern_biomeccanico: "rope flow, rotazione su piano traverso",
+      ruolo: "complementare",
+      tag_biomeccanici: "rope flow, rotazione su piano traverso \u2022 Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
+      link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
+      data_pubblicazione: null
+    },
+    {
+      id: 243,
+      id_esercizio: "243",
+      nome_reale: "vogatore",
+      attrezzo: "vogatore",
+      pattern_biomeccanico: "hip hinge, catena estensoria, monoplanare",
+      ruolo: "engine, benchmark",
+      tag_biomeccanici: "hip hinge, catena estensoria, monoplanare \u2022 Cardio, metcon, resistenza aerobica e anaerobica, circuiti, Cerniera d'anca, Catena Cinetica Chiusa, Capacit\xE0 Aerobica, Potenza Anaerobica",
+      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+      data_pubblicazione: null
+    },
+    {
+      id: 244,
+      id_esercizio: "244",
+      nome_reale: "Il Vogatore-Workshop tecnico",
+      attrezzo: "Approfondimenti ed extra",
+      pattern_biomeccanico: "workshop tecnico, biomeccanica e voga",
+      ruolo: "extra",
+      tag_biomeccanici: "Workshop tecnico, Vogatore, Biomeccanica, Approfondimenti ed extra",
+      link_video: "https://youtu.be/cbHHV_wYHJU?si=-y7dLAqJE_-ynuJ6",
+      data_pubblicazione: "2026-11-02"
     }
   ],
   livelli: [
@@ -22623,7 +22656,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 618,
+      id: 936,
+      livello: "Approfondimenti ed extra",
+      settimana: "info e didattica",
+      giorno: "9 - Video",
+      sequenza: "",
+      id_esercizio: "244",
+      nome_esercizio: "Il Vogatore-Workshop tecnico",
+      parametri: "",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "Workshop tecnico approfondito sul Vogatore: biomeccanica, attivazione catena estensoria, ritmo e dinamica di voga.",
+      link_video: "https://youtu.be/cbHHV_wYHJU?si=-y7dLAqJE_-ynuJ6",
+      data_pubblicazione: "2026-11-02"
+    },
+    {
+      id: 937,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22638,7 +22686,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 619,
+      id: 938,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22653,7 +22701,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 620,
+      id: 939,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22668,7 +22716,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 621,
+      id: 940,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22683,7 +22731,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 622,
+      id: 941,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22698,7 +22746,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 623,
+      id: 942,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22713,7 +22761,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 624,
+      id: 943,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22728,7 +22776,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 625,
+      id: 944,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22743,7 +22791,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 626,
+      id: 945,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "1 allenamento A",
@@ -22758,7 +22806,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 627,
+      id: 946,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22773,7 +22821,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 628,
+      id: 947,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22788,7 +22836,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 629,
+      id: 948,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22803,7 +22851,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 630,
+      id: 949,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22818,7 +22866,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 631,
+      id: 950,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22833,7 +22881,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 632,
+      id: 951,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22848,7 +22896,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 633,
+      id: 952,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22863,7 +22911,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 634,
+      id: 953,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22878,7 +22926,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 635,
+      id: 954,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22893,7 +22941,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 636,
+      id: 955,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "2 allenamento B",
@@ -22908,7 +22956,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 637,
+      id: 956,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -22923,7 +22971,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 638,
+      id: 957,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -22938,7 +22986,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 639,
+      id: 958,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -22953,7 +23001,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 640,
+      id: 959,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -22968,7 +23016,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 641,
+      id: 960,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -22983,7 +23031,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 642,
+      id: 961,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -22998,7 +23046,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 643,
+      id: 962,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -23013,7 +23061,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 644,
+      id: 963,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -23028,7 +23076,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 645,
+      id: 964,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "3 allenamento A",
@@ -23043,7 +23091,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 646,
+      id: 965,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23058,7 +23106,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 647,
+      id: 966,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23073,7 +23121,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 648,
+      id: 967,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23088,7 +23136,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 649,
+      id: 968,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23103,7 +23151,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 650,
+      id: 969,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23118,7 +23166,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 651,
+      id: 970,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23133,7 +23181,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 652,
+      id: 971,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23148,7 +23196,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 653,
+      id: 972,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23163,7 +23211,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 654,
+      id: 973,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23178,7 +23226,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 655,
+      id: 974,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "4 allenamento B",
@@ -23193,7 +23241,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 656,
+      id: 975,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23208,7 +23256,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 657,
+      id: 976,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23223,7 +23271,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 658,
+      id: 977,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23238,7 +23286,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 659,
+      id: 978,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23253,7 +23301,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 660,
+      id: 979,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23268,7 +23316,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 661,
+      id: 980,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23283,7 +23331,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 662,
+      id: 981,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23298,7 +23346,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 663,
+      id: 982,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23313,7 +23361,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 664,
+      id: 983,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "5 allenamento A",
@@ -23328,7 +23376,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 665,
+      id: 984,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23343,7 +23391,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 666,
+      id: 985,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23358,7 +23406,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 667,
+      id: 986,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23373,7 +23421,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 668,
+      id: 987,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23388,7 +23436,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 669,
+      id: 988,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23403,7 +23451,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 670,
+      id: 989,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23418,7 +23466,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 671,
+      id: 990,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23433,7 +23481,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 672,
+      id: 991,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23448,7 +23496,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 673,
+      id: 992,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23463,7 +23511,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 674,
+      id: 993,
       livello: "PRO",
       settimana: "Ciclo 1",
       giorno: "6 allenamento B",
@@ -23478,7 +23526,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 675,
+      id: 994,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23493,7 +23541,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 676,
+      id: 995,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23508,7 +23556,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 677,
+      id: 996,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23523,7 +23571,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 678,
+      id: 997,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23538,7 +23586,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 679,
+      id: 998,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23553,7 +23601,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 680,
+      id: 999,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23568,7 +23616,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 681,
+      id: 1e3,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23583,7 +23631,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 682,
+      id: 1001,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "7 allenamento A",
@@ -23598,7 +23646,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 683,
+      id: 1002,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23613,7 +23661,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 684,
+      id: 1003,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23628,7 +23676,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 685,
+      id: 1004,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23643,7 +23691,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 686,
+      id: 1005,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23658,7 +23706,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 687,
+      id: 1006,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23673,7 +23721,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 688,
+      id: 1007,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23688,7 +23736,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 689,
+      id: 1008,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23703,7 +23751,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 690,
+      id: 1009,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23718,7 +23766,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 691,
+      id: 1010,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "8 allenamento B",
@@ -23733,7 +23781,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 692,
+      id: 1011,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23748,7 +23796,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 693,
+      id: 1012,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23763,7 +23811,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 694,
+      id: 1013,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23778,7 +23826,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 695,
+      id: 1014,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23793,7 +23841,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 696,
+      id: 1015,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23808,7 +23856,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 697,
+      id: 1016,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23823,7 +23871,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 698,
+      id: 1017,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23838,7 +23886,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 699,
+      id: 1018,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "9 allenamento A",
@@ -23853,7 +23901,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 700,
+      id: 1019,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23868,7 +23916,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 701,
+      id: 1020,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23883,7 +23931,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 702,
+      id: 1021,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23898,7 +23946,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 703,
+      id: 1022,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23913,7 +23961,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 704,
+      id: 1023,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23928,7 +23976,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 705,
+      id: 1024,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23943,7 +23991,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 706,
+      id: 1025,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23958,7 +24006,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 707,
+      id: 1026,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23973,7 +24021,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 708,
+      id: 1027,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "10 allenamento B",
@@ -23988,7 +24036,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 709,
+      id: 1028,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24003,7 +24051,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 710,
+      id: 1029,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24018,7 +24066,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 711,
+      id: 1030,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24033,7 +24081,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 712,
+      id: 1031,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24048,7 +24096,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 713,
+      id: 1032,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24063,7 +24111,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 714,
+      id: 1033,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24078,7 +24126,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 715,
+      id: 1034,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24093,7 +24141,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 716,
+      id: 1035,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "11 allenamento A",
@@ -24108,7 +24156,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 717,
+      id: 1036,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24123,7 +24171,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 718,
+      id: 1037,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24138,7 +24186,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 719,
+      id: 1038,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24153,7 +24201,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 720,
+      id: 1039,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24168,7 +24216,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 721,
+      id: 1040,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24183,7 +24231,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 722,
+      id: 1041,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24198,7 +24246,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 723,
+      id: 1042,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24213,7 +24261,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 724,
+      id: 1043,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24228,7 +24276,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 725,
+      id: 1044,
       livello: "PRO",
       settimana: "Ciclo 2",
       giorno: "12 allenamento B",
@@ -24243,7 +24291,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 726,
+      id: 1045,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24258,7 +24306,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 727,
+      id: 1046,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24273,7 +24321,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 728,
+      id: 1047,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24288,7 +24336,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 729,
+      id: 1048,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24303,7 +24351,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 730,
+      id: 1049,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24318,7 +24366,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 731,
+      id: 1050,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24333,7 +24381,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 732,
+      id: 1051,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24348,7 +24396,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 733,
+      id: 1052,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "13 allenamento A",
@@ -24363,22 +24411,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 734,
+      id: 1053,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
       sequenza: "1a",
       id_esercizio: "033",
       nome_esercizio: "Coiled Cobra",
-      parametri: '3x30"-40"',
+      parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | esercizio alternato continuo, mai monolaterale",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
       data_pubblicazione: null
     },
     {
-      id: 735,
+      id: 1054,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24393,7 +24441,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 736,
+      id: 1055,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24408,7 +24456,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 737,
+      id: 1056,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24423,7 +24471,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 738,
+      id: 1057,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24438,7 +24486,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 739,
+      id: 1058,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24453,7 +24501,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 740,
+      id: 1059,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24468,7 +24516,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 741,
+      id: 1060,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24483,7 +24531,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 742,
+      id: 1061,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "14 allenamento B",
@@ -24498,7 +24546,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 743,
+      id: 1062,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24513,7 +24561,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 744,
+      id: 1063,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24528,7 +24576,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 745,
+      id: 1064,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24543,7 +24591,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 746,
+      id: 1065,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24558,7 +24606,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 747,
+      id: 1066,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24573,7 +24621,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 748,
+      id: 1067,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24588,7 +24636,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 749,
+      id: 1068,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24603,7 +24651,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 750,
+      id: 1069,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "15 allenamento A",
@@ -24618,22 +24666,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 751,
+      id: 1070,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
       sequenza: "1a",
       id_esercizio: "033",
       nome_esercizio: "Coiled Cobra",
-      parametri: '3x30"-40"',
+      parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | esercizio alternato continuo, mai monolaterale",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
       data_pubblicazione: null
     },
     {
-      id: 752,
+      id: 1071,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24648,7 +24696,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 753,
+      id: 1072,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24663,7 +24711,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 754,
+      id: 1073,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24678,7 +24726,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 755,
+      id: 1074,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24693,7 +24741,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 756,
+      id: 1075,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24708,7 +24756,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 757,
+      id: 1076,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24723,7 +24771,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 758,
+      id: 1077,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24738,7 +24786,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 759,
+      id: 1078,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "16 allenamento B",
@@ -24753,7 +24801,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 760,
+      id: 1079,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24768,7 +24816,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 761,
+      id: 1080,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24783,7 +24831,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 762,
+      id: 1081,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24798,7 +24846,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 763,
+      id: 1082,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24813,7 +24861,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 764,
+      id: 1083,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24828,7 +24876,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 765,
+      id: 1084,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24843,7 +24891,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 766,
+      id: 1085,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24858,7 +24906,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 767,
+      id: 1086,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "17 allenamento A",
@@ -24873,22 +24921,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 768,
+      id: 1087,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
       sequenza: "1a",
       id_esercizio: "033",
       nome_esercizio: "Coiled Cobra",
-      parametri: '3x30"-40"',
+      parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | esercizio alternato continuo, mai monolaterale",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
       data_pubblicazione: null
     },
     {
-      id: 769,
+      id: 1088,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -24903,7 +24951,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 770,
+      id: 1089,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -24918,7 +24966,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 771,
+      id: 1090,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -24933,7 +24981,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 772,
+      id: 1091,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -24948,7 +24996,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 773,
+      id: 1092,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -24963,7 +25011,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 774,
+      id: 1093,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -24978,7 +25026,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 775,
+      id: 1094,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -24993,7 +25041,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 776,
+      id: 1095,
       livello: "PRO",
       settimana: "Ciclo 3",
       giorno: "18 allenamento B",
@@ -25008,7 +25056,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 777,
+      id: 1096,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25023,7 +25071,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 778,
+      id: 1097,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25038,7 +25086,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 779,
+      id: 1098,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25053,7 +25101,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 780,
+      id: 1099,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25068,7 +25116,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 781,
+      id: 1100,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25083,7 +25131,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 782,
+      id: 1101,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25098,7 +25146,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 783,
+      id: 1102,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25113,7 +25161,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 784,
+      id: 1103,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "19 allenamento A",
@@ -25128,7 +25176,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 785,
+      id: 1104,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25143,7 +25191,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 786,
+      id: 1105,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25158,7 +25206,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 787,
+      id: 1106,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25173,7 +25221,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 788,
+      id: 1107,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25188,7 +25236,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 789,
+      id: 1108,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25203,7 +25251,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 790,
+      id: 1109,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25218,7 +25266,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 791,
+      id: 1110,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25233,7 +25281,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 792,
+      id: 1111,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25248,7 +25296,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 793,
+      id: 1112,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "20 allenamento B",
@@ -25263,7 +25311,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 794,
+      id: 1113,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25278,7 +25326,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 795,
+      id: 1114,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25293,7 +25341,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 796,
+      id: 1115,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25308,7 +25356,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 797,
+      id: 1116,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25323,7 +25371,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 798,
+      id: 1117,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25338,7 +25386,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 799,
+      id: 1118,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25353,7 +25401,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 800,
+      id: 1119,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25368,7 +25416,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 801,
+      id: 1120,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "21 allenamento A",
@@ -25383,7 +25431,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 802,
+      id: 1121,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25398,7 +25446,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 803,
+      id: 1122,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25413,7 +25461,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 804,
+      id: 1123,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25428,7 +25476,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 805,
+      id: 1124,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25443,7 +25491,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 806,
+      id: 1125,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25458,7 +25506,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 807,
+      id: 1126,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25473,7 +25521,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 808,
+      id: 1127,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25488,7 +25536,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 809,
+      id: 1128,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25503,7 +25551,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 810,
+      id: 1129,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "22 allenamento B",
@@ -25518,7 +25566,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 811,
+      id: 1130,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25533,7 +25581,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 812,
+      id: 1131,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25548,7 +25596,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 813,
+      id: 1132,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25563,7 +25611,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 814,
+      id: 1133,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25578,7 +25626,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 815,
+      id: 1134,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25593,7 +25641,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 816,
+      id: 1135,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25608,7 +25656,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 817,
+      id: 1136,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25623,7 +25671,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 818,
+      id: 1137,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "23 allenamento A",
@@ -25638,7 +25686,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 819,
+      id: 1138,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25653,7 +25701,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 820,
+      id: 1139,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25668,7 +25716,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 821,
+      id: 1140,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25683,7 +25731,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 822,
+      id: 1141,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25698,7 +25746,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 823,
+      id: 1142,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25713,7 +25761,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 824,
+      id: 1143,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25728,7 +25776,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 825,
+      id: 1144,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25743,7 +25791,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 826,
+      id: 1145,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25758,7 +25806,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 827,
+      id: 1146,
       livello: "PRO",
       settimana: "Ciclo 4",
       giorno: "24 allenamento B",
@@ -25773,7 +25821,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 828,
+      id: 1147,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
@@ -25788,7 +25836,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 829,
+      id: 1148,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
@@ -25803,7 +25851,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 830,
+      id: 1149,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
@@ -25818,7 +25866,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 831,
+      id: 1150,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
@@ -25833,7 +25881,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 832,
+      id: 1151,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
@@ -25848,7 +25896,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 833,
+      id: 1152,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
@@ -25863,7 +25911,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 834,
+      id: 1153,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
@@ -25878,22 +25926,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 835,
+      id: 1154,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "25 allenamento A",
       sequenza: "5b",
       id_esercizio: "003",
       nome_esercizio: "skierg pagaia alternato",
-      parametri: '3x60"',
+      parametri: '3x30"+30"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | lavoro continuo alternato a ritmo costante",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
     {
-      id: 836,
+      id: 1155,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -25908,7 +25956,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 837,
+      id: 1156,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -25923,7 +25971,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 838,
+      id: 1157,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -25938,7 +25986,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 839,
+      id: 1158,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -25953,7 +26001,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 840,
+      id: 1159,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -25968,7 +26016,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 841,
+      id: 1160,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -25983,7 +26031,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 842,
+      id: 1161,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -25998,7 +26046,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 843,
+      id: 1162,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -26013,7 +26061,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 844,
+      id: 1163,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "26 allenamento B",
@@ -26028,7 +26076,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 845,
+      id: 1164,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
@@ -26043,7 +26091,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 846,
+      id: 1165,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
@@ -26058,7 +26106,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 847,
+      id: 1166,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
@@ -26073,7 +26121,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 848,
+      id: 1167,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
@@ -26088,7 +26136,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 849,
+      id: 1168,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
@@ -26103,7 +26151,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 850,
+      id: 1169,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
@@ -26118,7 +26166,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 851,
+      id: 1170,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
@@ -26133,22 +26181,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 852,
+      id: 1171,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "27 allenamento A",
       sequenza: "5b",
       id_esercizio: "003",
       nome_esercizio: "skierg pagaia alternato",
-      parametri: '3x60"',
+      parametri: '3x30"+30"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | lavoro continuo alternato a ritmo costante",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
     {
-      id: 853,
+      id: 1172,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26163,7 +26211,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 854,
+      id: 1173,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26178,7 +26226,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 855,
+      id: 1174,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26193,7 +26241,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 856,
+      id: 1175,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26208,7 +26256,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 857,
+      id: 1176,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26223,7 +26271,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 858,
+      id: 1177,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26238,7 +26286,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 859,
+      id: 1178,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26253,7 +26301,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 860,
+      id: 1179,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26268,7 +26316,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 861,
+      id: 1180,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "28 allenamento B",
@@ -26283,7 +26331,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 862,
+      id: 1181,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
@@ -26298,7 +26346,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 863,
+      id: 1182,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
@@ -26313,7 +26361,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 864,
+      id: 1183,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
@@ -26328,7 +26376,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 865,
+      id: 1184,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
@@ -26343,7 +26391,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 866,
+      id: 1185,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
@@ -26358,7 +26406,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 867,
+      id: 1186,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
@@ -26373,7 +26421,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 868,
+      id: 1187,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
@@ -26388,22 +26436,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 869,
+      id: 1188,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "29 allenamento A",
       sequenza: "5b",
       id_esercizio: "003",
       nome_esercizio: "skierg pagaia alternato",
-      parametri: '3x60"',
+      parametri: '3x30"+30"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | lavoro continuo alternato a ritmo costante",
+      note_tecniche: "jump set",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
       data_pubblicazione: null
     },
     {
-      id: 870,
+      id: 1189,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26418,7 +26466,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 871,
+      id: 1190,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26433,7 +26481,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 872,
+      id: 1191,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26448,7 +26496,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 873,
+      id: 1192,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26463,7 +26511,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 874,
+      id: 1193,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26478,7 +26526,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 875,
+      id: 1194,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26493,7 +26541,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 876,
+      id: 1195,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26508,7 +26556,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 877,
+      id: 1196,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26523,7 +26571,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 878,
+      id: 1197,
       livello: "PRO",
       settimana: "Ciclo 5",
       giorno: "30 allenamento B",
@@ -26538,7 +26586,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 879,
+      id: 1198,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
@@ -26553,7 +26601,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 880,
+      id: 1199,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
@@ -26568,7 +26616,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 881,
+      id: 1200,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
@@ -26578,12 +26626,12 @@ var demo_data_default = {
       parametri: "4x6+6",
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
-      note_tecniche: "RPE 7.5 | scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico",
+      note_tecniche: "scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico | utilizza dei carichi che, seppur impegnativi, non facciano rallentare la velocit\xE0 del movimento",
       link_video: "https://youtube.com/shorts/7r3ThD-zkpw",
       data_pubblicazione: null
     },
     {
-      id: 882,
+      id: 1201,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
@@ -26598,7 +26646,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 883,
+      id: 1202,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
@@ -26613,67 +26661,67 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 884,
+      id: 1203,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
       sequenza: "4",
-      id_esercizio: "104",
-      nome_esercizio: "Overhand Matadors Wheel",
+      id_esercizio: "242",
+      nome_esercizio: "Underhand/Overhand Matador Transitions",
       parametri: "1x5'",
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale e destrezza",
-      link_video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
+      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso",
+      link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
       data_pubblicazione: null
     },
     {
-      id: 885,
+      id: 1204,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
-      sequenza: "5a",
+      sequenza: "5",
       id_esercizio: "130",
       nome_esercizio: "cross jump double touch",
-      parametri: '3x30"',
+      parametri: "costruzione motoria",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "destrezza e reattivit\xE0 piedi, isolato per studio motorio",
+      note_tecniche: "costruzione dell\u2019esercizio: dedica il tempo necessario all\u2019apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello",
       link_video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
       data_pubblicazione: null
     },
     {
-      id: 886,
+      id: 1205,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
-      sequenza: "5b",
+      sequenza: "6a",
       id_esercizio: "090",
       nome_esercizio: "dragon flag progressioni",
       parametri: "3x6-8",
-      recupero: '60"',
+      recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+      note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
       link_video: "https://youtu.be/LjHUx2MFcR8",
       data_pubblicazione: null
     },
     {
-      id: 887,
+      id: 1206,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "31 allenamento A",
-      sequenza: "5c",
-      id_esercizio: "007",
-      nome_esercizio: "Coiled skyerg",
-      parametri: '3x30"+30"',
+      sequenza: "6b",
+      id_esercizio: "243",
+      nome_esercizio: "vogatore",
+      parametri: '3x90"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "integrazione spiralizzata",
-      link_video: "https://youtube.com/shorts/hML7iVaIBaU",
+      note_tecniche: "circuito (3 round) | hip hinge, catena estensoria",
+      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
       data_pubblicazione: null
     },
     {
-      id: 888,
+      id: 1207,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26688,7 +26736,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 889,
+      id: 1208,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26703,7 +26751,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 890,
+      id: 1209,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26718,7 +26766,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 891,
+      id: 1210,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26733,7 +26781,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 892,
+      id: 1211,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26748,7 +26796,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 893,
+      id: 1212,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26763,7 +26811,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 894,
+      id: 1213,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26778,7 +26826,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 895,
+      id: 1214,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26793,7 +26841,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 896,
+      id: 1215,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26808,7 +26856,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 897,
+      id: 1216,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "32 allenamento B",
@@ -26823,7 +26871,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 898,
+      id: 1217,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
@@ -26838,7 +26886,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 899,
+      id: 1218,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
@@ -26853,7 +26901,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 900,
+      id: 1219,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
@@ -26863,12 +26911,12 @@ var demo_data_default = {
       parametri: "4x6+6",
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
-      note_tecniche: "RPE 7.5 | scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico",
+      note_tecniche: "scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico | utilizza dei carichi che, seppur impegnativi, non facciano rallentare la velocit\xE0 del movimento",
       link_video: "https://youtube.com/shorts/7r3ThD-zkpw",
       data_pubblicazione: null
     },
     {
-      id: 901,
+      id: 1220,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
@@ -26883,7 +26931,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 902,
+      id: 1221,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
@@ -26898,41 +26946,41 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 903,
+      id: 1222,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
       sequenza: "4",
-      id_esercizio: "104",
-      nome_esercizio: "Overhand Matadors Wheel",
+      id_esercizio: "242",
+      nome_esercizio: "Underhand/Overhand Matador Transitions",
       parametri: "1x5'",
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale e destrezza",
-      link_video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
+      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso",
+      link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
       data_pubblicazione: null
     },
     {
-      id: 904,
+      id: 1223,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
-      sequenza: "5a",
+      sequenza: "5",
       id_esercizio: "130",
       nome_esercizio: "cross jump double touch",
-      parametri: '3x60"',
-      recupero: "",
+      parametri: "3x10",
+      recupero: '60/90"',
       minutaggio_blocco: "",
-      note_tecniche: 'circuito (3 round) | estensione tempo a 60"',
+      note_tecniche: "lavora con calma e lentezza, dai la precedenza alla tecnica anzich\xE9 sull\u2019intensit\xE0",
       link_video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
       data_pubblicazione: null
     },
     {
-      id: 905,
+      id: 1224,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
-      sequenza: "5b",
+      sequenza: "6a",
       id_esercizio: "090",
       nome_esercizio: "dragon flag progressioni",
       parametri: "3x6-8",
@@ -26943,22 +26991,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 906,
+      id: 1225,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "33 allenamento A",
-      sequenza: "5c",
-      id_esercizio: "007",
-      nome_esercizio: "Coiled skyerg",
-      parametri: '3x30"+30"',
+      sequenza: "6b",
+      id_esercizio: "243",
+      nome_esercizio: "vogatore",
+      parametri: '3x90"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
-      link_video: "https://youtube.com/shorts/hML7iVaIBaU",
+      note_tecniche: "circuito (3 round) | hip hinge, catena estensoria",
+      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
       data_pubblicazione: null
     },
     {
-      id: 907,
+      id: 1226,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -26973,7 +27021,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 908,
+      id: 1227,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -26988,7 +27036,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 909,
+      id: 1228,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27003,7 +27051,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 910,
+      id: 1229,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27018,7 +27066,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 911,
+      id: 1230,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27033,7 +27081,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 912,
+      id: 1231,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27048,7 +27096,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 913,
+      id: 1232,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27063,7 +27111,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 914,
+      id: 1233,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27078,7 +27126,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 915,
+      id: 1234,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27093,7 +27141,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 916,
+      id: 1235,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "34 allenamento B",
@@ -27108,7 +27156,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 917,
+      id: 1236,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
@@ -27123,7 +27171,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 918,
+      id: 1237,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
@@ -27138,7 +27186,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 919,
+      id: 1238,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
@@ -27148,12 +27196,12 @@ var demo_data_default = {
       parametri: "4x6+6",
       recupero: 'RBS 60"',
       minutaggio_blocco: "",
-      note_tecniche: "RPE 7.5 | scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico",
+      note_tecniche: "scarico selettivo Mod. B, focus velocit\xE0 e assorbimento elastico | utilizza dei carichi che, seppur impegnativi, non facciano rallentare la velocit\xE0 del movimento",
       link_video: "https://youtube.com/shorts/7r3ThD-zkpw",
       data_pubblicazione: null
     },
     {
-      id: 920,
+      id: 1239,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
@@ -27168,7 +27216,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 921,
+      id: 1240,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
@@ -27183,37 +27231,37 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 922,
+      id: 1241,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
       sequenza: "4",
-      id_esercizio: "104",
-      nome_esercizio: "Overhand Matadors Wheel",
+      id_esercizio: "242",
+      nome_esercizio: "Underhand/Overhand Matador Transitions",
       parametri: "1x5'",
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale e destrezza",
-      link_video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
+      note_tecniche: "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso",
+      link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
       data_pubblicazione: null
     },
     {
-      id: 923,
+      id: 1242,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
       sequenza: "5a",
       id_esercizio: "130",
       nome_esercizio: "cross jump double touch",
-      parametri: '3x45"',
+      parametri: '3x40"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: 'circuito (3 round) | ricalibrato a 45" ad alta cadenza',
+      note_tecniche: 'circuito (3 round) | ricalibrato a 40" ad alta cadenza ed esplosivit\xE0',
       link_video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
       data_pubblicazione: null
     },
     {
-      id: 924,
+      id: 1243,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
@@ -27228,22 +27276,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 925,
+      id: 1244,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "35 allenamento A",
       sequenza: "5c",
-      id_esercizio: "007",
-      nome_esercizio: "Coiled skyerg",
-      parametri: '3x30"+30"',
+      id_esercizio: "243",
+      nome_esercizio: "vogatore",
+      parametri: '3x90"',
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round)",
-      link_video: "https://youtube.com/shorts/hML7iVaIBaU",
+      note_tecniche: "circuito (3 round) | hip hinge, catena estensoria",
+      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
       data_pubblicazione: null
     },
     {
-      id: 926,
+      id: 1245,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27258,7 +27306,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 927,
+      id: 1246,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27273,7 +27321,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 928,
+      id: 1247,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27288,7 +27336,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 929,
+      id: 1248,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27303,7 +27351,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 930,
+      id: 1249,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27318,7 +27366,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 931,
+      id: 1250,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27333,7 +27381,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 932,
+      id: 1251,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27348,7 +27396,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 933,
+      id: 1252,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27363,7 +27411,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 934,
+      id: 1253,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",
@@ -27378,7 +27426,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 935,
+      id: 1254,
       livello: "PRO",
       settimana: "Ciclo 6",
       giorno: "36 allenamento B",

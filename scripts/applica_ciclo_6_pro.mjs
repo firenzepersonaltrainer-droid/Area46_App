@@ -36,7 +36,7 @@ function getEserciziA(round) {
       nome: "Landmine Plyo Lift NO DOWN",
       param: "4x6+6",
       rec: 'RBS 60"',
-      note: "RPE 7.5 | scarico selettivo Mod. B, focus velocità e assorbimento elastico",
+      note: "scarico selettivo Mod. B, focus velocità e assorbimento elastico | utilizza dei carichi che, seppur impegnativi, non facciano rallentare la velocità del movimento",
       video: "https://youtube.com/shorts/7r3ThD-zkpw",
     },
     {
@@ -59,60 +59,60 @@ function getEserciziA(round) {
     },
     {
       seq: "4",
-      id: "104",
-      nome: "Overhand Matadors Wheel",
+      id: "242",
+      nome: "Underhand/Overhand Matador Transitions",
       param: "1x5'",
       rec: '60"',
-      note: "Heavy Rope flow, coordinazione scapolo-omerale e destrezza",
-      video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
+      note: "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso",
+      video: "https://www.youtube.com/watch?v=4k2O1hameP0",
     },
   ];
 
   if (round === 1) {
-    // Seduta 31: separati per studio didattico
+    // Seduta 31: cross jump isolato in studio motorio, dragon flag e vogatore in circuito
     base.push(
       {
-        seq: "5a",
+        seq: "5",
         id: "130",
         nome: "cross jump double touch",
-        param: '3x30"',
+        param: "costruzione motoria",
         rec: '45"',
-        note: "destrezza e reattività piedi, isolato per studio motorio",
+        note: "costruzione dell’esercizio: dedica il tempo necessario all’apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello",
         video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
       },
       {
-        seq: "5b",
+        seq: "6a",
         id: "090",
         nome: "dragon flag progressioni",
         param: "3x6-8",
-        rec: '60"',
-        note: "trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+        rec: "",
+        note: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
         video: "https://youtu.be/LjHUx2MFcR8",
       },
       {
-        seq: "5c",
-        id: "007",
-        nome: "Coiled skyerg",
-        param: '3x30"+30"',
+        seq: "6b",
+        id: "243",
+        nome: "vogatore",
+        param: '3x90"',
         rec: '60"',
-        note: "integrazione spiralizzata",
-        video: "https://youtube.com/shorts/hML7iVaIBaU",
+        note: "circuito (3 round) | hip hinge, catena estensoria",
+        video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
       }
     );
   } else if (round === 2) {
-    // Seduta 33: uniti in circuito con cross jump a 60"
+    // Seduta 33: cross jump singolo a parametri tecnici controllati (3x10), dragon flag e vogatore in circuito
     base.push(
       {
-        seq: "5a",
+        seq: "5",
         id: "130",
         nome: "cross jump double touch",
-        param: '3x60"',
-        rec: "",
-        note: 'circuito (3 round) | estensione tempo a 60"',
+        param: "3x10",
+        rec: '60/90"',
+        note: "lavora con calma e lentezza, dai la precedenza alla tecnica anziché sull’intensità",
         video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
       },
       {
-        seq: "5b",
+        seq: "6a",
         id: "090",
         nome: "dragon flag progressioni",
         param: "3x6-8",
@@ -121,25 +121,25 @@ function getEserciziA(round) {
         video: "https://youtu.be/LjHUx2MFcR8",
       },
       {
-        seq: "5c",
-        id: "007",
-        nome: "Coiled skyerg",
-        param: '3x30"+30"',
+        seq: "6b",
+        id: "243",
+        nome: "vogatore",
+        param: '3x90"',
         rec: '60"',
-        note: "circuito (3 round)",
-        video: "https://youtube.com/shorts/hML7iVaIBaU",
+        note: "circuito (3 round) | hip hinge, catena estensoria",
+        video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
       }
     );
   } else {
-    // Seduta 35: uniti in circuito con cross jump a 45"
+    // Seduta 35: circuito completo a 3 stazioni con cross jump ricalibrato a 3x40"
     base.push(
       {
         seq: "5a",
         id: "130",
         nome: "cross jump double touch",
-        param: '3x45"',
+        param: '3x40"',
         rec: "",
-        note: 'circuito (3 round) | ricalibrato a 45" ad alta cadenza',
+        note: 'circuito (3 round) | ricalibrato a 40" ad alta cadenza ed esplosività',
         video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
       },
       {
@@ -153,12 +153,12 @@ function getEserciziA(round) {
       },
       {
         seq: "5c",
-        id: "007",
-        nome: "Coiled skyerg",
-        param: '3x30"+30"',
+        id: "243",
+        nome: "vogatore",
+        param: '3x90"',
         rec: '60"',
-        note: "circuito (3 round)",
-        video: "https://youtube.com/shorts/hML7iVaIBaU",
+        note: "circuito (3 round) | hip hinge, catena estensoria",
+        video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
       }
     );
   }

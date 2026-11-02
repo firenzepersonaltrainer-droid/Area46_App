@@ -130,8 +130,10 @@ VIDEO_MAP = {
     "162": "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
     "131": "https://youtu.be/VRlw2TrsPvo?si=oS5PrWbJhfK_C9MA",
     "208": "https://youtube.com/shorts/7r3ThD-zkpw",
-    "077": "https://youtu.be/-j07Q_jaTOA",
+    "077": "https://youtube.com/shorts/mifz_6oZJlw",
+    "77": "https://youtube.com/shorts/mifz_6oZJlw",
     "097": "https://youtube.com/shorts/gcgilJEmzks",
+    "97": "https://youtube.com/shorts/gcgilJEmzks",
     "104": "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
     "130": "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
     "090": "https://youtu.be/LjHUx2MFcR8",
@@ -146,6 +148,9 @@ VIDEO_MAP = {
     "070": "https://youtu.be/rE8lJ9TxbEQ",
     "091": "https://youtu.be/ktgDSN7EnhI",
     "004": "https://youtube.com/shorts/7n-hAJAXoYU",
+    "242": "https://www.youtube.com/watch?v=4k2O1hameP0",
+    "243": "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+    "244": "https://youtu.be/cbHHV_wYHJU?si=-y7dLAqJE_-ynuJ6",
 }
 
 # --- DEFINIZIONE WORKOUT PRO ---
@@ -272,43 +277,56 @@ def get_c6_a(round_num):
     base = [
         ("1a", 162, "Bat Circular Throw 180°", '3x60"+60"', "", "jump set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo"),
         ("1b", 131, "A-Skip", '3x20"+20"', '45"', "jump set"),
-        ("2",  208, "Landmine Plyo Lift NO DOWN", "4x6+6", 'RBS 60"', "RPE 7.5 | scarico selettivo Mod. B, focus velocità e assorbimento elastico"),
+        ("2",  208, "Landmine Plyo Lift NO DOWN", "4x6+6", 'RBS 60"', "scarico selettivo Mod. B, focus velocità e assorbimento elastico | utilizza dei carichi che, seppur impegnativi, non facciano rallentare la velocità del movimento"),
         ("3a", 77,  "Coiled Punch isoinerziale", '4x40"+40"', "", "jump set | RPE 8"),
         ("3b", 97,  "Endless rope Plank Alternating Pull", '4x20"', '60"', "jump set | RPE 8"),
-        ("4",  104, "Overhand Matadors Wheel", "1x5'", '60"', "Heavy Rope flow, coordinazione scapolo-omerale e destrezza")
+        ("4",  242, "Underhand/Overhand Matador Transitions", "1x5'", '60"', "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso")
     ]
     if round_num == 1:
         base.extend([
-            ("5a", 130, "cross jump double touch", '3x30"', '45"', "destrezza e reattività piedi, isolato per studio motorio"),
-            ("5b", 90,  "dragon flag progressioni", "3x6-8", '60"', "trovare sempre la versione che permette nel nr di rep indicato un RPE di 8"),
-            ("5c", 7,   "Coiled skyerg", '3x30"+30"', '60"', "integrazione spiralizzata")
+            ("5",  130, "cross jump double touch", "costruzione motoria", '45"', "costruzione dell’esercizio: dedica il tempo necessario all’apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello"),
+            ("6a", 90,  "dragon flag progressioni", "3x6-8", "", "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8"),
+            ("6b", 243, "vogatore", '3x90"', '60"', "circuito (3 round) | hip hinge, catena estensoria")
         ])
     elif round_num == 2:
         base.extend([
-            ("5a", 130, "cross jump double touch", '3x60"', "", 'circuito (3 round) | estensione tempo a 60"'),
-            ("5b", 90,  "dragon flag progressioni", "3x6-8", "", "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8"),
-            ("5c", 7,   "Coiled skyerg", '3x30"+30"', '60"', "circuito (3 round)")
+            ("5",  130, "cross jump double touch", "3x10", '60/90"', "lavora con calma e lentezza, dai la precedenza alla tecnica anziché sull’intensità"),
+            ("6a", 90,  "dragon flag progressioni", "3x6-8", "", "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8"),
+            ("6b", 243, "vogatore", '3x90"', '60"', "circuito (3 round) | hip hinge, catena estensoria")
         ])
     else:
         base.extend([
-            ("5a", 130, "cross jump double touch", '3x45"', "", 'circuito (3 round) | ricalibrato a 45" ad alta cadenza'),
+            ("5a", 130, "cross jump double touch", '3x40"', "", 'circuito (3 round) | ricalibrato a 40" ad alta cadenza ed esplosività'),
             ("5b", 90,  "dragon flag progressioni", "3x6-8", "", "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8"),
-            ("5c", 7,   "Coiled skyerg", '3x30"+30"', '60"', "circuito (3 round)")
+            ("5c", 243, "vogatore", '3x90"', '60"', "circuito (3 round) | hip hinge, catena estensoria")
         ])
     return base
 
-C6_B = [
-    ("1a", 33,  "Coiled Cobra", '3x30"-40"', "", "jump set | esercizio alternato continuo, mai monolaterale"),
-    ("1b", 160, "Bat Circular Throw", '3x60"+60"', '45"', "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo"),
-    ("2a", 61,  "Kettlebell Step clean", '4x60"+60"', "", "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B"),
-    ("2b", 182, "Diagonal Clubbell T/S", '4x60"+60"', 'RBS 60"', "jump set | senza pausa tra i lati"),
-    ("3a", 28,  "Transverse hold", '4x30"+30"', "", "jump set | RPE 8"),
-    ("3b", 180, "Single Dumbbell Pendulum lunge", '4x30"+30"', 'RBS 45"', "jump set | RPE 8"),
-    ("4",  240, "Knee drives", '3x20"+20"', '45"', "reattività elastica, footwork e rimbalzo"),
-    ("5a", 70,  "Dumbbell Split Snatch", "x 6+6", "", "AMRAP 12'"),
-    ("5b", 91,  "Elbow Spiderman Toe Tap", "x 8+8", "", "AMRAP 12'"),
-    ("5c", 4,   "Skierg wood chopper", "x 10+10", "", "AMRAP 12'")
-]
+def get_c6_b(round_num):
+    amrap_time = "10'" if round_num == 1 else "11'" if round_num == 2 else "13'"
+    wood_param = "x 15+15" if round_num == 1 else "x 20+20" if round_num == 2 else "x 25+25"
+    if round_num == 1:
+        kd_param = "costruzione motoria"
+        kd_note = "costruzione dell’esercizio: dedica il tempo necessario all’apprendimento motorio. Chiedi al coach una progressione adeguata al tuo livello"
+    elif round_num == 2:
+        kd_param = "4x10"
+        kd_note = "lavora con calma e lentezza, dai la precedenza alla tecnica anziché sull’intensità"
+    else:
+        kd_param = '3x20"+20"'
+        kd_note = "cerca la massima esplosività adeguata al tuo livello"
+
+    return [
+        ("1a", 33,  "Coiled Cobra", '3x30"-40"', "", "jump set | esercizio alternato continuo, mai monolaterale"),
+        ("1b", 160, "Bat Circular Throw", '3x60"+60"', '45"', "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo"),
+        ("2a", 61,  "Kettlebell Step clean", '4x60"+60"', "", "jump set | RPE 7.5 | senza pausa tra i lati | scarico selettivo Mod. B"),
+        ("2b", 182, "Diagonal Clubbell T/S", '4x60"+60"', 'RBS 60"', "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo"),
+        ("3a", 28,  "Transverse hold", '4x30"+30"', "", "jump set | creare contro-rotazione del bacino su torace (chiedi all’istruttore)"),
+        ("3b", 180, "Single Dumbbell Pendulum lunge", '4x30"+30"', 'RBS 45"', "jump set | RPE 8 (se il movimento è incerto non tenere conto dell’RPE indicato, concentrati sugli aspetti tecnici)"),
+        ("4",  240, "Knee drives", kd_param, '45"', kd_note),
+        ("5a", 70,  "Dumbbell Split Snatch", "x 6+6", "", f"AMRAP {amrap_time}"),
+        ("5b", 91,  "Elbow Spiderman Toe Tap", "x 8+8", "", f"AMRAP {amrap_time}"),
+        ("5c", 4,   "Skierg wood chopper", wood_param, "", f"AMRAP {amrap_time}")
+    ]
 
 
 def generate_all_rows():
@@ -354,11 +372,11 @@ def generate_all_rows():
         ("Ciclo 5", 30, "B", C5_B),
         # Ciclo 6 (31-36)
         ("Ciclo 6", 31, "A", get_c6_a(1)),
-        ("Ciclo 6", 32, "B", C6_B),
+        ("Ciclo 6", 32, "B", get_c6_b(1)),
         ("Ciclo 6", 33, "A", get_c6_a(2)),
-        ("Ciclo 6", 34, "B", C6_B),
+        ("Ciclo 6", 34, "B", get_c6_b(2)),
         ("Ciclo 6", 35, "A", get_c6_a(3)),
-        ("Ciclo 6", 36, "B", C6_B),
+        ("Ciclo 6", 36, "B", get_c6_b(3)),
     ]
 
     for ciclo_nome, sess_num, sess_type, exercises in plan:
@@ -599,7 +617,7 @@ def update_register_json():
         "focus": "Chiusura Mesociclo 2: Scarico Selettivo Mod. B, Heavy Rope Flow 1x5', Bat Circular 60\"+60\", Coiled Punch Isoinerziale 40\"+40\", Pliometria e Stabilità Asimmetrica"
     }
 
-    c6_used_ids = ["162", "131", "208", "77", "97", "104", "130", "90", "7", "33", "160", "61", "182", "28", "180", "240", "70", "91", "4"]
+    c6_used_ids = ["162", "131", "208", "77", "97", "242", "130", "90", "243", "33", "160", "61", "182", "28", "180", "240", "70", "91", "4"]
 
     for ex in reg.get("esercizi", []):
         eid = str(ex.get("id"))
