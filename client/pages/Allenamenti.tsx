@@ -223,21 +223,6 @@ function ApprofondimentiSection() {
 
   return (
     <div className="space-y-3">
-      {haNewVideo && (
-        <div className="rounded-xl px-4 py-3.5 flex items-center justify-between gap-3 shadow-sm" style={{ background: "rgba(227,255,0,0.12)", border: "1.5px solid #e3ff00" }}>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl shrink-0" role="img" aria-label="fuoco">🔥</span>
-            <div>
-              <p className="text-sm font-black" style={{ color: "#e3ff00", textShadow: "0 0 8px rgba(227,255,0,0.4)" }}>
-                Nuovo Video: {items.find((it) => isNuovo(it.data_pubblicazione))?.nome_esercizio || "Approfondimento Tecnico"}
-              </p>
-              <p className="text-xs text-zinc-300 mt-0.5">
-                Consulta il nuovo workshop tecnico inserito per arricchire la tua competenza biomeccanica e tecnica sul campo.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
       {(items || []).map((item, i) => {
         const ytId = getYouTubeId(item.link_video ?? "");
         const nuovo = isNuovo(item.data_pubblicazione);
@@ -838,54 +823,25 @@ export default function AllenamentiPage() {
           </div>
         </div>
         {(livelli || []).length > 1 && (
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
-            <div className="relative inline-block">
-              <Select value={livello} onValueChange={setLivello}>
-                <SelectTrigger className="w-56 relative cursor-pointer font-bold">
-                  <SelectValue placeholder="Tutti i livelli" />
-                  {haNuoviApprofondimenti && !isApprofondimenti && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5" title="Nuovo video in Approfondimenti ed Extra">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500 border-2 border-white"></span>
-                    </span>
-                  )}
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Tutti i livelli</SelectItem>
-                  {livelliAllenamento.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                  {(livelli || []).includes("Approfondimenti ed extra") && (
-                    <SelectItem value="Approfondimenti ed extra">
-                      <div className="flex items-center gap-1.5">
-                        <span>Approfondimenti ed extra</span>
-                        {haNuoviApprofondimenti && (
-                          <span className="rounded-full px-1.5 py-0.2 text-[10px] font-black uppercase tracking-wider bg-amber-500 text-black">
-                            Novità
-                          </span>
-                        )}
-                      </div>
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {haNuoviApprofondimenti && !isApprofondimenti && ultimoVideoNuovo && (
-              <div
-                onClick={() => setLivello("Approfondimenti ed extra")}
-                className="rounded-xl px-3.5 py-2 flex items-center justify-between gap-3 cursor-pointer transition-all hover:bg-amber-500/15 border border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-400 group shadow-2xs"
-                title="Tocca per visualizzare il nuovo video di approfondimento"
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-base shrink-0 animate-bounce">🔥</span>
-                  <p className="text-xs font-bold truncate">
-                    Nuovo video: <span className="font-extrabold underline">{ultimoVideoNuovo.nome_esercizio}</span>
-                  </p>
-                </div>
-                <span className="text-xs font-black underline shrink-0 group-hover:translate-x-0.5 transition-transform">
-                  Guarda ora →
-                </span>
-              </div>
-            )}
+          <div className="relative inline-block">
+            <Select value={livello} onValueChange={setLivello}>
+              <SelectTrigger className="w-56 relative cursor-pointer font-bold">
+                <SelectValue placeholder="Tutti i livelli" />
+                {haNuoviApprofondimenti && !isApprofondimenti && (
+                  <span className="absolute -top-1.5 -right-1.5 flex h-3 w-3" title="Nuovo video in Approfondimenti ed Extra">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border border-white"></span>
+                  </span>
+                )}
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Tutti i livelli</SelectItem>
+                {livelliAllenamento.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                {(livelli || []).includes("Approfondimenti ed extra") && (
+                  <SelectItem value="Approfondimenti ed extra">Approfondimenti ed extra</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
         )}
         {isApprofondimenti ? (
