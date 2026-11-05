@@ -13,12 +13,14 @@ build/
 
 # Credentials & Sensitive Keys (Crucial for GitHub security)
 credenziali.json
+youtube_token.json
 landmine-lab-level-pro-*.json
 *.pem
 *.key
 backups/
 data/vault/
 !data/vault/regole_esercizi_metodologia.json
+!data/vault/ponte_database_esercizi_universale.json
 data/sandbox-data.json
 
 # Logs

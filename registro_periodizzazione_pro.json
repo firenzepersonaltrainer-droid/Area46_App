@@ -2,8 +2,8 @@
   "programma": "Landmine Lab - Livello PRO",
   "fonte_catalogo_esclusiva": "PRO database esercizi (escluso foglio elenco completo)",
   "macrociclo_attuale": "Sviluppo Multicompetenze e Rotazione Catalogo PRO (163 esercizi)",
-  "mesociclo_attuale": "Mesociclo 2 (Cicli 4, 5, 6) - COMPLETATO",
-  "ciclo_attivo_da_pianificare": "Ciclo 7 (Inizio Mesociclo 3)",
+  "mesociclo_attuale": "Mesociclo 3 (Cicli 7, 8, 9) - IN CORSO",
+  "ciclo_attivo_da_pianificare": "Ciclo 8 (Mesociclo 3)",
   "storico_cicli": {
     "Ciclo 1": {
       "status": "completato / transizione",
@@ -32,6 +32,11 @@
       "status": "attivo / programmato",
       "sessioni": 6,
       "focus": "Chiusura Mesociclo 2: Scarico Selettivo Mod. B, Heavy Rope Flow 1x5', Bat Circular 60\"+60\", Coiled Punch Isoinerziale 40\"+40\", Pliometria e Stabilità Asimmetrica"
+    },
+    "Ciclo 7": {
+      "status": "attivo / programmato",
+      "sessioni": 6,
+      "focus": "Avvio Mesociclo 3: Rientro Potenza & Hinge Fondamentale (COMBO Landmine Split Snatch H-H Switch, Landmine Coiled Deadlift), Underhand Matadors Wheel, Punch Isoinerziale, High Pull e Split Jumps in progressione 3 fasi"
     }
   },
   "pattern_status": {
@@ -52,7 +57,7 @@
     }
   },
   "totale_esercizi_catalogo": 165,
-  "esercizi_utilizzati": 98,
+  "esercizi_utilizzati": 114,
   "esercizi": [
     {
       "id": "43",
@@ -81,8 +86,8 @@
       "pattern": "cerniera d'anca, trazione verticale dal basso, asimmetrico",
       "ruolo": "fondamentale",
       "categoria": "forza e struttura",
-      "last_cycle_used": "Ciclo 1",
-      "usage_count": 1
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 3
     },
     {
       "id": "82",
@@ -261,8 +266,8 @@
       "pattern": "core stablity in piedi",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": "Ciclo 6",
-      "usage_count": 2
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 4
     },
     {
       "id": "93",
@@ -311,8 +316,8 @@
       "pattern": "core stablity catene crociate spinta monolaterale",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "78",
@@ -381,8 +386,8 @@
       "pattern": "core training catene crociate",
       "ruolo": "accessorio",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "232",
@@ -401,8 +406,8 @@
       "pattern": "core strenght, piano sagittale",
       "ruolo": "complementare",
       "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "45",
@@ -531,8 +536,8 @@
       "pattern": "lancio ciclico, rotazione piano trasverso",
       "ruolo": "propedeutico L master",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "179",
@@ -581,8 +586,8 @@
       "pattern": "trazione verticale dal basso, affondo, cerniera d'anca",
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "180",
@@ -741,8 +746,8 @@
       "pattern": "cerniera d'anca, lancio verticale, trasferimento di carico",
       "ruolo": "fondamentale",
       "categoria": "skill e combo",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "129",
@@ -831,8 +836,8 @@
       "pattern": "rope flow",
       "ruolo": "complementare",
       "categoria": "skill e combo",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "106",
@@ -841,8 +846,8 @@
       "pattern": "rope flow",
       "ruolo": "complementare",
       "categoria": "skill e combo",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "107",
@@ -911,8 +916,8 @@
       "pattern": "cerniera d'anca, trazione verticale dal basso",
       "ruolo": "engine, benchmark",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "170",
@@ -1121,8 +1126,8 @@
       "pattern": "affondi alternati con trazione verso il basso",
       "ruolo": "engine",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "201",
@@ -1201,8 +1206,8 @@
       "pattern": "cerniera d'anca, salto verticale",
       "ruolo": "engine",
       "categoria": "engine e benchmark",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "99",
@@ -1211,8 +1216,8 @@
       "pattern": "cerniera d'anca",
       "ruolo": "accessorio",
       "categoria": "pliometria e agility",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "116",
@@ -1381,8 +1386,8 @@
       "pattern": "trazione verticcal dal basso, cerniera d'anca",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "98",
@@ -1501,8 +1506,8 @@
       "pattern": "routine di esercizi completa",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "30",
@@ -1551,8 +1556,8 @@
       "pattern": "accosciata, cerniera d'anca",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "47",
@@ -1561,8 +1566,8 @@
       "pattern": "cerniera d'anca, spinta controlaterale da terra sul muro",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "74",

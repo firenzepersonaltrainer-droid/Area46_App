@@ -316,7 +316,19 @@ export default function EsercizioDetailPage() {
       ? esercizi[currentIndex + 1]
       : null;
 
-  const videoId = esercizio?.link_video ? getYouTubeId(esercizio.link_video) : null;
+  const { data: catalogo = [] } = useQuery<any[]>({
+    queryKey: ["catalogo-esercizi"],
+    queryFn: () =>
+      fetch("/app-api/esercizi")
+        .then((r) => (r.ok ? r.json() : []))
+        .catch(() => []),
+    staleTime: 1000 * 60 * 10,
+  });
+  const catalogoItem = catalogo.find(
+    (c) => String(c.id_esercizio).padStart(3, "0") === String(idEsercizio).padStart(3, "0")
+  );
+  const effectiveVideoUrl = esercizio?.link_video || catalogoItem?.link_video || null;
+  const videoId = effectiveVideoUrl ? getYouTubeId(effectiveVideoUrl) : null;
 
   const { data: storicoRows = [], isLoading: storicoLoading } = useQuery<any[]>({
     queryKey: ["diario-esercizio", idEsercizio],

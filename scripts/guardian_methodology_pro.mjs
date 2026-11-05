@@ -262,7 +262,7 @@ export function validateProCycle(workouts, cycleName, rules, catalogMap = null) 
 
         // Vincolo OBBLIGATORIO_PIU (esercizi asimmetrici o per lato no-stop)
         if (rule.vincolo_notazione === "OBBLIGATORIO_PIU" || rule.modalita_prescrizione_predefinita === "TEMPO_PER_LATO_NO_STOP" || rule.modalita_prescrizione_predefinita === "RIPETIZIONI_MONOLATERALI_RBS") {
-          if (!rowParam.includes("+") && !rowParam.toLowerCase().includes("flow")) {
+          if (!rowParam.includes("+") && !rowParam.toLowerCase().includes("flow") && !rowParam.toLowerCase().includes("costruzione")) {
             const msg = `AVVISO NOTAZIONE: '${rowName}' è classificato come asimmetrico/per lato (${rule.modalita_prescrizione_predefinita}), ma i parametri '${rowParam}' non contengono la notazione '+' (es. 8+8 o 60"+60").`;
             sessionRes.warnings.push(msg);
             report.warnings.push(msg);
@@ -306,14 +306,23 @@ export function validateProCycle(workouts, cycleName, rules, catalogMap = null) 
         }
       }
 
-      // Controllo coerenza Link Video con catalogo esercizi
+      // Controllo coerenza Link Video con catalogo esercizi (confronto semantico per ID YouTube)
       if (catalogMap) {
         const normId = normalizeId(row.id_esercizio);
         const catEx = catalogMap[normId];
         if (catEx && catEx.link_video) {
           const rowVid = (row.link_video || "").trim();
           const catVid = (catEx.link_video || "").trim();
-          if (rowVid && catVid && rowVid !== catVid) {
+          const getYtId = (url) => {
+            if (!url) return "";
+            const m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([^&?\s\/]+)/i);
+            return m ? m[1] : url.trim();
+          };
+          const rowYtId = getYtId(rowVid);
+          const catYtId = getYtId(catVid);
+          const backupYtId = getYtId(catEx.link_video_backup || catEx.video_alternativo || "");
+
+          if (rowYtId && catYtId && rowYtId !== catYtId && rowYtId !== backupYtId) {
             const msg = `DISCREPANZA VIDEO: '${rowName}' ha link video '${rowVid}' differente da quello di catalogo ('${catVid}').`;
             sessionRes.warnings.push(msg);
             report.warnings.push(msg);
