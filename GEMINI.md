@@ -13,4 +13,13 @@ Regole Tassative:
 8. Struttura Blindata: Eseguire `npm run verify` e `npm run backup` prima di modifiche strutturali. Dati atleti, crediti, prenotazioni e storico carichi non possono mai essere sovrascritti o cancellati. Rispetto rigoroso dei moduli in data/vault/.
 9. Agente Guardiano e Regole Esecutive: Il database `data/vault/regole_esercizi_metodologia.json` governa i vincoli di tutti i 163 esercizi PRO (es. Coiled Cobra solo a tempo continuo alternato senza '+', notazione '+' obbligatoria per unilaterali, avvisi sicurezza clave, no speed ladder in AMRAP). Eseguire obbligatoriamente `npm run guardian` prima di convalidare o pubblicare nuovi cicli.
 10. Filosofia Didattica del Coach: Nuovi esercizi a progressione a 3 fasi nel ciclo (1ª seduta costruzione con coach senza fretta, 2ª seduta 4x10 lento e tecnico, 3ª seduta a tempo ed esplosivo). Divieto RPE su tenute isometriche/core (es. Traverse hold: indicare 'creare contro-rotazione del bacino su torace'). RPE con clausola di salvaguardia tecnica se il movimento è incerto (es. Pendulum lunge). Progressioni AMRAP crescenti (10' -> 11' -> 13'). Video link sempre specifici e mai riciclati per copia-incolla.
+11. Regole Specifiche Vincolanti:
+    - Mai separare Matador Underhand/Overhand in PRO: usare sempre ID 242 (Underhand/Overhand Matador Transitions).
+    - Mai pliometria/potenza a freddo (es. Landmine quick Hops ID 099 vietato in blocco 1).
+    - Esercizi home training (es. Push the wall squat ID 042) vietati nel condizionamento PRO.
+    - Esercizi consolidati dai livelli precedenti (es. High Pull ID 065) NON necessitano di progressione a 3 fasi in PRO.
+    - Distinzione netta video dinamico vs isometrico (High Pull dinamico Fsi34_9SXTU vs ISO A2eyrizhMVM) e zero collisioni (Gymnasty ABS ID 239 separato da Knee drives ID 240).
+    - Wall driver ID 047 è alternato continuo: prescrivere a tempo (es. 3 X 45"), mai con notazione '+'.
+    - Split Jumps sagittale (ID 134) è la propedeutica obbligatoria di Aerial Jerk (ID 120): non invertire mai la gerarchia.
+
 

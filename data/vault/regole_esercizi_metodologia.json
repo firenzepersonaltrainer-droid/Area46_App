@@ -1255,6 +1255,35 @@
       ],
       "didattica_primo_utilizzo": "1ª seduta costruzione con coach (studio motorio, dedicare tempo all'apprendimento) -> 2ª seduta 4x10 lento/tecnico con calma -> 3ª seduta 3x20\"+20\" a tempo con massima esplosività"
     },
+    "242": {
+      "id": "242",
+      "nome": "Underhand/Overhand Matador Transitions",
+      "attrezzo": "heavy rope",
+      "categoria": "skill e combo",
+      "pattern": "rope flow, rotazione su piano traverso",
+      "ruolo": "complementare",
+      "modalita_prescrizione_predefinita": "FLOW_TIME_BASED",
+      "vincolo_notazione": "STANDARD",
+      "note_obbligatorie": [
+        "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso"
+      ],
+      "divieti_tassativi": [],
+      "didattica_primo_utilizzo": null,
+      "regola_sostituzione": "Sostituisce definitivamente Overhand e Underhand Matadors Wheels dal ciclo PRO in avanti."
+    },
+    "243": {
+      "id": "243",
+      "nome": "vogatore",
+      "attrezzo": "vogatore",
+      "categoria": "engine e benchmark",
+      "pattern": "hip hinge, catena estensoria, monoplanare",
+      "ruolo": "engine, benchmark",
+      "modalita_prescrizione_predefinita": "TEMPO_ALTERNATO_CONTINUO",
+      "vincolo_notazione": "STANDARD",
+      "note_obbligatorie": [],
+      "divieti_tassativi": [],
+      "didattica_primo_utilizzo": null
+    },
     "043": {
       "id": "043",
       "nome": "Pounce squat",
@@ -1902,7 +1931,7 @@
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [
-        "VIETATO_RPE_MASSIMALE: priorità a reattività elastica e freschezza neurale."
+        "VIETATO_A_FREDDO: esercizio di pliometria e potenza elastica, mai inserire nel primo blocco di warm-up iniziale."
       ],
       "didattica_primo_utilizzo": null
     },
@@ -2009,7 +2038,9 @@
       "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "divieti_tassativi": [
+        "NON_RICHIEDE_PROGRESSIONE: esercizio consolidato nei livelli precedenti, prescrivere direttamente carichi allenanti."
+      ],
       "didattica_primo_utilizzo": null
     },
     "098": {
@@ -2115,7 +2146,9 @@
       "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "divieti_tassativi": [
+        "VIETATO_LIVELLO_PRO: esercizio propedeutico per home training, non idoneo al condizionamento del livello PRO."
+      ],
       "didattica_primo_utilizzo": null
     },
     "047": {
@@ -2125,10 +2158,12 @@
       "categoria": "warm up e mobilità",
       "pattern": "cerniera d'anca, spinta controlaterale da terra sul muro",
       "ruolo": "",
-      "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
-      "vincolo_notazione": "STANDARD",
+      "modalita_prescrizione_predefinita": "TEMPO_ALTERNATO_CONTINUO",
+      "vincolo_notazione": "VIETATO_PIU",
       "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "divieti_tassativi": [
+        "VIETATO_NOTAZIONE_PIU: esercizio alternato continuo, prescrivere a tempo complessivo continuo (es. 3 X 45\")."
+      ],
       "didattica_primo_utilizzo": null
     },
     "074": {
@@ -2243,35 +2278,6 @@
       "pattern": "cerniera d'anca, affondo, posizione coiled",
       "ruolo": "",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
-      "vincolo_notazione": "STANDARD",
-      "note_obbligatorie": [],
-      "divieti_tassativi": [],
-      "didattica_primo_utilizzo": null
-    },
-    "242": {
-      "id": "242",
-      "nome": "Underhand/Overhand Matador Transitions",
-      "attrezzo": "heavy rope",
-      "categoria": "skill e combo",
-      "pattern": "rope flow, rotazione su piano traverso",
-      "ruolo": "complementare",
-      "modalita_prescrizione_predefinita": "FLOW_TIME_BASED",
-      "vincolo_notazione": "STANDARD",
-      "note_obbligatorie": [
-        "Heavy Rope flow, coordinazione scapolo-omerale, destrezza e rotazione su piano traverso"
-      ],
-      "divieti_tassativi": [],
-      "didattica_primo_utilizzo": null,
-      "regola_sostituzione": "Sostituisce definitivamente Overhand e Underhand Matadors Wheels dal ciclo PRO in avanti."
-    },
-    "243": {
-      "id": "243",
-      "nome": "vogatore",
-      "attrezzo": "vogatore",
-      "categoria": "engine e benchmark",
-      "pattern": "hip hinge, catena estensoria, monoplanare",
-      "ruolo": "engine, benchmark",
-      "modalita_prescrizione_predefinita": "TEMPO_ALTERNATO_CONTINUO",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [],

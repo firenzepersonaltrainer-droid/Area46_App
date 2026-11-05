@@ -110,5 +110,24 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
     - 3ª seduta B: 13' AMRAP (+2 min, picco di volume `x 25+25`).
 * **Integrità Video Link Dimostrativi**:
   - Divieto assoluto di riutilizzare o copiare per convenienza link video tra esercizi differenti. Ogni ID catalogo ha un solo video corrispondente registrato per quel pattern.
+  - Distinzione netta tra varianti dinamiche e varianti isometriche (es. High Pull dinamico `Fsi34_9SXTU` vs High Pull ISO `A2eyrizhMVM`).
+  - Separazione assoluta tra `Gymnasty ABS` (ID 239) e `Knee drives` (ID 240, `2LBsvhVglwA`).
+
+---
+
+## 9. REGOLE VINCOLANTI SPECIFICHE DEL COACH (MEMORIA SISTEMICA PERMANENTE)
+1. **Underhand/Overhand Matador Transitions (ID 242)**:
+   - Dal livello PRO in avanti, **DIVIETO ASSOLUTO** di separare *Underhand Matador Wheel* da *Overhand Matador Wheel*. Usare sempre ed esclusivamente l'esercizio unificato `Underhand/Overhand Matador Transitions` (ID 242) con il suo video dedicato (`4k2O1hameP0`).
+2. **Divieto Pliometria e Potenza "A Freddo"**:
+   - Esercizi ad alto impatto neurale, reattività elastica o pliometria (es. `Landmine quick Hops` ID 099) **NON possono MAI** essere collocati nel primo blocco (1a/1b) a freddo. Il primo blocco deve essere riservato a mobilità a terra, mobilità a parete o traslazioni a basso impatto (es. `Ground Stretch`, `Side move`, `Cat-cow`).
+3. **Contesto di Livello ed Esercizi Esclusi**:
+   - Esercizi ideati come propedeutiche per l'home training (es. `Push the wall squat` ID 042) sono categoricamente esclusi dal condizionamento del livello PRO.
+4. **Competenze Pregresse e Storico Multi-Livello**:
+   - Esercizi ampiamente affrontati e consolidati nei livelli precedenti (*Entry Level, Level 1, Level 2, Advanced*), come `High Pull` (ID 065), **NON richiedono progressioni di apprendimento a 3 fasi** (costruzione motoria -> controllo lento -> dinamico) quando prescritti in PRO. Vanno prescritti direttamente a carichi/ripetizioni allenanti.
+5. **Esercizi Alternati Continui a Parete**:
+   - Il `wall driver` (ID 047) è un movimento alternato continuo: va prescritto a tempo complessivo (es. `3 X 45"`). Divieto assoluto di notazione monolaterale con `+` (mai `30"+30"`).
+6. **Gerarchia di Propedeutica Motoria**:
+   - Lo `Split Jumps (sagittale)` (ID 134) è la propedeutica fondamentale dello `Aerial Jerk` (ID 120). Mai inserire l'Aerial Jerk prima che lo Split Jump sagittale sia stato pienamente introdotto e stabilizzato nei cicli precedenti.
+
 
 
