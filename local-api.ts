@@ -78,6 +78,16 @@ function loadData() {
     }
   }
 
+  // Salvaguardia metodologia: mai permettere a un file temporaneo stantio di declassare i parametri degli allenamenti
+  if (defaultData && Array.isArray((defaultData as any).allenamenti)) {
+    const defaultAllenamenti = (defaultData as any).allenamenti;
+    const defaultMissing = defaultAllenamenti.filter((a: any) => !(a.parametri || "").trim()).length;
+    const loadedMissing = (loaded.allenamenti || []).filter((a: any) => !(a.parametri || "").trim()).length;
+    if (defaultMissing < loadedMissing || !loaded.allenamenti || loaded.allenamenti.length < 50) {
+      loaded.allenamenti = JSON.parse(JSON.stringify(defaultAllenamenti));
+    }
+  }
+
   if (loaded.utenti_cancellati && Array.isArray(loaded.utenti_cancellati)) {
     const delUsers = loaded.utenti_cancellati;
     loaded.profili_utenti = (loaded.profili_utenti || []).filter(
@@ -1018,7 +1028,13 @@ async function tryLoadConfigFromGoogleDrive() {
       db.attivita_lab = driveDb.attivita_lab;
     }
     if (driveDb.allenamenti && Array.isArray(driveDb.allenamenti) && driveDb.allenamenti.length > 50) {
-      db.allenamenti = driveDb.allenamenti;
+      const cloudMissing = driveDb.allenamenti.filter((a: any) => !(a.parametri || "").trim()).length;
+      const currentMissing = (db.allenamenti || []).filter((a: any) => !(a.parametri || "").trim()).length;
+      if (cloudMissing <= currentMissing) {
+        db.allenamenti = driveDb.allenamenti;
+      } else {
+        console.log(`🛡️ [AREA46 GUARDIAN] Mantenuta versione allenamenti locale (${currentMissing} mancanti) rispetto al cloud (${cloudMissing} mancanti).`);
+      }
     }
     saveData(db, true);
   } catch {
