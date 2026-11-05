@@ -15,6 +15,7 @@ import { toast } from "../components/Toast";
 import { Input } from "../components/Input";
 import { Textarea } from "../components/Textarea";
 import { session } from "../../auth";
+import { getActiveUserId } from "../lib/useUser";
 
 interface SetEntry {
   carico_kg: number | null;
@@ -75,6 +76,15 @@ function maxCaricoVoce(v: VoceDiario): number | null {
   return carichi.length > 0 ? Math.max(...carichi) : null;
 }
 
+function getPerformanceScore(v: VoceDiario): { hasCarico: boolean; maxCarico: number; volume: number; score: number } {
+  const sets = normalizeSets(v);
+  const carichi = sets.map((s) => s.carico_kg).filter((k): k is number => k != null && !isNaN(k) && k > 0);
+  const maxK = carichi.length > 0 ? Math.max(...carichi) : 0;
+  const vol = sets.reduce((acc, s) => acc + (s.ripetizioni ?? 0), 0);
+  const score = maxK > 0 ? maxK * 1000 + vol : vol;
+  return { hasCarico: maxK > 0, maxCarico: maxK, volume: vol, score };
+}
+
 interface GruppoEsercizio {
   id_esercizio: string;
   nome_esercizio: string;
@@ -129,10 +139,39 @@ function SottoDiario({ idEsercizio, nomeEsercizio, onBack }: { idEsercizio: stri
   const [deleting, setDeleting] = useState<number | null>(null);
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("mese");
 
-  const { data: voci = [], isLoading } = useQuery<VoceDiario[]>({
+  const { data: rawVoci = [], isLoading } = useQuery<VoceDiario[]>({
     queryKey: ["diario", idEsercizio],
-    queryFn: () => fetch(`/app-api/diario/esercizio/${encodeURIComponent(idEsercizio)}`).then((r) => r.json()),
+    queryFn: async () => {
+      const storedId = getActiveUserId();
+      const headers: Record<string, string> = {};
+      if (storedId) headers["x-area46-user"] = storedId;
+      const res = await fetch(`/app-api/diario/esercizio/${encodeURIComponent(idEsercizio)}`, {
+        headers,
+        credentials: "include",
+      });
+      return res.ok ? res.json() : [];
+    },
   });
+
+  const voci = useMemo(() => {
+    return [...rawVoci].sort((a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime());
+  }, [rawVoci]);
+
+  const { bestId, lowestId } = useMemo(() => {
+    if (voci.length < 2) return { bestId: null, lowestId: null };
+    const scored = voci.map((v) => ({ id: v.id, ...getPerformanceScore(v) })).filter((x) => x.score > 0);
+    if (scored.length < 2) return { bestId: null, lowestId: null };
+    let maxItem = scored[0];
+    let minItem = scored[0];
+    for (const item of scored) {
+      if (item.score > maxItem.score) maxItem = item;
+      if (item.score < minItem.score) minItem = item;
+    }
+    if (maxItem.id === minItem.id || maxItem.score === minItem.score) {
+      return { bestId: null, lowestId: null };
+    }
+    return { bestId: maxItem.id, lowestId: minItem.id };
+  }, [voci]);
 
   async function handleElimina(id: number) {
     setDeleting(id);
@@ -185,7 +224,16 @@ function SottoDiario({ idEsercizio, nomeEsercizio, onBack }: { idEsercizio: stri
           </TabsList>
           <TabsContent value="lista">
             <div className="space-y-2 mt-2">
-              {voci.map((voce) => <VoceDiarioRow key={voce.id} voce={voce} deleting={deleting} onElimina={handleElimina} />)}
+              {voci.map((voce) => (
+                <VoceDiarioRow
+                  key={voce.id}
+                  voce={voce}
+                  deleting={deleting}
+                  onElimina={handleElimina}
+                  isBest={voce.id === bestId}
+                  isLowest={voce.id === lowestId}
+                />
+              ))}
             </div>
           </TabsContent>
           <TabsContent value="grafico">
@@ -227,7 +275,19 @@ function SottoDiario({ idEsercizio, nomeEsercizio, onBack }: { idEsercizio: stri
   );
 }
 
-function VoceDiarioRow({ voce, deleting, onElimina }: { voce: VoceDiario; deleting: number | null; onElimina: (id: number) => void }) {
+function VoceDiarioRow({
+  voce,
+  deleting,
+  onElimina,
+  isBest,
+  isLowest,
+}: {
+  voce: VoceDiario;
+  deleting: number | null;
+  onElimina: (id: number) => void;
+  isBest?: boolean;
+  isLowest?: boolean;
+}) {
   const queryClient = useQueryClient();
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -264,11 +324,31 @@ function VoceDiarioRow({ voce, deleting, onElimina }: { voce: VoceDiario; deleti
   }
 
   return (
-    <div className="rounded-lg border border-border bg-raised overflow-hidden">
+    <div
+      className={`rounded-lg border overflow-hidden transition-all ${
+        isBest
+          ? "border-emerald-500 bg-emerald-500/[0.04] ring-1 ring-emerald-500/40"
+          : isLowest
+          ? "border-blue-400 bg-blue-500/[0.04] ring-1 ring-blue-400/30"
+          : "border-border bg-raised"
+      }`}
+    >
       <button className="flex w-full cursor-pointer items-center justify-between p-3 hover:bg-inset" onClick={() => { if (!editing) setExpanded(!expanded); }}>
         <div className="flex items-center gap-3 min-w-0">
           <div className="min-w-0 text-left">
-            <p className="text-sm text-secondary">{formatData(voce.data_ora)} <span className="text-xs">{formatOra(voce.data_ora)}</span></p>
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <p className="text-sm text-secondary font-medium">{formatData(voce.data_ora)} <span className="text-xs">{formatOra(voce.data_ora)}</span></p>
+              {isBest && (
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-black shadow-xs bg-emerald-600 text-white">
+                  🏆 Miglior Prestazione
+                </span>
+              )}
+              {isLowest && (
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold shadow-xs bg-blue-100 text-blue-800 border border-blue-300">
+                  🔻 Prestazione Base
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-2 mt-0.5 flex-wrap">
               {primoSet ? (
                 <span className="text-[14px] font-semibold text-primary">
@@ -337,7 +417,23 @@ function VoceDiarioRow({ voce, deleting, onElimina }: { voce: VoceDiario; deleti
 export default function DiarioPage() {
   const [esercizioSelezionato, setEsercizioSelezionato] = useState<{ id: string; nome: string } | null>(null);
   const { data: user } = useQuery({ queryKey: ["session"], queryFn: () => session.get() });
-  const { data: voci = [], isLoading } = useQuery<VoceDiario[]>({ queryKey: ["diario"], queryFn: () => fetch("/app-api/diario").then((r) => r.json()) });
+  const { data: rawVoci = [], isLoading } = useQuery<VoceDiario[]>({
+    queryKey: ["diario"],
+    queryFn: async () => {
+      const storedId = getActiveUserId();
+      const headers: Record<string, string> = {};
+      if (storedId) headers["x-area46-user"] = storedId;
+      const res = await fetch("/app-api/diario", {
+        headers,
+        credentials: "include",
+      });
+      return res.ok ? res.json() : [];
+    },
+  });
+
+  const voci = useMemo(() => {
+    return [...rawVoci].sort((a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime());
+  }, [rawVoci]);
 
   const gruppi: GruppoEsercizio[] = React.useMemo(() => {
     const map = new Map<string, GruppoEsercizio>();

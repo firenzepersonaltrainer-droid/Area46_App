@@ -20,6 +20,22 @@ export function isBookingIdCancelled(id: any, cancelledList?: any[]): boolean {
   return cancelledList.includes(raw) || cancelledList.includes(clean) || cancelledList.includes(lab);
 }
 
+export function parseSafeDate(iso: any): Date {
+  if (!iso) return new Date(0);
+  if (typeof iso === "string" && (iso.includes("T") || iso.includes("-") || iso.includes("/"))) {
+    const d = new Date(iso);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const num = typeof iso === "number" ? iso : parseFloat(String(iso));
+  if (!isNaN(num) && num > 20000 && num < 70000) {
+    const epochMs = (num - 25569) * 86400 * 1000;
+    const d = new Date(epochMs);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const fallback = new Date(iso);
+  return isNaN(fallback.getTime()) ? new Date(0) : fallback;
+}
+
 function loadData() {
   let loaded: any = null;
   if (IS_SANDBOX && fs.existsSync(SANDBOX_FILE)) {
@@ -4813,9 +4829,19 @@ CALENDARIO E PRENOTAZIONI:
 
     // 12. Diario: GET /app-api/diario
     if (pathname === "/app-api/diario" && method === "GET") {
-      const targetEmail = url.searchParams.get("email");
-      const filterEmail =
-        targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
+      const explicitEmail = url.searchParams.get("email")?.trim().toLowerCase();
+      const userEmail = resolveTargetEmail(req, db, currentUser);
+
+      if (!userEmail) {
+        return res.end(JSON.stringify([]));
+      }
+
+      let filterEmail = userEmail;
+      if (explicitEmail) {
+        if (currentUser?.ruolo === "manager" || explicitEmail === userEmail) {
+          filterEmail = explicitEmail;
+        }
+      }
 
       const exMap = new Map();
       (db.database_esercizi || []).forEach((e: any) => {
@@ -4828,7 +4854,7 @@ CALENDARIO E PRENOTAZIONI:
       });
 
       const rows = [...db.diario_utente]
-        .filter((d: any) => !filterEmail || d.email_cliente === filterEmail)
+        .filter((d: any) => (d.email_cliente || "").trim().toLowerCase() === filterEmail)
         .map((d: any) => {
           let nome = d.nome_esercizio;
           if (!nome || /^\d+$/.test(String(nome).trim()) || nome === d.id_esercizio) {
@@ -4845,7 +4871,7 @@ CALENDARIO E PRENOTAZIONI:
             sets_json: sets,
           };
         })
-        .sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
+        .sort((a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime());
       return res.end(JSON.stringify(rows));
     }
 
@@ -4853,9 +4879,19 @@ CALENDARIO E PRENOTAZIONI:
     const diarioExMatch = pathname.match(/^\/app-api\/diario\/esercizio\/([^/]+)$/);
     if (diarioExMatch && method === "GET") {
       const idEsercizio = decodeURIComponent(diarioExMatch[1]);
-      const targetEmail = url.searchParams.get("email");
-      const filterEmail =
-        targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
+      const explicitEmail = url.searchParams.get("email")?.trim().toLowerCase();
+      const userEmail = resolveTargetEmail(req, db, currentUser);
+
+      if (!userEmail) {
+        return res.end(JSON.stringify([]));
+      }
+
+      let filterEmail = userEmail;
+      if (explicitEmail) {
+        if (currentUser?.ruolo === "manager" || explicitEmail === userEmail) {
+          filterEmail = explicitEmail;
+        }
+      }
 
       const exMap = new Map();
       (db.database_esercizi || []).forEach((e: any) => {
@@ -4870,7 +4906,7 @@ CALENDARIO E PRENOTAZIONI:
       const rows = [...db.diario_utente]
         .filter(
           (d: any) =>
-            (!filterEmail || d.email_cliente === filterEmail) &&
+            (d.email_cliente || "").trim().toLowerCase() === filterEmail &&
             (d.id_esercizio === idEsercizio ||
              String(d.id_esercizio).replace(/^0+/, "") === idEsercizio.replace(/^0+/, "") ||
              d.nome_esercizio?.toLowerCase() === idEsercizio.toLowerCase())
@@ -4891,15 +4927,20 @@ CALENDARIO E PRENOTAZIONI:
             sets_json: sets,
           };
         })
-        .sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
+        .sort((a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime());
       return res.end(JSON.stringify(rows));
     }
 
     // 14. Diario Salva: POST /app-api/diario
     if (pathname === "/app-api/diario" && method === "POST") {
+      const authorEmail = resolveTargetEmail(req, db, currentUser, parsedBody?.email_cliente);
+      if (!authorEmail) {
+        res.statusCode = 401;
+        return res.end(JSON.stringify({ error: "Non autorizzato" }));
+      }
       const newEntry = {
         id: Date.now(),
-        email_cliente: currentUser.email,
+        email_cliente: authorEmail,
         id_esercizio: parsedBody.id_esercizio,
         nome_esercizio: parsedBody.nome_esercizio,
         carico_kg: parsedBody.sets_json ? null : (parsedBody.carico_kg ?? null),

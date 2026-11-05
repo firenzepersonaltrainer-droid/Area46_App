@@ -29,6 +29,7 @@ import {
   DialogFooter,
 } from "../components/Dialog";
 import { toast } from "../components/Toast";
+import { getActiveUserId } from "../lib/useUser";
 
 interface SetRow {
   carico_kg: string;
@@ -330,12 +331,53 @@ export default function EsercizioDetailPage() {
   const effectiveVideoUrl = esercizio?.link_video || catalogoItem?.link_video || null;
   const videoId = effectiveVideoUrl ? getYouTubeId(effectiveVideoUrl) : null;
 
-  const { data: storicoRows = [], isLoading: storicoLoading } = useQuery<any[]>({
+  const { data: rawStoricoRows = [], isLoading: storicoLoading } = useQuery<any[]>({
     queryKey: ["diario-esercizio", idEsercizio],
-    queryFn: () =>
-      fetch(`/app-api/diario/esercizio/${encodeURIComponent(idEsercizio!)}`).then((r) => r.json()),
+    queryFn: async () => {
+      const storedId = getActiveUserId();
+      const headers: Record<string, string> = {};
+      if (storedId) headers["x-area46-user"] = storedId;
+      const res = await fetch(`/app-api/diario/esercizio/${encodeURIComponent(idEsercizio!)}`, {
+        headers,
+        credentials: "include",
+      });
+      return res.ok ? res.json() : [];
+    },
     enabled: storicoOpen && !!idEsercizio,
   });
+
+  const storicoRows = useMemo(() => {
+    return [...rawStoricoRows].sort(
+      (a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime()
+    );
+  }, [rawStoricoRows]);
+
+  const { bestRowId, lowestRowId } = useMemo(() => {
+    if (storicoRows.length < 2) return { bestRowId: null, lowestRowId: null };
+    const scored = storicoRows.map((r: any) => {
+      const sets: any[] = r.sets_json ?? [];
+      const carichi = sets.map((s: any) => parseFloat(s.carico_kg)).filter((k) => !isNaN(k) && k > 0);
+      if (carichi.length === 0 && r.carico_kg != null && !isNaN(parseFloat(r.carico_kg)) && parseFloat(r.carico_kg) > 0) {
+        carichi.push(parseFloat(r.carico_kg));
+      }
+      const maxK = carichi.length > 0 ? Math.max(...carichi) : 0;
+      const vol = sets.reduce((acc: number, s: any) => acc + (parseInt(s.ripetizioni, 10) || 0), 0) || (r.ripetizioni ? parseInt(r.ripetizioni, 10) : 0);
+      const score = maxK > 0 ? maxK * 1000 + vol : vol;
+      return { id: r.id, score };
+    }).filter((x) => x.score > 0);
+
+    if (scored.length < 2) return { bestRowId: null, lowestRowId: null };
+    let maxItem = scored[0];
+    let minItem = scored[0];
+    for (const item of scored) {
+      if (item.score > maxItem.score) maxItem = item;
+      if (item.score < minItem.score) minItem = item;
+    }
+    if (maxItem.id === minItem.id || maxItem.score === minItem.score) {
+      return { bestRowId: null, lowestRowId: null };
+    }
+    return { bestRowId: maxItem.id, lowestRowId: minItem.id };
+  }, [storicoRows]);
 
   async function handleSalva() {
     if (!esercizio) return;
@@ -750,10 +792,36 @@ export default function EsercizioDetailPage() {
                     );
                   }
 
+                  const isBest = row.id === bestRowId;
+                  const isLowest = row.id === lowestRowId;
+
                   return (
-                    <div key={row.id} className="py-3">
+                    <div
+                      key={row.id}
+                      className={`py-3 px-3 my-1.5 rounded-xl border transition-all ${
+                        isBest
+                          ? "border-emerald-500 bg-emerald-500/[0.04] ring-1 ring-emerald-500/40"
+                          : isLowest
+                          ? "border-blue-400 bg-blue-500/[0.04] ring-1 ring-blue-400/30"
+                          : "border-transparent"
+                      }`}
+                    >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
+                          {(isBest || isLowest) && (
+                            <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                              {isBest && (
+                                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-black shadow-xs bg-emerald-600 text-white">
+                                  🏆 Miglior Prestazione
+                                </span>
+                              )}
+                              {isLowest && (
+                                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold shadow-xs bg-blue-100 text-blue-800 border border-blue-300">
+                                  🔻 Prestazione Base
+                                </span>
+                              )}
+                            </div>
+                          )}
                           {setsArr.length > 0 ? (
                             <div className="space-y-1.5">
                               {setsArr.map((s: any, i: number) => (
@@ -771,7 +839,7 @@ export default function EsercizioDetailPage() {
                           {row.feedback && <p className="text-sm text-secondary mt-1 leading-relaxed">{row.feedback}</p>}
                         </div>
                         <div className="flex flex-col items-end gap-1 shrink-0">
-                          <p className="text-xs text-secondary">{dataStr}</p>
+                          <p className="text-xs text-secondary font-medium">{dataStr}</p>
                           <p className="text-xs text-secondary">{oraStr}</p>
                           <button onClick={() => openEditMode(row)} className="text-xs text-accent hover:underline cursor-pointer">Modifica</button>
                         </div>

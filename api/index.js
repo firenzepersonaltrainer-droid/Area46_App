@@ -12131,7 +12131,7 @@ var demo_data_default = {
       pattern_biomeccanico: "routine di esercizi completa",
       ruolo: null,
       tag_biomeccanici: "routine di esercizi completa \u2022 Warm Up, Piano Frontale, Multi-planare",
-      link_video: "https://youtube.com/shorts/2mSUTq--DY0",
+      link_video: "https://youtube.com/shorts/4defoi83APo",
       data_pubblicazione: null
     },
     {
@@ -12142,7 +12142,7 @@ var demo_data_default = {
       pattern_biomeccanico: "routine di esercizi completa",
       ruolo: null,
       tag_biomeccanici: "routine di esercizi completa \u2022 Warm Up, Piano Frontale, Multi-planare",
-      link_video: "https://youtube.com/shorts/w4QFxA9AZZc",
+      link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
       data_pubblicazione: null
     },
     {
@@ -12153,7 +12153,7 @@ var demo_data_default = {
       pattern_biomeccanico: "stretching catena flessoria anteriore e ischiocrurali",
       ruolo: null,
       tag_biomeccanici: "stretching catena flessoria anteriore e ischiocrurali \u2022 Warm Up, Attivazione Core, Piano Sagittale",
-      link_video: "https://youtube.com/shorts/JNLhhxNDkZs?si=IxpjFs4F8j3EOv0m",
+      link_video: "https://youtube.com/shorts/JS0WMLz3MKk",
       data_pubblicazione: null
     },
     {
@@ -12164,7 +12164,7 @@ var demo_data_default = {
       pattern_biomeccanico: "mobilit\xE0 sul piano sagittale del rachide",
       ruolo: null,
       tag_biomeccanici: "mobilit\xE0 sul piano sagittale del rachide \u2022 Warm Up, Attivazione Core, Piano Sagittale, Cool Down",
-      link_video: "https://youtube.com/shorts/EBQD1Sha26k?si=VlMRufJ_KWHm-_V1",
+      link_video: "https://youtube.com/shorts/6hDTVX22S_M",
       data_pubblicazione: null
     },
     {
@@ -12175,7 +12175,7 @@ var demo_data_default = {
       pattern_biomeccanico: "mobilit\xE0 anche, allungamento catena flessoria anteriore",
       ruolo: null,
       tag_biomeccanici: "mobilit\xE0 anche, allungamento catena flessoria anteriore \u2022 Warm Up, Multi-planare",
-      link_video: "https://youtube.com/shorts/GU3ePuvJwMk",
+      link_video: "https://youtube.com/shorts/7hziwqqWGl4",
       data_pubblicazione: null
     },
     {
@@ -12318,7 +12318,7 @@ var demo_data_default = {
       pattern_biomeccanico: "gioco di gambe, flessione laterale della colonna, cerniera d'anca",
       ruolo: null,
       tag_biomeccanici: "gioco di gambe, flessione laterale della colonna, cerniera d'anca \u2022 Warm Up, Multi-planare, Tensione Strutturale, Catena Cinetica Chiusa, Trasferimento di Carico, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtu.be/CJ0EctEmVQ0",
+      link_video: "https://youtu.be/9S1kTgJ7Wkc",
       data_pubblicazione: null
     },
     {
@@ -12329,7 +12329,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, spinta controlaterale da terra sul muro",
       ruolo: null,
       tag_biomeccanici: "cerniera d'anca, spinta controlaterale da terra sul muro \u2022 Warm Up, Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Fulcro Fisso",
-      link_video: "https://youtu.be/wh3rTdnTxFc",
+      link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
       data_pubblicazione: null
     },
     {
@@ -12373,7 +12373,7 @@ var demo_data_default = {
       pattern_biomeccanico: "gioco di gambe, coordinazione alto-basso",
       ruolo: null,
       tag_biomeccanici: "gioco di gambe, coordinazione alto-basso \u2022 Warm Up, Multi-planare, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtu.be/xpdmnY_MB6w",
+      link_video: "https://youtube.com/shorts/WUAIJTbPI8c",
       data_pubblicazione: null
     },
     {
@@ -12395,7 +12395,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, spinta verticale",
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, spinta verticale \u2022 Warm Up, Multi-planare, Spinta Verticale, Cerniera d'anca, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/HWcYpmL1Q9o?feature=share",
+      link_video: "https://youtube.com/shorts/BOLlr_Kd53g",
       data_pubblicazione: null
     },
     {
@@ -12406,7 +12406,7 @@ var demo_data_default = {
       pattern_biomeccanico: "flessione laterale della colonna, spinta verticale",
       ruolo: null,
       tag_biomeccanici: "flessione laterale della colonna, spinta verticale \u2022 Warm Up, Multi-planare, Spinta Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Trasferimento di Carico, Potenza Esplosiva, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtu.be/qvoz4TITY7s?si=QFDcXDPuLMZht54m",
+      link_video: "https://youtube.com/shorts/9_GYc3yB69k",
       data_pubblicazione: null
     },
     {
@@ -12461,7 +12461,7 @@ var demo_data_default = {
       pattern_biomeccanico: "spinta verticale, asimmetrico, due tempi",
       ruolo: "fondamentale",
       tag_biomeccanici: "spinta verticale, asimmetrico, due tempi \u2022 Multi-planare, Spinta Verticale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/K7mbQ__p5pE",
+      link_video: "https://youtube.com/shorts/bKecykiTdoE",
       data_pubblicazione: null
     },
     {
@@ -12505,7 +12505,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, spinta verticale",
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, spinta verticale \u2022 Multi-planare, Cerniera d'anca, Spinta Verticale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Plyometrics, Metcon, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/uLuFsjb8Ako",
+      link_video: "https://youtube.com/shorts/GNWG7i-CZ-4",
       data_pubblicazione: null
     },
     {
@@ -12516,7 +12516,7 @@ var demo_data_default = {
       pattern_biomeccanico: "trazione verticale dal basso, tenuta isometrica, cerniera d'anca",
       ruolo: null,
       tag_biomeccanici: "trazione verticale dal basso, tenuta isometrica, cerniera d'anca \u2022 Warm Up, Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Isometria, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/Fsi34_9SXTU",
+      link_video: "https://youtube.com/shorts/A2eyrizhMVM",
       data_pubblicazione: null
     },
     {
@@ -12527,7 +12527,7 @@ var demo_data_default = {
       pattern_biomeccanico: "trazione verticcal dal basso, cerniera d'anca",
       ruolo: null,
       tag_biomeccanici: "trazione verticcal dal basso, cerniera d'anca \u2022 Warm Up, Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/Fsi34_9SXTU",
+      link_video: "https://youtube.com/shorts/A2eyrizhMVM",
       data_pubblicazione: null
     },
     {
@@ -12538,7 +12538,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Spinta Verticale, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/_Dqau_BcAls",
+      link_video: "https://youtube.com/shorts/HBDTjs5sqIk",
       data_pubblicazione: null
     },
     {
@@ -12626,7 +12626,7 @@ var demo_data_default = {
       pattern_biomeccanico: "traslazione laterale",
       ruolo: null,
       tag_biomeccanici: "traslazione laterale \u2022 Warm Up, Multi-planare, Spostamento Laterale, Footwork, Catena Cinetica Aperta, Trasferimento di Carico, Plyometrics, Metcon",
-      link_video: "https://youtu.be/ISkSG5yXhrU?si=aQYlqWHqyaE5nWL_",
+      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
       data_pubblicazione: null
     },
     {
@@ -12637,7 +12637,7 @@ var demo_data_default = {
       pattern_biomeccanico: "spinta verticale, asimmetrico",
       ruolo: "complementare",
       tag_biomeccanici: "spinta verticale, asimmetrico \u2022 Multi-planare, Spinta Verticale, Connessione Controlaterale, Forza Massimale, Carico Asimmetrico",
-      link_video: "https://youtu.be/V-5Q4l-SM20",
+      link_video: "https://youtube.com/shorts/VObhjeME2ws",
       data_pubblicazione: null
     },
     {
@@ -12725,7 +12725,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Spinta Verticale, Spinta Orizzontale, Connessione Controlaterale, Catena Cinetica Chiusa, Forza Massimale, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtu.be/y-Y_KnO0tY8?si=XCeLrysxaI-Y9fFd",
+      link_video: "https://youtube.com/shorts/0zrOd5606eU",
       data_pubblicazione: null
     },
     {
@@ -12736,7 +12736,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca asimmetrico, spinta verticale",
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca asimmetrico, spinta verticale \u2022 Multi-planare, Spinta Verticale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Potenza Esplosiva, Fulcro Fisso, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/Y-2AeFnKQLY",
+      link_video: "https://youtube.com/shorts/lih7Bt5uPbw",
       data_pubblicazione: null
     },
     {
@@ -12758,7 +12758,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core training",
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare, Metcon, Potenza Anaerobica",
-      link_video: "https://youtube.com/shorts/n2BF9Za0WcU",
+      link_video: "https://youtube.com/shorts/EH8_xZDVT_g",
       data_pubblicazione: null
     },
     {
@@ -12780,7 +12780,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Attivazione Core, Multi-planare, Metcon, Potenza Anaerobica",
-      link_video: "https://youtube.com/shorts/6y8yrBMcXZE",
+      link_video: "https://youtube.com/shorts/cFiy5ar3tWU",
       data_pubblicazione: null
     },
     {
@@ -12802,7 +12802,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core training",
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare",
-      link_video: "https://youtu.be/LjHUx2MFcR8",
+      link_video: "https://youtube.com/shorts/Ye_FV7ti41k",
       data_pubblicazione: null
     },
     {
@@ -12813,7 +12813,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core training",
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare",
-      link_video: "https://youtu.be/ktgDSN7EnhI",
+      link_video: "https://youtube.com/shorts/DDDQixPAHbs",
       data_pubblicazione: null
     },
     {
@@ -12824,7 +12824,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core training",
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare, Metcon",
-      link_video: "https://youtu.be/xOPJ8yPmf5A",
+      link_video: "https://youtube.com/shorts/YFEZWR20mv4",
       data_pubblicazione: null
     },
     {
@@ -12857,7 +12857,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core strenght, spinta verticale asimmetrica",
       ruolo: "complementare",
       tag_biomeccanici: "core strenght, spinta verticale asimmetrica \u2022 Attivazione Core, Forza Massimale, Multi-planare, Metcon, Potenza Anaerobica",
-      link_video: "https://youtube.com/shorts/arECYW5JFeA",
+      link_video: "https://youtube.com/shorts/kj2--ZJZXoA",
       data_pubblicazione: null
     },
     {
@@ -12890,7 +12890,7 @@ var demo_data_default = {
       pattern_biomeccanico: "gioco di gambe, flessione laterale della colonna",
       ruolo: null,
       tag_biomeccanici: "gioco di gambe, flessione laterale della colonna \u2022 Piano Sagittale, Affondo, Salto, Footwork, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Carico Asimmetrico, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/q9I2aChhPI8",
+      link_video: "https://youtube.com/shorts/sF3yPhsY9-I",
       data_pubblicazione: null
     },
     {
@@ -12901,7 +12901,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca",
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca \u2022 Piano Sagittale, Accosciata, Salto, Catena Cinetica Chiusa, Potenza Esplosiva, Metcon, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/pjwXBZ-vwD8",
+      link_video: "https://youtube.com/shorts/zNy3VT6hhfg",
       data_pubblicazione: null
     },
     {
@@ -12912,7 +12912,7 @@ var demo_data_default = {
       pattern_biomeccanico: "traslazione laterale",
       ruolo: "engine",
       tag_biomeccanici: "traslazione laterale \u2022 Warm Up, Multi-planare, Spostamento Laterale, Footwork, Catena Cinetica Aperta, Trasferimento di Carico, Plyometrics, Metcon, Potenza Esplosiva",
-      link_video: "https://youtube.com/shorts/94IOklfsdws",
+      link_video: "https://youtube.com/shorts/C3qAS3JiVCg",
       data_pubblicazione: null
     },
     {
@@ -12923,7 +12923,7 @@ var demo_data_default = {
       pattern_biomeccanico: "spinta orizzontale, cerniera d'anca",
       ruolo: "fondamentale",
       tag_biomeccanici: "spinta orizzontale, cerniera d'anca \u2022 Piano Sagittale, Spinta Orizzontale, Tensione Strutturale, Catena Cinetica Chiusa, Potenza Esplosiva, Metcon, Salto, Propedeutica alla Corsa, Stability",
-      link_video: "https://youtube.com/shorts/r3P7Q1NJ06w",
+      link_video: "https://youtube.com/shorts/novwwpAjz9k",
       data_pubblicazione: null
     },
     {
@@ -13088,7 +13088,7 @@ var demo_data_default = {
       pattern_biomeccanico: "trazione verticale dal basso, trasferimento di carico",
       ruolo: "accessorio",
       tag_biomeccanici: "trazione verticale dal basso, trasferimento di carico \u2022 Multi-planare, Cerniera d'anca, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/CWhiOuTGmjQ",
+      link_video: "https://youtube.com/shorts/OydFB2JianU",
       data_pubblicazione: null
     },
     {
@@ -13099,7 +13099,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Accosciata, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/pjwXBZ-vwD8",
+      link_video: "https://youtube.com/shorts/zNy3VT6hhfg",
       data_pubblicazione: null
     },
     {
@@ -13110,7 +13110,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Affondo, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/WTxUNX64GvM",
+      link_video: "https://youtube.com/shorts/nnaWlq5uegQ",
       data_pubblicazione: null
     },
     {
@@ -13121,7 +13121,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, salto",
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, salto \u2022 Multi-planare, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/XluivIvnr4k",
+      link_video: "https://youtube.com/shorts/oXOy45yie-0",
       data_pubblicazione: null
     },
     {
@@ -13132,7 +13132,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, salto",
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, salto \u2022 Multi-planare, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/0uI_9_0qR7k",
+      link_video: "https://youtube.com/shorts/b1DU11BZKCk",
       data_pubblicazione: null
     },
     {
@@ -13143,7 +13143,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, salto",
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, salto \u2022 Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/sA0--x_VEPo",
+      link_video: "https://youtube.com/shorts/Kvo7uCsI0D8",
       data_pubblicazione: null
     },
     {
@@ -13198,7 +13198,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/HWcYpmL1Q9o?feature=share",
+      link_video: "https://youtube.com/shorts/BOLlr_Kd53g",
       data_pubblicazione: null
     },
     {
@@ -13209,7 +13209,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, trasferimento di carico",
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, trasferimento di carico \u2022 Warm Up, Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/Zd7CQkHhnSo",
+      link_video: "https://youtube.com/shorts/nnKzvJyZYu8",
       data_pubblicazione: null
     },
     {
@@ -13220,7 +13220,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, lancio verticale, trasferimento di carico",
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, lancio verticale, trasferimento di carico \u2022 Warm Up, Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/ClRJ9dABoRg",
+      link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
       data_pubblicazione: null
     },
     {
@@ -13231,7 +13231,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, spinta verticale, trasferimento di carico",
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, spinta verticale, trasferimento di carico \u2022 Warm Up, Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/bB_a5s46QaU",
+      link_video: "https://youtube.com/shorts/iH9duQm8hzQ",
       data_pubblicazione: null
     },
     {
@@ -13242,7 +13242,7 @@ var demo_data_default = {
       pattern_biomeccanico: "destrezza, saltello",
       ruolo: "accessorio",
       tag_biomeccanici: "destrezza, saltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/PTciDyczhB8?si=7nmq5vZHDumttcyM",
+      link_video: "https://youtube.com/shorts/TyPtqExF1pg",
       data_pubblicazione: null
     },
     {
@@ -13253,7 +13253,7 @@ var demo_data_default = {
       pattern_biomeccanico: "saltello",
       ruolo: "accessorio",
       tag_biomeccanici: "saltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/VRlw2TrsPvo?si=oS5PrWbJhfK_C9MA",
+      link_video: "https://youtube.com/shorts/BP4VY1MaoTE",
       data_pubblicazione: null
     },
     {
@@ -13264,7 +13264,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/UqHpz_bc078?si=BoeGQpGXrHWK4ByY",
+      link_video: "https://youtube.com/shorts/Yw8m0N-Ne44",
       data_pubblicazione: null
     },
     {
@@ -13275,7 +13275,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/XuvZlCcu7Gc?si=EazJlv-7nF48y-dq",
+      link_video: "https://youtube.com/shorts/reGJg8YDyNg",
       data_pubblicazione: null
     },
     {
@@ -13286,7 +13286,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, salto verticale",
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, salto verticale \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtube.com/shorts/YoTx91IUJtk",
+      link_video: "https://youtube.com/shorts/_rDGDLXfTCc",
       data_pubblicazione: null
     },
     {
@@ -13297,7 +13297,7 @@ var demo_data_default = {
       pattern_biomeccanico: "destrezza, asaltello",
       ruolo: "accessorio",
       tag_biomeccanici: "destrezza, asaltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/Gw0ZwJs6AuQ?si=Pn8lHPgqN_A4nDxA",
+      link_video: "https://youtube.com/shorts/uUHK_kDmL4U",
       data_pubblicazione: null
     },
     {
@@ -13341,7 +13341,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/yF7dkUK7Nbw?si=OLOG3ZV6tYaPo0RL",
+      link_video: "https://youtube.com/shorts/5isSyz33jpA",
       data_pubblicazione: null
     },
     {
@@ -13352,7 +13352,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/qrLyxNceFeI?si=kjPmfsQ7uZgSH9MI",
+      link_video: "https://youtube.com/shorts/CR67BTqLBa0",
       data_pubblicazione: null
     },
     {
@@ -13363,7 +13363,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/wYcB7w0e27Y?si=F5fplhPuxpGpOO1F",
+      link_video: "https://youtube.com/shorts/guIOEB84Z30",
       data_pubblicazione: null
     },
     {
@@ -13374,7 +13374,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/lnuCHOUYLrI?si=rP0-oYNJQYHcVcxh",
+      link_video: "https://youtube.com/shorts/USaC1jfh3Og",
       data_pubblicazione: null
     },
     {
@@ -13385,7 +13385,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/Xty3QXF2l-I?si=MkzYT-_88QanmfRT",
+      link_video: "https://youtube.com/shorts/Lv33zEfo8-Q",
       data_pubblicazione: null
     },
     {
@@ -13396,7 +13396,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/mvCgOmEMemo?si=5jxiQ_r3mh6dwSNu",
+      link_video: "https://youtube.com/shorts/1KoPNrysB7g",
       data_pubblicazione: null
     },
     {
@@ -13407,7 +13407,7 @@ var demo_data_default = {
       pattern_biomeccanico: "destrezza, asaltello",
       ruolo: "accessorio",
       tag_biomeccanici: "destrezza, asaltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/J1LgaJX2wbc?si=8yRD-BHck-oFVImE",
+      link_video: "https://youtube.com/shorts/cKkt9DDNb_U",
       data_pubblicazione: null
     },
     {
@@ -13418,7 +13418,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/kLtSzkOPHUw?si=1UzhtKy6PZv68LY2",
+      link_video: "https://youtube.com/shorts/N5W-ngtTTCk",
       data_pubblicazione: null
     },
     {
@@ -13429,7 +13429,7 @@ var demo_data_default = {
       pattern_biomeccanico: "circonduzione e mobilt\xE0 di anca, saltello",
       ruolo: null,
       tag_biomeccanici: "circonduzione e mobilt\xE0 di anca, saltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/tZ28cg_Wi1c?si=bNZhGLkec-Fb_fZw",
+      link_video: "https://youtube.com/shorts/xobV12r17WE",
       data_pubblicazione: null
     },
     {
@@ -13440,7 +13440,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/0VMtt0J6hOA?si=sVc_d-sfG5PoqKYx",
+      link_video: "https://youtube.com/shorts/nZJjTN4PJGg",
       data_pubblicazione: null
     },
     {
@@ -13451,7 +13451,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/qQ8cUJsXj4A?si=uSa0URe_6iQZGvQ3",
+      link_video: "https://youtube.com/shorts/ppJXt-faDYQ",
       data_pubblicazione: null
     },
     {
@@ -13462,7 +13462,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/ckdkAL-Q4FY?si=tvHwIjWNXHNUsyoH",
+      link_video: "https://youtube.com/shorts/O7i6e2cv8l8",
       data_pubblicazione: null
     },
     {
@@ -13473,7 +13473,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtu.be/-NAO9tMarFc?si=x2nINXxqtvlOGUHx",
+      link_video: "https://youtube.com/shorts/C2XsmvmGPlY",
       data_pubblicazione: null
     },
     {
@@ -13484,7 +13484,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
-      link_video: "https://youtube.com/shorts/OJfFV2KtD68",
+      link_video: "https://youtube.com/shorts/inSXETgHuJU",
       data_pubblicazione: null
     },
     {
@@ -13495,7 +13495,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Potenza Esplosiva, Forza Massimale, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico, resistenza progressiva",
-      link_video: "https://youtube.com/shorts/6FdCgshEV20",
+      link_video: "https://youtube.com/shorts/fyLREVL_Gj8",
       data_pubblicazione: null
     },
     {
@@ -13605,7 +13605,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core stability, flessoestensione spalle",
       ruolo: null,
       tag_biomeccanici: "core stability, flessoestensione spalle \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/WL2Gbf9klSI?si=R-4lfDqWZo7_yc9B",
+      link_video: "https://youtube.com/shorts/STvSUGDtXX0",
       data_pubblicazione: null
     },
     {
@@ -13616,7 +13616,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/ld7Kf2oSluw?si=SJfjRKwVBHwVeFmU",
+      link_video: "https://youtube.com/shorts/pg4CaIOYuAs",
       data_pubblicazione: null
     },
     {
@@ -13627,7 +13627,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/9_okXhwjLYA?si=XktmuYmNQroiqfmK",
+      link_video: "https://youtube.com/shorts/In-cLxGzZEw",
       data_pubblicazione: null
     },
     {
@@ -13638,7 +13638,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/9_okXhwjLYA?si=BxDWK0De2qi1w_xX",
+      link_video: "https://youtube.com/shorts/In-cLxGzZEw",
       data_pubblicazione: null
     },
     {
@@ -13649,7 +13649,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core stability, flessoestensione spalle, rotazione sul piano trasverso",
       ruolo: null,
       tag_biomeccanici: "core stability, flessoestensione spalle, rotazione sul piano trasverso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/FA9vwwWXdGA?si=M2cBgP8YR-_5s1aB",
+      link_video: "https://youtube.com/shorts/_DDKPl2z4lA",
       data_pubblicazione: null
     },
     {
@@ -13660,7 +13660,7 @@ var demo_data_default = {
       pattern_biomeccanico: "core stability, traslazione laterale",
       ruolo: "propedeutico L master",
       tag_biomeccanici: "core stability, traslazione laterale \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/p6AxeGF0v08?si=CsMl_yeUvOTtca2y",
+      link_video: "https://youtube.com/shorts/aUN2D2svjsg",
       data_pubblicazione: null
     },
     {
@@ -13704,7 +13704,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, trazione verticale dal basso",
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtube.com/shorts/gy5fnoBpd0E?feature=share",
+      link_video: "https://youtube.com/shorts/kEyTcHs2jlE",
       data_pubblicazione: null
     },
     {
@@ -13792,7 +13792,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, core stability, affondo",
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, core stability, affondo \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/mgABr0Ss9Fo?si=Hwr_UXlnHTfTy_Wk",
+      link_video: "https://youtube.com/shorts/ephpBy9kGuc",
       data_pubblicazione: null
     },
     {
@@ -13803,7 +13803,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, core stability",
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, core stability \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/nuMELy_lT28?si=h26vlhmuc0tzl1cP",
+      link_video: "https://youtube.com/shorts/v0-RIjDrdL4",
       data_pubblicazione: null
     },
     {
@@ -13869,7 +13869,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, accosciata, salto",
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, accosciata, salto \u2022 Salto, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
-      link_video: "https://youtu.be/-eqiqA8lXX4?si=HKSFeAxGQ24iaIKK",
+      link_video: "https://youtube.com/shorts/R3ICbeuPH48",
       data_pubblicazione: null
     },
     {
@@ -13891,7 +13891,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, trazione verticale dal basso, spinta verticale",
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso, spinta verticale \u2022 Metcon, Potenza Anaerobica",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtube.com/shorts/vi5ZDqW4AyM",
       data_pubblicazione: null
     },
     {
@@ -13902,7 +13902,7 @@ var demo_data_default = {
       pattern_biomeccanico: "spinta verticale, asimmetrico",
       ruolo: "complementare",
       tag_biomeccanici: "spinta verticale, asimmetrico \u2022 Metcon, Potenza Anaerobica",
-      link_video: "https://youtube.com/shorts/nQHKdic83T8",
+      link_video: "https://youtube.com/shorts/vi5ZDqW4AyM",
       data_pubblicazione: null
     },
     {
@@ -14045,7 +14045,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, affondo, salto",
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, affondo, salto \u2022 Potenza Esplosiva, Salto, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
-      link_video: "https://youtube.com/shorts/qwSTFU2DV5A?si=1bDypth-DLwWo1J9",
+      link_video: "https://youtube.com/shorts/IFkNosWDFlA",
       data_pubblicazione: null
     },
     {
@@ -14056,7 +14056,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, accosciata, salto",
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, accosciata, salto \u2022 Salto, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
-      link_video: "https://youtube.com/shorts/OJfFV2KtD68",
+      link_video: "https://youtube.com/shorts/inSXETgHuJU",
       data_pubblicazione: null
     },
     {
@@ -14067,7 +14067,7 @@ var demo_data_default = {
       pattern_biomeccanico: "body folw",
       ruolo: "complementare",
       tag_biomeccanici: "body folw \u2022 Agilit\xE0, Coordinazione, Metcon, Potenza Anaerobica",
-      link_video: "https://youtu.be/OGEUeBvoKc0?si=v7LIiDqSnd71NyM4",
+      link_video: "https://youtube.com/shorts/2vJcPKZw18Q",
       data_pubblicazione: null
     },
     {
@@ -14078,7 +14078,7 @@ var demo_data_default = {
       pattern_biomeccanico: "body folw",
       ruolo: "complementare",
       tag_biomeccanici: "body folw \u2022 Agilit\xE0, Coordinazione, Metcon, Potenza Anaerobica",
-      link_video: "https://youtu.be/RVm9HCs56X8?si=OxaEACWRDQPW-qYy",
+      link_video: "https://youtube.com/shorts/swkl6J5xqnw",
       data_pubblicazione: null
     },
     {
@@ -14100,7 +14100,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca asimmetrico",
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca asimmetrico \u2022 Potenza Anaerobica, Trazione Verticale, Metcon, Potenza Esplosiva, Plyometrics, Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa",
-      link_video: "https://youtube.com/shorts/7r3ThD-zkpw",
+      link_video: "https://youtube.com/shorts/4lql1_wA_Ss",
       data_pubblicazione: null
     },
     {
@@ -14199,7 +14199,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Metcon, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/xYr1Ew0d9bI",
+      link_video: "https://youtube.com/shorts/zMi68T0liWI",
       data_pubblicazione: null
     },
     {
@@ -14243,7 +14243,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca asimmetrico, lancio verticale",
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca asimmetrico, lancio verticale \u2022 Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/4UaIYL4E8_Q",
+      link_video: "https://youtube.com/shorts/Nsde-BNzRy8",
       data_pubblicazione: null
     },
     {
@@ -14254,7 +14254,7 @@ var demo_data_default = {
       pattern_biomeccanico: "trazione verticale dal basso, lancio verticale, cerniera d'anca",
       ruolo: null,
       tag_biomeccanici: "trazione verticale dal basso, lancio verticale, cerniera d'anca \u2022 Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
-      link_video: "https://youtube.com/shorts/k4YFnGkzK-U",
+      link_video: "https://youtube.com/shorts/Meyqm1Du89g",
       data_pubblicazione: null
     },
     {
@@ -14265,7 +14265,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, affondo, trazione verticale dal basso",
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, affondo, trazione verticale dal basso \u2022 Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Metcon, Carico Asimmetrico",
-      link_video: "https://youtube.com/shorts/blBeBKFUdzE",
+      link_video: "https://youtube.com/shorts/JpmLFc_bMcU",
       data_pubblicazione: null
     },
     {
@@ -14298,7 +14298,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, trazione verticale dal basso",
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtu.be/l3TWgpjg5tA?si=P7ZXSUo9VPmWjiLC",
+      link_video: "https://youtube.com/shorts/m-B6jnD9Qs0",
       data_pubblicazione: null
     },
     {
@@ -14320,7 +14320,7 @@ var demo_data_default = {
       pattern_biomeccanico: "body folw, cerniera d'anca, accosciata",
       ruolo: "complementare",
       tag_biomeccanici: "body folw, cerniera d'anca, accosciata \u2022 Agilit\xE0, Coordinazione, Metcon, Potenza Anaerobica, Potenza Esplosiva",
-      link_video: "https://youtube.com/shorts/iRJEq6FnzxI",
+      link_video: "https://youtube.com/shorts/PbXUM9whsQo",
       data_pubblicazione: null
     },
     {
@@ -14331,7 +14331,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, trazione verticale dal basso",
       ruolo: "engine, benchmark",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 Multi-planare, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico, Plyometrics",
-      link_video: "https://youtube.com/shorts/b8D0AuCfrp4?feature=share",
+      link_video: "https://youtube.com/shorts/PQ-Ga27AgoM",
       data_pubblicazione: null
     },
     {
@@ -14386,7 +14386,7 @@ var demo_data_default = {
       pattern_biomeccanico: "spinta orizzontale",
       ruolo: "complementare",
       tag_biomeccanici: "spinta orizzontale \u2022 core training, spnta orizzontale",
-      link_video: "https://youtube.com/shorts/iSipY1JCKdQ",
+      link_video: "https://youtube.com/shorts/Q6Iwf63kckI",
       data_pubblicazione: null
     },
     {
@@ -14397,7 +14397,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, flessoestensione del tronco, catena posteriore, simmetrico",
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, flessoestensione del tronco, catena posteriore, simmetrico \u2022 cerniera d'anca, flessoestensione del tronco, catena posteriore, simmetrico",
-      link_video: "https://youtube.com/shorts/9OdSw-O94rU",
+      link_video: "https://youtube.com/shorts/LJzESRNzCTI",
       data_pubblicazione: null
     },
     {
@@ -14408,7 +14408,7 @@ var demo_data_default = {
       pattern_biomeccanico: "cerniera d'anca, accosciata",
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca, accosciata \u2022 cerniera d'anca, accosciata",
-      link_video: "https://youtube.com/shorts/fGomFiNjpEI",
+      link_video: "https://youtube.com/shorts/x79MUElgGK8",
       data_pubblicazione: null
     },
     {
@@ -14434,17 +14434,6 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 239,
-      id_esercizio: "239",
-      nome_reale: "Gymnasty ABS",
-      attrezzo: "corpo libero",
-      pattern_biomeccanico: "core strenght, piano sagittale",
-      ruolo: "complementare",
-      tag_biomeccanici: "core strenght, piano sagittale \u2022 pliometria, saltelli, multidirezionale",
-      link_video: "https://youtube.com/shorts/2LBsvhVglwA",
-      data_pubblicazione: null
-    },
-    {
       id: 240,
       id_esercizio: "240",
       nome_reale: "Knee drives",
@@ -14452,7 +14441,7 @@ var demo_data_default = {
       pattern_biomeccanico: "pliometria, saltelli, multidirezionale",
       ruolo: "accessorio",
       tag_biomeccanici: "pliometria, saltelli, multidirezionale \u2022 Multi-planare, Spinta Orizzontale, Connessione Controlaterale, linee spirali, spinta orizzontale",
-      link_video: "https://www.youtube.com/shorts/2LBsvhVglwA",
+      link_video: "https://youtube.com/shorts/2tYTglQdxdw",
       data_pubblicazione: null
     },
     {
@@ -14463,7 +14452,7 @@ var demo_data_default = {
       pattern_biomeccanico: null,
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
-      link_video: "https://youtube.com/shorts/HGsz2eixUxk",
+      link_video: "https://youtube.com/shorts/f7Y45XU3Z9M",
       data_pubblicazione: null
     },
     {
@@ -33565,7 +33554,7 @@ var demo_data_default = {
       cognome: "Pantanella",
       name: "Alessandro Pantanella",
       ruolo: "atleta",
-      crediti: 19,
+      crediti: 18,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -33577,7 +33566,7 @@ var demo_data_default = {
       ],
       anticipi_da_scontare: 0,
       updated_at: "2026-10-08T07:51:28.896Z",
-      data_ultimo_accesso: "2026-10-29T14:21:06.006Z",
+      data_ultimo_accesso: "2026-11-05T15:32:19.201Z",
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: null
     },
@@ -33600,7 +33589,7 @@ var demo_data_default = {
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: "usr-bw-1953985",
       updated_at: "2026-10-07T14:41:33.988Z",
-      data_ultimo_accesso: "2026-10-29T14:21:06.006Z"
+      data_ultimo_accesso: "2026-11-05T15:32:19.201Z"
     },
     {
       id: "usr-bw-2067105",
@@ -33767,6 +33756,18 @@ var demo_data_default = {
     }
   ],
   movimenti_crediti: [
+    {
+      id: "mov-1793892740085-675",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-05T15:32:20.085Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 18,
+      motivazione: "Prenotazione slot del 2026-11-06 ore 10:45 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "coach"
+    },
     {
       id: "mov-1793283667223-103",
       atleta_id: "usr-bw-1953985",
@@ -36568,6 +36569,20 @@ var demo_data_default = {
       created_at: "2026-10-27T13:27:05.000Z"
     },
     {
+      id: "bk-1793294883723",
+      data: "2026-10-30",
+      orario: "09:15",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "8mj0jvk6hcg1pio328m29ti55k",
+      created_at: "2026-10-29T17:28:04.000Z"
+    },
+    {
       id: "bk-1792683000000-maddy-1",
       data: "2026-10-30",
       orario: "10:30",
@@ -36594,6 +36609,20 @@ var demo_data_default = {
       note: "Prenotazione Multipla Rapida",
       google_event_id: "5qcqesvcrj9f15d7ierkimc4v8",
       created_at: "2026-10-22T16:50:00.000Z"
+    },
+    {
+      id: "bk-1793283666006",
+      data: "2026-10-30",
+      orario: "17:30",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-10-29T14:21:06.006Z",
+      google_event_id: "lmsc4iv01am5339bn1eibff6ec"
     },
     {
       id: "bk-1792683000000-tesse-1",
@@ -36624,6 +36653,20 @@ var demo_data_default = {
       google_event_id: "coj4tgbch279thpavu8anvl88g"
     },
     {
+      id: "bk-1793440352110",
+      data: "2026-11-02",
+      orario: "10:00",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "g8ftjrikh5keu03tnahg7lc1hk",
+      created_at: "2026-10-31T09:52:32.000Z"
+    },
+    {
       id: "bk-1792707160588",
       data: "2026-11-02",
       orario: "10:15",
@@ -36638,6 +36681,20 @@ var demo_data_default = {
       google_event_id: "rj4h12ov408h8ih1oltuhd2tu4"
     },
     {
+      id: "bk-1793550023093",
+      data: "2026-11-02",
+      orario: "18:15",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "m6ao33m9ttq6cg4fruh8fs9tl8",
+      created_at: "2026-11-01T16:20:23.000Z"
+    },
+    {
       id: "bk-1792505518660",
       data: "2026-11-02",
       orario: "18:30",
@@ -36650,6 +36707,34 @@ var demo_data_default = {
       note: "",
       created_at: "2026-10-20T14:11:58.660Z",
       google_event_id: "8cfh2gj6ql66uf6otksq3vqvfk"
+    },
+    {
+      id: "bk-1793521194156",
+      data: "2026-11-02",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "efbfa3jku8kj97ogkm57mj58uc",
+      created_at: "2026-11-01T08:19:54.000Z"
+    },
+    {
+      id: "bk-1793614977407",
+      data: "2026-11-04",
+      orario: "10:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "a7vrdvvdgdo175ks7rg2hie9qg",
+      created_at: "2026-11-02T10:22:57.000Z"
     },
     {
       id: "bk-1792683000000-casci-2",
@@ -36694,6 +36779,34 @@ var demo_data_default = {
       google_event_id: "pekfeccms6m89efq4c81c3e2v0"
     },
     {
+      id: "bk-1793892739201",
+      data: "2026-11-06",
+      orario: "10:45",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      created_at: "2026-11-05T15:32:19.201Z",
+      google_event_id: "s6t474tb8hdenum07f3l2idcn0"
+    },
+    {
+      id: "bk-1793719715261",
+      data: "2026-11-06",
+      orario: "11:00",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "2mpniop5ceuv2b9t1bn7ouo9es",
+      created_at: "2026-11-03T15:28:35.000Z"
+    },
+    {
       id: "bk-1792683000000-casci-3",
       data: "2026-11-06",
       orario: "17:15",
@@ -36706,6 +36819,34 @@ var demo_data_default = {
       note: "Prenotazione Multipla Rapida",
       google_event_id: "ngsc5kg6539i7b95amsq51ju4c",
       created_at: "2026-10-22T16:50:03.000Z"
+    },
+    {
+      id: "bk-1793615037657",
+      data: "2026-11-09",
+      orario: "10:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "7r5upu9apq5ojgikh9gf4brvas",
+      created_at: "2026-11-02T10:23:57.000Z"
+    },
+    {
+      id: "bk-1793615055287",
+      data: "2026-11-11",
+      orario: "10:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "2scvqhja8i8iu1kr839f5s9n1s",
+      created_at: "2026-11-02T10:24:15.000Z"
     },
     {
       id: "bk-1792683000000-casci-4",
@@ -36890,18 +37031,18 @@ var demo_data_default = {
       created_at: "2026-10-22T16:50:18.000Z"
     },
     {
-      id: "bk-1793283666006",
-      data: "2026-10-30",
-      orario: "17:30",
-      atleta_id: "usr-bw-1953987",
-      email_cliente: "pierpaolaciancia@gmail.com",
-      nome_cliente: "Pierpaola Ciancia",
+      id: "bk-1792683000000-casci-17",
+      data: "2026-12-30",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
       telefono_cliente: "",
       stato: "confermata",
       credito_scalato: true,
-      note: "",
-      created_at: "2026-10-29T14:21:06.006Z",
-      google_event_id: "lmsc4iv01am5339bn1eibff6ec"
+      note: "Prenotazione Multipla Rapida",
+      google_event_id: "71lr1798957ev6373gepesrcvc",
+      created_at: "2026-10-22T16:50:19.000Z"
     }
   ],
   prenotazioni_cancellate: [
@@ -36955,7 +37096,9 @@ var demo_data_default = {
     "bk-1792683000000-maddy-0",
     "lab_bk-1792683000000-maddy-0",
     "bk-1792305817512",
-    "lab_bk-1792305817512"
+    "lab_bk-1792305817512",
+    "bk-1793550051037",
+    "lab_bk-1793550051037"
   ],
   eccezioni_calendario: [
     {
@@ -37648,7 +37791,7 @@ firenzepersonaltrainer@gmail.com`,
       stato: "inviata"
     }
   ],
-  esercizi: []
+  active_user_id: null
 };
 
 // local-api.ts
@@ -37663,6 +37806,21 @@ function isBookingIdCancelled(id, cancelledList) {
   const clean = raw.startsWith("lab_") ? raw.slice(4) : raw;
   const lab = raw.startsWith("lab_") ? raw : `lab_${raw}`;
   return cancelledList.includes(raw) || cancelledList.includes(clean) || cancelledList.includes(lab);
+}
+function parseSafeDate(iso) {
+  if (!iso) return /* @__PURE__ */ new Date(0);
+  if (typeof iso === "string" && (iso.includes("T") || iso.includes("-") || iso.includes("/"))) {
+    const d = new Date(iso);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const num = typeof iso === "number" ? iso : parseFloat(String(iso));
+  if (!isNaN(num) && num > 2e4 && num < 7e4) {
+    const epochMs = (num - 25569) * 86400 * 1e3;
+    const d = new Date(epochMs);
+    if (!isNaN(d.getTime())) return d;
+  }
+  const fallback = new Date(iso);
+  return isNaN(fallback.getTime()) ? /* @__PURE__ */ new Date(0) : fallback;
 }
 function loadData() {
   let loaded = null;
@@ -41522,8 +41680,17 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify({ ok: true, stato, livello, giorno: giornoNum }));
   }
   if (pathname === "/app-api/diario" && method === "GET") {
-    const targetEmail = url.searchParams.get("email");
-    const filterEmail = targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
+    const explicitEmail = url.searchParams.get("email")?.trim().toLowerCase();
+    const userEmail = resolveTargetEmail(req, db, currentUser);
+    if (!userEmail) {
+      return res.end(JSON.stringify([]));
+    }
+    let filterEmail = userEmail;
+    if (explicitEmail) {
+      if (currentUser?.ruolo === "manager" || explicitEmail === userEmail) {
+        filterEmail = explicitEmail;
+      }
+    }
     const exMap = /* @__PURE__ */ new Map();
     (db.database_esercizi || []).forEach((e) => {
       if (e.id) exMap.set(String(e.id), e.nome_reale);
@@ -41533,7 +41700,7 @@ CALENDARIO E PRENOTAZIONI:
         if (trimmed) exMap.set(trimmed, e.nome_reale);
       }
     });
-    const rows = [...db.diario_utente].filter((d) => !filterEmail || d.email_cliente === filterEmail).map((d) => {
+    const rows = [...db.diario_utente].filter((d) => (d.email_cliente || "").trim().toLowerCase() === filterEmail).map((d) => {
       let nome = d.nome_esercizio;
       if (!nome || /^\d+$/.test(String(nome).trim()) || nome === d.id_esercizio) {
         const real = exMap.get(String(d.id_esercizio || nome).trim()) || exMap.get(String(d.id_esercizio || nome).replace(/^0+/, ""));
@@ -41551,14 +41718,23 @@ CALENDARIO E PRENOTAZIONI:
         nome_esercizio: nome || "Esercizio Landmine",
         sets_json: sets
       };
-    }).sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
+    }).sort((a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime());
     return res.end(JSON.stringify(rows));
   }
   const diarioExMatch = pathname.match(/^\/app-api\/diario\/esercizio\/([^/]+)$/);
   if (diarioExMatch && method === "GET") {
     const idEsercizio = decodeURIComponent(diarioExMatch[1]);
-    const targetEmail = url.searchParams.get("email");
-    const filterEmail = targetEmail || (currentUser.ruolo === "manager" ? null : currentUser.email);
+    const explicitEmail = url.searchParams.get("email")?.trim().toLowerCase();
+    const userEmail = resolveTargetEmail(req, db, currentUser);
+    if (!userEmail) {
+      return res.end(JSON.stringify([]));
+    }
+    let filterEmail = userEmail;
+    if (explicitEmail) {
+      if (currentUser?.ruolo === "manager" || explicitEmail === userEmail) {
+        filterEmail = explicitEmail;
+      }
+    }
     const exMap = /* @__PURE__ */ new Map();
     (db.database_esercizi || []).forEach((e) => {
       if (e.id) exMap.set(String(e.id), e.nome_reale);
@@ -41569,7 +41745,7 @@ CALENDARIO E PRENOTAZIONI:
       }
     });
     const rows = [...db.diario_utente].filter(
-      (d) => (!filterEmail || d.email_cliente === filterEmail) && (d.id_esercizio === idEsercizio || String(d.id_esercizio).replace(/^0+/, "") === idEsercizio.replace(/^0+/, "") || d.nome_esercizio?.toLowerCase() === idEsercizio.toLowerCase())
+      (d) => (d.email_cliente || "").trim().toLowerCase() === filterEmail && (d.id_esercizio === idEsercizio || String(d.id_esercizio).replace(/^0+/, "") === idEsercizio.replace(/^0+/, "") || d.nome_esercizio?.toLowerCase() === idEsercizio.toLowerCase())
     ).map((d) => {
       let nome = d.nome_esercizio;
       if (!nome || /^\d+$/.test(String(nome).trim()) || nome === d.id_esercizio) {
@@ -41588,13 +41764,18 @@ CALENDARIO E PRENOTAZIONI:
         nome_esercizio: nome || "Esercizio Landmine",
         sets_json: sets
       };
-    }).sort((a, b) => new Date(b.data_ora).getTime() - new Date(a.data_ora).getTime());
+    }).sort((a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime());
     return res.end(JSON.stringify(rows));
   }
   if (pathname === "/app-api/diario" && method === "POST") {
+    const authorEmail = resolveTargetEmail(req, db, currentUser, parsedBody?.email_cliente);
+    if (!authorEmail) {
+      res.statusCode = 401;
+      return res.end(JSON.stringify({ error: "Non autorizzato" }));
+    }
     const newEntry = {
       id: Date.now(),
-      email_cliente: currentUser.email,
+      email_cliente: authorEmail,
       id_esercizio: parsedBody.id_esercizio,
       nome_esercizio: parsedBody.nome_esercizio,
       carico_kg: parsedBody.sets_json ? null : parsedBody.carico_kg ?? null,
@@ -41704,5 +41885,6 @@ export {
   createGoogleCalendarLabSlot,
   handler as default,
   deleteGoogleCalendarLabSlot,
+  parseSafeDate,
   pullGoogleCalendarLabSlots
 };
