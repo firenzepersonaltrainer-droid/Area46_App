@@ -51,8 +51,12 @@ export function validatePedagogy(targetCycleName, workouts = null) {
   const proExcludedIds = (rules.esclusioni_livello_pro || []).map((e) => normalizeId(e.id));
   const matadorUnification = rules.unioni_obbligatorie_pro || [];
   const continuousBannedPlus = (rules.esercizi_alternati_continui_vietato_piu || []).map((e) => normalizeId(e.id));
+  const consolidatedFromPrevious = (rules.esercizi_consolidati_da_livelli_precedenti || []).map((e) => normalizeId(e.id));
+  const consolidatedNo3Phase = Array.from(new Set([
+    ...(rules.consolidati_senza_progressione_3_fasi || []).map((e) => normalizeId(e.id)),
+    ...consolidatedFromPrevious
+  ]));
   const hierarchyRules = rules.gerarchia_propedeutiche || [];
-  const consolidatedNo3Phase = (rules.consolidati_senza_progressione_3_fasi || []).map((e) => normalizeId(e.id));
 
   // 1. Controlli riga per riga nel ciclo target
   for (const row of cycleRows) {
@@ -123,16 +127,19 @@ export function validatePedagogy(targetCycleName, workouts = null) {
 
     if (hasTargetInCycle) {
       const propId = normalizeId(h.id_propedeutica_obbligatoria);
-      // Cerca nei cicli precedenti (con numero di ciclo < targetCycleNum)
+      // Se la propedeutica era già nei livelli precedenti (Entry, L1, L2, Advanced), è già consolidata
+      const isConsolidatedInPastLevels = consolidatedFromPrevious.includes(propId);
+
+      // Altrimenti cerca nei cicli PRO precedenti (con numero di ciclo < targetCycleNum)
       const propUsedInPriorCycles = allWorkouts.some((w) => {
         const cMatch = (w.settimana || "").match(/\d+/);
         const cNum = cMatch ? parseInt(cMatch[0], 10) : 0;
         return cNum < targetCycleNum && normalizeId(w.id_esercizio) === propId;
       });
 
-      if (!propUsedInPriorCycles) {
+      if (!isConsolidatedInPastLevels && !propUsedInPriorCycles) {
         errors.push(
-          `⛔ GERARCHIA PROPEDEUTICA VIOLATA: '${h.nome_target}' (ID ${targetId}) prescritto in '${targetCycleName}' senza che la sua propedeutica obbligatoria '${h.nome_propedeutica}' (ID ${propId}) sia stata consolidata nei cicli precedenti!`
+          `⛔ GERARCHIA PROPEDEUTICA VIOLATA: '${h.nome_target}' (ID ${targetId}) prescritto in '${targetCycleName}' senza che la sua propedeutica obbligatoria '${h.nome_propedeutica}' (ID ${propId}) sia stata consolidata nei cicli precedenti o nei livelli storici!`
         );
       }
     }

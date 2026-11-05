@@ -44,7 +44,10 @@
     {
       "id_unificato": "242",
       "nome": "Underhand/Overhand Matador Transitions",
-      "ids_vietati_separatamente": ["104", "105"],
+      "ids_vietati_separatamente": [
+        "104",
+        "105"
+      ],
       "video_ufficiale": "https://www.youtube.com/watch?v=4k2O1hameP0",
       "motivo": "Dal livello PRO in poi è fatto divieto assoluto di separare Underhand da Overhand Matador Wheel. Utilizzare sempre ed esclusivamente l'esercizio unificato ID 242."
     }
@@ -75,5 +78,1579 @@
   "regola_anti_pigrizia": {
     "finestra_cicli_precedenti": 2,
     "descrizione": "Vietato riutilizzare esercizi di warm-up o accessori già comparsi nei 2 cicli immediatamente precedenti se esistono ancora esercizi vergini (usage_count == 0) nella stessa categoria del catalogo PRO."
-  }
+  },
+  "esercizi_consolidati_da_livelli_precedenti": [
+    {
+      "id": "019",
+      "nome": "Ground mobility Series",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "020",
+      "nome": "Butt Scoots",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "001",
+      "nome": "skierg regular",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "040",
+      "nome": "Screwdriver",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "043",
+      "nome": "Pounce squat",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "026",
+      "nome": "Side Closing",
+      "livelli_storici": [
+        "Entry Level",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "037",
+      "nome": "Slamball Coiled Blade Position",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "092",
+      "nome": "Bicycle Crunches",
+      "livelli_storici": [
+        "Entry Level",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "002",
+      "nome": "skierg pagaia mono",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "041",
+      "nome": "Screwdriver Lunges",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "036",
+      "nome": "Coiled Blade Position",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "091",
+      "nome": "Elbow Spiderman Toe Tap",
+      "livelli_storici": [
+        "Entry Level",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "004",
+      "nome": "skierg wood chopper",
+      "livelli_storici": [
+        "Entry Level",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "022",
+      "nome": "Coiled Cable Punch",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "023",
+      "nome": "Coiled Cable ROW",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "169",
+      "nome": "Kettlebell Swing BASIC",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "044",
+      "nome": "Coiled Reverse Lunge",
+      "livelli_storici": [
+        "Entry Level",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "018",
+      "nome": "Wall Mobility Series",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "075",
+      "nome": "One arm press",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "080",
+      "nome": "Coiled Bench Row",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "045",
+      "nome": "Landmine rotational Lunges",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "090",
+      "nome": "dragon flag progressioni",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "076",
+      "nome": "Push the wall row",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "046",
+      "nome": "Split Switch Screwdriver",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "051",
+      "nome": "High hand switch",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "048",
+      "nome": "Lockout Position",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "050",
+      "nome": "Split Jerk",
+      "livelli_storici": [
+        "Entry Level",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "049",
+      "nome": "Step/Step back press",
+      "livelli_storici": [
+        "Entry Level",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "010",
+      "nome": "Run",
+      "livelli_storici": [
+        "Entry Level",
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "047",
+      "nome": "wall driver",
+      "livelli_storici": [
+        "Entry Level"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Entry Level)"
+    },
+    {
+      "id": "021",
+      "nome": "Band hip Circuit",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "055",
+      "nome": "Hang Position ISO",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "056",
+      "nome": "Landmine coiled Deadlift",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "116",
+      "nome": "High pull bounce",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "064",
+      "nome": "High Pull ISO",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "065",
+      "nome": "High Pull",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "170",
+      "nome": "Coiled Kettlebell Swing",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "066",
+      "nome": "High pull Step press",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "079",
+      "nome": "Bench press",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "034",
+      "nome": "air bike solo braccia",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "011",
+      "nome": "Air bike regular",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "067",
+      "nome": "High Pull to Step back press",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "069",
+      "nome": "Split Snatch",
+      "livelli_storici": [
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "071",
+      "nome": "Slamball coiled Skater's hops",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "218",
+      "nome": "Landmine Jerk",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "221",
+      "nome": "Half kneeling snatch",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "039",
+      "nome": "Slam bal blade pos. dynamic",
+      "livelli_storici": [
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "098",
+      "nome": "Avenger Blade passing",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "100",
+      "nome": "Speed skater touch",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "086",
+      "nome": "Power Coiled plank progressioni",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "082",
+      "nome": "Landmine Biker's Squat",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "217",
+      "nome": "Kettlebell coiled high pull swing",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "073",
+      "nome": "Lateral landmine clean",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "078",
+      "nome": "pull up Progressioni",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "099",
+      "nome": "Landmine quick Hops",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "102",
+      "nome": "jumping rope",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "024",
+      "nome": "Flag Bearer ISOINERZIALE",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "059",
+      "nome": "Split Clean and Jerk",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "088",
+      "nome": "Hollow March progressioni",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "072",
+      "nome": "Lateral Band clean",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "061",
+      "nome": "Kettlebell Step clean",
+      "livelli_storici": [
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "163",
+      "nome": "Arm basic DB pendulum",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "171",
+      "nome": "Kettlebell Skater Swing",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "152",
+      "nome": "Tuck Jump burpees",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "219",
+      "nome": "Punch isoinerziale",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "052",
+      "nome": "Dumbell Jerk",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "220",
+      "nome": "Wall High Pull",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "153",
+      "nome": "band split jerk",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "172",
+      "nome": "Kettlebell swing to clean",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "165",
+      "nome": "Pendulum Squat TS basic",
+      "livelli_storici": [
+        "Level 1"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "057",
+      "nome": "Landmine Step Clean",
+      "livelli_storici": [
+        "Level 1",
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "101",
+      "nome": "Sprinter Push up",
+      "livelli_storici": [
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "241",
+      "nome": "Coiled punch isoinerziale",
+      "livelli_storici": [
+        "Level 1",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 1)"
+    },
+    {
+      "id": "003",
+      "nome": "skierg pagaia alternato",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "222",
+      "nome": "Total kneeling snatch",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "068",
+      "nome": "Step Snatch",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "191",
+      "nome": "Endless rope Standing Power Pull",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "115",
+      "nome": "in in-out out sprawl",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "081",
+      "nome": "Meadow Row",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "038",
+      "nome": "Rotational Blade Position",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "208",
+      "nome": "Landmine Plyo Lift NO DOWN",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "225",
+      "nome": "Ball over shoulder",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "083",
+      "nome": "Landmine press side step",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "226",
+      "nome": "Coiled kettlebell swing to snatch",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "103",
+      "nome": "Heavy ROPE - race & chase",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "227",
+      "nome": "Skyerg lunges",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "097",
+      "nome": "Endless rope Plank  Alternating Pull",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "123",
+      "nome": "Box Jump over",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "181",
+      "nome": "Single Dumbbell T/S",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "206",
+      "nome": "Side kick through",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "095",
+      "nome": "Yin yang sit up press",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "015",
+      "nome": "spingere in salita",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "200",
+      "nome": "Sprint massimale in salita",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "007",
+      "nome": "Coiled skyerg",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "205",
+      "nome": "Kick-through progression",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "193",
+      "nome": "Endless rope Half kneeling lateral pull",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "136",
+      "nome": "Cross jump 2-1-2",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "173",
+      "nome": "DB/Kett. step Snatch",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "112",
+      "nome": "Icky shuffle variato",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "087",
+      "nome": "banded hollow March (solo gambe)",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "014",
+      "nome": "corsa in salita",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "180",
+      "nome": "single Dumbbell Pendulum lunge",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "204",
+      "nome": "Tuck Jump burpees",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "062",
+      "nome": "Landmine clean NO DOWN",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "228",
+      "nome": "COMBO Side kick trough + Sprawl",
+      "livelli_storici": [
+        "Level 2"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "207",
+      "nome": "Seated Endless rope power pull",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "106",
+      "nome": "Dragon Roll",
+      "livelli_storici": [
+        "Level 2",
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Level 2)"
+    },
+    {
+      "id": "109",
+      "nome": "in in-out out",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "184",
+      "nome": "Box Jump Over",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "096",
+      "nome": "coiled Ax Sit up CON MEDBALL",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "111",
+      "nome": "Heisman Shuffle",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "110",
+      "nome": "quarter turn",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "104",
+      "nome": "Overhand Matadors Wheel",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "105",
+      "nome": "Underhand Matadors Wheel",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "117",
+      "nome": "Landmine quick Hops",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "089",
+      "nome": "Deadbug",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "113",
+      "nome": "180° rotation jump",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "114",
+      "nome": "Skier touch",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "016",
+      "nome": "Trainare in salita",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "186",
+      "nome": "Box Jump",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "188",
+      "nome": "Kettlebell Snatch",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "185",
+      "nome": "Burpee Box Jump Over",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "094",
+      "nome": "Transverse twist ISOINERZIALE",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    },
+    {
+      "id": "203",
+      "nome": "Plyometric lunges",
+      "livelli_storici": [
+        "Advanced"
+      ],
+      "consolidato": true,
+      "richiede_progressione_3_fasi": false,
+      "motivo": "Esercizio consolidato nei livelli precedenti (Advanced)"
+    }
+  ],
+  "relazioni_propedeutiche_ufficiali": [
+    {
+      "propedeutica_id": "190",
+      "propedeutica_nome": "Dumbbell Coiled Thruster",
+      "target_id": "79, 188, 218",
+      "target_nome": "Bench press, Kettlebell Snatch, Landmine Jerk"
+    },
+    {
+      "propedeutica_id": "045",
+      "propedeutica_nome": "Landmine rotational Lunges",
+      "target_id": "82, 43",
+      "target_nome": "Landmine Biker's Squat, Pounce squat"
+    },
+    {
+      "propedeutica_id": "081",
+      "propedeutica_nome": "Meadow Row",
+      "target_id": "56",
+      "target_nome": "Landmine coiled Deadlift"
+    },
+    {
+      "propedeutica_id": "084",
+      "propedeutica_nome": "Kneeling Transition over head press",
+      "target_id": "59",
+      "target_nome": "Split Clean and Jerk"
+    },
+    {
+      "propedeutica_id": "208",
+      "propedeutica_nome": "Landmine Plyo Lift NO DOWN",
+      "target_id": "56, 59",
+      "target_nome": "Landmine coiled Deadlift, Split Clean and Jerk"
+    },
+    {
+      "propedeutica_id": "221",
+      "propedeutica_nome": "Half kneeling snatch",
+      "target_id": "69",
+      "target_nome": "Split Snatch"
+    },
+    {
+      "propedeutica_id": "172",
+      "propedeutica_nome": "Kettlebell swing to clean",
+      "target_id": "226",
+      "target_nome": "Coiled kettlebell swing to snatch"
+    },
+    {
+      "propedeutica_id": "188",
+      "propedeutica_nome": "Kettlebell Snatch",
+      "target_id": "226",
+      "target_nome": "Coiled kettlebell swing to snatch"
+    },
+    {
+      "propedeutica_id": "223",
+      "propedeutica_nome": "Kettlebell snatch lunge",
+      "target_id": "223",
+      "target_nome": "Kettlebell snatch lunge"
+    },
+    {
+      "propedeutica_id": "226",
+      "propedeutica_nome": "Coiled kettlebell swing to snatch",
+      "target_id": "188",
+      "target_nome": "Kettlebell Snatch"
+    },
+    {
+      "propedeutica_id": "175",
+      "propedeutica_nome": "half kneeling clubbell Snatch",
+      "target_id": "223,188, 69, 82, 43",
+      "target_nome": "Kettlebell snatch lunge, Kettlebell Snatch, Split Snatch, Landmine Biker's Squat, Pounce squat"
+    },
+    {
+      "propedeutica_id": "176",
+      "propedeutica_nome": "half kneeling to stand clubbell snatch",
+      "target_id": "223,188, 69, 82, 43, 45",
+      "target_nome": "Kettlebell snatch lunge, Kettlebell Snatch, Split Snatch, Landmine Biker's Squat, Pounce squat, Landmine rotational Lunges"
+    },
+    {
+      "propedeutica_id": "190",
+      "propedeutica_nome": "Dumbbell Coiled Thruster",
+      "target_id": "79, 188, 218",
+      "target_nome": "Bench press, Kettlebell Snatch, Landmine Jerk"
+    },
+    {
+      "propedeutica_id": "053",
+      "propedeutica_nome": "Split C&J Touch & Go",
+      "target_id": "218, 59",
+      "target_nome": "Landmine Jerk, Split Clean and Jerk"
+    },
+    {
+      "propedeutica_id": "127",
+      "propedeutica_nome": "COMBO: Landmine clean ALT. SCRD T/GO",
+      "target_id": "59, 058",
+      "target_nome": "Split Clean and Jerk, Landmine split clean"
+    },
+    {
+      "propedeutica_id": "128",
+      "propedeutica_nome": "COMBO: Landmine Split snatch High hand switch T/GO",
+      "target_id": "69",
+      "target_nome": "Split Snatch"
+    },
+    {
+      "propedeutica_id": "129",
+      "propedeutica_nome": "COMBO: Landmine Clean & Jerk High hand switch T/GO",
+      "target_id": "59, 058, 218",
+      "target_nome": "Split Clean and Jerk, Landmine split clean, Landmine Jerk"
+    },
+    {
+      "propedeutica_id": "224",
+      "propedeutica_nome": "Kettlebell snatch swing to snatch lunge",
+      "target_id": "218, 82, 44, 56, 230",
+      "target_nome": "Landmine Jerk, Landmine Biker's Squat, Coiled Reverse Lunge, Landmine coiled Deadlift, kettlebell clean and press"
+    },
+    {
+      "propedeutica_id": "063",
+      "propedeutica_nome": "Landmine Clean and jerk NO DOWN",
+      "target_id": "059, 218",
+      "target_nome": "Split Clean and Jerk, Landmine Jerk"
+    },
+    {
+      "propedeutica_id": "099",
+      "propedeutica_nome": "Landmine quick Hops",
+      "target_id": "43",
+      "target_nome": "Pounce squat"
+    },
+    {
+      "propedeutica_id": "116",
+      "propedeutica_nome": "High pull bounce",
+      "target_id": "69, 067",
+      "target_nome": "Split Snatch, High Pull to Step back press"
+    },
+    {
+      "propedeutica_id": "119",
+      "propedeutica_nome": "Super Mario Jump",
+      "target_id": "120, 121",
+      "target_nome": "Aerial Jerk, reverse aerial jerk"
+    },
+    {
+      "propedeutica_id": "120",
+      "propedeutica_nome": "Aerial Jerk",
+      "target_id": "59",
+      "target_nome": "Split Clean and Jerk"
+    },
+    {
+      "propedeutica_id": "121",
+      "propedeutica_nome": "reverse aerial jerk",
+      "target_id": "59",
+      "target_nome": "Split Clean and Jerk"
+    },
+    {
+      "propedeutica_id": "073",
+      "propedeutica_nome": "Lateral landmine clean",
+      "target_id": "63, 058",
+      "target_nome": "Landmine Clean and jerk NO DOWN, Landmine split clean"
+    },
+    {
+      "propedeutica_id": "171",
+      "propedeutica_nome": "Kettlebell Skater Swing",
+      "target_id": "170, 188",
+      "target_nome": "Coiled Kettlebell Swing, Kettlebell Snatch"
+    },
+    {
+      "propedeutica_id": "134",
+      "propedeutica_nome": "Split Jumps (sagittale)",
+      "target_id": "120, 121",
+      "target_nome": "Aerial Jerk, reverse aerial jerk"
+    },
+    {
+      "propedeutica_id": "175",
+      "propedeutica_nome": "half kneeling clubbell Snatch",
+      "target_id": "176",
+      "target_nome": "half kneeling to stand clubbell snatch"
+    },
+    {
+      "target_id": "176",
+      "target_nome": "half kneeling to stand clubbell snatch",
+      "propedeutica_id": "175",
+      "propedeutica_nome": "half kneeling clubbell Snatch"
+    }
+  ],
+  "relazioni_complementari_ufficiali": [
+    {
+      "fondamentale_id": "043",
+      "fondamentale_nome": "Pounce squat",
+      "complementare_id": "45",
+      "complementare_nome": "Landmine rotational Lunges"
+    },
+    {
+      "fondamentale_id": "044",
+      "fondamentale_nome": "Coiled Reverse Lunge",
+      "complementare_id": "180, 179, 181",
+      "complementare_nome": "single Dumbbell Pendulum lunge, Clubbell Ax lunge, Single Dumbbell T/S"
+    },
+    {
+      "fondamentale_id": "056",
+      "fondamentale_nome": "Landmine coiled Deadlift",
+      "complementare_id": "217, 85, 170, 81",
+      "complementare_nome": "Kettlebell coiled high pull swing, High Pull, Coiled Kettlebell Swing, Meadow Row"
+    },
+    {
+      "fondamentale_id": "082",
+      "fondamentale_nome": "Landmine Biker's Squat",
+      "complementare_id": "45",
+      "complementare_nome": "Landmine rotational Lunges"
+    },
+    {
+      "fondamentale_id": "218",
+      "fondamentale_nome": "Landmine Jerk",
+      "complementare_id": "67, 75",
+      "complementare_nome": "High Pull to Step back press, One arm press"
+    },
+    {
+      "fondamentale_id": "230",
+      "fondamentale_nome": "kettlebell clean and press",
+      "complementare_id": "76, 80, 81, 191, 95, 84, 75",
+      "complementare_nome": "Push the wall row, Coiled Bench Row, Meadow Row, Endless rope Standing Power Pull, Yin yang sit up press, Kneeling Transition over head press, One arm press"
+    },
+    {
+      "fondamentale_id": "059",
+      "fondamentale_nome": "Split Clean and Jerk",
+      "complementare_id": "057, 061, 063, 0,95, 075",
+      "complementare_nome": "Landmine Step Clean, Kettlebell Step clean, Landmine Clean and jerk NO DOWN, Yin yang sit up press, One arm press"
+    },
+    {
+      "fondamentale_id": "069",
+      "fondamentale_nome": "Split Snatch",
+      "complementare_id": "065, 067, 222, 174",
+      "complementare_nome": "High Pull, High Pull to Step back press, Total kneeling snatch, DB/Kett split snatch"
+    },
+    {
+      "fondamentale_id": "188",
+      "fondamentale_nome": "Kettlebell Snatch",
+      "complementare_id": "026, 027, 023, 054",
+      "complementare_nome": "Diagonal Band Deadlift, Neutral Band Deadlift, Coiled Cable ROW, Landmine press Cross Step"
+    }
+  ],
+  "relazioni_alternative_scalate": [
+    {
+      "id_originale": "218",
+      "nome_originale": "Landmine Jerk",
+      "id_alternativa": "75, 49",
+      "nome_alternativa": "One arm press, Step/Step back press"
+    },
+    {
+      "id_originale": "059",
+      "nome_originale": "Split Clean and Jerk",
+      "id_alternativa": "052",
+      "nome_alternativa": "Dumbell Jerk"
+    },
+    {
+      "id_originale": "069",
+      "nome_originale": "Split Snatch",
+      "id_alternativa": "070",
+      "nome_alternativa": "Dumbbell Split Snatch"
+    }
+  ]
 }
