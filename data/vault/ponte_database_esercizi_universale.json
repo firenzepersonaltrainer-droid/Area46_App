@@ -1,7 +1,7 @@
 {
   "versione": "1.0.0",
   "descrizione": "Ponte Bidirezionale tra Catalogo Area46 Lab e Universal Exercise Brain (Mentor & Alter-Ego)",
-  "totale_esercizi": 244,
+  "totale_esercizi": 243,
   "mappatura": [
     {
       "id_area46": "001",
@@ -2749,17 +2749,6 @@
       "nome_universale": "medball side kick through",
       "link_video_primario": "https://youtube.com/shorts/bkeLhDyiMWg",
       "link_video_backup": "https://youtube.com/shorts/bkeLhDyiMWg",
-      "cues_didattici": null,
-      "complessita_motoria": null,
-      "stato_migrazione": "ereditato_area46"
-    },
-    {
-      "id_area46": "239",
-      "id_universale": "LL-EX-239",
-      "nome_area46": "Gymnasty ABS",
-      "nome_universale": "Gymnasty ABS",
-      "link_video_primario": "",
-      "link_video_backup": "",
       "cues_didattici": null,
       "complessita_motoria": null,
       "stato_migrazione": "ereditato_area46"

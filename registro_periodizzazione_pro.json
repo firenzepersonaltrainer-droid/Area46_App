@@ -56,7 +56,7 @@
       "stato": "sviluppo verticale e trazione spiralizzata (Dumbell Jerk, Endless rope half kneeling pull, Skierg pagaia alternato)"
     }
   },
-  "totale_esercizi_catalogo": 165,
+  "totale_esercizi_catalogo": 164,
   "esercizi_utilizzati": 114,
   "esercizi": [
     {
@@ -236,8 +236,8 @@
       "pattern": "core training",
       "ruolo": "complementare a tutto",
       "categoria": "forza e struttura",
-      "last_cycle_used": "Ciclo 6",
-      "usage_count": 2
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 4
     },
     {
       "id": "91",
@@ -398,16 +398,6 @@
       "categoria": "forza e struttura",
       "last_cycle_used": null,
       "usage_count": 0
-    },
-    {
-      "id": "239",
-      "nome": "Gymnasty ABS",
-      "attrezzo": "corpo libero",
-      "pattern": "core strenght, piano sagittale",
-      "ruolo": "complementare",
-      "categoria": "forza e struttura",
-      "last_cycle_used": null,
-      "usage_count": 1
     },
     {
       "id": "45",
@@ -1576,8 +1566,8 @@
       "pattern": "traslazione laterale",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": "Ciclo 7",
-      "usage_count": 3
+      "last_cycle_used": "Ciclo 4",
+      "usage_count": 2
     },
     {
       "id": "147",
@@ -1606,8 +1596,8 @@
       "pattern": "abduzione ed flessione di anca",
       "ruolo": "",
       "categoria": "warm up e mobilità",
-      "last_cycle_used": null,
-      "usage_count": 0
+      "last_cycle_used": "Ciclo 7",
+      "usage_count": 2
     },
     {
       "id": "22",

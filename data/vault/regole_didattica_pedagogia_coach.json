@@ -1,0 +1,79 @@
+{
+  "versione": "1.0.0",
+  "descrizione": "Knowledge Graph Pedagogico e Regole Didattiche Permanenti del Coach Stefano Tronconi - Area46 Training Lab",
+  "data_aggiornamento": "2026-11-05",
+  "esercizi_eliminati_dal_sistema": [
+    {
+      "id": "239",
+      "nome": "Gymnasty ABS",
+      "motivo": "Esercizio eliminato definitivamente dal catalogo e dall'applicazione. Nessuna prescrizione consentita. ID 239 deprecato."
+    }
+  ],
+  "gerarchia_propedeutiche": [
+    {
+      "id_esercizio_target": "120",
+      "nome_target": "Aerial Jerk",
+      "id_propedeutica_obbligatoria": "134",
+      "nome_propedeutica": "Split Jumps (sagittale)",
+      "regola": "Lo Split Jump sagittale è la propedeutica motoria obbligatoria dell'Aerial Jerk. L'Aerial Jerk NON può essere prescritto se lo Split Jump sagittale non è stato consolidato nei cicli precedenti."
+    }
+  ],
+  "divieti_a_freddo_blocco_1": [
+    {
+      "id": "099",
+      "nome": "Landmine quick Hops",
+      "categoria": "pliometria e agility",
+      "motivo": "Esercizio di pliometria e potenza elastica ad alto impatto neurale. Vietato collocarlo nel blocco 1 (1a/1b) a freddo. Il primo blocco deve essere sempre mobilità a terra/parete o attivazione a basso impatto."
+    }
+  ],
+  "esclusioni_livello_pro": [
+    {
+      "id": "042",
+      "nome": "Push the wall squat",
+      "motivo": "Esercizio concepito unicamente per l'home training, inadatto al condizionamento del livello PRO."
+    }
+  ],
+  "consolidati_senza_progressione_3_fasi": [
+    {
+      "id": "065",
+      "nome": "High Pull",
+      "motivo": "Esercizio ampiamente consolidato nei livelli precedenti (Entry Level, Level 1, Level 2, Advanced). Non richiede progressione a 3 fasi (costruzione -> lento -> esplosivo), prescrivere direttamente carichi/intensità allenanti."
+    }
+  ],
+  "unioni_obbligatorie_pro": [
+    {
+      "id_unificato": "242",
+      "nome": "Underhand/Overhand Matador Transitions",
+      "ids_vietati_separatamente": ["104", "105"],
+      "video_ufficiale": "https://www.youtube.com/watch?v=4k2O1hameP0",
+      "motivo": "Dal livello PRO in poi è fatto divieto assoluto di separare Underhand da Overhand Matador Wheel. Utilizzare sempre ed esclusivamente l'esercizio unificato ID 242."
+    }
+  ],
+  "esercizi_alternati_continui_vietato_piu": [
+    {
+      "id": "047",
+      "nome": "wall driver",
+      "prescrizione_obbligatoria": "TEMPO_COMPLESSIVO_CONTINUO",
+      "esempio_consentito": "3 X 45\"",
+      "motivo": "Movimento alternato continuo, divieto assoluto della notazione con '+' (mai 30\"+30\")."
+    },
+    {
+      "id": "033",
+      "nome": "Coiled Cobra",
+      "prescrizione_obbligatoria": "TEMPO_COMPLESSIVO_CONTINUO",
+      "esempio_consentito": "3x30\"-40\"",
+      "motivo": "Movimento alternato continuo, divieto assoluto di ripetizioni fisse o notazione con '+'."
+    },
+    {
+      "id": "004",
+      "nome": "skierg pagaia alternato",
+      "prescrizione_obbligatoria": "TEMPO_COMPLESSIVO_CONTINUO",
+      "esempio_consentito": "3x30\"-40\"",
+      "motivo": "Pagaia continua alternata, vietata la notazione monolaterale con '+'."
+    }
+  ],
+  "regola_anti_pigrizia": {
+    "finestra_cicli_precedenti": 2,
+    "descrizione": "Vietato riutilizzare esercizi di warm-up o accessori già comparsi nei 2 cicli immediatamente precedenti se esistono ancora esercizi vergini (usage_count == 0) nella stessa categoria del catalogo PRO."
+  }
+}

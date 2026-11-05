@@ -20,6 +20,7 @@ landmine-lab-level-pro-*.json
 backups/
 data/vault/
 !data/vault/regole_esercizi_metodologia.json
+!data/vault/regole_didattica_pedagogia_coach.json
 !data/vault/ponte_database_esercizi_universale.json
 data/sandbox-data.json
 

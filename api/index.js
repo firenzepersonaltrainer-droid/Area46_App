@@ -27461,13 +27461,13 @@ var demo_data_default = {
       settimana: "Ciclo 7",
       giorno: "37 allenamento A",
       sequenza: "1b",
-      id_esercizio: "074",
-      nome_esercizio: "Side move",
+      id_esercizio: "021",
+      nome_esercizio: "Band hip Circuit",
       parametri: "3x10+10",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | traslazione laterale a basso impatto per attivazione a freddo",
-      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      note_tecniche: "jump set | attivazione glutea e mobilit\xE0 anca con elastico a freddo",
+      link_video: "https://youtu.be/jiVtzTAmp40",
       data_pubblicazione: null
     },
     {
@@ -27566,13 +27566,13 @@ var demo_data_default = {
       settimana: "Ciclo 7",
       giorno: "37 allenamento A",
       sequenza: "6b",
-      id_esercizio: "243",
-      nome_esercizio: "vogatore",
-      parametri: '3x90"',
+      id_esercizio: "090",
+      nome_esercizio: "dragon flag progressioni",
+      parametri: "3x6-8",
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round) | hip hinge, catena estensoria",
-      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+      note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+      link_video: "https://youtube.com/shorts/Ye_FV7ti41k",
       data_pubblicazione: null
     },
     {
@@ -27731,13 +27731,13 @@ var demo_data_default = {
       settimana: "Ciclo 7",
       giorno: "39 allenamento A",
       sequenza: "1b",
-      id_esercizio: "074",
-      nome_esercizio: "Side move",
+      id_esercizio: "021",
+      nome_esercizio: "Band hip Circuit",
       parametri: "3x10+10",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | traslazione laterale a basso impatto per attivazione a freddo",
-      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      note_tecniche: "jump set | attivazione glutea e mobilit\xE0 anca con elastico a freddo",
+      link_video: "https://youtu.be/jiVtzTAmp40",
       data_pubblicazione: null
     },
     {
@@ -27836,13 +27836,13 @@ var demo_data_default = {
       settimana: "Ciclo 7",
       giorno: "39 allenamento A",
       sequenza: "6b",
-      id_esercizio: "243",
-      nome_esercizio: "vogatore",
-      parametri: '3x90"',
+      id_esercizio: "090",
+      nome_esercizio: "dragon flag progressioni",
+      parametri: "3x6-8",
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round) | hip hinge, catena estensoria",
-      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+      note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+      link_video: "https://youtube.com/shorts/Ye_FV7ti41k",
       data_pubblicazione: null
     },
     {
@@ -28001,13 +28001,13 @@ var demo_data_default = {
       settimana: "Ciclo 7",
       giorno: "41 allenamento A",
       sequenza: "1b",
-      id_esercizio: "074",
-      nome_esercizio: "Side move",
+      id_esercizio: "021",
+      nome_esercizio: "Band hip Circuit",
       parametri: "3x10+10",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | traslazione laterale a basso impatto per attivazione a freddo",
-      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      note_tecniche: "jump set | attivazione glutea e mobilit\xE0 anca con elastico a freddo",
+      link_video: "https://youtu.be/jiVtzTAmp40",
       data_pubblicazione: null
     },
     {
@@ -28106,13 +28106,13 @@ var demo_data_default = {
       settimana: "Ciclo 7",
       giorno: "41 allenamento A",
       sequenza: "6b",
-      id_esercizio: "243",
-      nome_esercizio: "vogatore",
-      parametri: '3x90"',
+      id_esercizio: "090",
+      nome_esercizio: "dragon flag progressioni",
+      parametri: "3x6-8",
       recupero: '60"',
       minutaggio_blocco: "",
-      note_tecniche: "circuito (3 round) | hip hinge, catena estensoria",
-      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+      note_tecniche: "circuito (3 round) | trovare sempre la versione che permette nel nr di rep indicato un RPE di 8",
+      link_video: "https://youtube.com/shorts/Ye_FV7ti41k",
       data_pubblicazione: null
     },
     {
@@ -37647,7 +37647,8 @@ firenzepersonaltrainer@gmail.com`,
       tipo: "benvenuto_nuovo_atleta",
       stato: "inviata"
     }
-  ]
+  ],
+  esercizi: []
 };
 
 // local-api.ts

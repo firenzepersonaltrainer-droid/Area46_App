@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { validatePedagogy } from "./coach_knowledge_keeper.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -388,9 +389,25 @@ async function main() {
   for (const cName of targetCycles) {
     const cycleWorkouts = proWorkouts.filter((w) => w.settimana === cName);
     const rep = validateProCycle(cycleWorkouts, cName, rules, catalogMap);
+    const pedagogyRep = validatePedagogy(cName, allWorkouts);
 
     console.log(`📋 ANALISI: ${cName} (${rep.totale_righe} righe di programmazione)`);
     console.log("--------------------------------------------------------------------------------");
+
+    if (pedagogyRep.errors.length > 0) {
+      console.log("  🧠 COACH KNOWLEDGE KEEPER (Violazioni Didattiche Rilevate):");
+      for (const err of pedagogyRep.errors) {
+        console.log(`     ⛔ ${err}`);
+        rep.violations.push(err);
+      }
+    }
+    if (pedagogyRep.warnings.length > 0) {
+      console.log("  🧠 COACH KNOWLEDGE KEEPER (Avvisi Didattici):");
+      for (const wrn of pedagogyRep.warnings) {
+        console.log(`     ⚠️  ${wrn}`);
+        rep.warnings.push(wrn);
+      }
+    }
 
     for (const s of rep.sessionReports) {
       const statusIcon = s.errors.length > 0 ? "❌" : s.warnings.length > 0 ? "⚠️" : "✅";
