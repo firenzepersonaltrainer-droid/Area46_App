@@ -1652,5 +1652,17 @@
       "id_alternativa": "070",
       "nome_alternativa": "Dumbbell Split Snatch"
     }
+  ],
+  "regole_prescrizione_speciali": [
+    {
+      "id": "128",
+      "nome": "COMBO: Landmine Split snatch High hand switch T/GO",
+      "regola": "Esercizio alternato continuo dx/sx. Prescrivere ripetizioni totali (es. 4 X 6), vietata notazione con '+'. Note: Svolgi 2-4 serie di avvicinamento prima della serie allenante."
+    },
+    {
+      "id": "089",
+      "nome": "Deadbug",
+      "regola": "Deadbug con palla: solitamente alternato dx/sx, prescrivere ripetizioni complessive (es. 3 X 20) anziché notazione '+'."
+    }
   ]
 }

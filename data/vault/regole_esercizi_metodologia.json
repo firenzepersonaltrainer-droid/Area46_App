@@ -328,9 +328,11 @@
       "categoria": "skill e combo",
       "pattern": "cerniera d'anca, lancio verticale, trasferimento di carico",
       "ruolo": "fondamentale",
-      "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
-      "vincolo_notazione": "OBBLIGATORIO_PIU",
-      "note_obbligatorie": [],
+      "modalita_prescrizione_predefinita": "RIPETIZIONI_CONTINUE_ALTERNATE",
+      "vincolo_notazione": "STANDARD",
+      "note_obbligatorie": [
+        "Svolgi 2-4 serie di avvicinamento prima della serie allenante"
+      ],
       "divieti_tassativi": [],
       "didattica_primo_utilizzo": null
     },

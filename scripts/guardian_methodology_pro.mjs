@@ -100,7 +100,7 @@ function estimateRowDurationSeconds(row) {
 
   // Estrazione sets
   let sets = 1;
-  const setMatch = param.match(/^(\d+)x/);
+  const setMatch = param.match(/^(\d+)\s*[xX]/);
   if (setMatch) {
     sets = parseInt(setMatch[1], 10);
   }
@@ -122,7 +122,7 @@ function estimateRowDurationSeconds(row) {
     if (secSingleMatch) {
       workPerSetSec = parseInt(secSingleMatch[1], 10);
     } else {
-      const repMatch = param.match(/x\s*(\d+)/);
+      const repMatch = param.match(/[xX]\s*(\d+)/);
       if (repMatch) {
         workPerSetSec = parseInt(repMatch[1], 10) * 3;
       }
