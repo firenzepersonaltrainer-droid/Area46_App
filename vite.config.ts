@@ -40,5 +40,8 @@ export default defineConfig({
     port: 5173,
     host: true,
     allowedHosts: true,
+    watch: {
+      ignored: ["**/demo-data.json", "**/data/**", "**/backups/**"],
+    },
   },
 });

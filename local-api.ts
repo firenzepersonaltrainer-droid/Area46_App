@@ -1420,6 +1420,22 @@ export async function handleLocalApi(
       return res.end(JSON.stringify(currentUser));
     }
 
+    // GET /app-api/auth/login-demo (Login rapido per test/screenshot)
+    if (pathname === "/app-api/auth/login-demo" && method === "GET") {
+      const targetId = url.searchParams.get("id") || "usr-coach-01";
+      const targetUser =
+        (db.profili_utenti || []).find((u: any) => u.id === targetId || u.email?.toLowerCase() === targetId.toLowerCase()) ||
+        db.profili_utenti?.[0];
+      const redirectTo = url.searchParams.get("redirect") || "/";
+      res.setHeader(
+        "Set-Cookie",
+        `area46_user_id=${encodeURIComponent(targetUser?.id || targetId)}; Path=/; Max-Age=31536000; SameSite=Lax`
+      );
+      res.statusCode = 302;
+      res.setHeader("Location", redirectTo);
+      return res.end();
+    }
+
     // POST /app-api/auth/logout (Disconnessione Utente)
     if (pathname === "/app-api/auth/logout" && method === "POST") {
       res.setHeader(
@@ -2604,9 +2620,9 @@ CALENDARIO E PRENOTAZIONI:
       const emailParam = url.searchParams.get("email");
 
       let rows = db.movimenti_crediti || [];
-      if (currentUser.ruolo === "atleta") {
+      if (currentUser?.ruolo === "atleta") {
         rows = rows.filter(
-          (m: any) => m.email_cliente === currentUser.email || m.atleta_id === currentUser.id
+          (m: any) => m.email_cliente === currentUser?.email || m.atleta_id === currentUser?.id
         );
       } else if (atletaId) {
         rows = rows.filter((m: any) => m.atleta_id === atletaId);
@@ -3400,7 +3416,7 @@ CALENDARIO E PRENOTAZIONI:
         return res.end(JSON.stringify({ error: "Prenotazione non trovata" }));
       }
 
-      const isManager = currentUser.ruolo === "manager";
+      const isManager = currentUser?.ruolo === "manager";
       const atleta = (db.profili_utenti || []).find(
         (p: any) => p.email === bk.email_cliente || p.id === bk.atleta_id
       );
@@ -3657,7 +3673,7 @@ CALENDARIO E PRENOTAZIONI:
 
     // POST /app-api/pagamenti/stripe-checkout (Creazione Sessione di Pagamento Stripe)
     if (pathname === "/app-api/pagamenti/stripe-checkout" && method === "POST") {
-      const atletaId = parsedBody.atleta_id || currentUser.id;
+      const atletaId = parsedBody.atleta_id || currentUser?.id;
       const atleta =
         (db.profili_utenti || []).find((p: any) => p.id === atletaId || p.email === atletaId) ||
         currentUser;
@@ -4240,7 +4256,7 @@ CALENDARIO E PRENOTAZIONI:
 
     // POST /app-api/transazioni/checkout (Checkout Manuale / Bonifico)
     if (pathname === "/app-api/transazioni/checkout" && method === "POST") {
-      const atletaId = parsedBody.atleta_id || currentUser.id;
+      const atletaId = parsedBody.atleta_id || currentUser?.id;
       const atleta =
         (db.profili_utenti || []).find((p: any) => p.id === atletaId || p.email === atletaId) ||
         currentUser;
@@ -5003,12 +5019,18 @@ CALENDARIO E PRENOTAZIONI:
 
     // 17. Preferenze: GET /app-api/preferenze
     if (pathname === "/app-api/preferenze" && method === "GET") {
+      if (!currentUser?.email) {
+        return res.end(JSON.stringify({ memoria_livello: null }));
+      }
       const pref = db.preferenze_utente.find((p: any) => p.email_cliente === currentUser.email);
       return res.end(JSON.stringify({ memoria_livello: pref?.memoria_livello ?? null }));
     }
 
     // 18. Preferenze Salva: POST /app-api/preferenze/livello
     if (pathname === "/app-api/preferenze/livello" && method === "POST") {
+      if (!currentUser?.email) {
+        return res.end(JSON.stringify({ ok: false, error: "Non autenticato" }));
+      }
       const existing = db.preferenze_utente.find((p: any) => p.email_cliente === currentUser.email);
       if (existing) {
         existing.memoria_livello = parsedBody.livello ?? null;
@@ -5026,6 +5048,9 @@ CALENDARIO E PRENOTAZIONI:
 
     // 19. Tonnellaggio: GET /app-api/tonnellaggio
     if (pathname === "/app-api/tonnellaggio" && method === "GET") {
+      if (!currentUser?.email) {
+        return res.end(JSON.stringify([]));
+      }
       const rows = db.diario_utente
         .filter((d: any) => d.email_cliente === currentUser.email)
         .map((d: any) => {

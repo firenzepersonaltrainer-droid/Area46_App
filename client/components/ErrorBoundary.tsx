@@ -29,12 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   public handleReset = () => {
-    try {
-      localStorage.clear();
-      sessionStorage.clear();
-    } catch {
-      // ignore
-    }
+    this.setState({ hasError: false, error: null });
     window.location.href = "/";
   };
 
@@ -55,10 +50,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <div>
               <h2 className="text-lg font-black uppercase tracking-wider text-white">
-                Sessione da Ricaricare
+                Si è verificato un errore
               </h2>
               <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                È disponibile un aggiornamento o la sessione è stata reimpostata. Ricarica per completare la sincronizzazione.
+                Ricarica la pagina o torna alla schermata principale per riprendere il tuo allenamento.
               </p>
             </div>
 
@@ -69,7 +64,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="w-full py-3 px-4 rounded-xl bg-[#1c00ff] hover:bg-[#1500cc] text-[#e3ff00] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#1c00ff]/20 cursor-pointer active:scale-95"
               >
                 <RotateCw className="size-4" />
-                Ricarica Applicazione
+                Ricarica Pagina
               </button>
 
               <button
@@ -77,7 +72,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 onClick={this.handleReset}
                 className="w-full py-2.5 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
-                Ripristina Schermata Iniziale
+                Torna alla Home
               </button>
             </div>
           </div>

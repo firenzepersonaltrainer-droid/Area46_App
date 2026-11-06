@@ -32761,126 +32761,126 @@ var demo_data_default = {
       livello: "PRO",
       giorno: 1,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:15.426Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 2,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:15.426Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 3,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:15.426Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 4,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:15.426Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 5,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:15.426Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 6,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:15.426Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 7,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:59.604Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 8,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:59.604Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 9,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:59.604Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 10,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:59.604Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 11,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:59.604Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 12,
       stato: "completato",
-      updated_at: "2026-10-08T13:42:59.604Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 13,
       stato: "completato",
-      updated_at: "2026-10-08T13:43:02.523Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 14,
       stato: "completato",
-      updated_at: "2026-10-08T13:43:02.523Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 15,
       stato: "completato",
-      updated_at: "2026-10-08T13:43:02.523Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 16,
       stato: "completato",
-      updated_at: "2026-10-08T13:43:02.523Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 17,
       stato: "completato",
-      updated_at: "2026-10-08T13:43:02.523Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 18,
       stato: "completato",
-      updated_at: "2026-10-08T13:43:02.523Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "pantanella@gmail.com",
@@ -32908,14 +32908,14 @@ var demo_data_default = {
       livello: "PRO",
       giorno: 25,
       stato: "completato",
-      updated_at: "2026-10-26T06:34:58.776Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 19,
       stato: "completato",
-      updated_at: "2026-10-21T07:44:18.328Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "pantanella@gmail.com",
@@ -33223,70 +33223,70 @@ var demo_data_default = {
       livello: "PRO",
       giorno: 26,
       stato: "completato",
-      updated_at: "2026-10-26T06:34:58.776Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 27,
       stato: "completato",
-      updated_at: "2026-10-26T06:34:58.776Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 28,
       stato: "completato",
-      updated_at: "2026-10-26T06:34:58.776Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 29,
       stato: "completato",
-      updated_at: "2026-10-26T06:34:58.776Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 30,
       stato: "completato",
-      updated_at: "2026-10-26T06:34:58.776Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 20,
       stato: "completato",
-      updated_at: "2026-10-21T07:44:18.328Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 21,
       stato: "completato",
-      updated_at: "2026-10-21T07:44:18.328Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 22,
       stato: "completato",
-      updated_at: "2026-10-21T07:44:18.328Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 23,
       stato: "completato",
-      updated_at: "2026-10-21T07:44:18.328Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 24,
       stato: "completato",
-      updated_at: "2026-10-21T07:44:18.328Z"
+      updated_at: "2026-11-06T07:30:00.000Z"
     },
     {
       email_cliente: "annap.maddy@gmail.com",
@@ -33483,6 +33483,48 @@ var demo_data_default = {
       giorno: 9,
       stato: "completato",
       updated_at: "2026-10-29T11:23:51.817Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 31,
+      stato: "completato",
+      updated_at: "2026-11-06T07:30:00.000Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 32,
+      stato: "completato",
+      updated_at: "2026-11-06T07:30:00.000Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 33,
+      stato: "completato",
+      updated_at: "2026-11-06T07:30:00.000Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 34,
+      stato: "completato",
+      updated_at: "2026-11-06T07:30:00.000Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 35,
+      stato: "completato",
+      updated_at: "2026-11-06T07:30:00.000Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 36,
+      stato: "completato",
+      updated_at: "2026-11-06T07:30:00.000Z"
     }
   ],
   preferenze_utente: [
@@ -38913,6 +38955,18 @@ async function handleLocalApi(req, res, next) {
   if (pathname === "/app-api/auth/current-user" && method === "GET") {
     return res.end(JSON.stringify(currentUser));
   }
+  if (pathname === "/app-api/auth/login-demo" && method === "GET") {
+    const targetId = url.searchParams.get("id") || "usr-coach-01";
+    const targetUser = (db.profili_utenti || []).find((u) => u.id === targetId || u.email?.toLowerCase() === targetId.toLowerCase()) || db.profili_utenti?.[0];
+    const redirectTo = url.searchParams.get("redirect") || "/";
+    res.setHeader(
+      "Set-Cookie",
+      `area46_user_id=${encodeURIComponent(targetUser?.id || targetId)}; Path=/; Max-Age=31536000; SameSite=Lax`
+    );
+    res.statusCode = 302;
+    res.setHeader("Location", redirectTo);
+    return res.end();
+  }
   if (pathname === "/app-api/auth/logout" && method === "POST") {
     res.setHeader(
       "Set-Cookie",
@@ -39917,9 +39971,9 @@ CALENDARIO E PRENOTAZIONI:
     const atletaId = url.searchParams.get("atleta_id");
     const emailParam = url.searchParams.get("email");
     let rows = db.movimenti_crediti || [];
-    if (currentUser.ruolo === "atleta") {
+    if (currentUser?.ruolo === "atleta") {
       rows = rows.filter(
-        (m) => m.email_cliente === currentUser.email || m.atleta_id === currentUser.id
+        (m) => m.email_cliente === currentUser?.email || m.atleta_id === currentUser?.id
       );
     } else if (atletaId) {
       rows = rows.filter((m) => m.atleta_id === atletaId);
@@ -40552,7 +40606,7 @@ CALENDARIO E PRENOTAZIONI:
       res.statusCode = 404;
       return res.end(JSON.stringify({ error: "Prenotazione non trovata" }));
     }
-    const isManager = currentUser.ruolo === "manager";
+    const isManager = currentUser?.ruolo === "manager";
     const atleta = (db.profili_utenti || []).find(
       (p) => p.email === bk.email_cliente || p.id === bk.atleta_id
     );
@@ -40744,7 +40798,7 @@ CALENDARIO E PRENOTAZIONI:
     }
   }
   if (pathname === "/app-api/pagamenti/stripe-checkout" && method === "POST") {
-    const atletaId = parsedBody.atleta_id || currentUser.id;
+    const atletaId = parsedBody.atleta_id || currentUser?.id;
     const atleta = (db.profili_utenti || []).find((p) => p.id === atletaId || p.email === atletaId) || currentUser;
     const packId = parsedBody.id_pacchetto;
     const pacchetto = (db.tariffario_pacchetti || []).find((p) => p.id === packId);
@@ -41212,7 +41266,7 @@ CALENDARIO E PRENOTAZIONI:
     );
   }
   if (pathname === "/app-api/transazioni/checkout" && method === "POST") {
-    const atletaId = parsedBody.atleta_id || currentUser.id;
+    const atletaId = parsedBody.atleta_id || currentUser?.id;
     const atleta = (db.profili_utenti || []).find((p) => p.id === atletaId || p.email === atletaId) || currentUser;
     const packId = parsedBody.id_pacchetto;
     const pacchetto = (db.tariffario_pacchetti || []).find((p) => p.id === packId);
@@ -41830,10 +41884,16 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify({ ok: true }));
   }
   if (pathname === "/app-api/preferenze" && method === "GET") {
+    if (!currentUser?.email) {
+      return res.end(JSON.stringify({ memoria_livello: null }));
+    }
     const pref = db.preferenze_utente.find((p) => p.email_cliente === currentUser.email);
     return res.end(JSON.stringify({ memoria_livello: pref?.memoria_livello ?? null }));
   }
   if (pathname === "/app-api/preferenze/livello" && method === "POST") {
+    if (!currentUser?.email) {
+      return res.end(JSON.stringify({ ok: false, error: "Non autenticato" }));
+    }
     const existing = db.preferenze_utente.find((p) => p.email_cliente === currentUser.email);
     if (existing) {
       existing.memoria_livello = parsedBody.livello ?? null;
@@ -41849,6 +41909,9 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify({ ok: true }));
   }
   if (pathname === "/app-api/tonnellaggio" && method === "GET") {
+    if (!currentUser?.email) {
+      return res.end(JSON.stringify([]));
+    }
     const rows = db.diario_utente.filter((d) => d.email_cliente === currentUser.email).map((d) => {
       let tonnellaggio_voce = 0;
       if (d.sets_json && Array.isArray(d.sets_json)) {
