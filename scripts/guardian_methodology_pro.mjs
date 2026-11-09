@@ -263,7 +263,10 @@ export function validateProCycle(workouts, cycleName, rules, catalogMap = null) 
 
         // Vincolo OBBLIGATORIO_PIU (esercizi asimmetrici o per lato no-stop)
         if (rule.vincolo_notazione === "OBBLIGATORIO_PIU" || rule.modalita_prescrizione_predefinita === "TEMPO_PER_LATO_NO_STOP" || rule.modalita_prescrizione_predefinita === "RIPETIZIONI_MONOLATERALI_RBS") {
-          if (!rowParam.includes("+") && !rowParam.toLowerCase().includes("flow") && !rowParam.toLowerCase().includes("costruzione")) {
+          // Eccezione esplicita Coach: ID 056 Landmine coiled Deadlift con alternanza bilaterale X 6 per carico massimale
+          const rowEid = normalizeId(row.id_esercizio);
+          const isCoiledDeadliftAlternato = rowEid === "056" && /x\s*6/i.test(rowParam);
+          if (!isCoiledDeadliftAlternato && !rowParam.includes("+") && !rowParam.toLowerCase().includes("flow") && !rowParam.toLowerCase().includes("costruzione")) {
             const msg = `AVVISO NOTAZIONE: '${rowName}' è classificato come asimmetrico/per lato (${rule.modalita_prescrizione_predefinita}), ma i parametri '${rowParam}' non contengono la notazione '+' (es. 8+8 o 60"+60").`;
             sessionRes.warnings.push(msg);
             report.warnings.push(msg);

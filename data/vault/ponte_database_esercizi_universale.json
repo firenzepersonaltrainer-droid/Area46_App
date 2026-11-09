@@ -3128,5 +3128,20 @@
       "id_alternativa": "070",
       "nome_alternativa": "Dumbbell Split Snatch"
     }
+  ],
+  "data_aggiornamento": "2026-11-09",
+  "regole_speciali_aggiuntive": [
+    {
+      "tipo": "flow_rope_tempo",
+      "regola": "Tutti gli esercizi con Flow Rope o Jumping Rope solo a tempo (es. 30\"+30\"), mai a ripetizioni < 50."
+    },
+    {
+      "tipo": "coiled_deadlift_alternanza",
+      "regola": "Prescrizione X 6 alternata con micro-scarico tra rep per massimizzare carico RPE 8 con serie di avvicinamento."
+    },
+    {
+      "tipo": "linguaggio_atleti",
+      "regola": "Niente termine biomeccanica nelle note per atleti; usare geometria di movimento, pattern motorio o economia del gesto."
+    }
   ]
 }

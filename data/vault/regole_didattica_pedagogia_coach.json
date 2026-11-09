@@ -1,7 +1,7 @@
 {
   "versione": "1.0.0",
   "descrizione": "Knowledge Graph Pedagogico e Regole Didattiche Permanenti del Coach Stefano Tronconi - Area46 Training Lab",
-  "data_aggiornamento": "2026-11-05",
+  "data_aggiornamento": "2026-11-09",
   "esercizi_eliminati_dal_sistema": [
     {
       "id": "239",
@@ -1664,5 +1664,36 @@
       "nome": "Deadbug",
       "regola": "Deadbug con palla: solitamente alternato dx/sx, prescrivere ripetizioni complessive (es. 3 X 20) anziché notazione '+'."
     }
-  ]
+  ],
+  "regola_flow_rope_jumping_rope": {
+    "descrizione": "In ogni esercizio con Flow Rope o Jumping Rope (es. Dragon Roll ID 106, Jumping rope ID 102), divieto di prescrizione a ripetizioni. Usare sempre e solo parametri a tempo (es. 30\"+30\"). Ripetizioni ammesse solo per atleti élite con padronanza tecnica consolidata e solo da 50 rep in su.",
+    "esercizi_coinvolti": [
+      "106",
+      "102",
+      "103",
+      "104",
+      "105",
+      "242"
+    ],
+    "formato_obbligatorio": "TEMPO_CONTINUO_O_TEMPO_LATI"
+  },
+  "regola_alternanza_coiled_deadlift": {
+    "id_esercizio": "056",
+    "nome": "Landmine coiled Deadlift",
+    "principio": "Alternanza con senso: la prescrizione alternata continua (es. 4 X 6 = 3 rep per lato con micro-scarico/reset bilaterale tra le rep) serve ad aumentare il carico massimale. La prescrizione monolaterale continua (es. 4x6+6) serve ad accumulare volume/TUT locale.",
+    "nota_obbligatoria_pesante": "svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8"
+  },
+  "regola_linguaggio_note_atleti": {
+    "parole_vietate": [
+      "biomeccanica",
+      "biomeccanico",
+      "biomeccaniche"
+    ],
+    "termini_sostitutivi": [
+      "geometria di movimento",
+      "pattern motorio",
+      "economia del gesto"
+    ],
+    "principio": "Non usare gergo accademico o astratto nelle note rivolte agli atleti. Il linguaggio deve essere semplice, chiaro e orientato alle sensazioni di campo."
+  }
 }

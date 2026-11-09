@@ -128,6 +128,14 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
    - Il `wall driver` (ID 047) è un movimento alternato continuo: va prescritto a tempo complessivo (es. `3 X 45"`). Divieto assoluto di notazione monolaterale con `+` (mai `30"+30"`).
 6. **Gerarchia di Propedeutica Motoria**:
    - Lo `Split Jumps (sagittale)` (ID 134) è la propedeutica fondamentale dello `Aerial Jerk` (ID 120). Mai inserire l'Aerial Jerk prima che lo Split Jump sagittale sia stato pienamente introdotto e stabilizzato nei cicli precedenti.
+7. **Flow Rope & Jumping Rope (Solo a Tempo)**:
+   - In tutti gli esercizi con Flow Rope o Jumping Rope (es. `Dragon Roll` ID 106, Jumping rope, Heavy rope), è fatto divieto assoluto di prescrizione a ripetizioni. Usare sempre ed esclusivamente parametri a tempo (es. `30"+30"`, `45"`). Ripetizioni consentite solo per atleti élite con padronanza tecnica e solo da 50 rep in su.
+8. **Landmine Coiled Deadlift (Alternanza con Senso e Avvicinamento)**:
+   - Sul `Landmine coiled Deadlift` (ID 056): l'alternanza bilaterale continua (es. `4 X 6`, ossia 3 rep per lato con micro-scarico/reset bilaterale tra le rep) serve ad aumentare il carico massimale. La prescrizione monolaterale continua (`6+6`) serve per volume/TUT locale. Nelle serie pesanti alternanza `X 6`, nota tecnica obbligatoria: `"svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8"`.
+9. **Skierg Lunges (Tecnica Pagaia)**:
+   - Nelle note di `Skyerg lunges` (ID 227) specificare sempre: `"NB: svolgere la tirata con tecnica “pagaia”, sul lato della gamba fissa (anteriore)"`.
+10. **Linguaggio Semplice e Divieto del Termine 'Biomeccanica' nelle Note Atleti**:
+   - Nelle note visibili all'amatore, divieto assoluto della parola "biomeccanica" e di gergo astratto/respingente. Sostituire con espressioni concrete: `"geometria di movimento"`, `"pattern motorio"` o `"economia del gesto"`.
 
 
 

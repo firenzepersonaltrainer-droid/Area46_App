@@ -21,5 +21,9 @@ Regole Tassative:
     - Distinzione netta video dinamico vs isometrico (High Pull dinamico Fsi34_9SXTU vs ISO A2eyrizhMVM) e zero collisioni (Gymnasty ABS ID 239 separato da Knee drives ID 240).
     - Wall driver ID 047 è alternato continuo: prescrivere a tempo (es. 3 X 45"), mai con notazione '+'.
     - Split Jumps sagittale (ID 134) è la propedeutica obbligatoria di Aerial Jerk (ID 120): non invertire mai la gerarchia.
+    - Flow Rope e Jumping Rope (es. Dragon Roll ID 106): solo parametri a tempo (es. 30"+30"), mai a ripetizioni (ammesse solo per élite e da 50 rep in su).
+    - Landmine Coiled Deadlift (ID 056): alternanza con senso (X 6 continuo alternato per aumentare il carico; 6+6 per accumulo volume). Nelle serie pesanti X 6 nota obbligatoria: 'svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8'.
+    - Skierg lunges (ID 227): nota obbligatoria 'NB: svolgere la tirata con tecnica “pagaia”, sul lato della gamba fissa (anteriore)'.
+    - Linguaggio semplice per l'amatore: mai gergo accademico o astratto; divieto assoluto del termine 'biomeccanica' nelle note rivolte agli atleti (usare 'geometria di movimento', 'pattern motorio' o 'economia del gesto').
 
 

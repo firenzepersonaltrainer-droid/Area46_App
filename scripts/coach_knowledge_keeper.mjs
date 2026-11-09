@@ -114,6 +114,35 @@ export function validatePedagogy(targetCycleName, workouts = null) {
         );
       }
     }
+
+    // Check 7: Flow Rope & Jumping Rope (solo tempo, mai basse ripetizioni)
+    const isRopeExercise = (
+      name.toLowerCase().includes("dragon roll") ||
+      name.toLowerCase().includes("rope") ||
+      name.toLowerCase().includes("corda") ||
+      eid === "106" || eid === "102" || eid === "103"
+    );
+    if (isRopeExercise) {
+      const hasSeconds = param.includes('"') || param.toLowerCase().includes("sec") || param.includes("'");
+      if (!hasSeconds) {
+        // Se non ha secondi/tempo, controlla se ha ripetizioni < 50
+        const repMatch = param.match(/\d+/);
+        const repVal = repMatch ? parseInt(repMatch[0], 10) : 0;
+        if (repVal < 50) {
+          errors.push(
+            `⛔ PARAMETRO VIETATO SU CORDA/FLOW ROPE: '${name}' (ID ${eid}) deve essere prescritto a tempo (es. 30"+30" o 45"), mai a ripetizioni inferiori a 50. Trovato '${param}' in '${giorno}'.`
+          );
+        }
+      }
+    }
+
+    // Check 8: Divieto termine 'biomeccanica' nelle note per gli atleti
+    const note = String(row.note_tecniche || "");
+    if (/biomeccanic[aoe]/i.test(note)) {
+      warnings.push(
+        `⚠️ LINGUAGGIO TROPPO TECNICO NELLE NOTE: Rilevato termine 'biomeccanica' nelle note di '${name}' in '${giorno}'. Sostituire con 'geometria di movimento', 'pattern motorio' o 'economia del gesto'.`
+      );
+    }
   }
 
   // 2. Controllo gerarchia propedeutiche storiche
