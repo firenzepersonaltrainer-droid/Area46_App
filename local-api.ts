@@ -100,6 +100,8 @@ function loadData() {
       (p: any) => !isBookingIdCancelled(p.id, delBks)
     );
   }
+  loaded.richieste_cancellazione_tardiva = loaded.richieste_cancellazione_tardiva || [];
+  loaded.shadow_event_log = loaded.shadow_event_log || [];
   return loaded;
 }
 
@@ -165,6 +167,53 @@ function validateDataIntegrity(data: any): boolean {
   return true;
 }
 
+const SHADOW_LOG_LIMIT = 1000;
+function logShadowEvent(eventType: string, athleteIdOrEmail: string, payload: Record<string, any> = {}) {
+  try {
+    if (!db) return;
+    db.shadow_event_log = db.shadow_event_log || [];
+    const event = {
+      id: `shd_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      timestamp: new Date().toISOString(),
+      event_type: eventType,
+      athlete: athleteIdOrEmail || "anonymous",
+      payload,
+    };
+    db.shadow_event_log.unshift(event);
+    if (db.shadow_event_log.length > SHADOW_LOG_LIMIT) {
+      db.shadow_event_log.length = SHADOW_LOG_LIMIT;
+    }
+
+    const v2Endpoint = process.env.SHADOW_V2_ENDPOINT || db.configurazione_lab?.shadow_v2_url;
+    if (v2Endpoint && typeof fetch === "function") {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1500);
+      fetch(v2Endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+        signal: controller.signal,
+      })
+        .catch(() => {})
+        .finally(() => clearTimeout(timeoutId));
+    }
+  } catch {
+    // Fail-safe
+  }
+}
+
+const processedWebhooks = new Map<string, number>();
+function isWebhookDuplicate(eventId: string): boolean {
+  if (!eventId) return false;
+  const now = Date.now();
+  for (const [id, ts] of processedWebhooks.entries()) {
+    if (now - ts > 10 * 60 * 1000) processedWebhooks.delete(id);
+  }
+  if (processedWebhooks.has(eventId)) return true;
+  processedWebhooks.set(eventId, now);
+  return false;
+}
+
 function saveData(data: any, skipCloudSync = false): Promise<void> {
   if (!validateDataIntegrity(data)) {
     console.warn("⚠️ [AREA46 SAFETY LOCK] Scrittura su disco e cloud ignorata a causa del fallimento delle regole di integrità.");
@@ -215,6 +264,7 @@ function saveData(data: any, skipCloudSync = false): Promise<void> {
             prenotazioni_cancellate: data.prenotazioni_cancellate || [],
             eccezioni_calendario: data.eccezioni_calendario || [],
             regole_palinsesto: data.regole_palinsesto || [],
+            richieste_cancellazione_tardiva: data.richieste_cancellazione_tardiva || [],
           };
           fs.writeFileSync(path.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
 
@@ -224,6 +274,13 @@ function saveData(data: any, skipCloudSync = false): Promise<void> {
             preferenze_utente: data.preferenze_utente || [],
           };
           fs.writeFileSync(path.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
+
+          const mod4 = {
+            database_esercizi: data.database_esercizi || [],
+            livelli: data.livelli || [],
+            ordine_livelli: data.ordine_livelli || [],
+          };
+          fs.writeFileSync(path.join(vaultDir, "4_metodologia_esercizi.json"), JSON.stringify(mod4, null, 2), "utf-8");
         }
       } catch {}
       
@@ -3382,6 +3439,12 @@ CALENDARIO E PRENOTAZIONI:
         operatore: isManager ? "coach" : "atleta",
       });
 
+      logShadowEvent("BOOKING_CREATED", atleta.email, {
+        bookingId: nuovaPrenotazione.id,
+        data: dataSlot,
+        orario: orarioSlot,
+      });
+
       saveData(db);
       await syncDataToGoogleDrive(db);
 
@@ -3497,14 +3560,33 @@ CALENDARIO E PRENOTAZIONI:
             tipo: "penalty",
             delta_crediti: 0,
             saldo_risultante: walletOwner.crediti,
-            motivazione: `Cancellazione tardiva slot del ${bk.data} ${bk.orario} (preavviso < ${oreLimite}h: credito trattenuto)`,
+            motivazione: `Cancellazione tardiva slot del ${bk.data} ${bk.orario} (preavviso < ${oreLimite}h: credito trattenuto in attesa triage)`,
             operatore: "sistema",
           });
         }
+
+        // Coda Triage Coach No-Show (<24h)
+        db.richieste_cancellazione_tardiva = db.richieste_cancellazione_tardiva || [];
+        const triageItem = {
+          id: `triage_${Date.now()}_${bk.id}`,
+          prenotazione_id: bk.id,
+          data: bk.data,
+          orario: bk.orario,
+          atleta_id: atleta?.id || bk.atleta_id,
+          nome_cliente: bk.nome_cliente,
+          email_cliente: bk.email_cliente,
+          telefono_cliente: atleta?.telefono || bk.telefono_cliente || "",
+          ore_preavviso: Math.round(orePreavviso * 10) / 10,
+          ore_limite: oreLimite,
+          stato_triage: "in_attesa",
+          created_at: new Date().toISOString(),
+        };
+        db.richieste_cancellazione_tardiva.unshift(triageItem);
+
         messaggio = `Prenotazione annullata oltre il termine di tolleranza di ${oreLimite} ore (preavviso di sole ${Math.max(
           0,
           Math.round(orePreavviso)
-        )}h). In accordo con il regolamento di Area46 Lab, il credito della seduta viene trattenuto.`;
+        )}h). Lo slot è stato liberato per altri atleti. Il Coach verificherà la richiesta per eventuale riaccredito di cortesia.`;
       }
 
       // Traccia ID cancellato ed elimina fisicamente lo slot attivo
@@ -3529,6 +3611,15 @@ CALENDARIO E PRENOTAZIONI:
       }
 
       db.prenotazioni_slot = (db.prenotazioni_slot || []).filter((p: any) => p.id !== bkId);
+
+      logShadowEvent("BOOKING_CANCELLED", atleta?.email || bk.email_cliente, {
+        bookingId: bk.id,
+        data: bk.data,
+        orario: bk.orario,
+        rimborsato,
+        statoFinale,
+        orePreavviso: Math.round(orePreavviso * 10) / 10,
+      });
 
       saveData(db);
       await syncDataToGoogleDrive(db);
@@ -3556,6 +3647,109 @@ CALENDARIO E PRENOTAZIONI:
           },
         })
       );
+    }
+
+    // GET /app-api/prenotazioni/triage (Richieste cancellazione tardiva da esaminare)
+    if (pathname === "/app-api/prenotazioni/triage" && method === "GET") {
+      db.richieste_cancellazione_tardiva = db.richieste_cancellazione_tardiva || [];
+      return res.end(JSON.stringify(db.richieste_cancellazione_tardiva));
+    }
+
+    // POST /app-api/prenotazioni/triage/:id oppure POST /app-api/prenotazioni/:id/triage
+    const triageMatch =
+      pathname.match(/^\/app-api\/prenotazioni\/triage\/([a-zA-Z0-9_-]+)$/) ||
+      pathname.match(/^\/app-api\/prenotazioni\/([a-zA-Z0-9_-]+)\/triage$/);
+    if (triageMatch && method === "POST") {
+      const targetId = triageMatch[1];
+      db.richieste_cancellazione_tardiva = db.richieste_cancellazione_tardiva || [];
+      const item = db.richieste_cancellazione_tardiva.find(
+        (t: any) => t.id === targetId || t.prenotazione_id === targetId
+      );
+      if (!item) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Richiesta triage non trovata" }));
+      }
+
+      const azione = parsedBody?.azione; // "scalare" | "riaccreditare"
+      const atleta = (db.profili_utenti || []).find(
+        (p: any) => p.id === item.atleta_id || p.email === item.email_cliente
+      );
+      const walletOwner = atleta ? getWalletOwner(atleta, db) : null;
+      const isShared = walletOwner && atleta && walletOwner.id !== atleta.id;
+
+      let messaggioWhatsApp = "";
+      if (azione === "scalare") {
+        item.stato_triage = "scalato";
+        item.triaged_at = new Date().toISOString();
+        item.triaged_by = currentUser?.nome || "coach";
+
+        messaggioWhatsApp = `Ciao ${item.nome_cliente || atleta?.nome || ""}, ti confermo l'annullamento della seduta del ${item.data} alle ${item.orario}. Come previsto dal regolamento del Lab, con preavviso inferiore alle 24h il credito viene scalato per tutelare l'organizzazione dei turni. Ci vediamo carichi al prossimo allenamento!`.trim();
+
+        logShadowEvent("BOOKING_TRIAGED", item.email_cliente, { triageId: item.id, azione: "scalare" });
+      } else if (azione === "riaccreditare") {
+        item.stato_triage = "riaccreditato";
+        item.triaged_at = new Date().toISOString();
+        item.triaged_by = currentUser?.nome || "coach";
+
+        if (walletOwner) {
+          walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+          addMovimentoCrediti(db, {
+            atleta_id: walletOwner.id,
+            email_cliente: walletOwner.email,
+            nome_cliente: `${walletOwner.nome} ${walletOwner.cognome}`.trim(),
+            tipo: "rimborso_cancellazione",
+            delta_crediti: 1,
+            saldo_risultante: walletOwner.crediti,
+            motivazione: `Riaccredito eccezionale per cancellazione slot ${item.data} ${item.orario}${isShared ? " [Borsellino Condiviso]" : ""}`,
+            operatore: "coach",
+          });
+        }
+
+        messaggioWhatsApp = `Ciao ${item.nome_cliente || atleta?.nome || ""}, ho visto il tuo imprevisto per la seduta del ${item.data} alle ${item.orario}. Per questa volta ho riaccreditato eccezionalmente il credito sul tuo borsellino così potrai recuperarla appena possibile. A presto!`.trim();
+
+        logShadowEvent("BOOKING_TRIAGED", item.email_cliente, { triageId: item.id, azione: "riaccreditare" });
+      } else {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Azione non valida. Utilizzare 'scalare' o 'riaccreditare'." }));
+      }
+
+      saveData(db);
+      await syncDataToGoogleDrive(db);
+
+      const phoneClean = (item.telefono_cliente || atleta?.telefono || "").replace(/[^0-9+]/g, "");
+      const whatsappUrl = phoneClean
+        ? `https://api.whatsapp.com/send?phone=${phoneClean.replace(/^\+/, "")}&text=${encodeURIComponent(messaggioWhatsApp)}`
+        : `https://api.whatsapp.com/send?text=${encodeURIComponent(messaggioWhatsApp)}`;
+
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          stato_triage: item.stato_triage,
+          crediti_attuali: walletOwner ? walletOwner.crediti : atleta?.crediti,
+          messaggio_whatsapp: messaggioWhatsApp,
+          whatsapp_url: whatsappUrl,
+        })
+      );
+    }
+
+    // POST /app-api/webhooks/calendar-sync (Ricezione eventi real-time da Google Calendar/SGG)
+    if (pathname === "/app-api/webhooks/calendar-sync" && method === "POST") {
+      const eventId = parsedBody?.event_id || parsedBody?.id || `evt_${Date.now()}`;
+      if (isWebhookDuplicate(eventId)) {
+        return res.end(JSON.stringify({ ok: true, duplicate: true, message: "Evento già elaborato (idempotenza)" }));
+      }
+
+      const action = parsedBody?.action || parsedBody?.tipo || "PING";
+      logShadowEvent("WEBHOOK_CALENDAR_SYNC", parsedBody?.email || "external", { eventId, action, body: parsedBody });
+
+      return res.end(JSON.stringify({ ok: true, processed: true, event_id: eventId, action }));
+    }
+
+    // GET /app-api/shadow/events (Audit Omni-System Shadow Mode)
+    if (pathname === "/app-api/shadow/events" && method === "GET") {
+      const limit = Math.min(200, parseInt(url.searchParams.get("limit") || "50", 10));
+      const events = (db.shadow_event_log || []).slice(0, limit);
+      return res.end(JSON.stringify({ ok: true, count: events.length, events }));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -4582,9 +4776,19 @@ CALENDARIO E PRENOTAZIONI:
             attrezzatura: ex?.attrezzatura ?? null,
             livello_catalogo: ex?.livello ?? null,
             note_catalogo: ex?.note_tecniche ?? null,
+            pattern_motorio: ex?.pattern_motorio ?? null,
+            fulcro_articolare: ex?.fulcro_articolare ?? null,
+            meridiano_miofasciale: ex?.meridiano_miofasciale ?? null,
+            cue_esecutiva: ex?.cue_esecutiva ?? null,
           };
         })
         .sort((a: any, b: any) => (a.sequenza ?? "").localeCompare(b.sequenza ?? ""));
+
+      logShadowEvent("WORKOUT_VIEW", currentUser?.email || "anonymous", {
+        livello,
+        giorno: giornoInt,
+        count: rows.length,
+      });
 
       return res.end(JSON.stringify(rows));
     }
@@ -4651,6 +4855,104 @@ CALENDARIO E PRENOTAZIONI:
         return nomeA.localeCompare(nomeB);
       });
       return res.end(JSON.stringify(filtered));
+    }
+
+    // 7b. Video Vault Semantic Fast Search: GET /app-api/vault/search
+    if (pathname === "/app-api/vault/search" && method === "GET") {
+      const q = (url.searchParams.get("q") || "").toLowerCase().trim();
+      const fulcro = (url.searchParams.get("fulcro") || "").toLowerCase().trim();
+      const meridiano = (url.searchParams.get("meridiano") || "").toLowerCase().trim();
+      const pattern = (url.searchParams.get("pattern") || "").toLowerCase().trim();
+      const cue = (url.searchParams.get("cue") || "").toLowerCase().trim();
+      const attrezzo = (url.searchParams.get("attrezzo") || "").toLowerCase().trim();
+
+      const startTime = Date.now();
+      const items = (db.database_esercizi || []).filter((ex: any) => {
+        const nome = (ex.nome_reale || ex.nome_esercizio || "").toLowerCase();
+        const idStr = String(ex.id_esercizio || "");
+        const att = (ex.attrezzo || ex.attrezzatura || "").toLowerCase();
+        const exPattern = (ex.pattern_motorio || ex.pattern_biomeccanico || "").toLowerCase();
+        const exFulcro = (ex.fulcro_articolare || "").toLowerCase();
+        const exMeridiano = (ex.meridiano_miofasciale || "").toLowerCase();
+        const exCue = (ex.cue_esecutiva || "").toLowerCase();
+        const tag = (ex.tag_biomeccanici || "").toLowerCase();
+
+        if (fulcro && !exFulcro.includes(fulcro)) return false;
+        if (meridiano && !exMeridiano.includes(meridiano)) return false;
+        if (pattern && !exPattern.includes(pattern)) return false;
+        if (cue && !exCue.includes(cue)) return false;
+        if (attrezzo && !att.includes(attrezzo)) return false;
+
+        if (q) {
+          const tokens = q.split(/\s+/).filter(Boolean);
+          const fullText = `${nome} ${idStr} ${att} ${exPattern} ${exFulcro} ${exMeridiano} ${exCue} ${tag}`;
+          const matchesAll = tokens.every((token) => fullText.includes(token));
+          if (!matchesAll) return false;
+        }
+        return true;
+      });
+
+      const durationMs = Date.now() - startTime;
+      logShadowEvent("VAULT_SEARCH", currentUser?.email || "coach", {
+        q,
+        fulcro,
+        meridiano,
+        count: items.length,
+        durationMs,
+      });
+
+      const results = items.map((ex: any) => {
+        const videoUrl = ex.link_video || "";
+        const whatsappText = `🎥 *Area46 Lab Video Clip (15s)*: ${ex.nome_reale || ex.nome_esercizio}\n🔑 *Cue Esecutiva:* ${ex.cue_esecutiva || "Allineamento neutro"}\n⚙️ *Pattern:* ${ex.pattern_motorio || ex.pattern_biomeccanico || ""}\n${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
+
+        return {
+          id: ex.id,
+          id_esercizio: ex.id_esercizio,
+          nome_reale: ex.nome_reale || ex.nome_esercizio,
+          attrezzo: ex.attrezzo || ex.attrezzatura || "",
+          pattern_motorio: ex.pattern_motorio || ex.pattern_biomeccanico || "",
+          fulcro_articolare: ex.fulcro_articolare || "",
+          meridiano_miofasciale: ex.meridiano_miofasciale || "",
+          cue_esecutiva: ex.cue_esecutiva || "",
+          tag_biomeccanici: ex.tag_biomeccanici || "",
+          link_video: videoUrl,
+          whatsapp_text: whatsappText,
+          whatsapp_share_url: `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappText)}`,
+        };
+      });
+
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          duration_ms: durationMs,
+          total: results.length,
+          data: results,
+        })
+      );
+    }
+
+    // 7c. Video Vault Metadata per Chip Filtri: GET /app-api/vault/meta
+    if (pathname === "/app-api/vault/meta" && method === "GET") {
+      const patterns = new Set<string>();
+      const fulcri = new Set<string>();
+      const meridiani = new Set<string>();
+      const cues = new Set<string>();
+
+      for (const ex of db.database_esercizi || []) {
+        if (ex.pattern_motorio) patterns.add(ex.pattern_motorio);
+        if (ex.fulcro_articolare) fulcri.add(ex.fulcro_articolare);
+        if (ex.meridiano_miofasciale) meridiani.add(ex.meridiano_miofasciale);
+        if (ex.cue_esecutiva) cues.add(ex.cue_esecutiva);
+      }
+
+      return res.end(
+        JSON.stringify({
+          patterns: Array.from(patterns).sort(),
+          fulcri: Array.from(fulcri).sort(),
+          meridiani: Array.from(meridiani).sort(),
+          cues: Array.from(cues).sort(),
+        })
+      );
     }
 
     // 8. Stati Allenamenti: GET /app-api/stati
@@ -4973,10 +5275,18 @@ CALENDARIO E PRENOTAZIONI:
       const newEntry = {
         id: Date.now(),
         email_cliente: authorEmail,
-        id_esercizio: parsedBody.id_esercizio,
-        nome_esercizio: parsedBody.nome_esercizio,
+        tipo: parsedBody.tipo || "esercizio",
+        livello: parsedBody.livello ?? null,
+        giorno: parsedBody.giorno ?? null,
+        rpe_globale: parsedBody.rpe_globale ?? null,
+        sensazioni: parsedBody.sensazioni ?? [],
+        note_cinestesiche: parsedBody.note_cinestesiche ?? parsedBody.note ?? null,
+        id_esercizio: parsedBody.id_esercizio ?? null,
+        nome_esercizio:
+          parsedBody.nome_esercizio ??
+          (parsedBody.tipo === "feedback_seduta" ? `Feedback Seduta Giorno ${parsedBody.giorno || ""}` : null),
         carico_kg: parsedBody.sets_json ? null : (parsedBody.carico_kg ?? null),
-        feedback: parsedBody.feedback ?? null,
+        feedback: parsedBody.feedback ?? parsedBody.note_cinestesiche ?? null,
         ripetizioni: parsedBody.sets_json ? null : (parsedBody.ripetizioni ?? null),
         serie: parsedBody.sets_json ? null : (parsedBody.serie ?? null),
         sets_json: parsedBody.sets_json ?? null,
@@ -4985,6 +5295,13 @@ CALENDARIO E PRENOTAZIONI:
         created_at: new Date().toISOString(),
       };
       db.diario_utente.push(newEntry);
+      logShadowEvent("WORKOUT_FEEDBACK", authorEmail, {
+        tipo: newEntry.tipo,
+        livello: newEntry.livello,
+        giorno: newEntry.giorno,
+        rpe_globale: newEntry.rpe_globale,
+        sensazioni: newEntry.sensazioni,
+      });
       saveData(db);
       res.statusCode = 201;
       return res.end(JSON.stringify(newEntry));

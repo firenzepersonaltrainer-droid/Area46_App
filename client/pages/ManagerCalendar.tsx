@@ -34,6 +34,7 @@ import {
   Sparkles,
   Mail,
   MessageCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -138,6 +139,49 @@ export default function ManagerCalendarPage() {
     },
     refetchInterval: 10000,
   });
+
+  // Query Triage Cancellazioni Tardive (<24h)
+  const { data: triageRequests = [], refetch: refetchTriage } = useQuery<any[]>({
+    queryKey: ["triage-cancellazioni"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/prenotazioni/triage");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    refetchInterval: 10000,
+  });
+
+  const pendingTriage = useMemo(() => {
+    return (triageRequests || []).filter((t: any) => t.stato_triage === "in_attesa");
+  }, [triageRequests]);
+
+  const handleTriageDecision = async (triageItem: any, azione: "scalare" | "riaccreditare") => {
+    try {
+      const res = await fetch(`/app-api/prenotazioni/triage/${triageItem.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ azione }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (azione === "scalare") {
+          toast.success("Credito trattenuto per policy 24h. Messaggio pronto!");
+        } else {
+          toast.success("1 Credito riaccreditato eccezionalmente all'atleta!");
+        }
+        refetchTriage();
+        queryClient.invalidateQueries({ queryKey: ["prenotazioni"] });
+        queryClient.invalidateQueries({ queryKey: ["profili"] });
+        if (data.whatsapp_url) {
+          window.open(data.whatsapp_url, "_blank");
+        }
+      } else {
+        toast.error(data.error || "Errore elaborazione triage");
+      }
+    } catch {
+      toast.error("Errore di rete");
+    }
+  };
 
   // Eccezioni relative al giorno selezionato
   const eccezioniGiorno = useMemo(() => {
@@ -417,6 +461,67 @@ export default function ManagerCalendarPage() {
               </Button>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* BANNER TRIAGE CANCELLAZIONI TARDIVE (<24H) */}
+      {pendingTriage.length > 0 && (
+        <div className="p-4 rounded-3xl bg-amber-50 border-2 border-amber-300 shadow-sm space-y-3">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="size-5 text-amber-700 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-black text-amber-950 uppercase tracking-wide">
+                Cancellazioni Tardive (&lt;24h) da Esaminare ({pendingTriage.length})
+              </h3>
+              <p className="text-xs text-amber-800 font-medium mt-0.5">
+                Lo slot è già stato liberato a calendario. Scegli se applicare la policy o concedere il riaccredito di cortesia:
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {pendingTriage.map((item: any) => (
+              <div
+                key={item.id}
+                className="p-3 bg-white rounded-2xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs"
+              >
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-black text-zinc-950 text-sm">
+                      {item.nome_cliente}
+                    </span>
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-red-100 text-red-800">
+                      Preavviso: {item.ore_preavviso}h su {item.ore_limite}h
+                    </span>
+                  </div>
+                  <div className="text-xs text-zinc-600 mt-0.5">
+                    Slot del <strong>{item.data}</strong> alle <strong>{item.orario}</strong>
+                    {item.telefono_cliente && <span> • Tel: {item.telefono_cliente}</span>}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleTriageDecision(item, "scalare")}
+                    className="border-zinc-300 hover:bg-zinc-100 text-zinc-800 text-xs font-bold rounded-xl h-8 px-3"
+                    title="Conferma lo scalo del credito per rispetto policy 24h e prepara messaggio WhatsApp"
+                  >
+                    Scalo Seduta
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleTriageDecision(item, "riaccreditare")}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl h-8 px-3 shadow-xs"
+                    title="Restituisce 1 credito all'atleta per causa di forza maggiore e invia messaggio amichevole"
+                  >
+                    Riaccredito Eccezionale
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

@@ -1,0 +1,27 @@
+{
+  "version": "1.1.0",
+  "last_updated": "2026-11-09T08:40:00Z",
+  "insights": [
+    {
+      "id": "INS-001",
+      "category": "Autoregolazione & Recupero",
+      "source": "AURA & CHRONOS",
+      "finding": "Gli atleti che registrano uno score Sonno <= 2 beneficiano enormemente del taglio del 10% sul carico target, mantenendo invariata l'attivazione muscolare percepita (Pump 4/5) senza picchi infiammatori articolari.",
+      "status": "VALIDATED"
+    },
+    {
+      "id": "INS-002",
+      "category": "Biotensegrità & Impatto Articolare",
+      "source": "ATLAS & ARGUS",
+      "finding": "Nelle transizioni rotazionali Landmine, una stance eccessivamente larga vincola il bacino e scarica la torsione sul ginocchio anteriore. Ridurre la stance di 5-10 cm favorisce il coiling toracolombare libero e azzera i report di Joint Pain al compartimento femoro-rotuleo.",
+      "status": "VALIDATED"
+    },
+    {
+      "id": "INS-003",
+      "category": "Cross-Pollination Digitale -> Lab",
+      "source": "HERMES & SOCRATES",
+      "finding": "Le indicazioni verbali brevi e cinestesiche ('premi il pavimento', 'fai finta di avvitare il bilanciere') generano un'aderenza tecnica superiore del 40% rispetto alle spiegazioni cinematiche astratte, sia sull'app mobile che durante il coaching in studio.",
+      "status": "ACTIVE_APPLICATION"
+    }
+  ]
+}

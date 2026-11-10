@@ -1,0 +1,95 @@
+{
+  "version": "1.1.0",
+  "last_updated": "2026-11-09T08:40:00Z",
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "date": "2026-10-30",
+      "coach": "Stefano Tronconi",
+      "title": "Unificazione Matador Transitions (ID 242)",
+      "rule": "Dal livello PRO in avanti, divieto assoluto di separare Underhand da Overhand Matador Wheel. Usare solo ID 242 unificato con video 4k2O1hameP0.",
+      "rationale": "La transizione continua tra underhand e overhand allena la spirale fasciale completa e l'adattamento dei polsi molto meglio dei due movimenti isolati.",
+      "impacted_agents": [
+        "ATLAS",
+        "ARGUS",
+        "CHRONOS"
+      ]
+    },
+    {
+      "id": "DEC-002",
+      "date": "2026-10-30",
+      "coach": "Stefano Tronconi",
+      "title": "Divieto Assoluto di Pliometria e Potenza a Freddo",
+      "rule": "Esercizi come Landmine Quick Hops (ID 099) non possono MAI essere collocati nel primo blocco (1a/1b). Il blocco iniziale è riservato a mobilità a terra o a parete.",
+      "rationale": "L'impatto neurale ed elastico a freddo aumenta drasticamente il rischio di traumi tendinei e rigidità compensatoria.",
+      "impacted_agents": [
+        "ATLAS",
+        "CHRONOS",
+        "SOCRATES"
+      ]
+    },
+    {
+      "id": "DEC-003",
+      "date": "2026-10-30",
+      "coach": "Stefano Tronconi",
+      "title": "Esclusione Esercizi Home Training da PRO",
+      "rule": "Esercizi come Push the Wall Squat (ID 042) sono categoricamente esclusi dal condizionamento del livello PRO.",
+      "rationale": "Sono propedeutiche nate per contesti casalinghi privi di sovraccarico, prive del livello di stimolo richiesto per il livello PRO.",
+      "impacted_agents": [
+        "ATLAS",
+        "CHRONOS"
+      ]
+    },
+    {
+      "id": "DEC-004",
+      "date": "2026-10-30",
+      "coach": "Stefano Tronconi",
+      "title": "Esercizi Consolidati Esenti da Progressione a 3 Fasi",
+      "rule": "Pattern ampiamente consolidati nei livelli precedenti (es. High Pull ID 065) non necessitano di progressione a 3 fasi e partono a carichi allenanti.",
+      "rationale": "Evitare regressioni inutili e perdita di intensità su schemi motori già profondamente stabilizzati nell'atleta evoluto.",
+      "impacted_agents": [
+        "CHRONOS",
+        "SOCRATES"
+      ]
+    },
+    {
+      "id": "DEC-005",
+      "date": "2026-10-30",
+      "coach": "Stefano Tronconi",
+      "title": "Wall Driver Prescritto Solo a Tempo Continuo",
+      "rule": "Il Wall Driver (ID 047) è continuo: si prescrive solo a tempo (es. 3x45\"), mai con notazione monolaterale con +.",
+      "rationale": "Il gesto allena il ritmo ciclico e la dissociazione; forzare ripetizioni o pause tra i lati distrugge la funzione del pattern.",
+      "impacted_agents": [
+        "ATLAS",
+        "CHRONOS"
+      ]
+    },
+    {
+      "id": "DEC-006",
+      "date": "2026-10-30",
+      "coach": "Stefano Tronconi",
+      "title": "Gerarchia Obbligatoria Split Jumps -> Aerial Jerk",
+      "rule": "Lo Split Jumps sagittale (ID 134) è la propedeutica obbligatoria dell'Aerial Jerk (ID 120). Mai inserire l'Aerial Jerk prima dello Split Jumps stabilizzato.",
+      "rationale": "L'Aerial Jerk richiede una base di stabilità monopodalica e riassorbimento dell'impatto che solo lo Split Jump garantisce preventivamente.",
+      "impacted_agents": [
+        "ATLAS",
+        "ARGUS",
+        "CHRONOS"
+      ]
+    },
+    {
+      "id": "DEC-007",
+      "date": "2026-11-09",
+      "coach": "Stefano Tronconi",
+      "title": "Integrazione di ARGUS come Agente di Visione e Analisi Video",
+      "rule": "Inserimento ufficiale dell'agente ARGUS dedicato a computer vision, riconoscimento biomeccanico video e auditing delle corrispondenze video-ID.",
+      "rationale": "La biomeccanica del Landmine Lab richiede verifica visiva continua, sia per catalogare i video di Stefano senza errori di matching, sia per analizzare la postura e il coiling degli allievi da remoto.",
+      "impacted_agents": [
+        "ATLAS",
+        "ARGUS",
+        "SOCRATES",
+        "HERMES"
+      ]
+    }
+  ]
+}

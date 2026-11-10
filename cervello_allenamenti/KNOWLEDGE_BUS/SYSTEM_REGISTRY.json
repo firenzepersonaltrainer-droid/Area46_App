@@ -1,0 +1,65 @@
+{
+  "system_name": "Cervello Allenamenti - Master Brain",
+  "version": "1.1.0",
+  "creator": "Stefano Tronconi",
+  "methodology": "Landmine Lab & Metodologia Livello PRO",
+  "cloud_host": "Google Drive",
+  "master_folder_name": "Area46 - Dati e Backup",
+  "master_folder_id": "1leG8ulT21aUP1wQ--qyjxRM0YJ6V0PCO",
+  "root_folder_name": "cervello allenamenti",
+  "created_at": "2026-11-09T08:40:00Z",
+  "agents": [
+    {
+      "name": "ATLAS",
+      "role": "Biomeccanica, Biotensegrità & Catalogo 163 Esercizi PRO",
+      "file": "AGENTS/ATLAS.md"
+    },
+    {
+      "name": "ARGUS",
+      "role": "Computer Vision, Analisi Video & Cinetica Motoria",
+      "file": "AGENTS/ARGUS.md"
+    },
+    {
+      "name": "CHRONOS",
+      "role": "Periodizzazione, Onde RPE, Tetto 60' & Rapporto 55:35:10",
+      "file": "AGENTS/CHRONOS.md"
+    },
+    {
+      "name": "AURA",
+      "role": "Readiness Pre-Seduta (3 Slider) & Valutazione Post (PSJP)",
+      "file": "AGENTS/AURA.md"
+    },
+    {
+      "name": "SOCRATES",
+      "role": "Clone Cognitivo di Stefano & Custode Anti-Deriva",
+      "file": "AGENTS/SOCRATES.md"
+    },
+    {
+      "name": "HERMES",
+      "role": "Gateway Clienti, Magic Link & Interfaccia Mobile",
+      "file": "AGENTS/HERMES.md"
+    }
+  ],
+  "context_filters": [
+    {
+      "name": "IN_PRESENZA_LAB",
+      "file": "CONTEXT_FILTERS/IN_PRESENZA_LAB.md",
+      "environment": "Area46 Training Lab (Live Coach)"
+    },
+    {
+      "name": "A_DISTANZA_AI_PT",
+      "file": "CONTEXT_FILTERS/A_DISTANZA_AI_PT.md",
+      "environment": "AI PT Assistant App (Remote / Solo)"
+    },
+    {
+      "name": "CROSS_POLLINATION_RULES",
+      "file": "CONTEXT_FILTERS/CROSS_POLLINATION_RULES.md",
+      "environment": "Osmosi Bidirezionale"
+    }
+  ],
+  "knowledge_bus": {
+    "system_registry": "KNOWLEDGE_BUS/SYSTEM_REGISTRY.json",
+    "coach_decisions": "KNOWLEDGE_BUS/COACH_DECISIONS.json",
+    "shared_insights": "KNOWLEDGE_BUS/SHARED_INSIGHTS.json"
+  }
+}
