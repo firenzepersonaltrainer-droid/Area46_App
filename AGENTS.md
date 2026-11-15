@@ -58,12 +58,9 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
 
 ---
 
-## 5. SINCRONIZZAZIONE AUTOMATICA GLIDE (ATTIVA AD OGNI APERTURA FINO A DISMISSIONE DEFINITIVA)
-* **Regola Tassativa**: Ad ogni avvio o apertura della conversazione, l'agente DEVE eseguire la sincronizzazione da Glide (`npm run sync-glide` o `node scripts/sync_glide.mjs`).
-* **Perimetro di sincronizzazione**: Sincronizzare **esclusivamente i dati anagrafici** (nuovi atleti o aggiornamenti di contatto) e il **diario di allenamento** (nuovi carichi, serie, rep e feedback).
-* **Integrità Dati**: MAI toccare, azzerare o sovrascrivere crediti, scadenze carnet, prenotazioni calendario e registrazioni contabili/fisco già governate dal nuovo gestionale Area46.
-* **Segnalazione Problematiche**: Se sorgono problematiche di connessione o assenza dati sorgente da Glide, informare tempestivamente il coach con istruzioni chiare per risolverle.
-* Questa regola resta vincolante e attiva fino a quando Glide non verrà dismessa definitivamente da Stefano Tronconi.
+## 5. DISMISSIONE DEFINITIVA GLIDE APPS
+* **Stato Ufficiale**: Glide Apps e il relativo account sono stati **definitivamente dismessi e chiusi da Stefano Tronconi**. Nessun allievo accede più dalla vecchia applicazione.
+* **Cessazione Sincronizzazione**: La procedura di sincronizzazione Glide non è più attiva né necessaria. L'intero flusso è gestito al 100% dal gestionale Area46.
 
 ---
 
@@ -136,6 +133,9 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
    - Nelle note di `Skyerg lunges` (ID 227) specificare sempre: `"NB: svolgere la tirata con tecnica “pagaia”, sul lato della gamba fissa (anteriore)"`.
 10. **Linguaggio Semplice e Divieto del Termine 'Biomeccanica' nelle Note Atleti**:
    - Nelle note visibili all'amatore, divieto assoluto della parola "biomeccanica" e di gergo astratto/respingente. Sostituire con espressioni concrete: `"geometria di movimento"`, `"pattern motorio"` o `"economia del gesto"`.
+11. **COMBO Landmine Split Snatch High Hand Switch T/GO (ID 128)**:
+   - Esercizio ad alto RPE con scambio aereo continuo alternando dx e sx in Touch & Go. Prescrivere a volume ridotto cumulativo alternato continuo (es. `4 X 8` in Ciclo 7, `4 X 6` in Ciclo 8) con recupero standard a fine serie (mai `RBS`). È fatto divieto assoluto di notazione con `+` (mai `4x6+6` o `4x5+5`).
+
 
 
 

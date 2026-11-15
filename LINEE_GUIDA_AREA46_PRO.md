@@ -80,8 +80,15 @@ Nell'arco del Mesociclo, il totale delle serie allenanti (*hard sets*) deve risp
 2. **Equilibrio Distrettuale ed Estetica**:
    * MAI sovraccaricare la cerniera d'anca/bassa schiena in sedute contigue.
    * Inserire SEMPRE lavoro diretto per braccia (bicipiti/tricipiti) e spalle.
-3. **Sicurezza e Notazione**:
+3. **Sicurezza, Notazione e Gestione RBS (Zero Dogmi / Pura Contestualizzazione)**:
    * Esercizi asimmetrici/unilaterali con annotazione esplicita `+` (es. `3x8+8` o `3x15"+15"`).
+   * **Valutazione Contestuale di RBS (Rest Between Sides)**:
+     Nell'allenamento il termine *"obbligatorio"* NON esiste: tutto è soggettivo e contestualizzato. L'RBS non è un automatismo rigido, ma una scelta tecnica che il coach/algoritmo valuta liberamente considerando:
+     - *Intensità e vicinanza a 1RM:* Ha senso valutare un RBS (30"-45") quando il carico elevato richiede freschezza neurale per non far decadere la tecnica del secondo arto.
+     - *Lunghezza della serie:* Nelle serie lunghe (12-15+ rep) un RBS può essere utile per smaltire l'acidosi locale prima di iniziare il lato opposto.
+     - *Durata e gestione tempo:* Rispettare la dinamicità della seduta nei 60 minuti.
+     - *Obiettivi di seduta e ciclo:* Se si punta a stress sistemico, BPM elevati e densità (engine, metcon), l'RBS viene azzerato (0" tra i lati) recuperando solo a fine coppia.
+     - *Principio di Varietà:* Alternare deliberatamente blocchi con RBS e blocchi senza RBS nel tempo per offrire stimoli differenti anche sullo stesso pattern.
    * MAI scalette di velocità (speed ladder) all'interno di circuiti ad alta intensità o AMRAP.
    * Accoppiamenti e propedeutiche guidati dalle colonne del database: `ID complementare`, `ID propedeutica`, `ID alternativa scalata`, `ID Target`.
 

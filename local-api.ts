@@ -746,8 +746,38 @@ export async function pullGoogleCalendarLabSlots(
       const bookingId = ev.extendedProperties?.private?.booking_id || ev.extendedProperties?.private?.slot_id;
 
       if (isCancelled) {
-        // NON rimuovere prenotazioni dal database master di Area46:
-        // Se un evento è cancellato su GCal, non intacchiamo le prenotazioni confermate di Area46.
+        const existingToCancel = db.prenotazioni_slot.find(
+          (b: any) =>
+            b.google_event_id === gcalId || (bookingId && b.id === bookingId)
+        );
+        if (existingToCancel && (existingToCancel.stato === "confermata" || !existingToCancel.stato || existingToCancel.stato === "attiva")) {
+          existingToCancel.stato = "cancellata_in_tempo";
+          existingToCancel.cancellato_il = new Date().toISOString();
+          existingToCancel.note = existingToCancel.note ? `${existingToCancel.note} (Annullata su Google Calendar)` : "Annullata su Google Calendar";
+
+          const atleta = users.find(
+            (u: any) => u.id === existingToCancel.atleta_id || u.email?.toLowerCase() === existingToCancel.email_cliente?.toLowerCase()
+          );
+          if (atleta && existingToCancel.credito_scalato) {
+            const walletOwner = getWalletOwner(atleta, db) || atleta;
+            walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+            alignSharedPartnersCredits(walletOwner, db);
+
+            addMovimentoCrediti(db, {
+              atleta_id: walletOwner.id,
+              email_cliente: walletOwner.email,
+              nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
+              tipo: "rimborso_cancellazione",
+              delta_crediti: 1,
+              saldo_risultante: walletOwner.crediti,
+              motivazione: `Rimborso slot ${existingToCancel.data} ${existingToCancel.orario} cancellato su Google Calendar`,
+              operatore: "coach",
+            });
+          }
+          removed++;
+          changed = true;
+          console.log(`[GCAL PULL] Annullato slot da Google Calendar: ${existingToCancel.data} ${existingToCancel.orario} (Credito riaccreditato)`);
+        }
         continue;
       }
 
@@ -831,8 +861,33 @@ export async function pullGoogleCalendarLabSlots(
         db.prenotazioni_slot.push(newBk);
         added++;
         changed = true;
+
+        // Scalamento crediti effettivo e tracciamento nel ledger
+        if (matchedUser) {
+          const walletOwner = getWalletOwner(matchedUser, db) || matchedUser;
+          const isShared = walletOwner && walletOwner.id !== matchedUser.id;
+          walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
+          matchedUser.data_ultimo_accesso = new Date().toISOString();
+          if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
+
+          alignSharedPartnersCredits(walletOwner, db);
+
+          addMovimentoCrediti(db, {
+            atleta_id: walletOwner.id,
+            email_cliente: walletOwner.email,
+            nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
+            tipo: "prenotazione_slot",
+            delta_crediti: -1,
+            saldo_risultante: walletOwner.crediti,
+            motivazione: isShared
+              ? `Prenotazione slot del ${slotDate} ore ${slotTime} per ${matchedUser.nome || matchedUser.name} [Borsellino Condiviso - Da Google Calendar]`
+              : `Prenotazione slot del ${slotDate} ore ${slotTime} [Da Google Calendar]`,
+            operatore: "coach",
+          });
+        }
+
         console.log(
-          `[GCAL PULL] Inserito nuovo slot da Google Calendar: ${slotDate} ${slotTime} per ${newBk.nome_cliente} (ID: ${newBk.id})`
+          `[GCAL PULL] Inserito nuovo slot da Google Calendar: ${slotDate} ${slotTime} per ${newBk.nome_cliente} (Credito scalato, saldo: ${matchedUser ? getWalletOwner(matchedUser, db)?.crediti : "N/D"}) (ID: ${newBk.id})`
         );
       }
     }
@@ -942,16 +997,58 @@ async function syncDataToGoogleDrive(fullDb: any) {
       driveDb.utenti_cancellati = fullDb.utenti_cancellati || [];
     }
     if (fullDb.profili_utenti !== undefined) {
-      driveDb.profili_utenti = fullDb.profili_utenti || [];
+      const incoming = fullDb.profili_utenti || [];
+      const existing = driveDb.profili_utenti || [];
+      const userMap = new Map<string, any>();
+      for (const u of existing) {
+        if (u.id) userMap.set(u.id, u);
+      }
+      for (const u of incoming) {
+        if (u.id) {
+          const prev = userMap.get(u.id);
+          if (!prev) {
+            userMap.set(u.id, u);
+          } else {
+            const prevTime = prev.updated_at ? new Date(prev.updated_at).getTime() : 0;
+            const newTime = u.updated_at ? new Date(u.updated_at).getTime() : 0;
+            userMap.set(u.id, newTime >= prevTime ? u : prev);
+          }
+        }
+      }
+      driveDb.profili_utenti = Array.from(userMap.values());
     }
     if (fullDb.prenotazioni_cancellate !== undefined) {
-      driveDb.prenotazioni_cancellate = fullDb.prenotazioni_cancellate || [];
+      driveDb.prenotazioni_cancellate = Array.from(
+        new Set([...(driveDb.prenotazioni_cancellate || []), ...(fullDb.prenotazioni_cancellate || [])])
+      );
     }
     if (fullDb.prenotazioni_slot !== undefined) {
-      driveDb.prenotazioni_slot = fullDb.prenotazioni_slot || [];
+      const incoming = fullDb.prenotazioni_slot || [];
+      const existing = driveDb.prenotazioni_slot || [];
+      const bkMap = new Map<string, any>();
+      for (const b of existing) {
+        if (b.id) bkMap.set(b.id, b);
+      }
+      for (const b of incoming) {
+        if (b.id) bkMap.set(b.id, b);
+      }
+      driveDb.prenotazioni_slot = Array.from(bkMap.values());
     }
     if (fullDb.movimenti_crediti !== undefined) {
-      driveDb.movimenti_crediti = fullDb.movimenti_crediti || [];
+      const incoming = fullDb.movimenti_crediti || [];
+      const existing = driveDb.movimenti_crediti || [];
+      const movMap = new Map<string, any>();
+      for (const m of existing) {
+        if (m.id) movMap.set(m.id, m);
+      }
+      for (const m of incoming) {
+        if (m.id) movMap.set(m.id, m);
+      }
+      driveDb.movimenti_crediti = Array.from(movMap.values()).sort((a: any, b: any) => {
+        const da = a.data_movimento || a.created_at || "";
+        const dbTime = b.data_movimento || b.created_at || "";
+        return dbTime.localeCompare(da);
+      });
     }
     if (fullDb.diario_utente !== undefined) {
       driveDb.diario_utente = fullDb.diario_utente || [];
@@ -1137,6 +1234,26 @@ export function getWalletOwner(atleta: any, database: any) {
   return atleta;
 }
 
+export function alignSharedPartnersCredits(walletOwner: any, database: any) {
+  if (!walletOwner || !database?.profili_utenti) return;
+  const masterId = walletOwner.shared_wallet_with || walletOwner.id;
+  const masterUser = (database.profili_utenti || []).find((u: any) => u.id === masterId) || walletOwner;
+  const currentCredits = Number(masterUser.crediti ?? 0);
+  const currentExpiry = masterUser.data_scadenza_crediti;
+
+  for (const u of database.profili_utenti) {
+    if (u.id === masterId) {
+      u.crediti = currentCredits;
+    } else if (
+      u.shared_wallet_with === masterId ||
+      (u.shared_wallet_with && u.shared_wallet_with.toLowerCase() === masterUser.email?.toLowerCase())
+    ) {
+      u.crediti = currentCredits;
+      if (currentExpiry) u.data_scadenza_crediti = currentExpiry;
+    }
+  }
+}
+
 function parseCookies(cookieHeader: string | undefined): Record<string, string> {
   const list: Record<string, string> = {};
   if (!cookieHeader) return list;
@@ -1292,24 +1409,57 @@ export function getHydratedUser(user: any, database: any) {
   };
 }
 
+const AREA46_AUTH_SECRET = process.env.AREA46_AUTH_SECRET || "area46-secret-vault-auth-key-2026";
+
+export function signUserId(userId: string): string {
+  const hmac = crypto.createHmac("sha256", AREA46_AUTH_SECRET).update(userId).digest("hex").slice(0, 16);
+  return `${userId}.${hmac}`;
+}
+
+export function verifySignedUserId(token: string): string | null {
+  if (!token || typeof token !== "string") return null;
+  const parts = token.split(".");
+  if (parts.length !== 2) return null;
+  const [userId, sig] = parts;
+  const expected = crypto.createHmac("sha256", AREA46_AUTH_SECRET).update(userId).digest("hex").slice(0, 16);
+  try {
+    if (sig.length === expected.length && crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
+      return userId;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 export function getCurrentUser(reqOrDb: any, maybeDb?: any) {
   const req = maybeDb ? reqOrDb : null;
   const database = maybeDb || reqOrDb;
 
   let candidate: string | null = null;
+  let isCryptographicallySigned = false;
 
   if (req && req.headers) {
-    const headerUser =
-      req.headers["x-area46-user"] ||
-      req.headers["x-user-id"] ||
-      (typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ")
-        ? req.headers.authorization.slice(7)
-        : null);
-
     const cookies = parseCookies(req.headers.cookie);
     const cookieUser = cookies["area46_user_id"] || cookies["area46_user_email"];
+    
+    const bearer = typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ")
+      ? req.headers.authorization.slice(7).trim()
+      : null;
 
-    candidate = (headerUser || cookieUser || "").trim() || null;
+    const rawToken = bearer || cookieUser;
+    if (rawToken) {
+      const verifiedId = verifySignedUserId(rawToken);
+      if (verifiedId) {
+        candidate = verifiedId;
+        isCryptographicallySigned = true;
+      }
+    }
+
+    if (!candidate) {
+      const headerUser = req.headers["x-area46-user"] || req.headers["x-user-id"] || bearer;
+      candidate = (headerUser || cookieUser || "").trim() || null;
+    }
   }
 
   // 1. Identificativo presente nella sessione del browser (header o cookie)
@@ -1477,20 +1627,11 @@ export async function handleLocalApi(
       return res.end(JSON.stringify(currentUser));
     }
 
-    // GET /app-api/auth/login-demo (Login rapido per test/screenshot)
-    if (pathname === "/app-api/auth/login-demo" && method === "GET") {
-      const targetId = url.searchParams.get("id") || "usr-coach-01";
-      const targetUser =
-        (db.profili_utenti || []).find((u: any) => u.id === targetId || u.email?.toLowerCase() === targetId.toLowerCase()) ||
-        db.profili_utenti?.[0];
-      const redirectTo = url.searchParams.get("redirect") || "/";
-      res.setHeader(
-        "Set-Cookie",
-        `area46_user_id=${encodeURIComponent(targetUser?.id || targetId)}; Path=/; Max-Age=31536000; SameSite=Lax`
-      );
-      res.statusCode = 302;
-      res.setHeader("Location", redirectTo);
-      return res.end();
+    // GET /app-api/auth/login-demo (Disabilitato per sicurezza)
+    if (pathname === "/app-api/auth/login-demo") {
+      res.statusCode = 403;
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      return res.end(JSON.stringify({ ok: false, error: "Accesso demo disabilitato per motivi di sicurezza." }));
     }
 
     // POST /app-api/auth/logout (Disconnessione Utente)
@@ -1602,7 +1743,7 @@ export async function handleLocalApi(
 
         res.setHeader(
           "Set-Cookie",
-          `area46_user_id=${encodeURIComponent(found.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+          `area46_user_id=${encodeURIComponent(signUserId(found.id))}; Path=/; Max-Age=31536000; SameSite=Lax`
         );
         return res.end(JSON.stringify({ ok: true, user: getHydratedUser(found, db) }));
       }
@@ -1628,7 +1769,7 @@ export async function handleLocalApi(
         await syncDataToGoogleDrive(db);
         res.setHeader(
           "Set-Cookie",
-          `area46_user_id=${encodeURIComponent(coach.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+          `area46_user_id=${encodeURIComponent(signUserId(coach.id))}; Path=/; Max-Age=31536000; SameSite=Lax`
         );
         return res.end(JSON.stringify({ ok: true, user: getHydratedUser(coach, db) }));
       }
@@ -2226,6 +2367,8 @@ firenzepersonaltrainer@gmail.com
         });
       }
 
+      alignSharedPartnersCredits(walletOwner || profilo, db);
+
       profilo.updated_at = new Date().toISOString();
       if (isShared && walletOwner) walletOwner.updated_at = new Date().toISOString();
       saveData(db);
@@ -2330,6 +2473,7 @@ firenzepersonaltrainer@gmail.com
       }
       profilo.updated_at = new Date().toISOString();
       if (isShared && walletOwner) walletOwner.updated_at = new Date().toISOString();
+      alignSharedPartnersCredits(walletOwner || profilo, db);
       saveData(db);
       triggerSggSyncAsync();
       await syncDataToGoogleDrive(db);
@@ -3203,6 +3347,7 @@ CALENDARIO E PRENOTAZIONI:
       walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - totalCost);
       atleta.data_ultimo_accesso = new Date().toISOString();
       if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
+      alignSharedPartnersCredits(walletOwner, db);
 
       const createPrenotazioni: any[] = [];
       const now = Date.now();
@@ -3392,6 +3537,7 @@ CALENDARIO E PRENOTAZIONI:
       walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
       atleta.data_ultimo_accesso = new Date().toISOString();
       if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
+      alignSharedPartnersCredits(walletOwner, db);
 
       const nuovaPrenotazione = {
         id: `bk-${Date.now()}`,
@@ -3509,6 +3655,7 @@ CALENDARIO E PRENOTAZIONI:
         statoFinale = "cancellata_in_tempo";
         if (bk.credito_scalato && atleta && walletOwner) {
           walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+          alignSharedPartnersCredits(walletOwner, db);
 
           let prorogaMsg = "";
           if (isManager && prorogaRequested && walletOwner.data_scadenza_crediti) {
@@ -4782,7 +4929,7 @@ CALENDARIO E PRENOTAZIONI:
             cue_esecutiva: ex?.cue_esecutiva ?? null,
           };
         })
-        .sort((a: any, b: any) => (a.sequenza ?? "").localeCompare(b.sequenza ?? ""));
+        .sort((a: any, b: any) => (a.sequenza ?? "").localeCompare(b.sequenza ?? "", undefined, { numeric: true }));
 
       logShadowEvent("WORKOUT_VIEW", currentUser?.email || "anonymous", {
         livello,
@@ -4822,6 +4969,11 @@ CALENDARIO E PRENOTAZIONI:
 
     // 7. Libreria Esercizi: GET /app-api/libreria
     if (pathname === "/app-api/libreria" && method === "GET") {
+      if (!currentUser) {
+        res.statusCode = 401;
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        return res.end(JSON.stringify({ error: "Accesso riservato. Effettua l'accesso per visualizzare la libreria esercizi." }));
+      }
       const search = (url.searchParams.get("search") || url.searchParams.get("q") || "").toLowerCase().trim();
       const target = url.searchParams.get("target") || "";
       const attrezzo = (url.searchParams.get("attrezzo") || "").toLowerCase().trim();
@@ -4859,6 +5011,11 @@ CALENDARIO E PRENOTAZIONI:
 
     // 7b. Video Vault Semantic Fast Search: GET /app-api/vault/search
     if (pathname === "/app-api/vault/search" && method === "GET") {
+      if (!currentUser) {
+        res.statusCode = 401;
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        return res.end(JSON.stringify({ error: "Accesso riservato. Effettua l'accesso per effettuare ricerche nel Vault." }));
+      }
       const q = (url.searchParams.get("q") || "").toLowerCase().trim();
       const fulcro = (url.searchParams.get("fulcro") || "").toLowerCase().trim();
       const meridiano = (url.searchParams.get("meridiano") || "").toLowerCase().trim();

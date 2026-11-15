@@ -283,7 +283,7 @@ function getEserciziB(round) {
       seq: "5b",
       id: "106",
       nome: "Dragon Roll",
-      param: "x 8+8",
+      param: '30"+30"',
       rec: "",
       note: `AMRAP ${amrapTime} | rotazione dinamica Heavy Rope`,
       video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",

@@ -11824,11 +11824,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "cerniera d'anca, flessione del tronco su piano sagittale \u2022 Warm Up, Attivazione Core, Piano Sagittale, Cerniera d'anca, Catena Cinetica Chiusa, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 2,
@@ -11839,11 +11835,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "stabilizzazione anca e core in pattern biomeccanico funzonale \u2022 Warm Up, Attivazione Core, Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 3,
@@ -11854,11 +11846,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "stabilizzazione anca e core in pattern biomeccanico funzonale \u2022 Warm Up, Attivazione Core, Piano Sagittale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Metcon, Potenza Anaerobica,  Recupero Attivo",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Tirata a pagaia sul lato della gamba anteriore e ritmo costante"
+      data_pubblicazione: null
     },
     {
       id: 4,
@@ -11869,11 +11857,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "stabilizzazione core in pattern biomeccanico funzonale \u2022 Warm Up, Attivazione Core, Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/7n-hAJAXoYU",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 5,
@@ -11884,11 +11868,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "stabilizzazione core in trasferimento di carico \u2022 Warm Up, Attivazione Core, Piano Sagittale, Catena Cinetica Chiusa, Metcon, Potenza Anaerobica, Recupero Attivo",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 6,
@@ -11899,11 +11879,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, flessione del tronco su piano sagittale \u2022 Warm Up, Attivazione Core, Piano Sagittale, Cerniera d'anca, Catena Cinetica Chiusa, Metcon, Potenza Anaerobica, Recupero Attivo",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 7,
@@ -11914,11 +11890,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "integrazione di tutte le linee ed i vettori di forza in un movimento spiralizzato \u2022 Warm Up, Attivazione Core, Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/hML7iVaIBaU",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 8,
@@ -11929,11 +11901,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "tirata verticale in quadrupedia \u2022 Warm Up, Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/faS9d_MgHfY",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 9,
@@ -11944,11 +11912,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Coordinazione",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 10,
@@ -11959,11 +11923,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "corsa su treadmill meccanico curvo \u2022 Warm Up, Multi-planare, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 11,
@@ -11974,11 +11934,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "pedalare con movimento di spinta e trazione simultaneo delle braccia \u2022 Warm Up, Cool Down, Piano Sagittale, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 12,
@@ -11989,11 +11945,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 13,
@@ -12004,11 +11956,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "camminata \u2022 Warm Up, Multi-planare, Capacit\xE0 Aerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 14,
@@ -12019,11 +11967,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "corsa \u2022 Multi-planare, Cerniera d'anca, Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 15,
@@ -12034,11 +11978,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "spingere slitta in salita \u2022 Warm Up, Attivazione Core, Piano Sagittale, Metcon",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 16,
@@ -12049,11 +11989,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "trainare slitta in salita (esercizio monolaterale) \u2022 Warm Up, Attivazione Core, Connessione Controlaterale, Metcon",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 17,
@@ -12064,11 +12000,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "lancio, ciclcico \u2022 Warm Up, Multi-planare, Vettore Orizzontale, Spinta Orizzontale, Catene Crociate, Coordinazione",
       link_video: "https://youtu.be/71q-IETqjVU?si=ukbP7dUAlyQVdfZv",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 18,
@@ -12079,11 +12011,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Routine Mobilit\xE0, Multi-planare",
       link_video: "https://youtu.be/1mQ2JBcbdb0",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 19,
@@ -12094,11 +12022,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Routine Mobilit\xE0, Multi-planare",
       link_video: "https://youtu.be/3wZjPvwGt8U",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 20,
@@ -12109,11 +12033,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Attivazione Core",
       link_video: "https://youtu.be/D2lFalo9z7Y?si=kYg6Vce2-yDhimKA",
-      data_pubblicazione: null,
-      pattern_motorio: "Mobilit\xE0 e attivazione a terra",
-      fulcro_articolare: "Colonna toracica e bacino",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Respirazione diaframmatica e graduale allungamento attivo"
+      data_pubblicazione: null
     },
     {
       id: 21,
@@ -12124,11 +12044,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "abduzione ed flessione di anca \u2022 Warm Up",
       link_video: "https://youtu.be/jiVtzTAmp40",
-      data_pubblicazione: null,
-      pattern_motorio: "Mobilit\xE0 e attivazione a terra",
-      fulcro_articolare: "Colonna toracica e bacino",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Respirazione diaframmatica e graduale allungamento attivo"
+      data_pubblicazione: null
     },
     {
       id: 22,
@@ -12139,11 +12055,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "coordinazione alto basso, core stability in spinta monolaterale, cerniera d'anca \u2022 Warm Up, Attivazione Core, Multi-planare, Vettore Orizzontale, Spinta Orizzontale, Connessione Controlaterale, Catena Cinetica Chiusa, Coordinazione",
       link_video: "https://youtu.be/tk8i-CdxQVI",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone"
+      data_pubblicazione: null
     },
     {
       id: 23,
@@ -12154,11 +12066,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "coordinazione alto basso, core stability in trazione monolaterale, cerniera d'anca \u2022 Warm Up, Attivazione Core, Multi-planare, Vettore Orizzontale,  Trazione Orizzontale, Connessione Controlaterale, Catena Cinetica Chiusa, Coordinazione",
       link_video: "https://youtu.be/OdhNUbqajmM",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone"
+      data_pubblicazione: null
     },
     {
       id: 24,
@@ -12169,11 +12077,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core stablity in estensione catene crociate e spirali \u2022 Warm Up, Attivazione Core, Multi-planare, Catena Cinetica Chiusa",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 25,
@@ -12184,11 +12088,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "flessione laterale del bacino sul torace \u2022 Warm Up, Attivazione Core, Multi-planare, Trazione Verticale, Catena Cinetica Chiusa",
       link_video: "https://youtu.be/Z9bhpmPIRkM",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 26,
@@ -12199,11 +12099,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "cerniera d'anca, estensione d'anca, attivazione catena estensoria crociata posteriore \u2022 Warm Up, Attivazione Core, Multi-planare, Cerniera d'anca, Catena Cinetica Chiusa",
       link_video: "https://youtu.be/taxFYzgpVcw?si=iMiQonXmrhFei3Ch",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 27,
@@ -12214,11 +12110,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "cerniera d'anca, estensione d'anca, attivazione catena estensoria posteriore \u2022 Warm Up, Attivazione Core, Piano Sagittale, Cerniera d'anca, Catena Cinetica Chiusa",
       link_video: "https://youtu.be/4BHPu3MJLtY?si=ZAsrF_mYh2aUxSiy",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 28,
@@ -12229,11 +12121,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core stablity in piedi \u2022 Warm Up, Attivazione Core, Piano Trasverso, Stability, Tensione Strutturale, Catena Cinetica Chiusa",
       link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
-      data_pubblicazione: null,
-      pattern_motorio: "Anti-rotazione e tenuta del core",
-      fulcro_articolare: "Rachide lombare e bacino",
-      meridiano_miofasciale: "Catena Crociata Funzionale",
-      cue_esecutiva: "Contro-rotazione del bacino su torace e blocco isometrico"
+      data_pubblicazione: null
     },
     {
       id: 29,
@@ -12244,11 +12132,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "routine di esercizi completa \u2022 Warm Up, Piano Frontale, Multi-planare",
       link_video: "https://youtube.com/shorts/4defoi83APo",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 30,
@@ -12259,11 +12143,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "routine di esercizi completa \u2022 Warm Up, Piano Frontale, Multi-planare",
       link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 31,
@@ -12274,11 +12154,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "stretching catena flessoria anteriore e ischiocrurali \u2022 Warm Up, Attivazione Core, Piano Sagittale",
       link_video: "https://youtube.com/shorts/JS0WMLz3MKk",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 32,
@@ -12289,11 +12165,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "mobilit\xE0 sul piano sagittale del rachide \u2022 Warm Up, Attivazione Core, Piano Sagittale, Cool Down",
       link_video: "https://youtube.com/shorts/6hDTVX22S_M",
-      data_pubblicazione: null,
-      pattern_motorio: "Mobilit\xE0 e attivazione a terra",
-      fulcro_articolare: "Colonna toracica e bacino",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Respirazione diaframmatica e graduale allungamento attivo"
+      data_pubblicazione: null
     },
     {
       id: 33,
@@ -12304,11 +12176,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "mobilit\xE0 anche, allungamento catena flessoria anteriore \u2022 Warm Up, Multi-planare",
       link_video: "https://youtube.com/shorts/7hziwqqWGl4",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 34,
@@ -12319,11 +12187,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "airbike con utilizzo delle sole braccia \u2022 Warm Up, Spinta Orizzontale, Catena Cinetica Chiusa, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 35,
@@ -12334,11 +12198,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Cool Down, Multi-planare, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 36,
@@ -12349,11 +12209,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Tensione Strutturale, Catena Cinetica Chiusa, Isometria, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/1TqeXn-0Heo",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 37,
@@ -12364,11 +12220,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Torsione, Potenza Esplosiva, Metcon, Carico Asimmetrico",
       link_video: "https://youtu.be/3uWc_xe1Zng",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 38,
@@ -12379,11 +12231,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Torsione, Catena Cinetica Chiusa, Trasferimento di Carico, Potenza Esplosiva, Metcon, Carico Asimmetrico",
       link_video: "https://youtu.be/aYG1nCXnzXs",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 39,
@@ -12394,11 +12242,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "cerniera d'anca, affondo, posizione coiled \u2022 Warm Up, Multi-planare, Cerniera d'anca, Torsione, Catena Cinetica Aperta, Potenza Esplosiva, Metcon, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/d9ffrlkNlIM",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 40,
@@ -12409,11 +12253,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Tensione Strutturale, Catena Cinetica Chiusa, Trasferimento di Carico, Potenza Esplosiva, Metcon, Fulcro Fisso",
       link_video: "https://youtu.be/K65DsIr4nZw",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 41,
@@ -12424,11 +12264,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Affondo, Torsione, Catena Cinetica Chiusa, Trasferimento di Carico, Forza Massimale, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/tR6uYjLvWZ8",
-      data_pubblicazione: null,
-      pattern_motorio: "Affondo e deambulazione",
-      fulcro_articolare: "Anca e ginocchio",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Stabilit\xE0 ginocchio su secondo dito e bacino in asse"
+      data_pubblicazione: null
     },
     {
       id: 42,
@@ -12439,11 +12275,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "accosciata, cerniera d'anca \u2022 Warm Up, Multi-planare, Accosciata, Cerniera d'anca, Catena Cinetica Chiusa",
       link_video: "https://youtube.com/shorts/3a_ww0jGYsM",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 43,
@@ -12454,11 +12286,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, simmetrico, accosciata \u2022 Warm Up, Accosciata, Cerniera d'anca, Tensione Strutturale, Catena Cinetica Chiusa, Forza Massimale, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtu.be/X6q8nfv76Hs",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 44,
@@ -12469,11 +12297,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, asimmetrico, affondo \u2022 Warm Up, Multi-planare, Affondo, Torsione, Catena Cinetica Chiusa, Forza Massimale, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/I6ArgFBvg9Y",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone"
+      data_pubblicazione: null
     },
     {
       id: 45,
@@ -12484,11 +12308,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, asimmetrico, ciclico \u2022 Warm Up, Multi-planare, Affondo, Torsione, Catena Cinetica Chiusa, Trasferimento di Carico, Forza Massimale, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/6w04XI9evxI",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 46,
@@ -12499,11 +12319,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "gioco di gambe, flessione laterale della colonna, cerniera d'anca \u2022 Warm Up, Multi-planare, Tensione Strutturale, Catena Cinetica Chiusa, Trasferimento di Carico, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/9S1kTgJ7Wkc",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 47,
@@ -12514,11 +12330,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "cerniera d'anca, spinta controlaterale da terra sul muro \u2022 Warm Up, Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
-      data_pubblicazione: null,
-      pattern_motorio: "Mobilit\xE0 e spinta contro parete",
-      fulcro_articolare: "Spalla e colonna toracica",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Movimento alternato continuo a tempo senza scatti"
+      data_pubblicazione: null
     },
     {
       id: 48,
@@ -12529,11 +12341,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Catena Cinetica Chiusa, Fulcro Fisso",
       link_video: "https://youtu.be/QRu_O3qf6SI",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 49,
@@ -12544,11 +12352,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "spinta verticale \u2022 Warm Up, Multi-planare, Spinta Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtu.be/UDMiSEEzIc4",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 50,
@@ -12559,11 +12363,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Multi-planare, Spinta Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Trasferimento di Carico, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/zIqsjVRtc5o",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 51,
@@ -12574,11 +12374,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "gioco di gambe, coordinazione alto-basso \u2022 Warm Up, Multi-planare, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/WUAIJTbPI8c",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 52,
@@ -12589,11 +12385,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "spinta verticale, asimmetrico, affondo \u2022 Warm Up, Multi-planare, Spinta Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/P0bx4BySQcU",
-      data_pubblicazione: null,
-      pattern_motorio: "Affondo e deambulazione",
-      fulcro_articolare: "Anca e ginocchio",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Stabilit\xE0 ginocchio su secondo dito e bacino in asse"
+      data_pubblicazione: null
     },
     {
       id: 53,
@@ -12604,11 +12396,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, spinta verticale \u2022 Warm Up, Multi-planare, Spinta Verticale, Cerniera d'anca, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/BOLlr_Kd53g",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 54,
@@ -12619,11 +12407,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "flessione laterale della colonna, spinta verticale \u2022 Warm Up, Multi-planare, Spinta Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Trasferimento di Carico, Potenza Esplosiva, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/9_GYc3yB69k",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 55,
@@ -12634,11 +12418,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "acosciata asimmatrica, tenuta isometrica, trazione verticale dal basso \u2022 Isometria, Multi-planare, Trazione Verticale, Tensione Strutturale, Connessione Controlaterale, Catene Crociate, Forza Massimale, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/43Rx4Up-zZg",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 56,
@@ -12649,11 +12429,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso, asimmetrico \u2022 Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catene Crociate, Forza Massimale, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/q8pfMEqSrm8",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca e colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone; reset tra i lati"
+      data_pubblicazione: null
     },
     {
       id: 57,
@@ -12664,11 +12440,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/puBOJfw5u18",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 58,
@@ -12679,11 +12451,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/puBOJfw5u18",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 59,
@@ -12694,11 +12462,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "spinta verticale, asimmetrico, due tempi \u2022 Multi-planare, Spinta Verticale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/bKecykiTdoE",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 60,
@@ -12709,11 +12473,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Attivazione Core, Piano Frontale, Catena Cinetica Chiusa, Catena Cinetica Aperta",
       link_video: "https://youtu.be/jiVtzTAmp40",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 61,
@@ -12724,11 +12484,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Metcon, Carico Asimmetrico",
       link_video: "https://youtu.be/DajheBayHjc",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 62,
@@ -12739,11 +12495,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Plyometrics, Metcon, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/puBOJfw5u18",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 63,
@@ -12754,11 +12506,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, spinta verticale \u2022 Multi-planare, Cerniera d'anca, Spinta Verticale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Plyometrics, Metcon, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/GNWG7i-CZ-4",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 64,
@@ -12769,11 +12517,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "trazione verticale dal basso, tenuta isometrica, cerniera d'anca \u2022 Warm Up, Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Isometria, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/A2eyrizhMVM",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 65,
@@ -12784,11 +12528,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "trazione verticcal dal basso, cerniera d'anca \u2022 Warm Up, Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/Fsi34_9SXTU",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 66,
@@ -12799,11 +12539,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Spinta Verticale, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/HBDTjs5sqIk",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 67,
@@ -12814,11 +12550,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Spinta Verticale, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/D3RwNa-ADwY",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 68,
@@ -12829,11 +12561,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/oiXFbv8X_B0",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 69,
@@ -12844,11 +12572,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, asimmetrico, trazione verticale dal basso, lancio verticale \u2022 Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtu.be/oiXFbv8X_B0",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 70,
@@ -12859,11 +12583,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "trazione verticale dal basso, affondo, cerniera d'anca \u2022 Multi-planare, Spinta Verticale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Carico Asimmetrico",
       link_video: "https://youtu.be/rE8lJ9TxbEQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 71,
@@ -12874,11 +12594,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Spostamento Laterale, Catena Cinetica Aperta, Potenza Esplosiva, Plyometrics, Carico Asimmetrico",
       link_video: "https://youtu.be/b3MFp94lCpU?si=_HipW6yr48Xfb4S0",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 72,
@@ -12889,11 +12605,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "traslitterazione laterale, flessione laterale del rachide \u2022 Multi-planare, Spostamento Laterale, Catena Cinetica Aperta",
       link_video: "https://youtube.com/shorts/jtpzvqZ5xsQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 73,
@@ -12904,11 +12616,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, traslazione laterale, trazione verticale dal basso \u2022 Multi-planare, Spostamento Laterale, Catena Cinetica Chiusa, Potenza Esplosiva, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/HO3_5xnwLmQ?feature=share",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 74,
@@ -12919,11 +12627,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "traslazione laterale \u2022 Warm Up, Multi-planare, Spostamento Laterale, Footwork, Catena Cinetica Aperta, Trasferimento di Carico, Plyometrics, Metcon",
       link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 75,
@@ -12934,11 +12638,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "spinta verticale, asimmetrico \u2022 Multi-planare, Spinta Verticale, Connessione Controlaterale, Forza Massimale, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/VObhjeME2ws",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 76,
@@ -12949,11 +12649,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "trazione verticale dal basso \u2022 Multi-planare, Trazione Verticale, Connessione Controlaterale, Forza Massimale, Carico Asimmetrico",
       link_video: "https://youtu.be/kEfEfmFUtQ4",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 77,
@@ -12964,11 +12660,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core stablity catene crociate e spirali in spinta monolaterale \u2022 Multi-planare, Spinta Orizzontale, Connessione Controlaterale",
       link_video: "https://youtube.com/shorts/mifz_6oZJlw",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 78,
@@ -12979,11 +12671,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "estensione dell'omero sul piano sagittale in trazione \u2022 Piano Sagittale, Trazione Verticale, Catena Cinetica Chiusa, Forza Massimale, Fulcro Fisso",
       link_video: "https://youtu.be/nSj7QKBbvWA?si=fGWg_soHjRYO0xex",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 79,
@@ -12994,11 +12682,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "spinta orizzontale \u2022 Piano Sagittale, Spinta Orizzontale, Catena Cinetica Aperta, Forza Massimale",
       link_video: "https://youtu.be/q_OfuLjIMFI",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 80,
@@ -13009,11 +12693,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "trazione verticale dal basso \u2022 Piano Sagittale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Forza Massimale, Carico Asimmetrico",
       link_video: "https://youtu.be/2gCslk95r20",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 81,
@@ -13024,11 +12704,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca asimmetrico, trazione verticale dal basso \u2022 Piano Sagittale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Forza Massimale, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/aQOQKxucveA",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 82,
@@ -13039,11 +12715,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, asimmetrico, accosciata \u2022 Multi-planare, Cerniera d'anca, Connessione Controlaterale, Catena Cinetica Chiusa, Forza Massimale, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico, Tensione Strutturale",
       link_video: "https://youtu.be/jqhow36DTdg",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 83,
@@ -13054,11 +12726,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Spinta Verticale, Spinta Orizzontale, Connessione Controlaterale, Catena Cinetica Chiusa, Forza Massimale, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/0zrOd5606eU",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 84,
@@ -13069,11 +12737,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca asimmetrico, spinta verticale \u2022 Multi-planare, Spinta Verticale, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Potenza Esplosiva, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/lih7Bt5uPbw",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 85,
@@ -13084,11 +12748,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Piano Sagittale, Spinta Verticale, Catena Cinetica Chiusa, Forza Massimale, Carico Asimmetrico, Tensione Strutturale, Coordinazione",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 86,
@@ -13099,11 +12759,7 @@ var demo_data_default = {
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/EH8_xZDVT_g",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 87,
@@ -13114,11 +12770,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "core strenght, flessoestensione di anca, supino \u2022 Attivazione Core, Multi-planare, Metcon, Potenza Anaerobica",
       link_video: "https://youtu.be/BiXLybXd-EA?si=ixnXudoESc_GSm69",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 88,
@@ -13129,11 +12781,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Attivazione Core, Multi-planare, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/cFiy5ar3tWU",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 89,
@@ -13144,11 +12792,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "core training catene crociate \u2022 Attivazione Core, Multi-planare, Metcon",
       link_video: "https://youtu.be/b4InDUstH8Y?si=NP68qp2ACf_YIo2-",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 90,
@@ -13159,11 +12803,7 @@ var demo_data_default = {
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare",
       link_video: "https://youtube.com/shorts/Ye_FV7ti41k",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 91,
@@ -13174,11 +12814,7 @@ var demo_data_default = {
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare",
       link_video: "https://youtube.com/shorts/DDDQixPAHbs",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 92,
@@ -13189,11 +12825,7 @@ var demo_data_default = {
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training \u2022 Attivazione Core, Multi-planare, Metcon",
       link_video: "https://youtube.com/shorts/YFEZWR20mv4",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 93,
@@ -13204,11 +12836,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core stablity in piedi \u2022 Attivazione Core, Piano Trasverso",
       link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 94,
@@ -13219,11 +12847,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core stablity in rotazione su piano trasverso \u2022 Attivazione Core, Piano Trasverso",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 95,
@@ -13234,11 +12858,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core strenght, spinta verticale asimmetrica \u2022 Attivazione Core, Forza Massimale, Multi-planare, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/kj2--ZJZXoA",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 96,
@@ -13249,11 +12869,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core strenght, spinta verticale asimmetrica \u2022 Attivazione Core, Multi-planare, Metcon",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 97,
@@ -13264,11 +12880,7 @@ var demo_data_default = {
       ruolo: "accessrio",
       tag_biomeccanici: "core training in trazione verticale monolaterale alternato \u2022 Forza Massimale, Multi-planare, Metcon, Potenza Anaerobica, Attivazione Core",
       link_video: "https://youtube.com/shorts/gcgilJEmzks",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 98,
@@ -13279,11 +12891,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "gioco di gambe, flessione laterale della colonna \u2022 Piano Sagittale, Affondo, Salto, Footwork, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Carico Asimmetrico, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/sF3yPhsY9-I",
-      data_pubblicazione: null,
-      pattern_motorio: "Affondo e deambulazione",
-      fulcro_articolare: "Anca e ginocchio",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Stabilit\xE0 ginocchio su secondo dito e bacino in asse"
+      data_pubblicazione: null
     },
     {
       id: 99,
@@ -13294,11 +12902,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca \u2022 Piano Sagittale, Accosciata, Salto, Catena Cinetica Chiusa, Potenza Esplosiva, Metcon, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/zNy3VT6hhfg",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 100,
@@ -13309,11 +12913,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "traslazione laterale \u2022 Warm Up, Multi-planare, Spostamento Laterale, Footwork, Catena Cinetica Aperta, Trasferimento di Carico, Plyometrics, Metcon, Potenza Esplosiva",
       link_video: "https://youtube.com/shorts/C3qAS3JiVCg",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 101,
@@ -13324,11 +12924,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "spinta orizzontale, cerniera d'anca \u2022 Piano Sagittale, Spinta Orizzontale, Tensione Strutturale, Catena Cinetica Chiusa, Potenza Esplosiva, Metcon, Salto, Propedeutica alla Corsa, Stability",
       link_video: "https://youtube.com/shorts/novwwpAjz9k",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 102,
@@ -13339,11 +12935,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "Warm Up, Metcon, Catena Cinetica Aperta, Plyometrics, Footwork, Piano Sagittale, Capacit\xE0 Aerobica, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 103,
@@ -13354,11 +12946,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "rope flow \u2022 rope flow, Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/sb5dZL9uA4w?si=mY1_OZy85wG29BYa",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 104,
@@ -13369,11 +12957,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "rope flow \u2022 rope flow, Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/7dzFrsIVT7Q?si=8CfEDPP5L0mXNdHD",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Polsi e cinto scapolare",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Transizione continua Underhand/Overhand con polso in asse"
+      data_pubblicazione: null
     },
     {
       id: 105,
@@ -13384,11 +12968,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "rope flow \u2022 rope flow, Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/QDYnAATZuKc?si=BpQLXXXqB0_bA6Ng",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Polsi e cinto scapolare",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Transizione continua Underhand/Overhand con polso in asse"
+      data_pubblicazione: null
     },
     {
       id: 106,
@@ -13399,11 +12979,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "rope flow \u2022 rope flow, Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
-      data_pubblicazione: null,
-      pattern_motorio: "Destrezza neurale e ritmo",
-      fulcro_articolare: "Polsi e spalla",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Rotazione a flusso continuo a tempo; nessun conteggio a rep"
+      data_pubblicazione: null
     },
     {
       id: 107,
@@ -13414,11 +12990,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "rope flow \u2022 rope flow, Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/9IwTU7BGQlk?si=L3vOU6YwqEIO9QMD",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 108,
@@ -13429,11 +13001,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "rope flow \u2022 rope flow, Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/Q9oc9fPb7Io?si=1aF3yA5jZFZ6EC1Y",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 109,
@@ -13444,11 +13012,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Footwork, Plyometrics, Agilit\xE0, Metcon, Propedeutica alla Corsa",
       link_video: "https://youtu.be/m4Yue9gwuFI?si=vUIuI3JqUYzBArCo",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 110,
@@ -13459,11 +13023,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "Warm Up, Footwork, Plyometrics, Agilit\xE0, Metcon, Propedeutica alla Corsa",
       link_video: "https://youtu.be/dHdkUOXReAg?si=1vy8SoA6m-gMlISn",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 111,
@@ -13474,11 +13034,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Footwork, Plyometrics, Agilit\xE0, Metcon, Propedeutica alla Corsa",
       link_video: "https://youtu.be/jkUolZmHrwU?si=yQz2o5ZM1cHiqR4C",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 112,
@@ -13489,11 +13045,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Footwork, Plyometrics, Agilit\xE0, Metcon, Propedeutica alla Corsa",
       link_video: "https://youtu.be/WhQhJEpE954?si=lXQ_QPAE6xA-aJ4D",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 113,
@@ -13504,11 +13056,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "Warm Up, Footwork, Plyometrics, Agilit\xE0, Metcon, Propedeutica alla Corsa",
       link_video: "https://youtu.be/aLmeiMhBcHM?si=yZ5RqyGw8po0TSDz",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 114,
@@ -13519,11 +13067,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "Warm Up, Footwork, Plyometrics, Agilit\xE0, Metcon, Propedeutica alla Corsa",
       link_video: "https://youtu.be/jnfXQENDS_Y?si=APIWYmnPikpQmPhs",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 115,
@@ -13534,11 +13078,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "saltelli, agility, footwork \u2022 Warm Up, Footwork, Plyometrics, Agilit\xE0, Metcon, Propedeutica alla Corsa",
       link_video: "https://youtube.com/shorts/TE_KtwU4WIE",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 116,
@@ -13549,11 +13089,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "trazione verticale dal basso, trasferimento di carico \u2022 Multi-planare, Cerniera d'anca, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/OydFB2JianU",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 117,
@@ -13564,11 +13100,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Accosciata, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/zNy3VT6hhfg",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 118,
@@ -13579,11 +13111,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Affondo, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/nnaWlq5uegQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Affondo e deambulazione",
-      fulcro_articolare: "Anca e ginocchio",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Stabilit\xE0 ginocchio su secondo dito e bacino in asse"
+      data_pubblicazione: null
     },
     {
       id: 119,
@@ -13594,11 +13122,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, salto \u2022 Multi-planare, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/oXOy45yie-0",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 120,
@@ -13609,11 +13133,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, salto \u2022 Multi-planare, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/b1DU11BZKCk",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 121,
@@ -13624,11 +13144,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, salto \u2022 Fulcro Fisso",
       link_video: "https://youtube.com/shorts/Kvo7uCsI0D8",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 122,
@@ -13639,11 +13155,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Plyometrics",
       link_video: "https://youtu.be/GXKlV1aWruU?si=guobA3vjLOpL0l6N",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 123,
@@ -13654,11 +13166,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Salto, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/2q5Wjes1FGY?si=7A7SvJIawIXZGSlz",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 124,
@@ -13669,11 +13177,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, coiled position, traslitterazione laterale \u2022 Multi-planare, Spostamento Laterale, Footwork, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica",
       link_video: "https://youtu.be/b3MFp94lCpU?si=-Rk8BYA6Ob_mr4rA",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 125,
@@ -13684,11 +13188,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Spostamento Laterale, Footwork, Potenza Esplosiva, Plyometrics, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/nKP0dA4dpzw",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 126,
@@ -13699,11 +13199,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/BOLlr_Kd53g",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 127,
@@ -13714,11 +13210,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, trasferimento di carico \u2022 Warm Up, Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/nnKzvJyZYu8",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 128,
@@ -13729,11 +13221,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, lancio verticale, trasferimento di carico \u2022 Warm Up, Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 129,
@@ -13744,11 +13232,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, spinta verticale, trasferimento di carico \u2022 Warm Up, Multi-planare, Potenza Esplosiva, Plyometrics, Coordinazione, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/iH9duQm8hzQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 130,
@@ -13759,11 +13243,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "destrezza, saltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/TyPtqExF1pg",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 131,
@@ -13774,11 +13254,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "saltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/BP4VY1MaoTE",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 132,
@@ -13789,11 +13265,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/Yw8m0N-Ne44",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 133,
@@ -13804,11 +13276,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/reGJg8YDyNg",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 134,
@@ -13819,11 +13287,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, salto verticale \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/_rDGDLXfTCc",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 135,
@@ -13834,11 +13298,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "destrezza, asaltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/uUHK_kDmL4U",
-      data_pubblicazione: null,
-      pattern_motorio: "Destrezza neurale e ritmo",
-      fulcro_articolare: "Cingolo scapolare e polsi",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Ritmo fluido, continuit\xE0 circolare ed economia del gesto"
+      data_pubblicazione: null
     },
     {
       id: 136,
@@ -13849,11 +13309,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/9SHNa7RhQUw?si=_pu84CaDNM-x2fOF",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 137,
@@ -13864,11 +13320,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/uzfVpyni67Y?si=43IY2zRlbLqazNbb",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 138,
@@ -13879,11 +13331,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "saltello, salto verticale \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtu.be/CrrfX1tBvyI?si=yUmHcZDqQ2kpQ0S0",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 139,
@@ -13894,11 +13342,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/5isSyz33jpA",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 140,
@@ -13909,11 +13353,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/CR67BTqLBa0",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 141,
@@ -13924,11 +13364,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/guIOEB84Z30",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 142,
@@ -13939,11 +13375,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/USaC1jfh3Og",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 143,
@@ -13954,11 +13386,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/Lv33zEfo8-Q",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 144,
@@ -13969,11 +13397,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/1KoPNrysB7g",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 145,
@@ -13984,11 +13408,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "destrezza, asaltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/cKkt9DDNb_U",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 146,
@@ -13999,11 +13419,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/N5W-ngtTTCk",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 147,
@@ -14014,11 +13430,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "circonduzione e mobilt\xE0 di anca, saltello \u2022 Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/xobV12r17WE",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 148,
@@ -14029,11 +13441,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/nZJjTN4PJGg",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 149,
@@ -14044,11 +13452,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/ppJXt-faDYQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 150,
@@ -14059,11 +13463,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/O7i6e2cv8l8",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 151,
@@ -14074,11 +13474,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/C2XsmvmGPlY",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 152,
@@ -14089,11 +13485,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Warm Up, Salto, Footwork, Propedeutica alla Corsa, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://youtube.com/shorts/inSXETgHuJU",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 153,
@@ -14104,11 +13496,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Potenza Esplosiva, Forza Massimale, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico, resistenza progressiva",
       link_video: "https://youtube.com/shorts/fyLREVL_Gj8",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 154,
@@ -14119,11 +13507,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "traslazione laterale, flessione laterale della colonna, gioco di gambe \u2022 Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Potenza Esplosiva, Forza Massimale, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico, resistenza progressiva",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 155,
@@ -14134,11 +13518,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa, Potenza Esplosiva, Forza Massimale, Plyometrics, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico, resistenza progressiva",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 156,
@@ -14149,11 +13529,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/JsefrELV2hU?si=13Sas4AZ4lqdu80O",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 157,
@@ -14164,11 +13540,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/ig4SivT3FIc?si=YutU3lHkHcCVQ6yR",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 158,
@@ -14179,11 +13551,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "circonduzione spalle, rotazione piano trasverso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/INNpiEJL9As?si=7-xSjR1LJL__jzU8",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 159,
@@ -14194,11 +13562,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/l36MpIWicMo?si=eDm4DA2C_dHh5-FM",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione orizzontale",
-      fulcro_articolare: "Cingolo scapolare e gomito",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Braccio a Cavo Neutro e adduzione scapolare attiva"
+      data_pubblicazione: null
     },
     {
       id: 160,
@@ -14209,11 +13573,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "lancio, ciclico \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/oWM6pwB1Zrc?si=gePKc-R65kniEnh2",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione orizzontale",
-      fulcro_articolare: "Cingolo scapolare e gomito",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Braccio a Cavo Neutro e adduzione scapolare attiva"
+      data_pubblicazione: null
     },
     {
       id: 161,
@@ -14224,11 +13584,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/MohkWWeuuVM?si=9iYj_o8ZNY7AQqLW",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione orizzontale",
-      fulcro_articolare: "Cingolo scapolare e gomito",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Braccio a Cavo Neutro e adduzione scapolare attiva"
+      data_pubblicazione: null
     },
     {
       id: 162,
@@ -14239,11 +13595,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "lancio, ciclico, rotazione piano trasverso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/ZfYjQ659bMo?si=5CtK6H1ghOXZfBbz",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione orizzontale",
-      fulcro_articolare: "Cingolo scapolare e gomito",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Braccio a Cavo Neutro e adduzione scapolare attiva"
+      data_pubblicazione: null
     },
     {
       id: 163,
@@ -14254,11 +13606,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "core stability, flessoestensione spalle \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/STvSUGDtXX0",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 164,
@@ -14269,11 +13617,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/pg4CaIOYuAs",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 165,
@@ -14284,11 +13628,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/In-cLxGzZEw",
-      data_pubblicazione: null,
-      pattern_motorio: "Accosciata / Quad Dominant",
-      fulcro_articolare: "Ginocchio e anca",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Tripode podalico e discesa controllata"
+      data_pubblicazione: null
     },
     {
       id: 166,
@@ -14299,11 +13639,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/In-cLxGzZEw",
-      data_pubblicazione: null,
-      pattern_motorio: "Accosciata / Quad Dominant",
-      fulcro_articolare: "Ginocchio e anca",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Tripode podalico e discesa controllata"
+      data_pubblicazione: null
     },
     {
       id: 167,
@@ -14314,11 +13650,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "core stability, flessoestensione spalle, rotazione sul piano trasverso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/_DDKPl2z4lA",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 168,
@@ -14329,11 +13661,7 @@ var demo_data_default = {
       ruolo: "propedeutico L master",
       tag_biomeccanici: "core stability, traslazione laterale \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/aUN2D2svjsg",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 169,
@@ -14344,11 +13672,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "cerniera d'anca, trasferimento di carico \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/qQVhe7iuaaY",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 170,
@@ -14359,11 +13683,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "cerniera d'anca \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/_WhdFAoC-g0",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone"
+      data_pubblicazione: null
     },
     {
       id: 171,
@@ -14374,11 +13694,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, traslazione laterale, trazione verticale dal basso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/fNs7kd2FvEs",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 172,
@@ -14389,11 +13705,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/kEyTcHs2jlE",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 173,
@@ -14404,11 +13716,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso, core stability \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/rE8lJ9TxbEQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 174,
@@ -14419,11 +13727,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "trazione verticale dal basso, affondo, cerniera d'anca \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/rE8lJ9TxbEQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 175,
@@ -14434,11 +13738,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso, accosciata statica \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/AwVZtsBdFpg?si=Dfgyfkgtzkn0U3CN",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 176,
@@ -14449,11 +13749,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso, lancio dal basso verso l'alto \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/kGxO6XxLuxg?si=H49e5YrSvD9P207u",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 177,
@@ -14464,11 +13760,7 @@ var demo_data_default = {
       ruolo: "propedeutico L master",
       tag_biomeccanici: "lancio ciclico, rotazione piano trasverso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione orizzontale",
-      fulcro_articolare: "Cingolo scapolare e gomito",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Braccio a Cavo Neutro e adduzione scapolare attiva"
+      data_pubblicazione: null
     },
     {
       id: 178,
@@ -14479,11 +13771,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/Abk0IE7G-wA?si=swbLBJMrMEg4F6vy",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 179,
@@ -14494,11 +13782,7 @@ var demo_data_default = {
       ruolo: "propedeutico L master",
       tag_biomeccanici: "cerniera d'anca, spostamento sagittale \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/SL75_q76B-8?si=KIvTzW2SDd9wERdd",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 180,
@@ -14509,11 +13793,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, core stability, affondo \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/ephpBy9kGuc",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 181,
@@ -14524,11 +13804,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "cerniera d'anca, core stability \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/v0-RIjDrdL4",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 182,
@@ -14539,11 +13815,7 @@ var demo_data_default = {
       ruolo: "propedeutico L master",
       tag_biomeccanici: "cerniera d'anca, core stability \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/Oym9Ibkkh1E?si=_eMoPUPN9PP_AqAY",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 183,
@@ -14554,11 +13826,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "flessoestensione della spalla, rotazione sul piano trasverso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtu.be/Brwd1bxfTEM?si=z2EE4zDDtLwSDPO0",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 184,
@@ -14569,11 +13837,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Salto, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/2q5Wjes1FGY?si=f7t-ll0cuD81Whv-",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 185,
@@ -14584,11 +13848,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Salto, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/Hgw-qCK_QZc?si=PSXkzkRnDJy3gCrw",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 186,
@@ -14599,11 +13859,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Salto, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
       link_video: "https://youtu.be/52r_Ul5k03g?si=0yozqP91aSNLFNEk",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 187,
@@ -14614,11 +13870,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, accosciata, salto \u2022 Salto, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/R3ICbeuPH48",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 188,
@@ -14629,11 +13881,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 Potenza Esplosiva, Metcon, Potenza Anaerobica",
       link_video: "https://youtu.be/rE8lJ9TxbEQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 189,
@@ -14644,11 +13892,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso, spinta verticale \u2022 Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/vi5ZDqW4AyM",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone"
+      data_pubblicazione: null
     },
     {
       id: 190,
@@ -14659,11 +13903,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "spinta verticale, asimmetrico \u2022 Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/vi5ZDqW4AyM",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 191,
@@ -14674,11 +13914,7 @@ var demo_data_default = {
       ruolo: "accessrio",
       tag_biomeccanici: "core training in trazione verticale simmetrica \u2022 Metcon, Potenza Anaerobica",
       link_video: "https://youtu.be/rRgKOg0qaA4?si=aYRTcGburOhwv1a6",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 192,
@@ -14689,11 +13925,7 @@ var demo_data_default = {
       ruolo: "accessrio",
       tag_biomeccanici: "core training in trazione verticale monolaterale alternato in ginocchio \u2022 Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/sNkK5m4fYi0",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 193,
@@ -14704,11 +13936,7 @@ var demo_data_default = {
       ruolo: "accessrio",
       tag_biomeccanici: "core training in trazione verticale spiralizzata \u2022 Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/nRxCW9Y2muU",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 194,
@@ -14719,11 +13947,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Metcon, Potenza Anaerobica",
       link_video: "https://youtu.be/H5vc75zL1Cg?si=3RDpV63g1NHs1lQg",
-      data_pubblicazione: null,
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: null
     },
     {
       id: 195,
@@ -14734,11 +13958,7 @@ var demo_data_default = {
       ruolo: "accessrio",
       tag_biomeccanici: "core training, trazione orizzontale \u2022 Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione orizzontale",
-      fulcro_articolare: "Cingolo scapolare e gomito",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Braccio a Cavo Neutro e adduzione scapolare attiva"
+      data_pubblicazione: null
     },
     {
       id: 196,
@@ -14749,11 +13969,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "sprint massima potenza su airbike \u2022 Potenza Esplosiva, Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 197,
@@ -14764,11 +13980,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Potenza Esplosiva, Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 198,
@@ -14779,11 +13991,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Potenza Esplosiva, Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 199,
@@ -14794,11 +14002,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Potenza Esplosiva, Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 200,
@@ -14809,11 +14013,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Potenza Esplosiva, Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 201,
@@ -14824,11 +14024,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "scalino, salita monolaterale alternata esplosiva \u2022 Potenza Esplosiva, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/bAH_uySHG0c?si=H7r8TS-7k3vxrCRf",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 202,
@@ -14839,11 +14035,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Metcon, Potenza Anaerobica",
       link_video: "",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 203,
@@ -14854,11 +14046,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, affondo, salto \u2022 Potenza Esplosiva, Salto, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/IFkNosWDFlA",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 204,
@@ -14869,11 +14057,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, accosciata, salto \u2022 Salto, Potenza Esplosiva, Plyometrics, Agilit\xE0, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/inSXETgHuJU",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 205,
@@ -14884,11 +14068,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "body folw \u2022 Agilit\xE0, Coordinazione, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/2vJcPKZw18Q",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 206,
@@ -14899,11 +14079,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "body folw \u2022 Agilit\xE0, Coordinazione, Metcon, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/swkl6J5xqnw",
-      data_pubblicazione: null,
-      pattern_motorio: "Engine e condizionamento ciclico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Cerniera d'anca fluida e cadenza respiratoria costante"
+      data_pubblicazione: null
     },
     {
       id: 207,
@@ -14914,11 +14090,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "trazione verticale da seduto, core training \u2022 Metcon, Potenza Anaerobica, Torsione, Trazione Verticale, Attivazione Core",
       link_video: "https://youtube.com/shorts/8QVxs6WyGJs",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 208,
@@ -14929,11 +14101,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca asimmetrico \u2022 Potenza Anaerobica, Trazione Verticale, Metcon, Potenza Esplosiva, Plyometrics, Multi-planare, Connessione Controlaterale, Catena Cinetica Chiusa",
       link_video: "https://youtube.com/shorts/4lql1_wA_Ss",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 209,
@@ -14944,11 +14112,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "video didattico teorico di approfondimento tecnico,",
       link_video: "https://youtu.be/0IotRiRVq9Y?si=r4PPBvaE2L5geehC",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 210,
@@ -14959,11 +14123,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Sessione Guidata, Moblit\xE0, Respirazione, Calma, Benessere Mente Corpo.",
       link_video: "https://youtu.be/xW3GdKQLYLE",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 211,
@@ -14974,11 +14134,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "video didattico teorico di approfondimento tecnico,",
       link_video: "https://youtu.be/GKoWHa0U2GU?si=gAGDdLjoBPwDvex4",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 212,
@@ -14989,11 +14145,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "regole, filosofia, norme di comportamento, approfondimento.",
       link_video: "https://youtu.be/kzu3kHyCFJk?si=X8Ix3qpxu4L-Mw7U",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 213,
@@ -15004,11 +14156,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "filosofia, approfondimento concettuale.",
       link_video: "https://youtu.be/I3mTr9qBd4Y?si=pMhZTZuLDpbpkday",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 214,
@@ -15019,11 +14167,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Introduzione all Lab, Appprofondimento.",
       link_video: "https://youtu.be/Ym7gkfyJYIQ?si=_1SYaQvb_pvVw-bv",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 215,
@@ -15034,11 +14178,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "informazioni concettuali sul programma di allenamento",
       link_video: "https://youtu.be/84Zk9n2YsNE?si=lzqHhngS_WnYfa5z",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 216,
@@ -15049,11 +14189,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "tutorial, mobilit\xE0 articolare, routine di riscaldamento",
       link_video: "https://youtu.be/nyhsL01d0S8?si=ZDWdbW4_h-NizxN7",
-      data_pubblicazione: null,
-      pattern_motorio: "Mobilit\xE0 e attivazione a terra",
-      fulcro_articolare: "Colonna toracica e bacino",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Respirazione diaframmatica e graduale allungamento attivo"
+      data_pubblicazione: null
     },
     {
       id: 217,
@@ -15064,11 +14200,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Metcon, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/zMi68T0liWI",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone"
+      data_pubblicazione: null
     },
     {
       id: 218,
@@ -15079,11 +14211,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "spinta verticale, asimmetrico \u2022 Warm Up, Multi-planare, Spinta Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Trasferimento di Carico, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/zIqsjVRtc5o",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta verticale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Catena Crociata Anteriore",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e spinta senza compenso lombare"
+      data_pubblicazione: null
     },
     {
       id: 219,
@@ -15094,11 +14222,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core stablity catene crociate spinta monolaterale \u2022 Multi-planare, Spinta Orizzontale, Connessione Controlaterale",
       link_video: "https://youtu.be/-j07Q_jaTOA",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 220,
@@ -15109,11 +14233,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "attivazione pattern di high pull e deadlift \u2022 Warm Up, Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Anaerobica, Fulcro Fisso, Carico Asimmetrico",
       link_video: "https://youtu.be/EBv0BjKhUlA?si=I07YNW02JWJF-oiD",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione verticale / Alta",
-      fulcro_articolare: "Cingolo scapolo-omerale e gomito",
-      meridiano_miofasciale: "Catena Crociata Posteriore",
-      cue_esecutiva: "Braccio a Cavo Neutro e trazione a gomito guidato"
+      data_pubblicazione: null
     },
     {
       id: 221,
@@ -15124,11 +14244,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca asimmetrico, lancio verticale \u2022 Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/Nsde-BNzRy8",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 222,
@@ -15139,11 +14255,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "trazione verticale dal basso, lancio verticale, cerniera d'anca \u2022 Multi-planare, Trazione Verticale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Potenza Anaerobica, Fulcro Fisso",
       link_video: "https://youtube.com/shorts/Meyqm1Du89g",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 223,
@@ -15154,11 +14266,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, affondo, trazione verticale dal basso \u2022 Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Metcon, Carico Asimmetrico",
       link_video: "https://youtube.com/shorts/JpmLFc_bMcU",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 224,
@@ -15169,11 +14277,7 @@ var demo_data_default = {
       ruolo: "fondamentale",
       tag_biomeccanici: "cerniera d'anca, affondo, trazione verticale dal basso \u2022 Multi-planare, Cerniera d'anca, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Aperta, Catene Crociate, Potenza Esplosiva, Metcon, Carico Asimmetrico",
       link_video: "https://youtu.be/rE8lJ9TxbEQ",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 225,
@@ -15184,11 +14288,7 @@ var demo_data_default = {
       ruolo: "engine benchmark",
       tag_biomeccanici: "cerniera d'anca, accosciata \u2022 Warm Up, Metcon, Potenza Anaerobica, Fulcro Fisso, Catene Cinetica Chiusa, Potenza Esplosiva",
       link_video: "https://youtu.be/Nwd-5fuLm3k?si=jGWxuH-RfvPTnkWN",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 226,
@@ -15199,11 +14299,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/m-B6jnD9Qs0",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Coiling Spirale e spinta dal tallone"
+      data_pubblicazione: null
     },
     {
       id: 227,
@@ -15214,11 +14310,7 @@ var demo_data_default = {
       ruolo: "engine",
       tag_biomeccanici: "affondi alternati con trazione verso il basso \u2022 Warm Up, Attivazione Core, Piano Sagittale, Cerniera d'anca, Catena Cinetica Chiusa, Metcon, Potenza Anaerobica, Capacit\xE0 Aerobica",
       link_video: "https://youtube.com/shorts/kYfL3_rgym8",
-      data_pubblicazione: null,
-      pattern_motorio: "Affondo e condizionamento asimmetrico",
-      fulcro_articolare: "Anca e cingolo scapolare",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Tirata con tecnica pagaia sul lato della gamba fissa anteriore"
+      data_pubblicazione: null
     },
     {
       id: 228,
@@ -15229,11 +14321,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "body folw, cerniera d'anca, accosciata \u2022 Agilit\xE0, Coordinazione, Metcon, Potenza Anaerobica, Potenza Esplosiva",
       link_video: "https://youtube.com/shorts/PbXUM9whsQo",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 229,
@@ -15244,11 +14332,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso \u2022 Multi-planare, Trazione Verticale, Connessione Controlaterale, Catena Cinetica Chiusa, Catene Crociate, Potenza Esplosiva, Metcon, Fulcro Fisso, Carico Asimmetrico, Plyometrics",
       link_video: "https://youtube.com/shorts/PQ-Ga27AgoM",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 230,
@@ -15259,11 +14343,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, trazione verticale dal basso, spinta verticale \u2022 ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Multi-planare, Attivazione Core, spinta verticale",
       link_video: "https://youtu.be/DajheBayHjc",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 231,
@@ -15274,11 +14354,7 @@ var demo_data_default = {
       ruolo: "complementare a tutto",
       tag_biomeccanici: "core training in rotazione sul piano trasverso \u2022 core training, rotazioni piano trasverso",
       link_video: "https://youtube.com/shorts/jEOtxSBwhCU",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 232,
@@ -15289,11 +14365,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "core training, trazione orizzontale \u2022 core training, trazione orizzontale",
       link_video: "https://youtube.com/shorts/ZyQbtwd1NC0",
-      data_pubblicazione: null,
-      pattern_motorio: "Trazione orizzontale",
-      fulcro_articolare: "Cingolo scapolare e gomito",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Braccio a Cavo Neutro e adduzione scapolare attiva"
+      data_pubblicazione: null
     },
     {
       id: 233,
@@ -15304,11 +14376,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core training, rotazione sul piano trasverso \u2022 core training, rotazione sul piano trasverso",
       link_video: "https://youtube.com/shorts/HwYENrEDFqY",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 234,
@@ -15319,11 +14387,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "spinta orizzontale \u2022 core training, spnta orizzontale",
       link_video: "https://youtube.com/shorts/Q6Iwf63kckI",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 235,
@@ -15334,11 +14398,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "cerniera d'anca, flessoestensione del tronco, catena posteriore, simmetrico \u2022 cerniera d'anca, flessoestensione del tronco, catena posteriore, simmetrico",
       link_video: "https://youtube.com/shorts/LJzESRNzCTI",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 236,
@@ -15349,11 +14409,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca, accosciata \u2022 cerniera d'anca, accosciata",
       link_video: "https://youtube.com/shorts/x79MUElgGK8",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 237,
@@ -15364,11 +14420,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "cerniera d'anca, rotazione del tronco \u2022 cerniera d'anca, rotazione del tronco",
       link_video: "https://youtube.com/shorts/iSHrpNIIpJ4",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 238,
@@ -15379,11 +14431,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "core conditioning, catena flessoria \u2022 core conditioning, catena flessoria",
       link_video: "https://youtube.com/shorts/bkeLhDyiMWg",
-      data_pubblicazione: null,
-      pattern_motorio: "Catena Cinetica Funzionale",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Catena Cinetica Funzionale",
-      cue_esecutiva: "Allineamento neutro e controllo motorio"
+      data_pubblicazione: null
     },
     {
       id: 240,
@@ -15394,11 +14442,7 @@ var demo_data_default = {
       ruolo: "accessorio",
       tag_biomeccanici: "pliometria, saltelli, multidirezionale \u2022 Multi-planare, Spinta Orizzontale, Connessione Controlaterale, linee spirali, spinta orizzontale",
       link_video: "https://youtube.com/shorts/2tYTglQdxdw",
-      data_pubblicazione: null,
-      pattern_motorio: "Spinta orizzontale",
-      fulcro_articolare: "Cingolo scapolo-omerale / Spalla",
-      meridiano_miofasciale: "Linea Frontale Superficiale",
-      cue_esecutiva: "Presa a Tenaglia / Pincer Grip e stabilit\xE0 scapolare"
+      data_pubblicazione: null
     },
     {
       id: 241,
@@ -15409,11 +14453,7 @@ var demo_data_default = {
       ruolo: null,
       tag_biomeccanici: "ballistic, Metcon, Potenza Anaerobica, Potenza Esplosiva, Catena Cinetica Aperta, Connessione Controlaterale, Propedeutica alla Corsa, Propedeutica al Lancio, Multi-planare, Attivazione Core",
       link_video: "https://youtube.com/shorts/f7Y45XU3Z9M",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Colonna toracica",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Coiling Spirale e contro-rotazione bacino-torace"
+      data_pubblicazione: null
     },
     {
       id: 242,
@@ -15424,11 +14464,7 @@ var demo_data_default = {
       ruolo: "complementare",
       tag_biomeccanici: "rope flow, rotazione su piano traverso \u2022 Warm Up, Metcon, Attivazione Core, Multi-planare, Catena Cinetica Aperta, Coordinazione, Capacit\xE0 Aerobica, Recupero Attivo",
       link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
-      data_pubblicazione: null,
-      pattern_motorio: "Rotazione toracica e spiralizzazione",
-      fulcro_articolare: "Polsi e cinto scapolare",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Transizione continua Underhand/Overhand con polso in asse"
+      data_pubblicazione: null
     },
     {
       id: 243,
@@ -15439,11 +14475,7 @@ var demo_data_default = {
       ruolo: "engine, benchmark",
       tag_biomeccanici: "hip hinge, catena estensoria, monoplanare \u2022 Cardio, metcon, resistenza aerobica e anaerobica, circuiti, Cerniera d'anca, Catena Cinetica Chiusa, Capacit\xE0 Aerobica, Potenza Anaerobica",
       link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
-      data_pubblicazione: null,
-      pattern_motorio: "Cerniera d'anca",
-      fulcro_articolare: "Anca",
-      meridiano_miofasciale: "Linea Posteriore Superficiale",
-      cue_esecutiva: "Spinta dal tallone e cerniera d'anca neutra"
+      data_pubblicazione: null
     },
     {
       id: 244,
@@ -15454,11 +14486,7 @@ var demo_data_default = {
       ruolo: "extra",
       tag_biomeccanici: "Workshop tecnico, Vogatore, Biomeccanica, Approfondimenti ed extra",
       link_video: "https://youtu.be/cbHHV_wYHJU?si=-y7dLAqJE_-ynuJ6",
-      data_pubblicazione: "2026-11-02",
-      pattern_motorio: "Pliometria e reattivit\xE0",
-      fulcro_articolare: "Complesso caviglia-piede e ginocchio",
-      meridiano_miofasciale: "Linea Spirale",
-      cue_esecutiva: "Stiffness caviglia, contatto di avampiede elastico e rimbalzo reattivo"
+      data_pubblicazione: "2026-11-02"
     }
   ],
   livelli: [
@@ -28439,7 +27467,7 @@ var demo_data_default = {
       sequenza: "2",
       id_esercizio: "128",
       nome_esercizio: "COMBO: Landmine Split snatch High hand switch T/GO",
-      parametri: "4 X 6",
+      parametri: "4 X 8",
       recupero: '75"',
       minutaggio_blocco: "",
       note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante",
@@ -28709,7 +27737,7 @@ var demo_data_default = {
       sequenza: "2",
       id_esercizio: "128",
       nome_esercizio: "COMBO: Landmine Split snatch High hand switch T/GO",
-      parametri: "4 X 6",
+      parametri: "4 X 8",
       recupero: '75"',
       minutaggio_blocco: "",
       note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante",
@@ -28979,7 +28007,7 @@ var demo_data_default = {
       sequenza: "2",
       id_esercizio: "128",
       nome_esercizio: "COMBO: Landmine Split snatch High hand switch T/GO",
-      parametri: "4 X 6",
+      parametri: "4 X 8",
       recupero: '75"',
       minutaggio_blocco: "",
       note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante",
@@ -29208,6 +28236,816 @@ var demo_data_default = {
       recupero: "",
       minutaggio_blocco: "",
       note_tecniche: "AMRAP 13' | combinazione tirata Skierg e stabilit\xE0 split",
+      link_video: "https://youtube.com/shorts/kYfL3_rgym8",
+      data_pubblicazione: null
+    },
+    {
+      id: 1309,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "1a",
+      id_esercizio: "029",
+      nome_esercizio: "Ground Stretch",
+      parametri: "3x10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | mobilit\xE0 catene crociate e allungamento dinamico flessori d'anca",
+      link_video: "https://youtube.com/shorts/4defoi83APo",
+      data_pubblicazione: null
+    },
+    {
+      id: 1310,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "1b",
+      id_esercizio: "074",
+      nome_esercizio: "Side move",
+      parametri: "3x10+10",
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | attivazione piano frontale e stabilit\xE0 anca-ginocchio",
+      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      data_pubblicazione: null
+    },
+    {
+      id: 1311,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "2",
+      id_esercizio: "128",
+      nome_esercizio: "COMBO: Landmine Split snatch High hand switch T/GO",
+      parametri: "4 X 6",
+      recupero: '75"',
+      minutaggio_blocco: "",
+      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5 | mantieni la traiettoria fluida nello scambio aereo",
+      link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
+      data_pubblicazione: null
+    },
+    {
+      id: 1312,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "3a",
+      id_esercizio: "023",
+      nome_esercizio: "Coiled Cable ROW",
+      parametri: "4x6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 | adduzione scapolare attiva e coiling spirale",
+      link_video: "https://youtu.be/OdhNUbqajmM",
+      data_pubblicazione: null
+    },
+    {
+      id: 1313,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "3b",
+      id_esercizio: "219",
+      nome_esercizio: "Punch isoinerziale",
+      parametri: '4x40"+40"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 | spinta rotazionale continua del tronco ed economia del gesto",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
+      data_pubblicazione: null
+    },
+    {
+      id: 1314,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "4",
+      id_esercizio: "242",
+      nome_esercizio: "Underhand/Overhand Matador Transitions",
+      parametri: "1x5'",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Heavy Rope flow: traiettoria circolare continua sotto mano, rotazione scapolo-omerale e stabilit\xE0 pelvica",
+      link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
+      data_pubblicazione: null
+    },
+    {
+      id: 1315,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "5",
+      id_esercizio: "207",
+      nome_esercizio: "Seated Endless rope power pull",
+      parametri: '4x40"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Consolidato | RPE 8 | trazione continua endless rope da seduto, stabilit\xE0 del bacino ed economia del gesto",
+      link_video: "https://youtube.com/shorts/8QVxs6WyGJs",
+      data_pubblicazione: null
+    },
+    {
+      id: 1316,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "6a",
+      id_esercizio: "089",
+      nome_esercizio: "Deadbug",
+      parametri: "3x10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | anti-estensione lombare con fitball e core stability",
+      link_video: "https://youtu.be/b4InDUstH8Y?si=NP68qp2ACf_YIo2-",
+      data_pubblicazione: null
+    },
+    {
+      id: 1317,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "43 allenamento A",
+      sequenza: "6b",
+      id_esercizio: "243",
+      nome_esercizio: "vogatore",
+      parametri: '3x90"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | RPE 8 | condizionamento metabolico a cadenza costante (24-26 SPM)",
+      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+      data_pubblicazione: null
+    },
+    {
+      id: 1318,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "1a",
+      id_esercizio: "047",
+      nome_esercizio: "wall driver",
+      parametri: '3 X 45"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
+      link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
+      data_pubblicazione: null
+    },
+    {
+      id: 1319,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "1b",
+      id_esercizio: "177",
+      nome_esercizio: "Clubbell Throw 180\xB0",
+      parametri: '3x60"+60"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
+      data_pubblicazione: null
+    },
+    {
+      id: 1320,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "2",
+      id_esercizio: "056",
+      nome_esercizio: "Landmine coiled Deadlift",
+      parametri: "4x5+5",
+      recupero: 'RBS 75"',
+      minutaggio_blocco: "",
+      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
+      link_video: "https://youtu.be/q8pfMEqSrm8",
+      data_pubblicazione: null
+    },
+    {
+      id: 1321,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "3a",
+      id_esercizio: "174",
+      nome_esercizio: "DB/Kett split snatch",
+      parametri: "4x5+5",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      data_pubblicazione: null
+    },
+    {
+      id: 1322,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "3b",
+      id_esercizio: "028",
+      nome_esercizio: "Transverse hold",
+      parametri: '4x30"+30"',
+      recupero: 'RBS 45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | creare contro-rotazione del bacino su torace (chiedi all\u2019istruttore)",
+      link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
+      data_pubblicazione: null
+    },
+    {
+      id: 1323,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "4",
+      id_esercizio: "120",
+      nome_esercizio: "Aerial Jerk",
+      parametri: "4x6+6",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Consolidato Mesociclo 3 | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      link_video: "https://youtube.com/shorts/b1DU11BZKCk",
+      data_pubblicazione: null
+    },
+    {
+      id: 1324,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "5a",
+      id_esercizio: "229",
+      nome_esercizio: "Split Clean T&go",
+      parametri: "x 6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 10' | cadenza continua e stabilit\xE0 nello split",
+      link_video: "https://youtube.com/shorts/PQ-Ga27AgoM",
+      data_pubblicazione: null
+    },
+    {
+      id: 1325,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "5b",
+      id_esercizio: "106",
+      nome_esercizio: "Dragon Roll",
+      parametri: '30"+30"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 10' | rotazione dinamica Heavy Rope a tempo continuo",
+      link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
+      data_pubblicazione: null
+    },
+    {
+      id: 1326,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "5c",
+      id_esercizio: "227",
+      nome_esercizio: "Skyerg lunges",
+      parametri: "x 10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 10' | NB: svolgere la tirata con tecnica \u201Cpagaia\u201D, sul lato della gamba fissa (anteriore)",
+      link_video: "https://youtube.com/shorts/kYfL3_rgym8",
+      data_pubblicazione: null
+    },
+    {
+      id: 1327,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "1a",
+      id_esercizio: "029",
+      nome_esercizio: "Ground Stretch",
+      parametri: "3x10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | mobilit\xE0 catene crociate e allungamento dinamico flessori d'anca",
+      link_video: "https://youtube.com/shorts/4defoi83APo",
+      data_pubblicazione: null
+    },
+    {
+      id: 1328,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "1b",
+      id_esercizio: "074",
+      nome_esercizio: "Side move",
+      parametri: "3x10+10",
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | attivazione piano frontale e stabilit\xE0 anca-ginocchio",
+      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      data_pubblicazione: null
+    },
+    {
+      id: 1329,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "2",
+      id_esercizio: "128",
+      nome_esercizio: "COMBO: Landmine Split snatch High hand switch T/GO",
+      parametri: "4 X 6",
+      recupero: '75"',
+      minutaggio_blocco: "",
+      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5 | mantieni la traiettoria fluida nello scambio aereo",
+      link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
+      data_pubblicazione: null
+    },
+    {
+      id: 1330,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "3a",
+      id_esercizio: "023",
+      nome_esercizio: "Coiled Cable ROW",
+      parametri: "4x6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 | adduzione scapolare attiva e coiling spirale",
+      link_video: "https://youtu.be/OdhNUbqajmM",
+      data_pubblicazione: null
+    },
+    {
+      id: 1331,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "3b",
+      id_esercizio: "219",
+      nome_esercizio: "Punch isoinerziale",
+      parametri: '4x40"+40"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 | spinta rotazionale continua del tronco ed economia del gesto",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
+      data_pubblicazione: null
+    },
+    {
+      id: 1332,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "4",
+      id_esercizio: "242",
+      nome_esercizio: "Underhand/Overhand Matador Transitions",
+      parametri: "1x5'",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Heavy Rope flow: traiettoria circolare continua sotto mano, rotazione scapolo-omerale e stabilit\xE0 pelvica",
+      link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
+      data_pubblicazione: null
+    },
+    {
+      id: 1333,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "5",
+      id_esercizio: "207",
+      nome_esercizio: "Seated Endless rope power pull",
+      parametri: '4x40"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Consolidato | RPE 8 | trazione continua endless rope da seduto, stabilit\xE0 del bacino ed economia del gesto",
+      link_video: "https://youtube.com/shorts/8QVxs6WyGJs",
+      data_pubblicazione: null
+    },
+    {
+      id: 1334,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "6a",
+      id_esercizio: "089",
+      nome_esercizio: "Deadbug",
+      parametri: "3x10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | anti-estensione lombare con fitball e core stability",
+      link_video: "https://youtu.be/b4InDUstH8Y?si=NP68qp2ACf_YIo2-",
+      data_pubblicazione: null
+    },
+    {
+      id: 1335,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "6b",
+      id_esercizio: "243",
+      nome_esercizio: "vogatore",
+      parametri: '3x90"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | RPE 8 | condizionamento metabolico a cadenza costante (24-26 SPM)",
+      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+      data_pubblicazione: null
+    },
+    {
+      id: 1336,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "1a",
+      id_esercizio: "047",
+      nome_esercizio: "wall driver",
+      parametri: '3 X 45"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
+      link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
+      data_pubblicazione: null
+    },
+    {
+      id: 1337,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "1b",
+      id_esercizio: "177",
+      nome_esercizio: "Clubbell Throw 180\xB0",
+      parametri: '3x60"+60"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
+      data_pubblicazione: null
+    },
+    {
+      id: 1338,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "2",
+      id_esercizio: "056",
+      nome_esercizio: "Landmine coiled Deadlift",
+      parametri: "4x5+5",
+      recupero: 'RBS 75"',
+      minutaggio_blocco: "",
+      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
+      link_video: "https://youtu.be/q8pfMEqSrm8",
+      data_pubblicazione: null
+    },
+    {
+      id: 1339,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "3a",
+      id_esercizio: "174",
+      nome_esercizio: "DB/Kett split snatch",
+      parametri: "4x5+5",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      data_pubblicazione: null
+    },
+    {
+      id: 1340,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "3b",
+      id_esercizio: "028",
+      nome_esercizio: "Transverse hold",
+      parametri: '4x30"+30"',
+      recupero: 'RBS 45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | creare contro-rotazione del bacino su torace (chiedi all\u2019istruttore)",
+      link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
+      data_pubblicazione: null
+    },
+    {
+      id: 1341,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "4",
+      id_esercizio: "120",
+      nome_esercizio: "Aerial Jerk",
+      parametri: "4x6+6",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Consolidato Mesociclo 3 | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      link_video: "https://youtube.com/shorts/b1DU11BZKCk",
+      data_pubblicazione: null
+    },
+    {
+      id: 1342,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "5a",
+      id_esercizio: "229",
+      nome_esercizio: "Split Clean T&go",
+      parametri: "x 6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 11' | cadenza continua e stabilit\xE0 nello split",
+      link_video: "https://youtube.com/shorts/PQ-Ga27AgoM",
+      data_pubblicazione: null
+    },
+    {
+      id: 1343,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "5b",
+      id_esercizio: "106",
+      nome_esercizio: "Dragon Roll",
+      parametri: '30"+30"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 11' | rotazione dinamica Heavy Rope a tempo continuo",
+      link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
+      data_pubblicazione: null
+    },
+    {
+      id: 1344,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "5c",
+      id_esercizio: "227",
+      nome_esercizio: "Skyerg lunges",
+      parametri: "x 12+12",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 11' | NB: svolgere la tirata con tecnica \u201Cpagaia\u201D, sul lato della gamba fissa (anteriore)",
+      link_video: "https://youtube.com/shorts/kYfL3_rgym8",
+      data_pubblicazione: null
+    },
+    {
+      id: 1345,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "1a",
+      id_esercizio: "029",
+      nome_esercizio: "Ground Stretch",
+      parametri: "3x10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | mobilit\xE0 catene crociate e allungamento dinamico flessori d'anca",
+      link_video: "https://youtube.com/shorts/4defoi83APo",
+      data_pubblicazione: null
+    },
+    {
+      id: 1346,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "1b",
+      id_esercizio: "074",
+      nome_esercizio: "Side move",
+      parametri: "3x10+10",
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | attivazione piano frontale e stabilit\xE0 anca-ginocchio",
+      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      data_pubblicazione: null
+    },
+    {
+      id: 1347,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "2",
+      id_esercizio: "128",
+      nome_esercizio: "COMBO: Landmine Split snatch High hand switch T/GO",
+      parametri: "4 X 6",
+      recupero: '75"',
+      minutaggio_blocco: "",
+      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5 | mantieni la traiettoria fluida nello scambio aereo",
+      link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
+      data_pubblicazione: null
+    },
+    {
+      id: 1348,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "3a",
+      id_esercizio: "023",
+      nome_esercizio: "Coiled Cable ROW",
+      parametri: "4x6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 | adduzione scapolare attiva e coiling spirale",
+      link_video: "https://youtu.be/OdhNUbqajmM",
+      data_pubblicazione: null
+    },
+    {
+      id: 1349,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "3b",
+      id_esercizio: "219",
+      nome_esercizio: "Punch isoinerziale",
+      parametri: '4x40"+40"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 | spinta rotazionale continua del tronco ed economia del gesto",
+      link_video: "https://youtu.be/-j07Q_jaTOA",
+      data_pubblicazione: null
+    },
+    {
+      id: 1350,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "4",
+      id_esercizio: "242",
+      nome_esercizio: "Underhand/Overhand Matador Transitions",
+      parametri: "1x5'",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Heavy Rope flow: traiettoria circolare continua sotto mano, rotazione scapolo-omerale e stabilit\xE0 pelvica",
+      link_video: "https://www.youtube.com/watch?v=4k2O1hameP0",
+      data_pubblicazione: null
+    },
+    {
+      id: 1351,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "5",
+      id_esercizio: "207",
+      nome_esercizio: "Seated Endless rope power pull",
+      parametri: '4x40"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Consolidato | RPE 8 | trazione continua endless rope da seduto, stabilit\xE0 del bacino ed economia del gesto",
+      link_video: "https://youtube.com/shorts/8QVxs6WyGJs",
+      data_pubblicazione: null
+    },
+    {
+      id: 1352,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "6a",
+      id_esercizio: "089",
+      nome_esercizio: "Deadbug",
+      parametri: "3x10+10",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | anti-estensione lombare con fitball e core stability",
+      link_video: "https://youtu.be/b4InDUstH8Y?si=NP68qp2ACf_YIo2-",
+      data_pubblicazione: null
+    },
+    {
+      id: 1353,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "47 allenamento A",
+      sequenza: "6b",
+      id_esercizio: "243",
+      nome_esercizio: "vogatore",
+      parametri: '3x90"',
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "circuito (3 round) | RPE 8 | condizionamento metabolico a cadenza costante (24-26 SPM)",
+      link_video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
+      data_pubblicazione: null
+    },
+    {
+      id: 1354,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "1a",
+      id_esercizio: "047",
+      nome_esercizio: "wall driver",
+      parametri: '3 X 45"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
+      link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
+      data_pubblicazione: null
+    },
+    {
+      id: 1355,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "1b",
+      id_esercizio: "177",
+      nome_esercizio: "Clubbell Throw 180\xB0",
+      parametri: '3x60"+60"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
+      link_video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
+      data_pubblicazione: null
+    },
+    {
+      id: 1356,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "2",
+      id_esercizio: "056",
+      nome_esercizio: "Landmine coiled Deadlift",
+      parametri: "4x5+5",
+      recupero: 'RBS 75"',
+      minutaggio_blocco: "",
+      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
+      link_video: "https://youtu.be/q8pfMEqSrm8",
+      data_pubblicazione: null
+    },
+    {
+      id: 1357,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "3a",
+      id_esercizio: "174",
+      nome_esercizio: "DB/Kett split snatch",
+      parametri: "4x5+5",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      link_video: "https://youtu.be/rE8lJ9TxbEQ",
+      data_pubblicazione: null
+    },
+    {
+      id: 1358,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "3b",
+      id_esercizio: "028",
+      nome_esercizio: "Transverse hold",
+      parametri: '4x30"+30"',
+      recupero: 'RBS 45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | creare contro-rotazione del bacino su torace (chiedi all\u2019istruttore)",
+      link_video: "https://youtu.be/aJ98KT13FtE?si=Li6fp-kbyh4wCnfT",
+      data_pubblicazione: null
+    },
+    {
+      id: 1359,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "4",
+      id_esercizio: "120",
+      nome_esercizio: "Aerial Jerk",
+      parametri: "4x6+6",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "Consolidato Mesociclo 3 | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      link_video: "https://youtube.com/shorts/b1DU11BZKCk",
+      data_pubblicazione: null
+    },
+    {
+      id: 1360,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "5a",
+      id_esercizio: "229",
+      nome_esercizio: "Split Clean T&go",
+      parametri: "x 6+6",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 13' | cadenza continua e stabilit\xE0 nello split",
+      link_video: "https://youtube.com/shorts/PQ-Ga27AgoM",
+      data_pubblicazione: null
+    },
+    {
+      id: 1361,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "5b",
+      id_esercizio: "106",
+      nome_esercizio: "Dragon Roll",
+      parametri: '30"+30"',
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 13' | rotazione dinamica Heavy Rope a tempo continuo",
+      link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
+      data_pubblicazione: null
+    },
+    {
+      id: 1362,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "5c",
+      id_esercizio: "227",
+      nome_esercizio: "Skyerg lunges",
+      parametri: "x 15+15",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "AMRAP 13' | NB: svolgere la tirata con tecnica \u201Cpagaia\u201D, sul lato della gamba fissa (anteriore)",
       link_video: "https://youtube.com/shorts/kYfL3_rgym8",
       data_pubblicazione: null
     }
@@ -33289,6 +33127,221 @@ var demo_data_default = {
       rpe_json: null,
       data_ora: "2026-11-10T16:05:38.460Z",
       created_at: "2026-11-10T16:05:38.460Z"
+    },
+    {
+      id: 1794418468932,
+      email_cliente: "daniele.casci@gmail.com",
+      tipo: "esercizio",
+      livello: null,
+      giorno: null,
+      rpe_globale: null,
+      sensazioni: [],
+      note_cinestesiche: null,
+      id_esercizio: "078",
+      nome_esercizio: "pull up Progressioni",
+      carico_kg: null,
+      feedback: "9 foro con piedi su panca",
+      ripetizioni: null,
+      serie: null,
+      sets_json: [
+        {
+          carico_kg: 8,
+          ripetizioni: 8,
+          rpe: "8"
+        }
+      ],
+      rpe_json: [
+        "8"
+      ],
+      data_ora: "2026-11-11T17:34:28.932Z",
+      created_at: "2026-11-11T17:34:28.932Z"
+    },
+    {
+      id: 1794418749716,
+      email_cliente: "daniele.casci@gmail.com",
+      tipo: "esercizio",
+      livello: null,
+      giorno: null,
+      rpe_globale: null,
+      sensazioni: [],
+      note_cinestesiche: null,
+      id_esercizio: "079",
+      nome_esercizio: "Bench press",
+      carico_kg: null,
+      feedback: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: [
+        {
+          carico_kg: 52,
+          ripetizioni: 6,
+          rpe: "8,5"
+        }
+      ],
+      rpe_json: [
+        "8,5"
+      ],
+      data_ora: "2026-11-11T17:39:09.716Z",
+      created_at: "2026-11-11T17:39:09.716Z"
+    },
+    {
+      id: 1794491230814,
+      email_cliente: "silvia.brenzini@gmail.com",
+      tipo: "esercizio",
+      livello: null,
+      giorno: null,
+      rpe_globale: null,
+      sensazioni: [],
+      note_cinestesiche: null,
+      id_esercizio: "056",
+      nome_esercizio: "Landmine coiled Deadlift",
+      carico_kg: null,
+      feedback: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: [
+        {
+          carico_kg: null,
+          ripetizioni: 5,
+          rpe: "8"
+        },
+        {
+          carico_kg: null,
+          ripetizioni: 10,
+          rpe: "8"
+        },
+        {
+          carico_kg: null,
+          ripetizioni: 10,
+          rpe: "8"
+        }
+      ],
+      rpe_json: [
+        "8",
+        "8",
+        "8"
+      ],
+      data_ora: "2026-11-12T13:47:10.814Z",
+      created_at: "2026-11-12T13:47:10.814Z"
+    },
+    {
+      id: 1794551799257,
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      tipo: "esercizio",
+      livello: null,
+      giorno: null,
+      rpe_globale: null,
+      sensazioni: [],
+      note_cinestesiche: null,
+      id_esercizio: "177",
+      nome_esercizio: "Clubbell Throw 180\xB0",
+      carico_kg: null,
+      feedback: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: [
+        {
+          carico_kg: 6,
+          ripetizioni: 15,
+          rpe: "6"
+        }
+      ],
+      rpe_json: [
+        "6"
+      ],
+      data_ora: "2026-11-13T06:36:39.257Z",
+      created_at: "2026-11-13T06:36:39.257Z"
+    },
+    {
+      id: 1794553127846,
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      tipo: "feedback_seduta",
+      livello: "PRO",
+      giorno: "42",
+      rpe_globale: 8,
+      sensazioni: [
+        "Affaticamento generale",
+        "Tensione anca/schiena"
+      ],
+      note_cinestesiche: "",
+      id_esercizio: null,
+      nome_esercizio: "Feedback Seduta Giorno 42",
+      carico_kg: null,
+      feedback: "RPE 8/10 \u2022 Affaticamento generale, Tensione anca/schiena",
+      ripetizioni: null,
+      serie: null,
+      sets_json: null,
+      rpe_json: null,
+      data_ora: "2026-11-13T06:58:47.846Z",
+      created_at: "2026-11-13T06:58:47.846Z"
+    },
+    {
+      id: 1794566076032,
+      email_cliente: "pantanella@gmail.com",
+      tipo: "esercizio",
+      livello: null,
+      giorno: null,
+      rpe_globale: null,
+      sensazioni: [],
+      note_cinestesiche: null,
+      id_esercizio: "127",
+      nome_esercizio: "COMBO: Landmine clean ALT. SCRD T/GO",
+      carico_kg: null,
+      feedback: "Recovering from flu ",
+      ripetizioni: null,
+      serie: null,
+      sets_json: [
+        {
+          carico_kg: 25,
+          ripetizioni: 10,
+          rpe: "8"
+        },
+        {
+          carico_kg: 23,
+          ripetizioni: 10,
+          rpe: "8"
+        },
+        {
+          carico_kg: 21,
+          ripetizioni: 10,
+          rpe: "8"
+        }
+      ],
+      rpe_json: [
+        "8",
+        "8",
+        "8"
+      ],
+      data_ora: "2026-11-13T10:34:36.032Z",
+      created_at: "2026-11-13T10:34:36.032Z"
+    },
+    {
+      id: 1794590576547,
+      email_cliente: "daniele.casci@gmail.com",
+      tipo: "esercizio",
+      livello: null,
+      giorno: null,
+      rpe_globale: null,
+      sensazioni: [],
+      note_cinestesiche: null,
+      id_esercizio: "082",
+      nome_esercizio: "Landmine Biker's Squat",
+      carico_kg: null,
+      feedback: null,
+      ripetizioni: null,
+      serie: null,
+      sets_json: [
+        {
+          carico_kg: 25,
+          ripetizioni: 8,
+          rpe: "8"
+        }
+      ],
+      rpe_json: [
+        "8"
+      ],
+      data_ora: "2026-11-13T17:22:56.547Z",
+      created_at: "2026-11-13T17:22:56.547Z"
     }
   ],
   stato_allenamenti: [
@@ -34607,18 +34660,151 @@ var demo_data_default = {
       giorno: 11,
       stato: "completato",
       updated_at: "2026-11-10T13:46:48.685Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 38,
+      stato: "completato",
+      updated_at: "2026-11-11T06:09:48.035Z"
+    },
+    {
+      email_cliente: "pierpaolaciancia@gmail.com",
+      livello: "PRO",
+      giorno: 17,
+      stato: "completato",
+      updated_at: "2026-11-11T08:09:24.803Z"
+    },
+    {
+      email_cliente: "pantanella@gmail.com",
+      livello: "PRO",
+      giorno: 20,
+      stato: "completato",
+      updated_at: "2026-11-11T10:33:15.410Z"
+    },
+    {
+      email_cliente: "daniele.casci@gmail.com",
+      livello: "PRO",
+      giorno: 17,
+      stato: "completato",
+      updated_at: "2026-11-11T17:28:52.008Z"
+    },
+    {
+      email_cliente: "sil_ba@hotmail.it",
+      livello: "Entry Level",
+      giorno: 6,
+      stato: "completato",
+      updated_at: "2026-11-11T17:30:17.233Z"
+    },
+    {
+      email_cliente: "sil_ba@hotmail.it",
+      livello: "Entry Level",
+      giorno: 8,
+      stato: "completato",
+      updated_at: "2026-11-11T17:30:25.705Z"
+    },
+    {
+      email_cliente: "sil_ba@hotmail.it",
+      livello: "Entry Level",
+      giorno: 7,
+      stato: "completato",
+      updated_at: "2026-11-11T17:30:28.180Z"
+    },
+    {
+      email_cliente: "sil_ba@hotmail.it",
+      livello: "Level 1",
+      giorno: 1,
+      stato: "completato",
+      updated_at: "2026-11-13T16:25:41.956Z"
+    },
+    {
+      email_cliente: "silvia.brenzini@gmail.com",
+      livello: "Level 2",
+      giorno: 12,
+      stato: "completato",
+      updated_at: "2026-11-12T13:48:23.993Z"
+    },
+    {
+      email_cliente: "matteo.calosci@gmail.com",
+      livello: "Level 2",
+      giorno: 20,
+      stato: "completato",
+      updated_at: "2026-11-12T20:46:57.011Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 39,
+      stato: "completato",
+      updated_at: "2026-11-13T06:15:25.692Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 40,
+      stato: "completato",
+      updated_at: "2026-11-13T06:15:26.734Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 41,
+      stato: "completato",
+      updated_at: "2026-11-13T06:27:28.452Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 42,
+      stato: "completato",
+      updated_at: "2026-11-13T06:58:55.525Z"
+    },
+    {
+      email_cliente: "pierpaolaciancia@gmail.com",
+      livello: "PRO",
+      giorno: 18,
+      stato: "completato",
+      updated_at: "2026-11-13T11:12:05.934Z"
+    },
+    {
+      email_cliente: "pantanella@gmail.com",
+      livello: "PRO",
+      giorno: 21,
+      stato: "completato",
+      updated_at: "2026-11-13T11:26:34.907Z"
+    },
+    {
+      email_cliente: "tebog1887@gmail.com",
+      livello: "Level 2",
+      giorno: 9,
+      stato: "completato",
+      updated_at: "2026-11-13T15:53:10.127Z"
+    },
+    {
+      email_cliente: "daniele.casci@gmail.com",
+      livello: "PRO",
+      giorno: 18,
+      stato: "completato",
+      updated_at: "2026-11-13T17:52:35.122Z"
+    },
+    {
+      email_cliente: "matteo.calosci@gmail.com",
+      livello: "Level 2",
+      giorno: 21,
+      stato: "completato",
+      updated_at: "2026-11-13T19:11:34.138Z"
     }
   ],
   preferenze_utente: [
     {
       email_cliente: "sil_ba@hotmail.it",
-      memoria_livello: "Entry Level",
-      updated_at: "2026-10-07T15:09:06.907Z"
+      memoria_livello: "Level 1",
+      updated_at: "2026-11-11T17:30:31.492Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
-      memoria_livello: "Advanced",
-      updated_at: "2026-11-10T08:58:10.331Z"
+      memoria_livello: "PRO",
+      updated_at: "2026-11-14T18:19:00.286Z"
     },
     {
       email_cliente: "silvia.brenzini@gmail.com",
@@ -34647,8 +34833,8 @@ var demo_data_default = {
     },
     {
       email_cliente: "matteo.calosci@gmail.com",
-      memoria_livello: "Level 2",
-      updated_at: "2026-10-28T13:43:04.874Z"
+      memoria_livello: "Advanced",
+      updated_at: "2026-11-13T22:05:57.248Z"
     }
   ],
   profili_utenti: [
@@ -34678,7 +34864,7 @@ var demo_data_default = {
       cognome: "Pantanella",
       name: "Alessandro Pantanella",
       ruolo: "atleta",
-      crediti: 18,
+      crediti: 10,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -34689,8 +34875,8 @@ var demo_data_default = {
         "Pierpaola Ciancia"
       ],
       anticipi_da_scontare: 0,
-      updated_at: "2026-10-08T07:51:28.896Z",
-      data_ultimo_accesso: "2026-11-05T15:32:19.201Z",
+      updated_at: "2026-11-13T18:30:59.617Z",
+      data_ultimo_accesso: "2026-11-15T16:59:35.914Z",
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: null
     },
@@ -34702,7 +34888,7 @@ var demo_data_default = {
       cognome: "Ciancia",
       name: "Pierpaola Ciancia",
       ruolo: "atleta",
-      crediti: 36,
+      crediti: 11,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -34712,8 +34898,8 @@ var demo_data_default = {
       anticipi_da_scontare: 0,
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: "usr-bw-1953985",
-      updated_at: "2026-10-07T14:41:33.988Z",
-      data_ultimo_accesso: "2026-11-05T15:32:19.201Z"
+      updated_at: "2026-11-13T18:30:59.641Z",
+      data_ultimo_accesso: "2026-11-15T16:59:35.914Z"
     },
     {
       id: "usr-bw-2067105",
@@ -34778,12 +34964,12 @@ var demo_data_default = {
       nickname: "Il Calo",
       name: "Matteo Calosci",
       ruolo: "atleta",
-      crediti: 16,
+      crediti: 15,
       data_scadenza_crediti: "2026-12-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      data_ultimo_accesso: "2026-11-09T19:18:50.065Z"
+      data_ultimo_accesso: "2026-11-14T18:20:23.880Z"
     },
     {
       id: "usr-bw-1953938",
@@ -34880,6 +35066,118 @@ var demo_data_default = {
     }
   ],
   movimenti_crediti: [
+    {
+      id: "mov-1794761976673-557",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-15T16:59:36.673Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 10,
+      motivazione: "Prenotazione slot del 2026-11-18 ore 11:00 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1794597064071-200",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      data_ora: "2026-11-13T19:11:04.071Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 15,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 19:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-man-1794058827306",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 11,
+      motivazione: "Prenotazione slot del 2026-11-09 ore 18:15 per Pierpaola Ciancia [Borsellino Condiviso - Assegnazione Coach]",
+      operatore: "coach",
+      data_movimento: "2026-11-07T13:40:27.000Z",
+      created_at: "2026-11-07T13:40:27.000Z"
+    },
+    {
+      id: "mov-man-1793550023093",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 12,
+      motivazione: "Prenotazione slot del 2026-11-02 ore 18:15 per Pierpaola Ciancia [Borsellino Condiviso - Assegnazione Coach]",
+      operatore: "coach",
+      data_movimento: "2026-11-01T16:20:23.000Z",
+      created_at: "2026-11-01T16:20:23.000Z"
+    },
+    {
+      id: "mov-man-1793294883723",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 13,
+      motivazione: "Prenotazione slot del 2026-10-30 ore 09:15 [Assegnazione diretta dal Coach]",
+      operatore: "coach",
+      data_movimento: "2026-10-29T17:28:04.000Z",
+      created_at: "2026-10-29T17:28:04.000Z"
+    },
+    {
+      id: "mov-man-1794515911691",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 14,
+      motivazione: "Prenotazione slot del 2026-11-13 ore 10:45 [Assegnazione diretta dal Coach]",
+      operatore: "coach",
+      data_movimento: "2026-11-12T20:38:32.000Z",
+      created_at: "2026-11-12T20:38:32.000Z"
+    },
+    {
+      id: "mov-1794384772307-416",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-11T08:12:52.307Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 15,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1794384731207-61",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-11T08:12:11.207Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 16,
+      motivazione: "Prenotazione slot del 2026-11-13 ore 11:00 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1794379986976-653",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-11T06:53:06.976Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 17,
+      motivazione: "Prenotazione slot del 2026-11-11 ore 09:45",
+      operatore: "coach"
+    },
     {
       id: "mov-1794318617263-597",
       atleta_id: "usr-bw-2078480",
@@ -36262,6 +36560,29 @@ var demo_data_default = {
     }
   ],
   transazioni_pagamenti: [
+    {
+      id: "tx-man-1794513374015",
+      codice_transazione: "TX-MAN-46-374015",
+      atleta_id: "usr-bw-2080725",
+      email_cliente: "tebog1887@gmail.com",
+      nome_cliente: "Matteo Tesse",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-8",
+      nome_pacchetto: "Pacchetto Lab 8",
+      importo_euro: 280,
+      metodo: "contanti",
+      crediti_acquistati: 0,
+      debiti_decurtati: 0,
+      anticipi_decurtati: 0,
+      crediti_effettivi_aggiunti: 0,
+      causale_bonifico: null,
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-11-12T00:00:00.000Z",
+      note: "",
+      inserito_da: "coach_manuale"
+    },
     {
       id: "tx-man-1792778886093",
       codice_transazione: "TX-MAN-46-886093",
@@ -38051,6 +38372,20 @@ var demo_data_default = {
       created_at: "2026-11-06T08:20:43.000Z"
     },
     {
+      id: "bk-1794379986099",
+      data: "2026-11-11",
+      orario: "09:45",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      created_at: "2026-11-11T06:53:06.099Z",
+      google_event_id: "0qd7getkv5l6e0s7bvlfl72sng"
+    },
+    {
       id: "bk-1793615055287",
       data: "2026-11-11",
       orario: "10:15",
@@ -38077,6 +38412,34 @@ var demo_data_default = {
       note: "Prenotazione Multipla Rapida",
       google_event_id: "8l97tf46bp5oshf6ovmbil51q8",
       created_at: "2026-10-22T16:50:04.000Z"
+    },
+    {
+      id: "bk-1794515911691",
+      data: "2026-11-13",
+      orario: "10:45",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "rfonrmqv96ppn4fb7bvb75sgao",
+      created_at: "2026-11-12T20:38:32.000Z"
+    },
+    {
+      id: "bk-1794384730336",
+      data: "2026-11-13",
+      orario: "11:00",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-11T08:12:10.336Z",
+      google_event_id: "pfcvjc9lhdgq63pvoo8epmuc1c"
     },
     {
       id: "bk-1794070799573",
@@ -38107,6 +38470,20 @@ var demo_data_default = {
       created_at: "2026-10-22T16:50:05.000Z"
     },
     {
+      id: "bk-1794251930065",
+      data: "2026-11-13",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-09T19:18:50.065Z",
+      google_event_id: "tei0savpbru25oljtqg5m9u3u0"
+    },
+    {
       id: "bk-1794070814445",
       data: "2026-11-16",
       orario: "18:00",
@@ -38119,6 +38496,34 @@ var demo_data_default = {
       note: "Assegnazione diretta dal Coach",
       google_event_id: "cp20fovlcn7qor9tcp52clc0a0",
       created_at: "2026-11-07T17:00:14.000Z"
+    },
+    {
+      id: "bk-1794318616194",
+      data: "2026-11-16",
+      orario: "18:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-10T13:50:16.194Z",
+      google_event_id: "l4fgskh5fvg5ak6n3qkdqlrvpo"
+    },
+    {
+      id: "bk-1794384771514",
+      data: "2026-11-16",
+      orario: "18:30",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-11T08:12:51.514Z",
+      google_event_id: "1eu9sn99sfls8bmicgb8j5ec6c"
     },
     {
       id: "bk-1792683000000-casci-6",
@@ -38345,8 +38750,8 @@ var demo_data_default = {
       created_at: "2026-10-22T16:50:19.000Z"
     },
     {
-      id: "bk-1794251930065",
-      data: "2026-11-13",
+      id: "bk-1794597063217",
+      data: "2026-11-16",
       orario: "19:00",
       atleta_id: "usr-bw-1953992",
       email_cliente: "matteo.calosci@gmail.com",
@@ -38355,22 +38760,22 @@ var demo_data_default = {
       stato: "confermata",
       credito_scalato: true,
       note: "",
-      created_at: "2026-11-09T19:18:50.065Z",
-      google_event_id: "tei0savpbru25oljtqg5m9u3u0"
+      created_at: "2026-11-13T19:11:03.217Z",
+      google_event_id: "iol74spak179ec8m96lmbk0rrs"
     },
     {
-      id: "bk-1794318616194",
-      data: "2026-11-16",
-      orario: "18:15",
-      atleta_id: "usr-bw-2078480",
-      email_cliente: "annap.maddy@gmail.com",
-      nome_cliente: "Anna Paola Maddalena",
+      id: "bk-1794761975914",
+      data: "2026-11-18",
+      orario: "11:00",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
       telefono_cliente: "",
       stato: "confermata",
       credito_scalato: true,
       note: "",
-      created_at: "2026-11-10T13:50:16.194Z",
-      google_event_id: "l4fgskh5fvg5ak6n3qkdqlrvpo"
+      created_at: "2026-11-15T16:59:35.914Z",
+      google_event_id: "a0vs7f99ln1mlf58e3qv459pk4"
     }
   ],
   prenotazioni_cancellate: [
@@ -39194,57 +39599,9 @@ firenzepersonaltrainer@gmail.com`,
     }
   ],
   active_user_id: null,
+  last_cloud_sync: "2026-11-13T18:30:59.642Z",
   richieste_cancellazione_tardiva: [],
-  shadow_event_log: [
-    {
-      id: "shd_1794326738460_gzkop",
-      timestamp: "2026-11-10T16:05:38.460Z",
-      event_type: "WORKOUT_FEEDBACK",
-      athlete: "atleta1@area46.it",
-      payload: {
-        tipo: "feedback_seduta",
-        livello: "Livello PRO",
-        giorno: "1",
-        rpe_globale: 8,
-        sensazioni: [
-          "Ottima fluidit\xE0",
-          "RPE centrato"
-        ]
-      }
-    },
-    {
-      id: "shd_1794326714148_r8uy3",
-      timestamp: "2026-11-10T16:05:14.149Z",
-      event_type: "WORKOUT_FEEDBACK",
-      athlete: "atleta1@area46.it",
-      payload: {
-        tipo: "feedback_seduta",
-        livello: "Livello PRO",
-        giorno: "1",
-        rpe_globale: 8,
-        sensazioni: [
-          "Ottima fluidit\xE0",
-          "RPE centrato"
-        ]
-      }
-    },
-    {
-      id: "shd_1794326678183_pihvx",
-      timestamp: "2026-11-10T16:04:38.183Z",
-      event_type: "WORKOUT_FEEDBACK",
-      athlete: "atleta1@area46.it",
-      payload: {
-        tipo: "feedback_seduta",
-        livello: "Livello PRO",
-        giorno: "1",
-        rpe_globale: 8,
-        sensazioni: [
-          "Ottima fluidit\xE0",
-          "RPE centrato"
-        ]
-      }
-    }
-  ]
+  shadow_event_log: []
 };
 
 // local-api.ts
@@ -39812,6 +40169,35 @@ async function pullGoogleCalendarLabSlots(options = {}) {
       if (!isLab) continue;
       const bookingId = ev.extendedProperties?.private?.booking_id || ev.extendedProperties?.private?.slot_id;
       if (isCancelled) {
+        const existingToCancel = db.prenotazioni_slot.find(
+          (b) => b.google_event_id === gcalId || bookingId && b.id === bookingId
+        );
+        if (existingToCancel && (existingToCancel.stato === "confermata" || !existingToCancel.stato || existingToCancel.stato === "attiva")) {
+          existingToCancel.stato = "cancellata_in_tempo";
+          existingToCancel.cancellato_il = (/* @__PURE__ */ new Date()).toISOString();
+          existingToCancel.note = existingToCancel.note ? `${existingToCancel.note} (Annullata su Google Calendar)` : "Annullata su Google Calendar";
+          const atleta = users.find(
+            (u) => u.id === existingToCancel.atleta_id || u.email?.toLowerCase() === existingToCancel.email_cliente?.toLowerCase()
+          );
+          if (atleta && existingToCancel.credito_scalato) {
+            const walletOwner = getWalletOwner(atleta, db) || atleta;
+            walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+            alignSharedPartnersCredits(walletOwner, db);
+            addMovimentoCrediti(db, {
+              atleta_id: walletOwner.id,
+              email_cliente: walletOwner.email,
+              nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
+              tipo: "rimborso_cancellazione",
+              delta_crediti: 1,
+              saldo_risultante: walletOwner.crediti,
+              motivazione: `Rimborso slot ${existingToCancel.data} ${existingToCancel.orario} cancellato su Google Calendar`,
+              operatore: "coach"
+            });
+          }
+          removed++;
+          changed = true;
+          console.log(`[GCAL PULL] Annullato slot da Google Calendar: ${existingToCancel.data} ${existingToCancel.orario} (Credito riaccreditato)`);
+        }
         continue;
       }
       const startDateTime = ev.start?.dateTime;
@@ -39876,8 +40262,26 @@ async function pullGoogleCalendarLabSlots(options = {}) {
         db.prenotazioni_slot.push(newBk);
         added++;
         changed = true;
+        if (matchedUser) {
+          const walletOwner = getWalletOwner(matchedUser, db) || matchedUser;
+          const isShared = walletOwner && walletOwner.id !== matchedUser.id;
+          walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
+          matchedUser.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+          if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+          alignSharedPartnersCredits(walletOwner, db);
+          addMovimentoCrediti(db, {
+            atleta_id: walletOwner.id,
+            email_cliente: walletOwner.email,
+            nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || walletOwner.name || "Atleta",
+            tipo: "prenotazione_slot",
+            delta_crediti: -1,
+            saldo_risultante: walletOwner.crediti,
+            motivazione: isShared ? `Prenotazione slot del ${slotDate} ore ${slotTime} per ${matchedUser.nome || matchedUser.name} [Borsellino Condiviso - Da Google Calendar]` : `Prenotazione slot del ${slotDate} ore ${slotTime} [Da Google Calendar]`,
+            operatore: "coach"
+          });
+        }
         console.log(
-          `[GCAL PULL] Inserito nuovo slot da Google Calendar: ${slotDate} ${slotTime} per ${newBk.nome_cliente} (ID: ${newBk.id})`
+          `[GCAL PULL] Inserito nuovo slot da Google Calendar: ${slotDate} ${slotTime} per ${newBk.nome_cliente} (Credito scalato, saldo: ${matchedUser ? getWalletOwner(matchedUser, db)?.crediti : "N/D"}) (ID: ${newBk.id})`
         );
       }
     }
@@ -39980,16 +40384,58 @@ async function syncDataToGoogleDrive(fullDb) {
       driveDb.utenti_cancellati = fullDb.utenti_cancellati || [];
     }
     if (fullDb.profili_utenti !== void 0) {
-      driveDb.profili_utenti = fullDb.profili_utenti || [];
+      const incoming = fullDb.profili_utenti || [];
+      const existing = driveDb.profili_utenti || [];
+      const userMap = /* @__PURE__ */ new Map();
+      for (const u of existing) {
+        if (u.id) userMap.set(u.id, u);
+      }
+      for (const u of incoming) {
+        if (u.id) {
+          const prev = userMap.get(u.id);
+          if (!prev) {
+            userMap.set(u.id, u);
+          } else {
+            const prevTime = prev.updated_at ? new Date(prev.updated_at).getTime() : 0;
+            const newTime = u.updated_at ? new Date(u.updated_at).getTime() : 0;
+            userMap.set(u.id, newTime >= prevTime ? u : prev);
+          }
+        }
+      }
+      driveDb.profili_utenti = Array.from(userMap.values());
     }
     if (fullDb.prenotazioni_cancellate !== void 0) {
-      driveDb.prenotazioni_cancellate = fullDb.prenotazioni_cancellate || [];
+      driveDb.prenotazioni_cancellate = Array.from(
+        /* @__PURE__ */ new Set([...driveDb.prenotazioni_cancellate || [], ...fullDb.prenotazioni_cancellate || []])
+      );
     }
     if (fullDb.prenotazioni_slot !== void 0) {
-      driveDb.prenotazioni_slot = fullDb.prenotazioni_slot || [];
+      const incoming = fullDb.prenotazioni_slot || [];
+      const existing = driveDb.prenotazioni_slot || [];
+      const bkMap = /* @__PURE__ */ new Map();
+      for (const b of existing) {
+        if (b.id) bkMap.set(b.id, b);
+      }
+      for (const b of incoming) {
+        if (b.id) bkMap.set(b.id, b);
+      }
+      driveDb.prenotazioni_slot = Array.from(bkMap.values());
     }
     if (fullDb.movimenti_crediti !== void 0) {
-      driveDb.movimenti_crediti = fullDb.movimenti_crediti || [];
+      const incoming = fullDb.movimenti_crediti || [];
+      const existing = driveDb.movimenti_crediti || [];
+      const movMap = /* @__PURE__ */ new Map();
+      for (const m of existing) {
+        if (m.id) movMap.set(m.id, m);
+      }
+      for (const m of incoming) {
+        if (m.id) movMap.set(m.id, m);
+      }
+      driveDb.movimenti_crediti = Array.from(movMap.values()).sort((a, b) => {
+        const da = a.data_movimento || a.created_at || "";
+        const dbTime = b.data_movimento || b.created_at || "";
+        return dbTime.localeCompare(da);
+      });
     }
     if (fullDb.diario_utente !== void 0) {
       driveDb.diario_utente = fullDb.diario_utente || [];
@@ -40164,6 +40610,21 @@ function getWalletOwner(atleta, database) {
   }
   return atleta;
 }
+function alignSharedPartnersCredits(walletOwner, database) {
+  if (!walletOwner || !database?.profili_utenti) return;
+  const masterId = walletOwner.shared_wallet_with || walletOwner.id;
+  const masterUser = (database.profili_utenti || []).find((u) => u.id === masterId) || walletOwner;
+  const currentCredits = Number(masterUser.crediti ?? 0);
+  const currentExpiry = masterUser.data_scadenza_crediti;
+  for (const u of database.profili_utenti) {
+    if (u.id === masterId) {
+      u.crediti = currentCredits;
+    } else if (u.shared_wallet_with === masterId || u.shared_wallet_with && u.shared_wallet_with.toLowerCase() === masterUser.email?.toLowerCase()) {
+      u.crediti = currentCredits;
+      if (currentExpiry) u.data_scadenza_crediti = currentExpiry;
+    }
+  }
+}
 function parseCookies(cookieHeader) {
   const list = {};
   if (!cookieHeader) return list;
@@ -40295,15 +40756,47 @@ function getHydratedUser(user, database) {
     anticipi_da_scontare: isShared ? Number(walletOwner.anticipi_da_scontare || 0) : Number(user.anticipi_da_scontare || 0)
   };
 }
+var AREA46_AUTH_SECRET = process.env.AREA46_AUTH_SECRET || "area46-secret-vault-auth-key-2026";
+function signUserId(userId) {
+  const hmac = crypto8.createHmac("sha256", AREA46_AUTH_SECRET).update(userId).digest("hex").slice(0, 16);
+  return `${userId}.${hmac}`;
+}
+function verifySignedUserId(token) {
+  if (!token || typeof token !== "string") return null;
+  const parts = token.split(".");
+  if (parts.length !== 2) return null;
+  const [userId, sig] = parts;
+  const expected = crypto8.createHmac("sha256", AREA46_AUTH_SECRET).update(userId).digest("hex").slice(0, 16);
+  try {
+    if (sig.length === expected.length && crypto8.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
+      return userId;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
 function getCurrentUser(reqOrDb, maybeDb) {
   const req = maybeDb ? reqOrDb : null;
   const database = maybeDb || reqOrDb;
   let candidate = null;
+  let isCryptographicallySigned = false;
   if (req && req.headers) {
-    const headerUser = req.headers["x-area46-user"] || req.headers["x-user-id"] || (typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ") ? req.headers.authorization.slice(7) : null);
     const cookies = parseCookies(req.headers.cookie);
     const cookieUser = cookies["area46_user_id"] || cookies["area46_user_email"];
-    candidate = (headerUser || cookieUser || "").trim() || null;
+    const bearer = typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ") ? req.headers.authorization.slice(7).trim() : null;
+    const rawToken = bearer || cookieUser;
+    if (rawToken) {
+      const verifiedId = verifySignedUserId(rawToken);
+      if (verifiedId) {
+        candidate = verifiedId;
+        isCryptographicallySigned = true;
+      }
+    }
+    if (!candidate) {
+      const headerUser = req.headers["x-area46-user"] || req.headers["x-user-id"] || bearer;
+      candidate = (headerUser || cookieUser || "").trim() || null;
+    }
   }
   if (candidate) {
     const user = (database.profili_utenti || []).find(
@@ -40417,17 +40910,10 @@ async function handleLocalApi(req, res, next) {
   if (pathname === "/app-api/auth/current-user" && method === "GET") {
     return res.end(JSON.stringify(currentUser));
   }
-  if (pathname === "/app-api/auth/login-demo" && method === "GET") {
-    const targetId = url.searchParams.get("id") || "usr-coach-01";
-    const targetUser = (db.profili_utenti || []).find((u) => u.id === targetId || u.email?.toLowerCase() === targetId.toLowerCase()) || db.profili_utenti?.[0];
-    const redirectTo = url.searchParams.get("redirect") || "/";
-    res.setHeader(
-      "Set-Cookie",
-      `area46_user_id=${encodeURIComponent(targetUser?.id || targetId)}; Path=/; Max-Age=31536000; SameSite=Lax`
-    );
-    res.statusCode = 302;
-    res.setHeader("Location", redirectTo);
-    return res.end();
+  if (pathname === "/app-api/auth/login-demo") {
+    res.statusCode = 403;
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.end(JSON.stringify({ ok: false, error: "Accesso demo disabilitato per motivi di sicurezza." }));
   }
   if (pathname === "/app-api/auth/logout" && method === "POST") {
     res.setHeader(
@@ -40525,7 +41011,7 @@ async function handleLocalApi(req, res, next) {
       }
       res.setHeader(
         "Set-Cookie",
-        `area46_user_id=${encodeURIComponent(found.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+        `area46_user_id=${encodeURIComponent(signUserId(found.id))}; Path=/; Max-Age=31536000; SameSite=Lax`
       );
       return res.end(JSON.stringify({ ok: true, user: getHydratedUser(found, db) }));
     }
@@ -40550,7 +41036,7 @@ async function handleLocalApi(req, res, next) {
       await syncDataToGoogleDrive(db);
       res.setHeader(
         "Set-Cookie",
-        `area46_user_id=${encodeURIComponent(coach.id)}; Path=/; Max-Age=31536000; SameSite=Lax`
+        `area46_user_id=${encodeURIComponent(signUserId(coach.id))}; Path=/; Max-Age=31536000; SameSite=Lax`
       );
       return res.end(JSON.stringify({ ok: true, user: getHydratedUser(coach, db) }));
     }
@@ -41065,6 +41551,7 @@ firenzepersonaltrainer@gmail.com
         operatore: "coach"
       });
     }
+    alignSharedPartnersCredits(walletOwner || profilo, db);
     profilo.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     if (isShared && walletOwner) walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     saveData(db);
@@ -41160,6 +41647,7 @@ firenzepersonaltrainer@gmail.com
     }
     profilo.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     if (isShared && walletOwner) walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+    alignSharedPartnersCredits(walletOwner || profilo, db);
     saveData(db);
     triggerSggSyncAsync();
     await syncDataToGoogleDrive(db);
@@ -41853,6 +42341,7 @@ CALENDARIO E PRENOTAZIONI:
     walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - totalCost);
     atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
     if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    alignSharedPartnersCredits(walletOwner, db);
     const createPrenotazioni = [];
     const now = Date.now();
     requestedSlots.forEach((s, idx) => {
@@ -42002,6 +42491,7 @@ CALENDARIO E PRENOTAZIONI:
     walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
     atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
     if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    alignSharedPartnersCredits(walletOwner, db);
     const nuovaPrenotazione = {
       id: `bk-${Date.now()}`,
       data: dataSlot,
@@ -42092,6 +42582,7 @@ CALENDARIO E PRENOTAZIONI:
       statoFinale = "cancellata_in_tempo";
       if (bk.credito_scalato && atleta && walletOwner) {
         walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+        alignSharedPartnersCredits(walletOwner, db);
         let prorogaMsg = "";
         if (isManager && prorogaRequested && walletOwner.data_scadenza_crediti) {
           const scadenzaDate = /* @__PURE__ */ new Date(walletOwner.data_scadenza_crediti + "T00:00:00");
@@ -43114,7 +43605,7 @@ CALENDARIO E PRENOTAZIONI:
         meridiano_miofasciale: ex?.meridiano_miofasciale ?? null,
         cue_esecutiva: ex?.cue_esecutiva ?? null
       };
-    }).sort((a, b) => (a.sequenza ?? "").localeCompare(b.sequenza ?? ""));
+    }).sort((a, b) => (a.sequenza ?? "").localeCompare(b.sequenza ?? "", void 0, { numeric: true }));
     logShadowEvent("WORKOUT_VIEW", currentUser?.email || "anonymous", {
       livello,
       giorno: giornoInt,
@@ -43146,6 +43637,11 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify(Array.from(attrezzi).sort((a, b) => a.localeCompare(b))));
   }
   if (pathname === "/app-api/libreria" && method === "GET") {
+    if (!currentUser) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      return res.end(JSON.stringify({ error: "Accesso riservato. Effettua l'accesso per visualizzare la libreria esercizi." }));
+    }
     const search = (url.searchParams.get("search") || url.searchParams.get("q") || "").toLowerCase().trim();
     const target = url.searchParams.get("target") || "";
     const attrezzo = (url.searchParams.get("attrezzo") || "").toLowerCase().trim();
@@ -43172,6 +43668,11 @@ CALENDARIO E PRENOTAZIONI:
     return res.end(JSON.stringify(filtered));
   }
   if (pathname === "/app-api/vault/search" && method === "GET") {
+    if (!currentUser) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      return res.end(JSON.stringify({ error: "Accesso riservato. Effettua l'accesso per effettuare ricerche nel Vault." }));
+    }
     const q = (url.searchParams.get("q") || "").toLowerCase().trim();
     const fulcro = (url.searchParams.get("fulcro") || "").toLowerCase().trim();
     const meridiano = (url.searchParams.get("meridiano") || "").toLowerCase().trim();
