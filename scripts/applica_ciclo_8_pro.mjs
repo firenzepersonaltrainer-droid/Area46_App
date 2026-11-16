@@ -12,7 +12,7 @@ const DEMO_DATA_FILE = path.join(ROOT_DIR, "demo-data.json");
 const API_INDEX_FILE = path.join(ROOT_DIR, "api", "index.js");
 
 console.log("================================================================================");
-console.log("🚀 APPLICAZIONE UFFICIALE CICLO 8 (MESOCICLO 3) — LIVELLO PRO");
+console.log("🚀 APPLICAZIONE UFFICIALE CICLO 8 (MESOCICLO 3) — LIVELLO PRO (WARM UP VARIATO)");
 console.log("================================================================================");
 
 // Funzione generatrice Seduta A: 43 (round 1), 45 (round 2), 47 (round 3)
@@ -20,21 +20,21 @@ function getEserciziA(round) {
   return [
     {
       seq: "1a",
-      id: "029",
-      nome: "Ground Stretch",
-      param: "3x10+10",
+      id: "019",
+      nome: "Ground mobility Series",
+      param: "3x8+8",
       rec: "",
-      note: "jump set | mobilità catene crociate e allungamento dinamico flessori d'anca",
-      video: "https://youtube.com/shorts/4defoi83APo",
+      note: "jump set | mobilità articolare a terra per bacino, anche e rachide",
+      video: "https://youtu.be/3wZjPvwGt8U",
     },
     {
       seq: "1b",
-      id: "074",
-      nome: "Side move",
+      id: "025",
+      nome: "Side Closing",
       param: "3x10+10",
       rec: '45"',
-      note: "jump set | attivazione piano frontale e stabilità anca-ginocchio",
-      video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      note: "jump set | attivazione piano frontale con elastico, flessione laterale bacino su torace",
+      video: "https://youtu.be/Z9bhpmPIRkM",
     },
     {
       seq: "2",
@@ -110,21 +110,30 @@ function getEserciziB(round) {
   return [
     {
       seq: "1a",
+      id: "030",
+      nome: "Wall Stretch",
+      param: "3x8+8",
+      rec: "",
+      note: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      video: "https://youtube.com/shorts/SYXUt6RuHAU",
+    },
+    {
+      seq: "1b",
       id: "047",
       nome: "wall driver",
       param: '3 X 45"',
       rec: "",
-      note: "jump set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
+      note: "tri-set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
       video: "https://youtube.com/shorts/xK2pqjLUPl4",
     },
     {
-      seq: "1b",
-      id: "177",
-      nome: "Clubbell Throw 180°",
-      param: '3x60"+60"',
+      seq: "1c",
+      id: "158",
+      nome: "Bat around the head 90° e 180°",
+      param: '3x30"+30"',
       rec: '45"',
-      note: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
-      video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
+      note: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90° e 180°",
+      video: "https://youtu.be/INNpiEJL9As?si=7-xSjR1LJL__jzU8",
     },
     {
       seq: "2",
@@ -241,7 +250,7 @@ for (const s of plan) {
 
 vault5.allenamenti = allenamenti;
 fs.writeFileSync(VAULT_5_FILE, JSON.stringify(vault5, null, 2), "utf-8");
-console.log(`✅ Vault 5 aggiornato con successo: aggiunte ${nuoveRighe} righe per il Ciclo 8.`);
+console.log(`✅ Vault 5 aggiornato con successo: ${nuoveRighe} righe per il Ciclo 8 (Seduta A: 9 stazioni, Seduta B: 10 stazioni).`);
 
 // 2. AGGIORNAMENTO DEMO-DATA.JSON
 if (fs.existsSync(DEMO_DATA_FILE)) {
@@ -262,12 +271,12 @@ if (fs.existsSync(REGISTRO_PRO_FILE)) {
   reg.storico_cicli["Ciclo 8"] = {
     status: "attivo / programmato",
     sessioni: 6,
-    focus: "Picco Mesociclo 3: Intensificazione Fondamentali RPE 8.5 (COMBO Split Snatch H-H Switch, Landmine Coiled Deadlift), Seated Endless Rope Power Pull 4x40\" a tempo continuo, Consolidamento Aerial Jerk 4x6+6, Punch Isoinerziale, Matador Transitions e AMRAP progressivo 10'-11'-13'",
+    focus: "Picco Mesociclo 3: Varietà Warm Up (Ground Mobility Series + Side Closing in A; Tri-set Wall Stretch + Wall Driver + Bat around head 90°-180° in B), Intensificazione Fondamentali RPE 8.5 (COMBO Split Snatch H-H Switch 4x6, Landmine Coiled Deadlift 4x5+5), Seated Endless Rope Power Pull 4x40\", Consolidamento Aerial Jerk 4x6+6, Punch Isoinerziale, Matador Transitions e AMRAP progressivo 10'-11'-13'",
   };
 
   const c8_used_ids = [
-    "029", "074", "128", "023", "219", "242", "207", "089", "243",
-    "047", "177", "056", "174", "028", "120", "229", "106", "227"
+    "019", "025", "128", "023", "219", "242", "207", "089", "243",
+    "030", "047", "158", "056", "174", "028", "120", "229", "106", "227"
   ].map((id) => String(parseInt(id, 10)));
 
   for (const ex of reg.esercizi || []) {

@@ -28245,13 +28245,13 @@ var demo_data_default = {
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
       sequenza: "1a",
-      id_esercizio: "029",
-      nome_esercizio: "Ground Stretch",
-      parametri: "3x10+10",
+      id_esercizio: "019",
+      nome_esercizio: "Ground mobility Series",
+      parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | mobilit\xE0 catene crociate e allungamento dinamico flessori d'anca",
-      link_video: "https://youtube.com/shorts/4defoi83APo",
+      note_tecniche: "jump set | mobilit\xE0 articolare a terra per bacino, anche e rachide",
+      link_video: "https://youtu.be/3wZjPvwGt8U",
       data_pubblicazione: null
     },
     {
@@ -28260,13 +28260,13 @@ var demo_data_default = {
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
       sequenza: "1b",
-      id_esercizio: "074",
-      nome_esercizio: "Side move",
+      id_esercizio: "025",
+      nome_esercizio: "Side Closing",
       parametri: "3x10+10",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | attivazione piano frontale e stabilit\xE0 anca-ginocchio",
-      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      note_tecniche: "jump set | attivazione piano frontale con elastico, flessione laterale bacino su torace",
+      link_video: "https://youtu.be/Z9bhpmPIRkM",
       data_pubblicazione: null
     },
     {
@@ -28380,13 +28380,13 @@ var demo_data_default = {
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
       sequenza: "1a",
-      id_esercizio: "047",
-      nome_esercizio: "wall driver",
-      parametri: '3 X 45"',
+      id_esercizio: "030",
+      nome_esercizio: "Wall Stretch",
+      parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
-      link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
+      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
       data_pubblicazione: null
     },
     {
@@ -28395,17 +28395,32 @@ var demo_data_default = {
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
       sequenza: "1b",
-      id_esercizio: "177",
-      nome_esercizio: "Clubbell Throw 180\xB0",
-      parametri: '3x60"+60"',
-      recupero: '45"',
+      id_esercizio: "047",
+      nome_esercizio: "wall driver",
+      parametri: '3 X 45"',
+      recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
-      link_video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
+      note_tecniche: "tri-set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
+      link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
       data_pubblicazione: null
     },
     {
       id: 1320,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "1c",
+      id_esercizio: "158",
+      nome_esercizio: "Bat around the head 90\xB0 e 180\xB0",
+      parametri: '3x30"+30"',
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90\xB0 e 180\xB0",
+      link_video: "https://youtu.be/INNpiEJL9As?si=7-xSjR1LJL__jzU8",
+      data_pubblicazione: null
+    },
+    {
+      id: 1321,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28420,7 +28435,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1321,
+      id: 1322,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28435,7 +28450,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1322,
+      id: 1323,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28450,7 +28465,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1323,
+      id: 1324,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28465,7 +28480,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1324,
+      id: 1325,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28480,7 +28495,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1325,
+      id: 1326,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28495,7 +28510,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1326,
+      id: 1327,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28510,37 +28525,37 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1327,
-      livello: "PRO",
-      settimana: "Ciclo 8",
-      giorno: "45 allenamento A",
-      sequenza: "1a",
-      id_esercizio: "029",
-      nome_esercizio: "Ground Stretch",
-      parametri: "3x10+10",
-      recupero: "",
-      minutaggio_blocco: "",
-      note_tecniche: "jump set | mobilit\xE0 catene crociate e allungamento dinamico flessori d'anca",
-      link_video: "https://youtube.com/shorts/4defoi83APo",
-      data_pubblicazione: null
-    },
-    {
       id: 1328,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
-      sequenza: "1b",
-      id_esercizio: "074",
-      nome_esercizio: "Side move",
-      parametri: "3x10+10",
-      recupero: '45"',
+      sequenza: "1a",
+      id_esercizio: "019",
+      nome_esercizio: "Ground mobility Series",
+      parametri: "3x8+8",
+      recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | attivazione piano frontale e stabilit\xE0 anca-ginocchio",
-      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      note_tecniche: "jump set | mobilit\xE0 articolare a terra per bacino, anche e rachide",
+      link_video: "https://youtu.be/3wZjPvwGt8U",
       data_pubblicazione: null
     },
     {
       id: 1329,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "45 allenamento A",
+      sequenza: "1b",
+      id_esercizio: "025",
+      nome_esercizio: "Side Closing",
+      parametri: "3x10+10",
+      recupero: '45"',
+      minutaggio_blocco: "",
+      note_tecniche: "jump set | attivazione piano frontale con elastico, flessione laterale bacino su torace",
+      link_video: "https://youtu.be/Z9bhpmPIRkM",
+      data_pubblicazione: null
+    },
+    {
+      id: 1330,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28555,7 +28570,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1330,
+      id: 1331,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28570,7 +28585,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1331,
+      id: 1332,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28585,7 +28600,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1332,
+      id: 1333,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28600,7 +28615,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1333,
+      id: 1334,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28615,7 +28630,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1334,
+      id: 1335,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28630,7 +28645,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1335,
+      id: 1336,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28645,37 +28660,52 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1336,
+      id: 1337,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
       sequenza: "1a",
+      id_esercizio: "030",
+      nome_esercizio: "Wall Stretch",
+      parametri: "3x8+8",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
+      data_pubblicazione: null
+    },
+    {
+      id: 1338,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "46 allenamento B",
+      sequenza: "1b",
       id_esercizio: "047",
       nome_esercizio: "wall driver",
       parametri: '3 X 45"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
+      note_tecniche: "tri-set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
       link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
       data_pubblicazione: null
     },
     {
-      id: 1337,
+      id: 1339,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
-      sequenza: "1b",
-      id_esercizio: "177",
-      nome_esercizio: "Clubbell Throw 180\xB0",
-      parametri: '3x60"+60"',
+      sequenza: "1c",
+      id_esercizio: "158",
+      nome_esercizio: "Bat around the head 90\xB0 e 180\xB0",
+      parametri: '3x30"+30"',
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
-      link_video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
+      note_tecniche: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90\xB0 e 180\xB0",
+      link_video: "https://youtu.be/INNpiEJL9As?si=7-xSjR1LJL__jzU8",
       data_pubblicazione: null
     },
     {
-      id: 1338,
+      id: 1340,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28690,7 +28720,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1339,
+      id: 1341,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28705,7 +28735,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1340,
+      id: 1342,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28720,7 +28750,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1341,
+      id: 1343,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28735,7 +28765,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1342,
+      id: 1344,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28750,7 +28780,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1343,
+      id: 1345,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28765,7 +28795,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1344,
+      id: 1346,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28780,37 +28810,37 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1345,
+      id: 1347,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
       sequenza: "1a",
-      id_esercizio: "029",
-      nome_esercizio: "Ground Stretch",
-      parametri: "3x10+10",
+      id_esercizio: "019",
+      nome_esercizio: "Ground mobility Series",
+      parametri: "3x8+8",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | mobilit\xE0 catene crociate e allungamento dinamico flessori d'anca",
-      link_video: "https://youtube.com/shorts/4defoi83APo",
+      note_tecniche: "jump set | mobilit\xE0 articolare a terra per bacino, anche e rachide",
+      link_video: "https://youtu.be/3wZjPvwGt8U",
       data_pubblicazione: null
     },
     {
-      id: 1346,
+      id: 1348,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
       sequenza: "1b",
-      id_esercizio: "074",
-      nome_esercizio: "Side move",
+      id_esercizio: "025",
+      nome_esercizio: "Side Closing",
       parametri: "3x10+10",
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | attivazione piano frontale e stabilit\xE0 anca-ginocchio",
-      link_video: "https://youtube.com/shorts/wKGZkYkCzHc",
+      note_tecniche: "jump set | attivazione piano frontale con elastico, flessione laterale bacino su torace",
+      link_video: "https://youtu.be/Z9bhpmPIRkM",
       data_pubblicazione: null
     },
     {
-      id: 1347,
+      id: 1349,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28825,7 +28855,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1348,
+      id: 1350,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28840,7 +28870,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1349,
+      id: 1351,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28855,7 +28885,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1350,
+      id: 1352,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28870,7 +28900,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1351,
+      id: 1353,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28885,7 +28915,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1352,
+      id: 1354,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28900,7 +28930,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1353,
+      id: 1355,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28915,37 +28945,52 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1354,
+      id: 1356,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
       sequenza: "1a",
+      id_esercizio: "030",
+      nome_esercizio: "Wall Stretch",
+      parametri: "3x8+8",
+      recupero: "",
+      minutaggio_blocco: "",
+      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
+      data_pubblicazione: null
+    },
+    {
+      id: 1357,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "48 allenamento B",
+      sequenza: "1b",
       id_esercizio: "047",
       nome_esercizio: "wall driver",
       parametri: '3 X 45"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "jump set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
+      note_tecniche: "tri-set | movimento alternato continuo a tempo | spinta diagonale a parete, spalla e core",
       link_video: "https://youtube.com/shorts/xK2pqjLUPl4",
       data_pubblicazione: null
     },
     {
-      id: 1355,
+      id: 1358,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
-      sequenza: "1b",
-      id_esercizio: "177",
-      nome_esercizio: "Clubbell Throw 180\xB0",
-      parametri: '3x60"+60"',
+      sequenza: "1c",
+      id_esercizio: "158",
+      nome_esercizio: "Bat around the head 90\xB0 e 180\xB0",
+      parametri: '3x30"+30"',
       recupero: '45"',
       minutaggio_blocco: "",
-      note_tecniche: "jump set | senza pausa tra i lati | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo",
-      link_video: "https://youtu.be/gR25zBvBa48?si=kDHi-rlIwuOA4q6v",
+      note_tecniche: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90\xB0 e 180\xB0",
+      link_video: "https://youtu.be/INNpiEJL9As?si=7-xSjR1LJL__jzU8",
       data_pubblicazione: null
     },
     {
-      id: 1356,
+      id: 1359,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -28960,7 +29005,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1357,
+      id: 1360,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -28975,7 +29020,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1358,
+      id: 1361,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -28990,7 +29035,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1359,
+      id: 1362,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29005,7 +29050,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1360,
+      id: 1363,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29020,7 +29065,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1361,
+      id: 1364,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29035,7 +29080,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1362,
+      id: 1365,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
