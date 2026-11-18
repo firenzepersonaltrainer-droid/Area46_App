@@ -46470,8 +46470,9 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
   }
   if (pathname === "/app-api/ai-parse-voice-set" && method === "POST") {
     try {
-      const { text, audioBase64, mimeType, audio, targetPrescrizione } = parsedBody || {};
+      const { text, transcript, audioBase64, mimeType, audio, targetPrescrizione } = parsedBody || {};
       const rawAudio = audioBase64 || audio;
+      const effectiveText = typeof text === "string" ? text : typeof transcript === "string" ? transcript : void 0;
       let audioClean = "";
       let audioMime = mimeType || "audio/webm";
       if (rawAudio && typeof rawAudio === "string") {
@@ -46480,7 +46481,7 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
         audioClean = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
       }
       const result = await parseVoiceWorkoutSet({
-        text: typeof text === "string" ? text : void 0,
+        text: effectiveText,
         audioBase64: audioClean || void 0,
         mimeType: audioMime,
         targetPrescrizione: typeof targetPrescrizione === "string" ? targetPrescrizione : void 0

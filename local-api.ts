@@ -5991,8 +5991,9 @@ CALENDARIO E PRENOTAZIONI:
     // POST /app-api/ai-parse-voice-set (Voice Workout Logger con Agente AI Aura & Socrates)
     if (pathname === "/app-api/ai-parse-voice-set" && method === "POST") {
       try {
-        const { text, audioBase64, mimeType, audio, targetPrescrizione } = parsedBody || {};
+        const { text, transcript, audioBase64, mimeType, audio, targetPrescrizione } = parsedBody || {};
         const rawAudio = audioBase64 || audio;
+        const effectiveText = typeof text === "string" ? text : typeof transcript === "string" ? transcript : undefined;
 
         let audioClean = "";
         let audioMime = mimeType || "audio/webm";
@@ -6004,7 +6005,7 @@ CALENDARIO E PRENOTAZIONI:
         }
 
         const result = await parseVoiceWorkoutSet({
-          text: typeof text === "string" ? text : undefined,
+          text: effectiveText,
           audioBase64: audioClean || undefined,
           mimeType: audioMime,
           targetPrescrizione: typeof targetPrescrizione === "string" ? targetPrescrizione : undefined,
