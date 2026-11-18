@@ -11,13 +11,13 @@ export interface VoiceWorkoutSetResult {
 }
 
 /**
- * Converte le parole numeriche italiane di uso comune in numeri
+ * Mappatura parole numeriche italiane
  */
 const NUMERI_ITALIANI: Record<string, number> = {
   zero: 0,
-  uno: 1,
+  uno: 1, un: 1, una: 1,
   due: 2,
-  tre: 3,
+  tre: 3, tré: 3,
   quattro: 4,
   cinque: 5,
   sei: 6,
@@ -34,49 +34,63 @@ const NUMERI_ITALIANI: Record<string, number> = {
   diciassette: 17,
   diciotto: 18,
   diciannove: 19,
-  venti: 20,
+  venti: 20, vent: 20,
   ventuno: 21,
   ventidue: 22,
-  ventitre: 23,
-  ventitré: 23,
+  ventitre: 23, ventitré: 23,
   ventiquattro: 24,
   venticinque: 25,
-  trenta: 30,
+  ventisei: 26,
+  ventisette: 27,
+  ventotto: 28,
+  ventinove: 29,
+  trenta: 30, trent: 30,
   trentacinque: 35,
-  quaranta: 40,
+  quaranta: 40, quarant: 40,
   quarantacinque: 45,
-  cinquanta: 50,
+  cinquanta: 50, cinquant: 50,
   cinquantacinque: 55,
-  sessanta: 60,
+  sessanta: 60, sessant: 60,
   sessantacinque: 65,
-  settanta: 70,
+  settanta: 70, settant: 70,
   settantacinque: 75,
-  ottanta: 80,
+  ottanta: 80, ottant: 80,
   ottantacinque: 85,
-  novanta: 90,
+  novanta: 90, novant: 90,
+  novantacinque: 95,
   cento: 100,
 };
 
+/**
+ * Sanitizza il termine biomeccanica/o in pattern motorio per gli atleti
+ */
 export function sanitizzaTermineBiomeccanica(s: string): string {
   if (!s) return "";
-  return s.replace(/biomeccanic[a-zA-Z]*/gi, "pattern motorio");
+  return s
+    .replace(/biomeccanic[a-zA-Z]*/gi, "pattern motorio")
+    .replace(/catena\s+cinetica/gi, "linea di spinta")
+    .replace(/fulcro/gi, "punto d'appoggio");
 }
 
-function parseNumeroParola(parola: string): number | null {
-  const p = parola.toLowerCase().trim().replace(/[,]/g, ".");
-  if (!isNaN(parseFloat(p))) return parseFloat(p);
+/**
+ * Converte qualsiasi stringa di numero o parola italiana in float
+ */
+export function parseNumeroParola(parola: string): number | null {
+  if (!parola) return null;
+  const p = parola.toLowerCase().trim().replace(/,/g, ".");
+  const numDirect = parseFloat(p);
+  if (!isNaN(numDirect) && /^[0-9]+(?:\.[0-9]+)?$/.test(p)) return numDirect;
   if (NUMERI_ITALIANI[p] !== undefined) return NUMERI_ITALIANI[p];
 
-  // Gestione decine composte (es. "quarantadue" -> 40 + 2 = 42)
   const decine: Record<string, number> = {
-    vent: 20, venti: 20,
-    trent: 30, trenta: 30,
-    quarant: 40, quaranta: 40,
-    cinquant: 50, cinquanta: 50,
-    sessant: 60, sessanta: 60,
-    settant: 70, settanta: 70,
-    ottant: 80, ottanta: 80,
-    novant: 90, novanta: 90,
+    vent: 20,
+    trent: 30,
+    quarant: 40,
+    cinquant: 50,
+    sessant: 60,
+    settant: 70,
+    ottant: 80,
+    novant: 90,
   };
 
   const unita: Record<string, number> = {
@@ -88,6 +102,8 @@ function parseNumeroParola(parola: string): number | null {
       const resto = p.slice(decStr.length);
       if (!resto) return decVal;
       if (unita[resto] !== undefined) return decVal + unita[resto];
+      if (resto.startsWith("i") && unita[resto.slice(1)] !== undefined) return decVal + unita[resto.slice(1)];
+      if (resto.startsWith("e") && unita[resto.slice(1)] !== undefined) return decVal + unita[resto.slice(1)];
     }
   }
 
@@ -95,31 +111,54 @@ function parseNumeroParola(parola: string): number | null {
 }
 
 /**
- * Risolutore RPE: gestisce singoli valori e range di buon senso calcolando la media esatta.
- * Es: "tra 7.5 e 8.5" -> 8.0
- * Es: "otto o nove" -> 8.5
- * Es: "tra 7 e 8" -> 7.5
+ * Risolutore RPE & Reps in Reserve:
+ * Riconosce RPE espliciti, range con media esatta, parole come sforzo/fatica, e RIR ("due di riserva").
  */
 export function resolveRpeRange(testo: string): string | null {
   const lower = testo.toLowerCase();
 
-  // Pattern per identificare dove si parla di RPE
-  const rpeKeywordIndex = lower.indexOf("rpe");
-  let targetSubstring = lower;
-  if (rpeKeywordIndex !== -1) {
-    targetSubstring = lower.substring(rpeKeywordIndex);
+  // 1. RIR (Reps in Reserve / colpi in canna)
+  if (lower.match(/(?:due|2)\s*(?:in\s*canna|di\s*riserva|colpi\s*di\s*riserva|buffer\s*2)/i)) {
+    return "8.0";
+  }
+  if (lower.match(/(?:un|uno|1)\s*(?:in\s*canna|di\s*riserva|colpo\s*di\s*riserva|buffer\s*1)/i)) {
+    return "9.0";
+  }
+  if (lower.match(/(?:tre|3)\s*(?:in\s*canna|di\s*riserva|colpi\s*di\s*riserva|buffer\s*3)/i)) {
+    return "7.0";
+  }
+  if (lower.match(/(?:a\s*tutta|a\s*cedimento|zero\s*in\s*canna|massimale|limite\s*assoluto)/i)) {
+    return "10.0";
   }
 
-  // 1. Ricerca del range esplicito (es. "fra 7.5 e 8.5", "otto o nove", "7 e mezzo e 8 e mezzo")
+  // 2. Normalizzazione termini acustici di "RPE"
+  const normalized = lower
+    .replace(/\br\.p\.e\.\b/g, "rpe")
+    .replace(/\br\s*p\s*e\b/g, "rpe")
+    .replace(/\brp\b/g, "rpe")
+    .replace(/\berrepé\b/g, "rpe")
+    .replace(/\breppe\b/g, "rpe")
+    .replace(/\bsforzo\b/g, "rpe")
+    .replace(/\bfatica\b/g, "rpe")
+    .replace(/\bintensit[àa]\b/g, "rpe")
+    .replace(/\bdifficolt[àa]\b/g, "rpe");
+
+  const rpeIdx = normalized.indexOf("rpe");
+  let targetSubstring = normalized;
+  if (rpeIdx !== -1) {
+    targetSubstring = normalized.substring(rpeIdx);
+  }
+
+  // A. Range esplicito dopo RPE (es. "rpe tra 7.5 e 8.5", "rpe 8 o 9", "rpe tra 7 e 8", "sforzo fra 7 e mezzo e 8 e mezzo")
   const matchRange = targetSubstring.match(
-    /(?:tra|fra|da)?\s*([0-9]+(?:[.,][0-9]+)?|sei|sette|otto|nove|dieci)\s*(?:e\s*mezzo)?\s*(?:e|ed|a|o|-)\s*([0-9]+(?:[.,][0-9]+)?|sei|sette|otto|nove|dieci)\s*(?:e\s*mezzo)?/i
+    /rpe\s*(?:credo|direi|circa|intorno\s*a|su|tra|fra|da)?\s*([0-9]+(?:[.,][0-9]+)?|[a-z]+)\s*(?:e\s*mezzo)?\s*(?:e|ed|a|o|-)\s*([0-9]+(?:[.,][0-9]+)?|[a-z]+)\s*(?:e\s*mezzo)?/i
   );
 
   if (matchRange) {
     let v1 = parseNumeroParola(matchRange[1]);
     let v2 = parseNumeroParola(matchRange[2]);
 
-    if (matchRange[0].includes("e mezzo") || matchRange[0].includes("e mezzo")) {
+    if (matchRange[0].includes("e mezzo") || matchRange[0].includes("mezzo")) {
       const parts = matchRange[0].split(/(?:e|ed|a|o|-)/i);
       if (parts[0] && parts[0].includes("mezzo") && v1 !== null) v1 += 0.5;
       if (parts[1] && parts[1].includes("mezzo") && v2 !== null) v2 += 0.5;
@@ -131,26 +170,27 @@ export function resolveRpeRange(testo: string): string | null {
     }
   }
 
-  // 2. Singolo valore RPE esplicito (es. "rpe 8.5", "rpe 8", "rpe otto e mezzo")
+  // B. Singolo valore RPE esplicito (es. "rpe 8.5", "rpe 8", "rpe otto e mezzo", "sforzo 7 e mezzo")
   const singleMatch = targetSubstring.match(
-    /rpe\s*(?:credo|direi|circa|intorno a|su)?\s*([0-9]+(?:[.,][0-9]+)?|sei|sette|otto|nove|dieci)(?:\s*e\s*mezzo)?/i
+    /rpe\s*(?:credo|direi|circa|intorno\s*a|su|pari\s*a|di)?\s*([0-9]+(?:[.,][0-9]+)?|[a-z]+)(?:\s*e\s*mezzo)?/i
   );
   if (singleMatch) {
     let val = parseNumeroParola(singleMatch[1]);
     if (val !== null) {
-      if (singleMatch[0].includes("e mezzo")) val += 0.5;
+      if (singleMatch[0].includes("e mezzo") || singleMatch[0].includes("mezzo")) val += 0.5;
       if (val >= 5 && val <= 10) {
         return val.toFixed(1);
       }
     }
   }
 
-  // 3. Fallback: cerca qualsiasi numero compreso tra 5 e 10 associato a rpe
-  const generalRpe = targetSubstring.match(/rpe[^0-9a-z]*([5-9](?:[.,][0-9])?|10)/i);
-  if (generalRpe) {
-    const val = parseFloat(generalRpe[1].replace(",", "."));
-    if (!isNaN(val) && val >= 5 && val <= 10) {
-      return val.toFixed(1);
+  // C. Fallback: cerca qualsiasi numero o parola 5..10 nei primi 25 caratteri dopo RPE
+  if (rpeIdx !== -1) {
+    const after = normalized.substring(rpeIdx, rpeIdx + 30);
+    const mNum = after.match(/\b([5-9](?:[.,][0-9])?|10)\b/);
+    if (mNum) {
+      const n = parseFloat(mNum[1].replace(",", "."));
+      if (!isNaN(n) && n >= 5 && n <= 10) return n.toFixed(1);
     }
   }
 
@@ -158,32 +198,130 @@ export function resolveRpeRange(testo: string): string | null {
 }
 
 /**
- * Motore Deterministico di estrazione parametri set da testo in italiano.
+ * Estrae le note qualitative di senso compiuto preservando la fluidità della lingua italiana
+ */
+export function estraiNoteQualitative(testo: string): string | null {
+  const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
+  if (!sanitized) return null;
+
+  // Spezza la frase in clausole naturali (virgola, punto, punto e virgola, ma, però, tuttavia, sentivo, sensazione, perché)
+  const clausole = sanitized.split(/[,.;:]|\b(?:ma|però|tuttavia|anche se|invece|perché|perche|sentivo|avvertivo)\b/i);
+
+  const clausoleNote: string[] = [];
+
+  for (let cl of clausole) {
+    let trimCl = cl.trim();
+    if (!trimCl) continue;
+
+    const lower = trimCl.toLowerCase();
+
+    // Se la clausola è solo dichiarazione di serie numerica (es: "ho fatto 8 ripetizioni", "con 45 chili", "rpe 8", "fatte 10 con 50 kg")
+    const isPureParameters =
+      /^(?:allora\s+|dunque\s+|ecco\s+)?(?:ho\s+fatto|fatte|chiuse|fatti|eseguite|tirate)?\s*(?:[0-9]+|[a-z]+)?\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)?\s*(?:con|a|al|per)?\s*(?:carico|peso)?\s*[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)?\s*(?:rpe\s*[0-9]+)?$/i.test(
+        lower
+      ) ||
+      /^(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)$/i.test(lower) ||
+      /^(?:r\.?p\.?e\.?|sforzo|fatica)\s*(?:tra|fra|da)?\s*[0-9]+(?:[.,][0-9]+)?(?:\s*(?:e|o|-)\s*[0-9]+(?:[.,][0-9]+)?)?(?:\s*e\s*mezzo)?$/i.test(lower) ||
+      /^(?:due|un|uno|tre|2|1|3)\s*(?:in\s*canna|di\s*riserva|colpi\s*di\s*riserva)$/i.test(lower) ||
+      /^(?:prima|seconda|terza|quarta)\s*serie\s*(?:andata|fatta)?$/i.test(lower);
+
+    if (isPureParameters) continue;
+
+    // Se contiene parole qualitative, cliniche o di sensazione atletica, teniamola!
+    const haParoleQualitative =
+      /(?:sentivo|avvertivo|sensazione|sensazioni|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|braccio|pols[io]|collo|rigido|rigida|fluido|fluida|buon[ao]|ottimo|ottima|difficolt[àa]|pesante|pesantezza|leggero|leggera|facile|cedimento|fatica|assetto|controllo|velocit[àa]|esplosivit[àa]|pattern\s*motorio|bruciore|carico|spinta|stabilit[àa]|dolore|fitta|calo|energia|stanco|stanca|affaticat[ao])/i.test(
+        lower
+      );
+
+    if (haParoleQualitative) {
+      // Pulisci eventuali rimasugli di numeri isolati di RPE o carico a inizio/fine clausola
+      let pulita = trimCl
+        .replace(/^(?:e\s+|ed\s+|anche\s+|poi\s+)+/gi, "")
+        .replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?(?:\s*e\s*mezzo)?/gi, "")
+        .replace(/\b(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:kg|chili)\b/gi, "")
+        .trim();
+
+      if (pulita.length > 3) {
+        clausoleNote.push(pulita);
+      }
+    }
+  }
+
+  if (clausoleNote.length === 0) {
+    // Fallback: se non abbiamo clausole isolate, verifichiamo se c'è una parola chiave nella frase intera
+    const lowerAll = sanitized.toLowerCase();
+    const matchSensazioni = sanitized.match(
+      /(?:sentivo|sensazion[ei]|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|rigido|rigida|fluido|buon[ao]|ottimo|cedimento|controllo).+/i
+    );
+    if (matchSensazioni) {
+      let candidate = matchSensazioni[0]
+        .replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?/gi, "")
+        .trim();
+      if (candidate.length > 4) {
+        return sanitizzaTermineBiomeccanica(candidate.charAt(0).toUpperCase() + candidate.slice(1));
+      }
+    }
+    return null;
+  }
+
+  let final = clausoleNote.join(", ").trim();
+  final = final.replace(/\s+/g, " ");
+  final = final.replace(/^[,.;:-]+\s*/, "").replace(/\s*[,.;:-]+$/, "").trim();
+  if (final.length > 0) {
+    final = final.charAt(0).toUpperCase() + final.slice(1);
+    return sanitizzaTermineBiomeccanica(final);
+  }
+  return null;
+}
+
+/**
+ * Motore Semantico Deterministico di estrazione parametri set da frase libera in italiano.
  */
 export function parseWorkoutSetDeterministic(testo: string): VoiceWorkoutSetResult {
   const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
-  const lower = sanitized.toLowerCase();
+  if (!sanitized) {
+    return {
+      success: false,
+      carico_kg: null,
+      ripetizioni: null,
+      rpe: null,
+      note: null,
+      raw_text: "",
+    };
+  }
 
+  const lower = sanitized.toLowerCase();
   let carico_kg: number | null = null;
   let ripetizioni: number | null = null;
   let rpe: string | null = resolveRpeRange(lower);
 
-  // 1. Estrazione Carico (kg)
-  if (lower.includes("corpo libero") || lower.includes("senza peso") || lower.includes("peso corporeo")) {
+  // 1. ESTRAZIONE CARICO (KG)
+  if (
+    lower.includes("corpo libero") ||
+    lower.includes("senza peso") ||
+    lower.includes("peso corporeo") ||
+    lower.includes("solo il corpo")
+  ) {
     carico_kg = 0;
   } else {
-    // Es. "50 kg", "50 chili e mezzo", "quarantadue e mezzo chili", "con 52.5 chili", "carico 60"
-    const caricoPatterns = [
+    // Pattern: Numero o parole + (chili | kg | kili)
+    const pKgWords = [
       /([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\s*(?:e\s*mezzo)?/i,
-      /([a-z]+)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\s*(?:e\s*mezzo)?/i,
-      /(?:con|carico|peso|bilanciere)\s*([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?/i,
-      /(?:con|carico|peso)\s*([a-z]+)\s*(?:e\s*mezzo)?/i,
+      /([a-z]+(?:\s+[a-z]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\s*(?:e\s*mezzo)?/i,
     ];
-
-    for (const pat of caricoPatterns) {
+    for (const pat of pKgWords) {
       const m = lower.match(pat);
       if (m) {
-        let val = parseNumeroParola(m[1]);
+        let val: number | null = null;
+        const rawPart = m[1].trim();
+        const words = rawPart.split(/\s+/);
+        if (words.length === 2) {
+          const w1 = parseNumeroParola(words[0]);
+          const w2 = parseNumeroParola(words[1]);
+          if (w1 !== null && w2 !== null && w1 >= 20 && w2 < 10) val = w1 + w2;
+        }
+        if (val === null) val = parseNumeroParola(rawPart);
+
         if (val !== null) {
           if (m[0].includes("e mezzo") || m[0].includes("mezzo")) val += 0.5;
           carico_kg = val;
@@ -192,90 +330,99 @@ export function parseWorkoutSetDeterministic(testo: string): VoiceWorkoutSetResu
       }
     }
 
-    // Se ancora nullo, cerca es: "con 50" (se non associato a ripetizioni o rpe)
+    // Pattern: "con X", "carico X", "peso X", "bilanciere a X"
     if (carico_kg === null) {
-      const matchCon = lower.match(/(?:con|a)\s+([0-9]+(?:[.,][0-9]+)?)(?!\s*(?:colpi|rep|ripetizioni))/i);
-      if (matchCon) {
-        const val = parseFloat(matchCon[1].replace(",", "."));
-        if (!isNaN(val)) carico_kg = val;
+      const pCon = [
+        /(?:con|carico|peso|bilanciere\s*a|messo|caricato)\s+([0-9]+(?:[.,][0-9]+)?)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
+        /(?:con|carico|peso|bilanciere\s*a|messo|caricato)\s+([a-z]+)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
+      ];
+      for (const pat of pCon) {
+        const m = lower.match(pat);
+        if (m) {
+          let val = parseNumeroParola(m[1]);
+          if (val !== null && val > 0 && val <= 300) {
+            if (m[0].includes("e mezzo") || m[0].includes("mezzo")) val += 0.5;
+            carico_kg = val;
+            break;
+          }
+        }
+      }
+    }
+
+    // Pattern: "50x8"
+    if (carico_kg === null) {
+      const mCross = lower.match(/([0-9]+(?:[.,][0-9]+)?)\s*x\s*([0-9]+)/i);
+      if (mCross) {
+        const n1 = parseFloat(mCross[1].replace(",", "."));
+        const n2 = parseInt(mCross[2], 10);
+        if (!isNaN(n1) && !isNaN(n2)) {
+          carico_kg = n1;
+          if (ripetizioni === null) ripetizioni = n2;
+        }
       }
     }
   }
 
-  // 2. Estrazione Ripetizioni (reps)
-  // Es. "6 ripetizioni", "sei colpi", "8 rep", "10 rip", "fatte 5"
-  const repPatterns = [
-    /([0-9]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip)/i,
-    /([a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip)/i,
-    /(?:fatte|chiuse|fatti|eseguite)\s*([0-9]+|[a-z]+)/i,
-  ];
-
-  for (const pat of repPatterns) {
-    const m = lower.match(pat);
-    if (m) {
-      const val = parseNumeroParola(m[1]);
-      if (val !== null && val >= 1 && val <= 100) {
-        ripetizioni = Math.round(val);
-        break;
-      }
-    }
-  }
-
-  // Se ancora nullo, cerca un numero a inizio frase se seguito da "con X kg"
+  // 2. ESTRAZIONE RIPETIZIONI (REPS)
   if (ripetizioni === null) {
-    const startNumMatch = lower.match(/^([0-9]+)\s+(?:con|a|al)\s+/i);
-    if (startNumMatch) {
-      const val = parseInt(startNumMatch[1], 10);
-      if (!isNaN(val) && val >= 1 && val <= 100) {
-        ripetizioni = val;
+    const repPatterns = [
+      /([0-9]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
+      /([a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
+      /(?:fatte|chiuse|fatti|eseguite|tirate|chiuso|fatto)\s+([0-9]+|[a-z]+)/i,
+      /(?:ceduto\s+alla|mollato\s+alla)\s+([0-9]+a?|prima|seconda|terza|quarta|quinta|sesta|settima|ottava|nona|decima)/i,
+    ];
+
+    const ordinali: Record<string, number> = {
+      prima: 1, seconda: 2, terza: 3, quarta: 4, quinta: 5,
+      sesta: 6, settima: 7, ottava: 8, nona: 9, decima: 10,
+    };
+
+    for (const pat of repPatterns) {
+      const m = lower.match(pat);
+      if (m) {
+        const raw = m[1].toLowerCase().replace(/a$/, "");
+        if (ordinali[raw] !== undefined) {
+          ripetizioni = ordinali[raw];
+          break;
+        }
+        const val = parseNumeroParola(raw);
+        if (val !== null && val >= 1 && val <= 100) {
+          ripetizioni = Math.round(val);
+          break;
+        }
       }
     }
   }
 
-  // 3. Estrazione Note / Sensazioni
-  let noteText = sanitized;
-  noteText = noteText.replace(/(?:con\s+)?(?:carico\s+)?(?:peso\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:kg|chili|kili)?/gi, " ");
-  noteText = noteText.replace(/(?:a\s+)?corpo\s+libero/gi, " ");
-  noteText = noteText.replace(/[0-9]+\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip)/gi, " ");
-  noteText = noteText.replace(/(?:fatte|chiuse|eseguite)\s*[0-9]+/gi, " ");
-  noteText = noteText.replace(/rpe\s*(?:credo|direi|circa|intorno a|su)?\s*(?:tra|fra|da)?\s*[0-9]+(?:[.,][0-9]+)?\s*(?:e|ed|a|o|-)\s*[0-9]+(?:[.,][0-9]+)?/gi, " ");
-  noteText = noteText.replace(/rpe\s*(?:credo|direi|circa|intorno a|su)?\s*[0-9]+(?:[.,][0-9]+)?(?:\s*e\s*mezzo)?/gi, " ");
-  noteText = noteText.replace(/rpe/gi, " ");
+  // Pattern: inizio frase con numero es: "8 con 50 kg"
+  if (ripetizioni === null) {
+    const startNumMatch = lower.match(/^(?:allora\s+|dunque\s+)?([0-9]+|[a-z]+)\s+(?:con|a|al|per)\s+/i);
+    if (startNumMatch) {
+      const val = parseNumeroParola(startNumMatch[1]);
+      if (val !== null && val >= 1 && val <= 50) {
+        ripetizioni = Math.round(val);
+      }
+    }
+  }
 
-  const paroleDaEscludere = new Set([
-    "con", "fra", "tra", "del", "della", "delle", "dei", "credo", "direi", "circa",
-    "fatto", "fatta", "fatti", "fatte", "set", "serie", "ripetizioni", "ripetizione",
-    "colpi", "colpo", "rep", "reps", "rip", "chili", "kili", "kg", "mezzo", "mezzi",
-    "fino", "intorno", "peso", "carico", "bilanciere", "sensazione",
-    ...Object.keys(NUMERI_ITALIANI),
-  ]);
+  // 3. ESTRAZIONE E ORDINAMENTO DELLE NOTE QUALITATIVE
+  const note = estraiNoteQualitative(sanitized);
 
-  const parolePulite = noteText
-    .split(/\s+/)
-    .map((w) => w.trim().replace(/^[,.;:!?()"-]+|[,.;:!?()"-]+$/g, ""))
-    .filter((w) => {
-      const lowerWord = w.toLowerCase();
-      if (w.length <= 2) return false;
-      if (paroleDaEscludere.has(lowerWord)) return false;
-      if (parseNumeroParola(lowerWord) !== null) return false;
-      return true;
-    });
-
-  const finalNote = parolePulite.length > 0 ? parolePulite.join(" ") : null;
+  const success = carico_kg !== null || ripetizioni !== null || rpe !== null;
 
   return {
-    success: carico_kg !== null || ripetizioni !== null || rpe !== null,
+    success,
     carico_kg,
     ripetizioni,
     rpe,
-    note: finalNote ? sanitizzaTermineBiomeccanica(finalNote) : null,
+    note,
     raw_text: sanitized,
   };
 }
 
 /**
- * Funzione unificata di Voice Workout Logging con Agente AI (Gemini 2.5 Flash / Flash Audio)
- * e fallback euristico deterministico immediato di Verità Operativa.
+ * Funzione unificata di Voice Workout Logging con Agente AI (Gemini 2.0 Flash / Flash Audio)
+ * e motore semantico deterministico NLP integrato di Verità Operativa.
  */
 export async function parseVoiceWorkoutSet(input: {
   text?: string;
@@ -303,28 +450,24 @@ export async function parseVoiceWorkoutSet(input: {
     audioData = fs.readFileSync(input.filePath).toString("base64");
   }
 
-  // Se c'è la chiave Gemini e abbiamo o audio o testo, possiamo interrogare il modello multimodale
-  if (apiKey && (audioData || (input.text && input.text.trim().length > 3))) {
+  // Se c'è la chiave Gemini e abbiamo o audio o testo, interroghiamo il modello multimodale
+  if (apiKey && (audioData || (input.text && input.text.trim().length > 2))) {
     try {
       const systemInstruction = `
 Sei l'Agente Voice Workout Logger (Aura & Socrates) di Area46 Landmine Lab.
-Il tuo compito è analizzare la dettatura vocale dell'atleta registrata durante il recupero post-serie
-ed estrarre i parametri numerici precisi del set eseguito in formato JSON strutturato.
+Il tuo compito è ascoltare/analizzare la dettatura vocale libera dell'atleta registrata dopo la serie ed estrarre i parametri numerici e le note in formato JSON.
 
-VINCOLI METODOLOGICI E REGOLE DI BUON SENSO:
-1. "carico_kg": numero decimale o intero espresso in kg (es. "cinquanta chili" -> 50, "quarantadue e mezzo" -> 42.5, "a corpo libero" -> 0).
-2. "ripetizioni": intero di ripetizioni o colpi eseguiti (es. "6 ripetizioni", "sei colpi", "8 rep" -> 6, 8).
-3. "rpe": stringa con il valore RPE.
-   - RISOLUTORE INTELLIGENTE DI RANGE RPE: Se l'atleta indica un range o un'incertezza (es. "tra 7.5 e 8.5", "fra 7.5 e 8.5", "otto o nove", "tra 7 e 8"),
-     CALCOLA LA MEDIA ESATTA DI BUON SENSO:
-     * (7.5 + 8.5) / 2 = 8.0 -> "8.0"
-     * (8 + 9) / 2 = 8.5 -> "8.5"
-     * (7 + 8) / 2 = 7.5 -> "7.5"
-     Se indica un valore singolo (es. "8", "8 e mezzo") -> "8.0" o "8.5".
-4. "note": isola eventuali sensazioni, fatica o commenti qualitativi (es. "fatto facile", "leggero compenso", "pesante").
-   DIVIETO ASSOLUTO del termine "biomeccanica": sostituiscilo sempre con "pattern motorio" o "economia del gesto".
+REGOLE DI INTERPRETAZIONE:
+1. "carico_kg": numero intero o decimale espresso in kg (es. "cinquanta chili" -> 50, "42 e mezzo" -> 42.5, "a corpo libero" -> 0).
+2. "ripetizioni": intero di ripetizioni o colpi eseguiti (es. "8 ripetizioni", "sei colpi", "fatte 10" -> 8, 6, 10).
+3. "rpe": valore stringa con decimale.
+   - SE L'ATLETA INDICA UN RANGE O UN'INCERTEZZA (es. "tra 7.5 e 8.5", "otto o nove", "fra 7 e 8", "sforzo 8 e mezzo"),
+     CALCOLA LA MEDIA ESATTA DI BUON SENSO (es. (7.5+8.5)/2 = 8.0 -> "8.0", (8+9)/2 = 8.5 -> "8.5").
+   - SE PARLA DI BUFFER/RIR: "due in canna" -> "8.0", "una in canna" -> "9.0", "a tutta/cedimento" -> "10.0".
+4. "note": frase ordinata e pulita in italiano con le sensazioni muscolari o articolari.
+   DIVIETO ASSOLUTO del termine "biomeccanica": usa "pattern motorio" o "economia del gesto".
 
-Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
+Rispondi ESCLUSIVAMENTE con un JSON valido:
 {
   "carico_kg": number | null,
   "ripetizioni": number | null,
@@ -345,11 +488,11 @@ Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
       }
       if (input.text) {
         contentsParts.push({
-          text: `Testo dettato: "${input.text}". Prescrizione scheda: ${input.targetPrescrizione || "N/D"}`,
+          text: `Testo dettato: "${input.text}". Prescrizione: ${input.targetPrescrizione || "N/D"}`,
         });
       } else {
         contentsParts.push({
-          text: `Ascolta la dettatura vocale dell'atleta e compila i campi del set. Prescrizione scheda: ${input.targetPrescrizione || "N/D"}`,
+          text: `Ascolta la voce dell'atleta e compila i campi. Prescrizione: ${input.targetPrescrizione || "N/D"}`,
         });
       }
 
@@ -373,9 +516,6 @@ Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
         if (textResponse) {
           const parsed = JSON.parse(textResponse);
           const rawText = parsed.trascrizione || input.text || "";
-          const pulisci = (s: string | null) =>
-            s ? s.replace(/biomeccanic[aoe]/gi, "pattern motorio") : null;
-
           let finalRpe = parsed.rpe ? String(parsed.rpe).trim() : null;
           if (finalRpe && (finalRpe.includes("-") || finalRpe.includes("e") || finalRpe.includes("o"))) {
             const resolved = resolveRpeRange(finalRpe);
@@ -387,17 +527,17 @@ Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
             carico_kg: parsed.carico_kg !== undefined ? parsed.carico_kg : null,
             ripetizioni: parsed.ripetizioni !== undefined ? parsed.ripetizioni : null,
             rpe: finalRpe,
-            note: pulisci(parsed.note),
-            raw_text: pulisci(rawText) || "",
+            note: sanitizzaTermineBiomeccanica(parsed.note || ""),
+            raw_text: sanitizzaTermineBiomeccanica(rawText) || "",
           };
         }
       }
     } catch (err) {
-      console.warn("Chiamata Gemini API per voice workout logger fallita, passaggio al fallback euristico:", err);
+      console.warn("Chiamata Gemini fallita, utilizzo motore semantico deterministico:", err);
     }
   }
 
-  // Fallback Deterministico di Verità Operativa
+  // Motore Semantico Deterministico NLP di Verità Operativa
   const sourceText = input.text || "";
   return parseWorkoutSetDeterministic(sourceText);
 }

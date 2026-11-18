@@ -1255,8 +1255,9 @@ export default function EsercizioDetailPage() {
                     >
                       <Mic className="size-4 text-[#e3ff00]" />
                       <span>Voice Logging AI</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1c00ff] text-white uppercase tracking-wider font-extrabold">
-                        3 sec
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#1c00ff] text-white uppercase tracking-wider font-extrabold flex items-center gap-1">
+                        <Sparkles className="size-2.5 text-[#e3ff00]" />
+                        <span>Dettatura Libera</span>
                       </span>
                     </button>
                   </div>
