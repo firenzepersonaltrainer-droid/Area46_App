@@ -17,10 +17,39 @@ import {
   DialogTitle,
 } from "./Dialog";
 
-export function ApprofondimentoProCiclo5() {
+export interface ApprofondimentoProCiclo5Props {
+  inHome?: boolean;
+  onOpen?: () => void;
+  onDismiss?: () => void;
+  apertureCount?: number;
+  maxAperture?: number;
+}
+
+export function ApprofondimentoProCiclo5({
+  inHome = false,
+  onOpen,
+  onDismiss,
+  apertureCount = 0,
+  maxAperture = 3,
+}: ApprofondimentoProCiclo5Props = {}) {
   const [aperto, setAperto] = useState(false);
   const [modalAperta, setModalAperta] = useState(false);
   const barraRef = useRef<HTMLDivElement>(null);
+
+  function handleToggle() {
+    setAperto((prev) => {
+      const next = !prev;
+      if (next && onOpen) {
+        onOpen();
+      }
+      return next;
+    });
+  }
+
+  function handleApriModal() {
+    if (onOpen) onOpen();
+    setModalAperta(true);
+  }
 
   function chiudiTesto() {
     setAperto(false);
@@ -34,13 +63,13 @@ export function ApprofondimentoProCiclo5() {
       {/* BARRA MENU PRINCIPALE - STESSA DIMENSIONE DEI MENU CICLI, COLORI BRAND E SOLO DICITURA "APPROFONDIMENTI" */}
       <div
         ref={barraRef}
-        onClick={() => setAperto((prev) => !prev)}
+        onClick={handleToggle}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            setAperto((prev) => !prev);
+            handleToggle();
           }
         }}
         className="rounded-xl px-4 py-2.5 mb-3 flex items-center justify-between shadow-xs cursor-pointer select-none transition-all hover:brightness-105 active:scale-[0.995]"
@@ -59,6 +88,11 @@ export function ApprofondimentoProCiclo5() {
           <span className="text-sm font-black uppercase tracking-wider text-[#1c00ff]">
             Approfondimenti
           </span>
+          {inHome && (
+            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#1c00ff] text-[#e3ff00] hidden xs:inline">
+              Post Ciclo 5
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -78,7 +112,7 @@ export function ApprofondimentoProCiclo5() {
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setModalAperta(true);
+                handleApriModal();
               }}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#1c00ff] bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors cursor-pointer"
             >
@@ -91,16 +125,33 @@ export function ApprofondimentoProCiclo5() {
 
           {/* COMANDO AL TERMINE PER CHIUDERE IL TESTO E TORNARE ALLA SOLA BARRA MENU */}
           <div className="mt-8 pt-5 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={chiudiTesto}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-zinc-950 bg-[#e3ff00] hover:bg-[#d6f000] border border-[#1c00ff] shadow-xs transition-all active:scale-[0.99] cursor-pointer"
-            >
-              <ChevronUp className="size-4 text-[#1c00ff] stroke-[2.5]" />
-              Chiudi Approfondimenti
-            </button>
-            <span className="text-xs text-zinc-500 font-medium">
-              Torna alla sola barra menù
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                type="button"
+                onClick={chiudiTesto}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-zinc-950 bg-[#e3ff00] hover:bg-[#d6f000] border border-[#1c00ff] shadow-xs transition-all active:scale-[0.99] cursor-pointer"
+              >
+                <ChevronUp className="size-4 text-[#1c00ff] stroke-[2.5]" />
+                Chiudi Approfondimenti
+              </button>
+              {inHome && onDismiss && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDismiss();
+                  }}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-zinc-600 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200 border border-zinc-300 transition-all cursor-pointer"
+                  title="Non mostrare più sotto il prossimo allenamento. Resta sempre visibile nella scheda Cicli dell'Archivio."
+                >
+                  Non mostrare più in Home
+                </button>
+              )}
+            </div>
+            <span className="text-xs text-zinc-500 font-medium text-center sm:text-right">
+              {inHome
+                ? "Resta sempre consultabile nella scheda Cicli dell'Archivio"
+                : "Torna alla sola barra menù"}
             </span>
           </div>
         </div>

@@ -36,6 +36,7 @@ import {
 import { Button } from "../components/Button";
 import { toast } from "../components/Toast";
 import { ApprofondimentoProCiclo5 } from "../components/ApprofondimentoProCiclo5";
+import { useApprofondimentoProCiclo5Visibility } from "../lib/useApprofondimentiVisibility";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { useLivelloMemoria } from "../lib/useLivelloMemoria";
 import { useCurrentUser, getActiveUserId } from "../lib/useUser";
@@ -854,6 +855,20 @@ export default function AllenamentiPage() {
   const isApprofondimenti = livello === "Approfondimenti ed extra";
   const archivioHref = livello ? `/archivio?livello=${encodeURIComponent(livello)}` : "/archivio";
 
+  const {
+    visibileInHome: visibileApprofondimentoProCiclo5,
+    registraApertura: registraAperturaApprofondimentoProCiclo5,
+    nascondiDaHome: nascondiApprofondimentoProCiclo5,
+    aperture: apertureApprofondimentoProCiclo5,
+  } = useApprofondimentoProCiclo5Visibility({
+    userId: user?.id,
+    livello,
+    giorni: lista,
+    statoMap,
+    correnteItem,
+    maxAperture: 3,
+  });
+
   React.useEffect(() => {
     if (haNuoviApprofondimenti && ultimoVideoNuovo) {
       const key = "notif_approfondimento_" + ultimoVideoNuovo.nome_esercizio;
@@ -1061,10 +1076,15 @@ export default function AllenamentiPage() {
                 </div>
               </div>
             )}
-            {/* BARRA APPROFONDIMENTI METODOLOGICI LIVELLO PRO */}
-            {((livello || "").trim().toUpperCase() === "PRO" ||
-              (correnteItem?.item.livello || "").trim().toUpperCase() === "PRO") && (
-              <ApprofondimentoProCiclo5 />
+            {/* BARRA APPROFONDIMENTI METODOLOGICI LIVELLO PRO (mostrato sotto il prossimo allenamento finché non completato il ciclo 6 o dopo 3 aperture) */}
+            {visibileApprofondimentoProCiclo5 && (
+              <ApprofondimentoProCiclo5
+                inHome={true}
+                onOpen={registraAperturaApprofondimentoProCiclo5}
+                onDismiss={nascondiApprofondimentoProCiclo5}
+                apertureCount={apertureApprofondimentoProCiclo5}
+                maxAperture={3}
+              />
             )}
             {(() => {
               const recenti = lista.filter((item) => { const lv = livello || item.livello || ""; const s = statoMap.get(statoKey(lv, item.giorno_num)); return s === "in_corso" || s === "completato"; }).slice(-4).reverse();
