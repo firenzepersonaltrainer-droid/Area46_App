@@ -1,7 +1,7 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-11-17T17:28:31.093216",
-  "total_rules": 12,
+  "updated_at": "2026-11-18T16:20:00Z",
+  "total_rules": 13,
   "rules": [
     {
       "id": "RULE_006_CLINICAL_JOINT_SHIELDING",
@@ -343,6 +343,36 @@
       "source": "Correzione diretta Stefano Tronconi (Prometheo)",
       "created_at": "2026-11-17T17:19:47.247782",
       "updated_at": "2026-11-17T17:19:47.247782"
+    },
+    {
+      "id": "RULE_013_DESIGN_TEMPORAL_ERGONOMICS_AND_SYMMETRY",
+      "domain": "design",
+      "title": "Ergonomia Temporale dei Controlli & Simmetria Orizzontale (UI Allenamento & App)",
+      "rule_summary": "I controlli di completamento, feedback e chiusura sessione devono risiedere a fine schermata (dopo gli esercizi), mai all inizio. Header e badge devono stare su una sola linea orizzontale compatta. Gli elementi devono occupare la larghezza in modo simmetrico e bilanciato, vietati allineamenti a sinistra con spazio vuoto a destra.",
+      "context_applicability": {
+        "audiences_active": [
+          "atleti",
+          "coach",
+          "manager",
+          "sviluppatori_frontend"
+        ],
+        "environments_active": [
+          "app_mobile",
+          "scheda_allenamento",
+          "giorno_detail",
+          "cruscotti_ui"
+        ],
+        "rationale": "Evitare il forte spreco di spazio verticale iniziale e consentire all atleta di visualizzare subito gli esercizi. Rispettare la sequenza temporale reale dell allenamento (il completamento e il feedback avvengono alla fine). Garantire armonia visiva e simmetria grafica su tutta la larghezza dello schermo."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": "Tutto e contesto: su form brevi a pagina singola senza scrolling i pulsanti possono seguire il flusso naturale, ma nelle schede di lavoro il completamento va sempre alla fine del lavoro."
+      },
+      "core_philosophy": "Ergonomia temporale (prima il lavoro, poi la chiusura), de-cluttering radicale, recupero spazio verticale e simmetria bilanciata.",
+      "enforcement_level": "STRICT_FILTER",
+      "source": "L Artista & Direttiva permanente Stefano Tronconi (18/11/2026)",
+      "created_at": "2026-11-18T16:20:00Z",
+      "updated_at": "2026-11-18T16:20:00Z"
     }
   ]
 }

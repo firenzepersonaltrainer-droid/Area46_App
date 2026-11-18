@@ -734,20 +734,26 @@ export default function GiornoDetailPage() {
         </button>
       </div>
 
-      {/* Header Info Giorno (Elegante anche per la stampa) */}
-      <div className="rounded-2xl bg-white border border-zinc-200 p-4 shadow-xs relative overflow-hidden print:border-black print:shadow-none">
+      {/* Header Info Giorno compatto in unica linea (Massimo recupero spazio verticale e simmetria orizzontale) */}
+      <div className="rounded-2xl bg-white border border-zinc-200 px-4 py-2.5 shadow-xs relative overflow-hidden print:border-black print:shadow-none">
         <div
           className="absolute top-0 left-0 bottom-0 w-1.5 print:hidden"
           style={{ background: isCicloScarico ? "#3b82f6" : "#1c00ff" }}
         />
-        <div className="pl-1">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-black tracking-tight text-zinc-900">{giornoLabel}</h1>
-            <span className="hidden print:inline-block text-xs font-black uppercase text-zinc-600">
-              Area46 Training Lab Handout
-            </span>
+        <div className="pl-1 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <h1 className="text-lg sm:text-xl font-black tracking-tight text-zinc-900 truncate">
+              {giornoLabel}
+            </h1>
+            {isCompletato && (
+              <span className="hidden sm:inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-black text-emerald-700 bg-emerald-100 border border-emerald-300 shrink-0">
+                <CheckCircle2 className="size-3" />
+                Completato
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-2 mt-2 flex-wrap">
+
+          <div className="flex items-center gap-2 shrink-0">
             {livello && (
               <span
                 className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-black uppercase tracking-wider print:border print:border-black print:bg-white print:text-black"
@@ -764,13 +770,16 @@ export default function GiornoDetailPage() {
                 {cicloLabel}
               </span>
             )}
+            <span className="hidden print:inline-block text-xs font-black uppercase text-zinc-600">
+              Area46 Handout
+            </span>
           </div>
         </div>
       </div>
 
       {/* CARD CONSIGLIO DEL COACH STEFANO PER QUESTA SEDUTA (Se presente) */}
       {coachAdvice && (
-        <div className="rounded-2xl bg-[#09090b] border-2 border-[#1c00ff] p-4 text-white shadow-xl space-y-2 print:hidden animate-in fade-in">
+        <div className="rounded-2xl bg-[#09090b] border-2 border-[#1c00ff] p-3.5 sm:p-4 text-white shadow-xl space-y-2 print:hidden animate-in fade-in">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2">
               <Sparkles className="size-4 text-[#e3ff00]" />
@@ -808,81 +817,7 @@ export default function GiornoDetailPage() {
         </div>
       )}
 
-      {/* CONTROLLO STATO ALLENAMENTO & PULSANTE FEEDBACK POST-SEDUTA (Nascosto in Stampa) */}
-      <div
-        className="rounded-2xl border-2 bg-white p-4 shadow-xs transition-all print:hidden"
-        style={{
-          borderColor: isCompletato ? "#34c759" : statoCorrente === "in_corso" ? "#ff9500" : "#e4e4e7",
-        }}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          {/* Casella di Spunta Principale */}
-          <button
-            type="button"
-            onClick={handleToggle}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-black text-sm transition-all cursor-pointer shadow-xs select-none ${
-              isCompletato
-                ? "bg-[#e3ff00] text-zinc-950 border-2 border-zinc-950 hover:bg-[#d6f000]"
-                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-2 border-zinc-300"
-            }`}
-            title={isCompletato ? "Clicca per deselezionare l'allenamento" : "Clicca per segnare come completato"}
-          >
-            <span
-              className={`size-6 rounded-lg flex items-center justify-center border-2 transition-all ${
-                isCompletato
-                  ? "bg-zinc-950 border-zinc-950 text-[#e3ff00]"
-                  : "bg-white border-zinc-400 text-transparent"
-              }`}
-            >
-              {isCompletato ? <CheckSquare className="size-4.5 stroke-[3]" /> : <Square className="size-4.5" />}
-            </span>
-            <span>{isCompletato ? "Allenamento Completato" : "Segna come completato"}</span>
-          </button>
-
-          {/* Pulsante Rapido Feedback Seduta Post-Workout */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              type="button"
-              onClick={() => setFeedbackOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-[#1c00ff] text-white hover:bg-[#1600cc] shadow-xs transition-colors cursor-pointer"
-            >
-              <MessageSquare className="size-3.5 text-[#e3ff00]" />
-              <span>Feedback & RPE</span>
-            </button>
-
-            {/* Selettore 3 Stati Rapido */}
-            <div className="flex items-center gap-1">
-              {[
-                { id: "non_iniziato" as StatoAllenamento, label: "Da svolgere", color: "#ff3b30", bg: "rgba(255,59,48,0.10)", icon: Circle },
-                { id: "in_corso" as StatoAllenamento, label: "In corso", color: "#ff9500", bg: "rgba(255,149,0,0.12)", icon: Clock },
-              ].map((cfg) => {
-                const attivo = statoCorrente === cfg.id;
-                const Icon = cfg.icon;
-                return (
-                  <button
-                    key={cfg.id}
-                    type="button"
-                    onClick={() => handleSelectStato(cfg.id)}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
-                      attivo ? "ring-2 ring-offset-1 font-black" : "opacity-70 hover:opacity-100"
-                    }`}
-                    style={{
-                      backgroundColor: attivo ? cfg.bg : "#ffffff",
-                      borderColor: cfg.color,
-                      color: cfg.color,
-                    }}
-                  >
-                    <Icon className="size-3" />
-                    {cfg.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Lista Blocchi Esercizi */}
+      {/* Lista Blocchi Esercizi (In primo piano per azzerare lo scorrimento e lo spreco verticale) */}
       {isLoading ? (
         <div className="space-y-3 print:hidden">
           {[...Array(5)].map((_, i) => (
@@ -941,6 +876,81 @@ export default function GiornoDetailPage() {
           )}
         </div>
       )}
+
+      {/* CONTROLLO STATO ALLENAMENTO & PULSANTE FEEDBACK POST-SEDUTA A FINE SCHERMATA (Ergonomia di chiusura seduta) */}
+      <div
+        className="rounded-2xl border-2 bg-white p-3.5 sm:p-4 shadow-sm transition-all print:hidden"
+        style={{
+          borderColor: isCompletato ? "#34c759" : statoCorrente === "in_corso" ? "#ff9500" : "#e4e4e7",
+        }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Tasto Principale di Completamento Seduta */}
+          <button
+            type="button"
+            onClick={handleToggle}
+            className={`flex items-center justify-center sm:justify-start gap-2.5 px-4 py-2.5 rounded-xl font-black text-sm transition-all cursor-pointer shadow-xs select-none w-full sm:w-auto ${
+              isCompletato
+                ? "bg-[#e3ff00] text-zinc-950 border-2 border-zinc-950 hover:bg-[#d6f000]"
+                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-2 border-zinc-300"
+            }`}
+            title={isCompletato ? "Clicca per deselezionare l'allenamento" : "Clicca per segnare come completato"}
+          >
+            <span
+              className={`size-5 rounded-md flex items-center justify-center border-2 transition-all ${
+                isCompletato
+                  ? "bg-zinc-950 border-zinc-950 text-[#e3ff00]"
+                  : "bg-white border-zinc-400 text-transparent"
+              }`}
+            >
+              {isCompletato ? <CheckSquare className="size-3.5 stroke-[3]" /> : <Square className="size-3.5" />}
+            </span>
+            <span>{isCompletato ? "Allenamento Completato" : "Segna come completato"}</span>
+          </button>
+
+          {/* Controlli Secondari: Feedback & RPE + Selettore di Stato (Simmetria orizzontale, 1 linea su desktop, 2ª linea su mobile) */}
+          <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
+            {/* Pulsante Rapido Feedback Seduta Post-Workout */}
+            <button
+              type="button"
+              onClick={() => setFeedbackOpen(true)}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-[#1c00ff] text-white hover:bg-[#1600cc] shadow-xs transition-colors cursor-pointer flex-1 sm:flex-none"
+            >
+              <MessageSquare className="size-3.5 text-[#e3ff00]" />
+              <span>Feedback & RPE</span>
+            </button>
+
+            {/* Selettore Rapido Stati */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {[
+                { id: "non_iniziato" as StatoAllenamento, label: "Da svolgere", color: "#ff3b30", bg: "rgba(255,59,48,0.10)", icon: Circle },
+                { id: "in_corso" as StatoAllenamento, label: "In corso", color: "#ff9500", bg: "rgba(255,149,0,0.12)", icon: Clock },
+              ].map((cfg) => {
+                const attivo = statoCorrente === cfg.id;
+                const Icon = cfg.icon;
+                return (
+                  <button
+                    key={cfg.id}
+                    type="button"
+                    onClick={() => handleSelectStato(cfg.id)}
+                    className={`inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      attivo ? "ring-2 ring-offset-1 font-black" : "opacity-75 hover:opacity-100"
+                    }`}
+                    style={{
+                      backgroundColor: attivo ? cfg.bg : "#ffffff",
+                      borderColor: cfg.color,
+                      color: cfg.color,
+                    }}
+                  >
+                    <Icon className="size-3" />
+                    <span>{cfg.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Modale Video Clip In-Place (Zero Redirect a YouTube) */}
       <VideoClipModal

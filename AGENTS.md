@@ -135,7 +135,7 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
    - Nelle note visibili all'amatore, divieto assoluto della parola "biomeccanica" e di gergo astratto/respingente. Sostituire con espressioni concrete: `"geometria di movimento"`, `"pattern motorio"` o `"economia del gesto"`.
 11. **COMBO Landmine Split Snatch High Hand Switch T/GO (ID 128)**:
    - Esercizio ad alto RPE con scambio aereo continuo alternando dx e sx in Touch & Go. Prescrivere a volume ridotto cumulativo alternato continuo (es. `4 X 8` in Ciclo 7, `4 X 6` in Ciclo 8) con recupero standard a fine serie (mai `RBS`). È fatto divieto assoluto di notazione con `+` (mai `4x6+6` o `4x5+5`).
-
-
-
-
+12. **ERGONOMIA TEMPORALE DEI CONTROLLI & SIMMETRIA GRAFICA (L'ARTISTA - 18/11/2026)**:
+   - *Header Compatto Monoriga:* Titoli di seduta ("N allenamento A/B") ed etichette (livello, ciclo, eventuale micro-badge di stato completato) devono risiedere su una **singola linea orizzontale** compatta (~40-44px di altezza), per eliminare qualsiasi spreco di spazio verticale e portare subito in evidenza gli esercizi.
+   - *Ergonomia Temporale di Chiusura:* I controlli di completamento ("Segna come completato", selettori di stato "Da svolgere"/"In corso" e "Feedback & RPE") appartengono categoricamente al **fondo della schermata**, DOPO la lista dei blocchi esercizi. L'atleta apre la schermata per allenarsi, non per chiudere una sessione non ancora svolta.
+   - *Simmetria Orizzontale & Divieto Asimmetrie Pigre:* Vietato ammucchiare tutti gli elementi a sinistra lasciando il lato destro dello schermo sprecato e vuoto. Tutti i box devono sfruttare la larghezza in modo armonioso con `justify-between`, centratura simmetrica o distribuzione bilanciata su 1 o al massimo 2 linee compatte.

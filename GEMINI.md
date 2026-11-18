@@ -35,6 +35,7 @@ Regole Tassative:
     5. Principio di Varietà (alternare ciclicamente le modalità per creare nuovi stimoli ed evitare l'adattamento);
     6. Caratteristiche intrinseche, individuali, posturali, caratteriali, attitudinali e transitorie del soggetto.
     Questo assunto è vincolante come fondamento metodologico per TUTTI gli agenti (presenti e futuri) che si occupano di programmazione di allenamento ed esercizio.
-
-
-
+13. ERGONOMIA TEMPORALE DEI CONTROLLI & SIMMETRIA GRAFICA (L'ARTISTA - 18/11/2026):
+    - *Header Compatto Monoriga:* Titoli di seduta ed etichette (livello, ciclo, badge completato) devono risiedere su una singola linea orizzontale compatta (~40-44px), per azzerare lo spreco di spazio verticale e mostrare immediatamente gli esercizi.
+    - *Ergonomia Temporale di Chiusura:* I controlli di completamento ("Segna come completato", selettori stato "Da svolgere"/"In corso" e "Feedback & RPE") appartengono categoricamente al fondo della schermata, DOPO i blocchi esercizi. L'atleta apre la schermata per allenarsi, non per chiudere in anticipo una seduta da compiere.
+    - *Simmetria Orizzontale & Divieto Asimmetrie Pigre:* Vietato ammassare elementi a sinistra lasciando il lato destro dello schermo sprecato e vuoto. Tutti i box devono sfruttare la larghezza in modo armonioso con `justify-between`, centratura simmetrica o distribuzione bilanciata su 1 o al massimo 2 linee compatte.
