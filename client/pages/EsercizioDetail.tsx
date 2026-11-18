@@ -198,6 +198,110 @@ export default function EsercizioDetailPage() {
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [voiceSetIndex, setVoiceSetIndex] = useState<number>(0);
 
+  // 1. Query Esercizi della Seduta (dichiarati all'inizio per evitare TDZ)
+  const { data: esercizi = [] } = useQuery<EsercizioScheda[]>({
+    queryKey: ["allenamento-dettaglio", livello, giorno],
+    queryFn: () =>
+      fetch(`/app-api/allenamenti/${encodeURIComponent(livello!)}/${giorno}`).then((r) => r.json()),
+    enabled: !!livello && !!giorno,
+  });
+  const esercizio = Array.isArray(esercizi)
+    ? esercizi.find((e) => e.id_esercizio === idEsercizio)
+    : undefined;
+
+  const currentIndex = Array.isArray(esercizi)
+    ? esercizi.findIndex((e) => e.id_esercizio === idEsercizio)
+    : -1;
+  const prevEsercizio =
+    currentIndex > 0 && Array.isArray(esercizi) ? esercizi[currentIndex - 1] : null;
+  const nextEsercizio =
+    currentIndex >= 0 && Array.isArray(esercizi) && currentIndex < esercizi.length - 1
+      ? esercizi[currentIndex + 1]
+      : null;
+
+  const { data: catalogo = [] } = useQuery<any[]>({
+    queryKey: ["catalogo-esercizi"],
+    queryFn: () =>
+      fetch("/app-api/esercizi")
+        .then((r) => (r.ok ? r.json() : []))
+        .catch(() => []),
+    staleTime: 1000 * 60 * 10,
+  });
+  const catalogoItem = Array.isArray(catalogo)
+    ? catalogo.find(
+        (c) => String(c.id_esercizio).padStart(3, "0") === String(idEsercizio).padStart(3, "0")
+      )
+    : undefined;
+  const effectiveVideoUrl = esercizio?.link_video || catalogoItem?.link_video || null;
+  const videoId = effectiveVideoUrl ? getYouTubeId(effectiveVideoUrl) : null;
+
+  // 2. Query Storico Esercizio
+  const { data: rawStoricoRows = [], isLoading: storicoLoading } = useQuery<any[]>({
+    queryKey: ["diario-esercizio", idEsercizio],
+    queryFn: async () => {
+      const storedId = getActiveUserId();
+      const headers: Record<string, string> = {};
+      if (storedId) headers["x-area46-user"] = storedId;
+      const res = await fetch(`/app-api/diario/esercizio/${encodeURIComponent(idEsercizio!)}`, {
+        headers,
+        credentials: "include",
+      });
+      return res.ok ? res.json() : [];
+    },
+    enabled: !!idEsercizio,
+  });
+
+  const storicoRows = useMemo(() => {
+    if (!Array.isArray(rawStoricoRows)) return [];
+    return [...rawStoricoRows].sort(
+      (a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime()
+    );
+  }, [rawStoricoRows]);
+
+  // Estrae il carico dell'ultima sessione registrata dall'atleta per questo esercizio
+  const ultimoCaricoStorico = useMemo(() => {
+    if (!storicoRows || storicoRows.length === 0) return null;
+    for (const r of storicoRows) {
+      const setsArr: any[] = r.sets_json ?? [];
+      for (const s of setsArr) {
+        if (s.carico_kg !== undefined && s.carico_kg !== null && !isNaN(parseFloat(String(s.carico_kg)))) {
+          return String(s.carico_kg);
+        }
+      }
+      if (r.carico_kg !== undefined && r.carico_kg !== null && !isNaN(parseFloat(String(r.carico_kg)))) {
+        return String(r.carico_kg);
+      }
+    }
+    return null;
+  }, [storicoRows]);
+
+  const { bestRowId, lowestRowId } = useMemo(() => {
+    if (storicoRows.length < 2) return { bestRowId: null, lowestRowId: null };
+    const scored = storicoRows.map((r: any) => {
+      const sets: any[] = r.sets_json ?? [];
+      const carichi = sets.map((s: any) => parseFloat(s.carico_kg)).filter((k) => !isNaN(k) && k > 0);
+      if (carichi.length === 0 && r.carico_kg != null && !isNaN(parseFloat(r.carico_kg)) && parseFloat(r.carico_kg) > 0) {
+        carichi.push(parseFloat(r.carico_kg));
+      }
+      const maxK = carichi.length > 0 ? Math.max(...carichi) : 0;
+      const vol = sets.reduce((acc: number, s: any) => acc + (parseInt(s.ripetizioni, 10) || 0), 0) || (r.ripetizioni ? parseInt(r.ripetizioni, 10) : 0);
+      const score = maxK > 0 ? maxK * 1000 + vol : vol;
+      return { id: r.id, score };
+    }).filter((x) => x.score > 0);
+
+    if (scored.length < 2) return { bestRowId: null, lowestRowId: null };
+    let maxItem = scored[0];
+    let minItem = scored[0];
+    for (const item of scored) {
+      if (item.score > maxItem.score) maxItem = item;
+      if (item.score < minItem.score) minItem = item;
+    }
+    if (maxItem.id === minItem.id || maxItem.score === minItem.score) {
+      return { bestRowId: null, lowestRowId: null };
+    }
+    return { bestRowId: maxItem.id, lowestRowId: minItem.id };
+  }, [storicoRows]);
+
   // Chiave bozza per Jump Set e navigazione tra esercizi diversi
   const draftKey = `${livello || ""}_${giorno || ""}_${idEsercizio || ""}`;
   const loadedKeyRef = useRef<string | null>(null);
@@ -430,101 +534,6 @@ export default function EsercizioDetailPage() {
       setEditSaving(false);
     }
   }
-
-  const { data: esercizi = [] } = useQuery<EsercizioScheda[]>({
-    queryKey: ["allenamento-dettaglio", livello, giorno],
-    queryFn: () =>
-      fetch(`/app-api/allenamenti/${encodeURIComponent(livello!)}/${giorno}`).then((r) => r.json()),
-    enabled: !!livello && !!giorno,
-  });
-  const esercizio = esercizi.find((e) => e.id_esercizio === idEsercizio);
-
-  const currentIndex = esercizi.findIndex((e) => e.id_esercizio === idEsercizio);
-  const prevEsercizio =
-    currentIndex > 0 ? esercizi[currentIndex - 1] : null;
-  const nextEsercizio =
-    currentIndex >= 0 && currentIndex < esercizi.length - 1
-      ? esercizi[currentIndex + 1]
-      : null;
-
-  const { data: catalogo = [] } = useQuery<any[]>({
-    queryKey: ["catalogo-esercizi"],
-    queryFn: () =>
-      fetch("/app-api/esercizi")
-        .then((r) => (r.ok ? r.json() : []))
-        .catch(() => []),
-    staleTime: 1000 * 60 * 10,
-  });
-  const catalogoItem = catalogo.find(
-    (c) => String(c.id_esercizio).padStart(3, "0") === String(idEsercizio).padStart(3, "0")
-  );
-  const effectiveVideoUrl = esercizio?.link_video || catalogoItem?.link_video || null;
-  const videoId = effectiveVideoUrl ? getYouTubeId(effectiveVideoUrl) : null;
-
-  const { data: rawStoricoRows = [], isLoading: storicoLoading } = useQuery<any[]>({
-    queryKey: ["diario-esercizio", idEsercizio],
-    queryFn: async () => {
-      const storedId = getActiveUserId();
-      const headers: Record<string, string> = {};
-      if (storedId) headers["x-area46-user"] = storedId;
-      const res = await fetch(`/app-api/diario/esercizio/${encodeURIComponent(idEsercizio!)}`, {
-        headers,
-        credentials: "include",
-      });
-      return res.ok ? res.json() : [];
-    },
-    enabled: !!idEsercizio,
-  });
-
-  const storicoRows = useMemo(() => {
-    return [...rawStoricoRows].sort(
-      (a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime()
-    );
-  }, [rawStoricoRows]);
-
-  // Estrae il carico dell'ultima sessione registrata dall'atleta per questo esercizio
-  const ultimoCaricoStorico = useMemo(() => {
-    if (!storicoRows || storicoRows.length === 0) return null;
-    for (const r of storicoRows) {
-      const setsArr: any[] = r.sets_json ?? [];
-      for (const s of setsArr) {
-        if (s.carico_kg !== undefined && s.carico_kg !== null && !isNaN(parseFloat(String(s.carico_kg)))) {
-          return String(s.carico_kg);
-        }
-      }
-      if (r.carico_kg !== undefined && r.carico_kg !== null && !isNaN(parseFloat(String(r.carico_kg)))) {
-        return String(r.carico_kg);
-      }
-    }
-    return null;
-  }, [storicoRows]);
-
-  const { bestRowId, lowestRowId } = useMemo(() => {
-    if (storicoRows.length < 2) return { bestRowId: null, lowestRowId: null };
-    const scored = storicoRows.map((r: any) => {
-      const sets: any[] = r.sets_json ?? [];
-      const carichi = sets.map((s: any) => parseFloat(s.carico_kg)).filter((k) => !isNaN(k) && k > 0);
-      if (carichi.length === 0 && r.carico_kg != null && !isNaN(parseFloat(r.carico_kg)) && parseFloat(r.carico_kg) > 0) {
-        carichi.push(parseFloat(r.carico_kg));
-      }
-      const maxK = carichi.length > 0 ? Math.max(...carichi) : 0;
-      const vol = sets.reduce((acc: number, s: any) => acc + (parseInt(s.ripetizioni, 10) || 0), 0) || (r.ripetizioni ? parseInt(r.ripetizioni, 10) : 0);
-      const score = maxK > 0 ? maxK * 1000 + vol : vol;
-      return { id: r.id, score };
-    }).filter((x) => x.score > 0);
-
-    if (scored.length < 2) return { bestRowId: null, lowestRowId: null };
-    let maxItem = scored[0];
-    let minItem = scored[0];
-    for (const item of scored) {
-      if (item.score > maxItem.score) maxItem = item;
-      if (item.score < minItem.score) minItem = item;
-    }
-    if (maxItem.id === minItem.id || maxItem.score === minItem.score) {
-      return { bestRowId: null, lowestRowId: null };
-    }
-    return { bestRowId: maxItem.id, lowestRowId: minItem.id };
-  }, [storicoRows]);
 
   async function handleSalva() {
     if (!esercizio) return;
