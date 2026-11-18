@@ -22,6 +22,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Lightbulb,
+  ArrowLeft,
 } from "lucide-react";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { toast } from "sonner";
@@ -704,40 +705,48 @@ export default function GiornoDetailPage() {
     }
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(`/?livello=${encodeURIComponent(livello || "")}`);
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb e Azioni Handout (Nascosto in Stampa) */}
-      <div className="flex items-center justify-between gap-2 flex-wrap print:hidden">
-        <nav className="flex items-center gap-1 text-sm text-secondary flex-wrap">
-          <Link to="/" className="hover:text-primary">
-            Allenamenti
-          </Link>
-          <Sep className="size-3.5" />
-          <span className="text-primary font-medium">
-            {cicloLabel ? `${cicloLabel} — ${giornoLabel}` : giornoLabel}
-          </span>
-        </nav>
+      {/* Barra Superiore: Freccia Torna al Ciclo a Sinistra & Tasto Stampa Scheda A4 a Destra (Nascosta in Stampa) */}
+      <div className="flex items-center justify-between gap-2 print:hidden">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-100 text-xs font-black text-zinc-900 shadow-xs transition-colors cursor-pointer"
+          title="Torna alla schermata del ciclo"
+        >
+          <ArrowLeft className="size-4 text-zinc-800" />
+          <span>Torna al Ciclo</span>
+        </button>
 
-        {/* Pulsante Stampa Handout / Esporta PDF */}
+        {/* Pulsante Stampa Scheda A4 (Sheet di Allenamento da portare in sala) */}
         <button
           type="button"
           onClick={handlePrint}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-50 text-xs font-bold text-zinc-800 shadow-xs transition-colors cursor-pointer"
-          title="Stampa la scheda allenamento o salvala in PDF"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-50 text-xs font-black text-zinc-900 shadow-xs transition-colors cursor-pointer"
+          title="Stampa foglio di lavoro A4 con tabella esercizi"
         >
-          <Printer className="size-3.5 text-zinc-600" />
-          <span>Stampa Handout</span>
+          <Printer className="size-3.5 text-zinc-700" />
+          <span>Stampa Scheda A4</span>
         </button>
       </div>
 
       {/* Header Info Giorno compatto in unica linea (Massimo recupero spazio verticale e simmetria orizzontale) */}
-      <div className="rounded-2xl bg-white border border-zinc-200 px-4 py-2.5 shadow-xs relative overflow-hidden print:border-black print:shadow-none">
+      <div className="rounded-2xl bg-white border border-zinc-200 px-4 py-2.5 shadow-xs relative overflow-hidden print:hidden">
         <div
-          className="absolute top-0 left-0 bottom-0 w-1.5 print:hidden"
+          className="absolute top-0 left-0 bottom-0 w-1.5"
           style={{ background: isCicloScarico ? "#3b82f6" : "#1c00ff" }}
         />
         <div className="pl-1 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
@@ -756,7 +765,7 @@ export default function GiornoDetailPage() {
           <div className="flex items-center gap-2 shrink-0">
             {livello && (
               <span
-                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-black uppercase tracking-wider print:border print:border-black print:bg-white print:text-black"
+                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-black uppercase tracking-wider"
                 style={{ background: "#09090b", color: "#ffffff" }}
               >
                 {livello}
@@ -764,15 +773,12 @@ export default function GiornoDetailPage() {
             )}
             {cicloLabel && (
               <span
-                className="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-black uppercase tracking-wider print:border print:border-black print:bg-zinc-100 print:text-black"
+                className="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-black uppercase tracking-wider"
                 style={{ background: isCicloScarico ? "#3b82f6" : "#1c00ff", color: "#e3ff00" }}
               >
                 {cicloLabel}
               </span>
             )}
-            <span className="hidden print:inline-block text-xs font-black uppercase text-zinc-600">
-              Area46 Handout
-            </span>
           </div>
         </div>
       </div>
@@ -817,138 +823,239 @@ export default function GiornoDetailPage() {
         </div>
       )}
 
-      {/* Lista Blocchi Esercizi (In primo piano per azzerare lo scorrimento e lo spreco verticale) */}
-      {isLoading ? (
-        <div className="space-y-3 print:hidden">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-200" />
-          ))}
-        </div>
-      ) : blocchi.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-20 text-center">
-          <Dumbbell className="size-10 text-zinc-400" />
-          <p className="text-zinc-500 font-semibold">Nessun esercizio trovato per questo allenamento.</p>
-        </div>
-      ) : (
-        <div className="space-y-3 print:space-y-2">
-          {blocchi.map((blocco) =>
-            blocco.isWod && blocco.esercizi.length > 1 ? (
-              <WodBlocco
-                key={blocco.key}
-                blocco={blocco}
-                livello={livello!}
-                giorno={giorno!}
-                onOpenVideo={(ex) =>
-                  setVideoModal({
-                    open: true,
-                    url: ex.link_video,
-                    nome: ex.nome_esercizio,
-                    cue: ex.cue_esecutiva,
-                    pattern: ex.pattern_motorio,
-                  })
-                }
-              />
-            ) : (
-              <div
-                key={blocco.key}
-                className="rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-xs divide-y divide-zinc-100 print:border-black print:rounded-none"
+      {/* Lista Blocchi Esercizi Web Interattiva (In primo piano, nascosta in stampa per dare spazio al foglio Sheet A4) */}
+      <div className="print:hidden space-y-3">
+        {isLoading ? (
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-200" />
+            ))}
+          </div>
+        ) : blocchi.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 py-20 text-center">
+            <Dumbbell className="size-10 text-zinc-400" />
+            <p className="text-zinc-500 font-semibold">Nessun esercizio trovato per questo allenamento.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {blocchi.map((blocco) =>
+              blocco.isWod && blocco.esercizi.length > 1 ? (
+                <WodBlocco
+                  key={blocco.key}
+                  blocco={blocco}
+                  livello={livello!}
+                  giorno={giorno!}
+                  onOpenVideo={(ex) =>
+                    setVideoModal({
+                      open: true,
+                      url: ex.link_video,
+                      nome: ex.nome_esercizio,
+                      cue: ex.cue_esecutiva,
+                      pattern: ex.pattern_motorio,
+                    })
+                  }
+                />
+              ) : (
+                <div
+                  key={blocco.key}
+                  className="rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-xs divide-y divide-zinc-100"
+                >
+                  {blocco.esercizi.map((ex) => (
+                    <EsercizioRow
+                      key={ex.id}
+                      ex={ex}
+                      livello={livello!}
+                      giorno={giorno!}
+                      inWod={false}
+                      onOpenVideo={(item) =>
+                        setVideoModal({
+                          open: true,
+                          url: item.link_video,
+                          nome: item.nome_esercizio,
+                          cue: item.cue_esecutiva,
+                          pattern: item.pattern_motorio,
+                        })
+                      }
+                    />
+                  ))}
+                </div>
+              )
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 1. TASTO FEEDBACK SEDUTA & RPE (Fuori dal box delle spunte, allargato a tutto schermo, spessore compatto) */}
+      <div className="print:hidden">
+        <button
+          type="button"
+          onClick={() => setFeedbackOpen(true)}
+          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black bg-[#1c00ff] hover:bg-[#1600cc] text-white shadow-xs transition-all cursor-pointer select-none active:scale-[0.99]"
+        >
+          <MessageSquare className="size-4 text-[#e3ff00]" />
+          <span>Feedback Seduta & RPE</span>
+        </button>
+      </div>
+
+      {/* 2. BOX UNICO CON LE TRE SPUNTE IN UN'UNICA LINEA (Stessa forma e dimensione, colori differenti) */}
+      <div className="rounded-2xl border border-zinc-200 bg-white p-2.5 sm:p-3 shadow-xs print:hidden">
+        <div className="grid grid-cols-3 gap-2 w-full">
+          {[
+            {
+              id: "non_iniziato" as StatoAllenamento,
+              label: "Da svolgere",
+              color: "#ff3b30",
+              bgActive: "rgba(255,59,48,0.12)",
+              borderActive: "#ff3b30",
+              icon: Circle,
+            },
+            {
+              id: "in_corso" as StatoAllenamento,
+              label: "In corso",
+              color: "#ff9500",
+              bgActive: "rgba(255,149,0,0.14)",
+              borderActive: "#ff9500",
+              icon: Clock,
+            },
+            {
+              id: "completato" as StatoAllenamento,
+              label: "Completato",
+              color: "#16a34a",
+              bgActive: "rgba(22,163,74,0.14)",
+              borderActive: "#16a34a",
+              icon: CheckCircle2,
+            },
+          ].map((cfg) => {
+            const attivo = statoCorrente === cfg.id;
+            const Icon = cfg.icon;
+            return (
+              <button
+                key={cfg.id}
+                type="button"
+                onClick={() => handleSelectStato(cfg.id)}
+                className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer select-none border ${
+                  attivo
+                    ? "border-2 font-black shadow-xs"
+                    : "border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-zinc-600"
+                }`}
+                style={{
+                  backgroundColor: attivo ? cfg.bgActive : undefined,
+                  borderColor: attivo ? cfg.borderActive : undefined,
+                  color: attivo ? cfg.color : undefined,
+                }}
               >
-                {blocco.esercizi.map((ex) => (
-                  <EsercizioRow
-                    key={ex.id}
-                    ex={ex}
-                    livello={livello!}
-                    giorno={giorno!}
-                    inWod={false}
-                    onOpenVideo={(item) =>
-                      setVideoModal({
-                        open: true,
-                        url: item.link_video,
-                        nome: item.nome_esercizio,
-                        cue: item.cue_esecutiva,
-                        pattern: item.pattern_motorio,
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            )
-          )}
+                <Icon
+                  className="size-3.5 shrink-0"
+                  style={{ color: attivo ? cfg.color : "#71717a" }}
+                />
+                <span className="truncate">{cfg.label}</span>
+              </button>
+            );
+          })}
         </div>
-      )}
+      </div>
 
-      {/* CONTROLLO STATO ALLENAMENTO & PULSANTE FEEDBACK POST-SEDUTA A FINE SCHERMATA (Ergonomia di chiusura seduta) */}
-      <div
-        className="rounded-2xl border-2 bg-white p-3.5 sm:p-4 shadow-sm transition-all print:hidden"
-        style={{
-          borderColor: isCompletato ? "#34c759" : statoCorrente === "in_corso" ? "#ff9500" : "#e4e4e7",
-        }}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          {/* Tasto Principale di Completamento Seduta */}
-          <button
-            type="button"
-            onClick={handleToggle}
-            className={`flex items-center justify-center sm:justify-start gap-2.5 px-4 py-2.5 rounded-xl font-black text-sm transition-all cursor-pointer shadow-xs select-none w-full sm:w-auto ${
-              isCompletato
-                ? "bg-[#e3ff00] text-zinc-950 border-2 border-zinc-950 hover:bg-[#d6f000]"
-                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-2 border-zinc-300"
-            }`}
-            title={isCompletato ? "Clicca per deselezionare l'allenamento" : "Clicca per segnare come completato"}
-          >
-            <span
-              className={`size-5 rounded-md flex items-center justify-center border-2 transition-all ${
-                isCompletato
-                  ? "bg-zinc-950 border-zinc-950 text-[#e3ff00]"
-                  : "bg-white border-zinc-400 text-transparent"
-              }`}
-            >
-              {isCompletato ? <CheckSquare className="size-3.5 stroke-[3]" /> : <Square className="size-3.5" />}
-            </span>
-            <span>{isCompletato ? "Allenamento Completato" : "Segna come completato"}</span>
-          </button>
-
-          {/* Controlli Secondari: Feedback & RPE + Selettore di Stato (Simmetria orizzontale, 1 linea su desktop, 2ª linea su mobile) */}
-          <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
-            {/* Pulsante Rapido Feedback Seduta Post-Workout */}
-            <button
-              type="button"
-              onClick={() => setFeedbackOpen(true)}
-              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-[#1c00ff] text-white hover:bg-[#1600cc] shadow-xs transition-colors cursor-pointer flex-1 sm:flex-none"
-            >
-              <MessageSquare className="size-3.5 text-[#e3ff00]" />
-              <span>Feedback & RPE</span>
-            </button>
-
-            {/* Selettore Rapido Stati */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              {[
-                { id: "non_iniziato" as StatoAllenamento, label: "Da svolgere", color: "#ff3b30", bg: "rgba(255,59,48,0.10)", icon: Circle },
-                { id: "in_corso" as StatoAllenamento, label: "In corso", color: "#ff9500", bg: "rgba(255,149,0,0.12)", icon: Clock },
-              ].map((cfg) => {
-                const attivo = statoCorrente === cfg.id;
-                const Icon = cfg.icon;
-                return (
-                  <button
-                    key={cfg.id}
-                    type="button"
-                    onClick={() => handleSelectStato(cfg.id)}
-                    className={`inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                      attivo ? "ring-2 ring-offset-1 font-black" : "opacity-75 hover:opacity-100"
-                    }`}
-                    style={{
-                      backgroundColor: attivo ? cfg.bg : "#ffffff",
-                      borderColor: cfg.color,
-                      color: cfg.color,
-                    }}
-                  >
-                    <Icon className="size-3" />
-                    <span>{cfg.label}</span>
-                  </button>
-                );
-              })}
+      {/* 3. FOGLIO TABELLARE SHEET A4 DA STAMPARE (Visibile SOLO in stampa con @media print) */}
+      <div className="hidden print:block w-full font-sans text-black">
+        {/* Intestazione Foglio A4 */}
+        <div className="border-b-2 border-black pb-2.5 mb-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-black tracking-tight uppercase">
+                Area46 Training Lab — Scheda di Allenamento
+              </h1>
+              <p className="text-[11px] text-zinc-700 font-semibold mt-0.5">
+                Foglio di Lavoro da Sala Operativa • Metodo Stefano Tronconi
+              </p>
+            </div>
+            <div className="text-right">
+              <span className="border border-black px-2.5 py-0.5 text-xs font-black uppercase">
+                {livello || "PRO"}
+              </span>
             </div>
           </div>
+
+          <div className="grid grid-cols-4 gap-2 mt-2.5 text-xs border border-black p-2 bg-zinc-50 font-medium">
+            <div>
+              <span className="font-bold">Seduta:</span> {giornoLabel}
+            </div>
+            <div>
+              <span className="font-bold">Ciclo:</span> {cicloLabel || "—"}
+            </div>
+            <div>
+              <span className="font-bold">Atleta:</span> ____________________
+            </div>
+            <div>
+              <span className="font-bold">Data:</span> ____/____/________
+            </div>
+          </div>
+        </div>
+
+        {/* Tabella Esercizi Formato Sheet A4 */}
+        <table className="w-full border-collapse border border-black text-xs">
+          <thead>
+            <tr className="bg-zinc-200 text-black border-b-2 border-black font-black text-left">
+              <th className="border border-black px-2 py-1.5 w-10 text-center">Seq</th>
+              <th className="border border-black px-2 py-1.5">Esercizio & Pattern Motorio</th>
+              <th className="border border-black px-2 py-1.5 w-28">Target Prescritto</th>
+              <th className="border border-black px-2 py-1.5 w-24">Rec / RBS</th>
+              <th className="border border-black px-1 py-1.5 w-14 text-center">Set 1</th>
+              <th className="border border-black px-1 py-1.5 w-14 text-center">Set 2</th>
+              <th className="border border-black px-1 py-1.5 w-14 text-center">Set 3</th>
+              <th className="border border-black px-1 py-1.5 w-14 text-center">Set 4</th>
+              <th className="border border-black px-2 py-1.5 w-24">Note & RPE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {esercizi.map((ex, idx) => {
+              const { rec, rbs } = parseRecuperi(ex);
+              return (
+                <tr key={ex.id || idx} className="border-b border-black">
+                  <td className="border border-black px-1.5 py-2 text-center font-black bg-zinc-50">
+                    {ex.sequenza}
+                  </td>
+                  <td className="border border-black px-2 py-2">
+                    <div className="font-black text-[12px] leading-tight">{ex.nome_esercizio}</div>
+                    {ex.cue_esecutiva && (
+                      <div className="text-[10px] text-zinc-700 italic mt-0.5">
+                        🔑 {ex.cue_esecutiva}
+                      </div>
+                    )}
+                  </td>
+                  <td className="border border-black px-2 py-2 font-bold text-[11px]">
+                    {ex.parametri || "—"}
+                  </td>
+                  <td className="border border-black px-2 py-2 font-medium text-[10px]">
+                    {rec && <div>Rec: {rec}</div>}
+                    {rbs && <div>RBS: {rbs}</div>}
+                    {!rec && !rbs && "—"}
+                  </td>
+                  <td className="border border-black p-0 h-9"></td>
+                  <td className="border border-black p-0 h-9"></td>
+                  <td className="border border-black p-0 h-9"></td>
+                  <td className="border border-black p-0 h-9"></td>
+                  <td className="border border-black px-1.5 py-1 text-[10px] text-zinc-600"></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        {/* Footer Foglio A4 con Sezione Biofeedback Scritto */}
+        <div className="mt-3.5 border border-black p-2.5 bg-zinc-50">
+          <div className="flex items-center justify-between text-xs font-bold border-b border-zinc-300 pb-1.5 mb-1.5">
+            <span>RPE Complessivo Seduta (cerchiare):</span>
+            <span className="font-black tracking-widest">[ 1 ] [ 2 ] [ 3 ] [ 4 ] [ 5 ] [ 6 ] [ 7 ] [ 8 ] [ 9 ] [ 10 ]</span>
+          </div>
+          <div className="text-xs">
+            <span className="font-bold">Note e sensazioni da comunicare al Coach:</span>
+            <div className="border-b border-dotted border-zinc-400 mt-2.5 h-3.5"></div>
+            <div className="border-b border-dotted border-zinc-400 mt-2.5 h-3.5"></div>
+          </div>
+        </div>
+
+        <div className="mt-2.5 text-center text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">
+          Area46 Training Lab • Firenze • personaltrainer.firenze.it
         </div>
       </div>
 

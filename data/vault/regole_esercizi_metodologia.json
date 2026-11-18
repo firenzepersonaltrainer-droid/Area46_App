@@ -315,11 +315,12 @@
       "categoria": "skill e combo",
       "pattern": "cerniera d'anca, trasferimento di carico",
       "ruolo": "fondamentale",
-      "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
+      "modalita_prescrizione_predefinita": "RIPETIZIONI_CONTINUE_ALTERNATE",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [],
-      "didattica_primo_utilizzo": null
+      "didattica_primo_utilizzo": null,
+      "descrizione_regola": "Movimento con scambio alternato continuo tra destra e sinistra in Touch & Go. Prescrivere a ripetizioni totali (es. 4x6), vietata notazione con +, recupero standard senza RBS."
     },
     "128": {
       "id": "128",
@@ -471,8 +472,8 @@
       "categoria": "warm up e mobilità",
       "pattern": "circonduzione spalle, rotazione piano trasverso",
       "ruolo": "",
-      "modalita_prescrizione_predefinita": "TEMPO_PER_LATO_NO_STOP",
-      "vincolo_notazione": "OBBLIGATORIO_PIU",
+      "modalita_prescrizione_predefinita": "TEMPO_TOTALE_CONTINUO",
+      "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [
         "utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo"
       ],
@@ -2180,7 +2181,7 @@
       "categoria": "warm up e mobilità",
       "pattern": "traslazione laterale",
       "ruolo": "",
-      "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
+      "modalita_prescrizione_predefinita": "TEMPO_TOTALE_CONTINUO",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [],

@@ -85,3 +85,43 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-secondary);
 }
+
+/* Stampa A4 Scheda di Allenamento (Sheet Form) */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 8mm 8mm 8mm;
+  }
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11px !important;
+  }
+  #phone-frame {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+  }
+  main {
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  nav, header, footer, [role="navigation"], .print\:hidden,
+  .mobile-status-bar, .install-prompt {
+    display: none !important;
+  }
+  .hidden.print\:block {
+    display: block !important;
+  }
+}

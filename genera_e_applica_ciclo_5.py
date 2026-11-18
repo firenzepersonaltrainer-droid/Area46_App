@@ -203,10 +203,10 @@ C3_B = [
 
 # CICLO 4 (Inizio Mesociclo 2)
 C4_A = [
-    ("1a", 158, "Bat around the head 90° e 180°", "3x8+8", "", "jump set"),
-    ("1b", 74,  "Side move", "3x10+10", '45"', "jump set"),
-    ("2",  127, "COMBO: Landmine clean ALT. SCRD T/GO", "4x6+6", 'RBS 60"', "RPE 8"),
-    ("3a", 23,  "Coiled Cable ROW", "4x8+8", "", "jump set | RPE 8"),
+    ("1a", 158, "Bat around the head 90° e 180°", "3x40\"", "", "jump set"),
+    ("1b", 74,  "Side move", "3x40\"", "", "jump set"),
+    ("2",  127, "COMBO: Landmine clean ALT. SCRD T/GO", "4x6", '60"', "RPE 8"),
+    ("3a", 23,  "Coiled Cable ROW", "4x10+10", "", "jump set | RPE 8"),
     ("3b", 84,  "Kneeling Transition over head press", "4x8+8", '60"', "jump set | RPE 8"),
     ("4a", 201, "Step Up esplosivo alternato", "3x8+8", "", "circuito (3 round)"),
     ("4b", 231, "Banded hoock", "3x10+10", "", "circuito (3 round)"),
