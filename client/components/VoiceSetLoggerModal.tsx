@@ -1,18 +1,38 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Mic, MicOff, Sparkles, Check, X, Loader2, Volume2, AlertCircle, Edit3 } from "lucide-react";
+import { Mic, MicOff, Sparkles, Check, X, Loader2, AlertCircle, Edit3, ShieldAlert, AlertTriangle } from "lucide-react";
 import { toast } from "./Toast";
+
+export interface ParsedSetItem {
+  set_numero: number;
+  carico_kg: number | null;
+  ripetizioni: number | null;
+  rpe: string | null;
+  note?: string | null;
+}
+
+export interface CoachAlertData {
+  tipo: "warning" | "info" | "ok";
+  motivo: "rpe_sforato" | "tecnica_sporca" | "fastidio_articolare" | "ottimo";
+  titolo: string;
+  messaggio: string;
+}
+
+export interface VoiceParsedResult {
+  is_multi_set?: boolean;
+  sets?: ParsedSetItem[];
+  carico_kg: number | null;
+  ripetizioni: number | null;
+  rpe: string | null;
+  note: string | null;
+  coach_feedback?: CoachAlertData | null;
+}
 
 interface VoiceSetLoggerModalProps {
   open: boolean;
   onClose: () => void;
   setIndex: number;
   targetPrescrizione?: string;
-  onApplyParsedSet: (result: {
-    carico_kg: number | null;
-    ripetizioni: number | null;
-    rpe: string | null;
-    note: string | null;
-  }) => void;
+  onApplyParsedSet: (result: VoiceParsedResult) => void;
 }
 
 // -------------------------------------------------------------
@@ -61,7 +81,9 @@ function resolveRpeClient(testo: string): string | null {
     .replace(/\berrepé\b/g, "rpe")
     .replace(/\breppe\b/g, "rpe")
     .replace(/\bsforzo\b/g, "rpe")
-    .replace(/\bfatica\b/g, "rpe");
+    .replace(/\bfatica\b/g, "rpe")
+    .replace(/\bad\s*rep\s*([0-9]+)/gi, "rpe $1")
+    .replace(/\ba\s*rep\s*([0-9]+)/gi, "rpe $1");
 
   const rpeIdx = normalized.indexOf("rpe");
   let target = rpeIdx !== -1 ? normalized.substring(rpeIdx) : normalized;
@@ -95,7 +117,7 @@ function resolveRpeClient(testo: string): string | null {
   return null;
 }
 
-function parseWorkoutSetClientFallback(testo: string) {
+function parseSingleSetClient(testo: string, setNum: number = 1): ParsedSetItem {
   const sanitized = sanitizzaTermineBiomeccanicaClient(testo).trim();
   const lower = sanitized.toLowerCase();
 
@@ -107,26 +129,60 @@ function parseWorkoutSetClientFallback(testo: string) {
   if (lower.includes("corpo libero") || lower.includes("senza peso") || lower.includes("peso corporeo")) {
     carico_kg = 0;
   } else {
-    const mKg = lower.match(/([0-9]+(?:[.,][0-9]+)?|[a-z]+)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)/i);
-    if (mKg) {
-      let val = parseNumeroClient(mKg[1]);
-      if (val !== null) {
-        if (mKg[0].includes("mezzo")) val += 0.5;
+    const mNumKg = lower.match(/\b([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\b/i);
+    if (mNumKg) {
+      let val = parseFloat(mNumKg[1].replace(",", "."));
+      if (!isNaN(val)) {
+        if (mNumKg[0].includes("mezzo")) val += 0.5;
         carico_kg = val;
       }
     }
+
     if (carico_kg === null) {
-      const mCon = lower.match(/(?:con|carico|peso|bilanciere\s*a)\s+([0-9]+(?:[.,][0-9]+)?|[a-z]+)/i);
+      const mWordKg = lower.match(/((?:[a-z]+\s+){0,2}[a-z]+)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\b/i);
+      if (mWordKg) {
+        const tokens = mWordKg[1].trim().split(/\s+/);
+        for (let len = Math.min(2, tokens.length); len >= 1; len--) {
+          const slice = tokens.slice(tokens.length - len);
+          if (slice.length === 2) {
+            const n1 = parseNumeroClient(slice[0]);
+            const n2 = parseNumeroClient(slice[1]);
+            if (n1 !== null && n2 !== null && n1 >= 20 && n2 < 10) {
+              carico_kg = n1 + n2;
+              break;
+            }
+          } else if (slice.length === 1) {
+            const n = parseNumeroClient(slice[0]);
+            if (n !== null) {
+              carico_kg = n;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (carico_kg === null) {
+      const mCon = lower.match(/(?:con|carico|peso|bilanciere\s*a|scalato\s*a)\s+([0-9]+(?:[.,][0-9]+)?|[a-z]+)/i);
       if (mCon) {
         let val = parseNumeroClient(mCon[1]);
         if (val !== null && val > 0 && val <= 300) carico_kg = val;
       }
     }
+
+    if (carico_kg === null) {
+      const mDirect = lower.match(/\b([0-9]+(?:[.,][0-9]+)?)\s*(?:kg|chili)\b/i);
+      if (mDirect) {
+        const val = parseFloat(mDirect[1].replace(",", "."));
+        if (!isNaN(val)) carico_kg = val;
+      }
+    }
   }
 
   // Ripetizioni
-  const mRep = lower.match(/([0-9]+|[a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i) ||
-    lower.match(/(?:fatte|chiuse|fatti|eseguite|tirate)\s+([0-9]+|[a-z]+)/i);
+  const mRep =
+    lower.match(/([0-9]+|[a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i) ||
+    lower.match(/(?:fatte|chiuse|fatti|eseguite|tirate|chiuso\s+con)\s+([0-9]+|[a-z]+)/i);
   if (mRep) {
     const val = parseNumeroClient(mRep[1]);
     if (val !== null && val >= 1 && val <= 100) ripetizioni = Math.round(val);
@@ -145,8 +201,12 @@ function parseWorkoutSetClientFallback(testo: string) {
     const trimCl = cl.trim();
     const l = trimCl.toLowerCase();
     if (!trimCl) continue;
-    if (/(?:sentivo|avvertivo|sensazione|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|rigido|fluido|buon[ao]|ottimo|cedimento|fatica|calo|energia|stanco)/i.test(l)) {
-      const clean = trimCl.replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?/gi, "").trim();
+    if (/(?:sentivo|avvertivo|sensazione|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|rigido|fluido|buon[ao]|ottimo|cedimento|fatica|calo|energia|stanco|sporca|sporco|in\s*modo\s*sporco|compenso)/i.test(l)) {
+      const clean = trimCl
+        .replace(/^(?:la\s+)?(?:prima|seconda|terza|quarta|quinta)?\s*(?:serie)?\s*(?:con\s+)?[0-9]+(?:\.[0-9]+)?\s*(?:kg|chili)?\s*(?:[0-9]+\s*(?:ripetizioni|colpi|rep)?)?/gi, "")
+        .replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?/gi, "")
+        .replace(/\b(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:kg|chili)\b/gi, "")
+        .trim();
       if (clean.length > 3) noteArr.push(clean);
     }
   }
@@ -157,11 +217,92 @@ function parseWorkoutSetClientFallback(testo: string) {
   }
 
   return {
-    success: carico_kg !== null || ripetizioni !== null || rpe !== null,
+    set_numero: setNum,
     carico_kg,
     ripetizioni,
     rpe,
     note: finalNote,
+  };
+}
+
+function parseWorkoutSetClientFallback(testo: string, targetPrescrizione?: string): VoiceParsedResult {
+  const sanitized = sanitizzaTermineBiomeccanicaClient(testo).trim();
+  const lower = sanitized.toLowerCase();
+
+  const ordinalMarkersRegex =
+    /(?:\b(?:la\s+)?prima\s+serie\b|\bprimo\s+set\b|\bset\s+1\b|\bla\s+prima\b)|(?:\b(?:la\s+)?seconda\s+serie\b|\bsecondo\s+set\b|\bset\s+2\b|\bla\s+seconda\b)|(?:\b(?:la\s+)?terza\s+serie\b|\bterzo\s+set\b|\bset\s+3\b|\bla\s+terza\b)|(?:\b(?:la\s+)?quarta\s+serie\b|\bquarto\s+set\b|\bset\s+4\b|\bla\s+quarta\b)/gi;
+
+  const matches: Array<{ index: number; text: string }> = [];
+  let m: RegExpExecArray | null;
+  while ((m = ordinalMarkersRegex.exec(lower)) !== null) {
+    matches.push({ index: m.index, text: m[0] });
+  }
+
+  let coachFeedback: CoachAlertData | null = null;
+  const haTecnicaSporca = /(?:sporca|sporco|in\s*modo\s*sporco|compenso|forzata)/i.test(lower);
+
+  if (matches.length >= 2) {
+    const rawSegments: string[] = [];
+    for (let i = 0; i < matches.length; i++) {
+      const start = matches[i].index;
+      const end = i < matches.length - 1 ? matches[i + 1].index : sanitized.length;
+      rawSegments.push(sanitized.substring(start, end));
+    }
+
+    const setsList = rawSegments.map((seg, idx) => parseSingleSetClient(seg, idx + 1));
+    const noteAggregate = setsList
+      .filter((s) => s.note)
+      .map((s) => `Serie ${s.set_numero}: ${s.note}`)
+      .join("; ");
+
+    const hasRpeAlto = setsList.some((s) => s.rpe && parseFloat(s.rpe) >= 9.0);
+
+    if (haTecnicaSporca && hasRpeAlto) {
+      coachFeedback = {
+        tipo: "warning",
+        motivo: "tecnica_sporca",
+        titolo: "Richiamo Tecnico del Coach",
+        messaggio: "Attento: c'è un motivo se ti viene richiesta tecnica impeccabile e un RPE determinato! Non sforare a discapito della forma: scala il carico per preservare il corretto pattern motorio. Se hai dubbi chiedi al coach.",
+      };
+    } else if (haTecnicaSporca) {
+      coachFeedback = {
+        tipo: "warning",
+        motivo: "tecnica_sporca",
+        titolo: "Qualità Esecutiva Sotto Target",
+        messaggio: "Attento: chiudere le ripetizioni in modo sporco o compensato aumenta il rischio e peggiora il transfer. Mantieni la tecnica pulita prima di incrementare il carico.",
+      };
+    }
+
+    const first = setsList[0] || { carico_kg: null, ripetizioni: null, rpe: null };
+    return {
+      is_multi_set: true,
+      sets: setsList,
+      carico_kg: first.carico_kg,
+      ripetizioni: first.ripetizioni,
+      rpe: first.rpe,
+      note: noteAggregate || null,
+      coach_feedback: coachFeedback,
+    };
+  }
+
+  const single = parseSingleSetClient(sanitized, 1);
+  if (haTecnicaSporca || (single.rpe && parseFloat(single.rpe) >= 9.0)) {
+    coachFeedback = {
+      tipo: "warning",
+      motivo: haTecnicaSporca ? "tecnica_sporca" : "rpe_sforato",
+      titolo: "Richiamo Tecnico del Coach",
+      messaggio: "Attento: rispetta la corretta cinematica e il target di RPE prescritto senza forzare con tecnica sporca.",
+    };
+  }
+
+  return {
+    is_multi_set: false,
+    sets: [single],
+    carico_kg: single.carico_kg,
+    ripetizioni: single.ripetizioni,
+    rpe: single.rpe,
+    note: single.note,
+    coach_feedback: coachFeedback,
   };
 }
 
@@ -178,27 +319,18 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
   const [isRecording, setIsRecording] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [transcript, setTranscript] = useState("");
-  const [speechSupported, setSpeechSupported] = useState(true);
   const [speechNotice, setSpeechNotice] = useState<string | null>(null);
-  const [parsedPreview, setParsedPreview] = useState<{
-    carico_kg: number | null;
-    ripetizioni: number | null;
-    rpe: string | null;
-    note: string | null;
-  } | null>(null);
+  const [parsedPreview, setParsedPreview] = useState<VoiceParsedResult | null>(null);
 
   const recognitionRef = useRef<any>(null);
 
-  // Reset e controllo supporto browser all'apertura
   useEffect(() => {
     if (open) {
       const SpeechRecognition =
         (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        setSpeechSupported(false);
         setSpeechNotice("Dettatura browser non supportata nativamente: tocca il campo e usa il tasto microfono della tastiera dello smartphone o scrivi il messaggio.");
       } else {
-        setSpeechSupported(true);
         setSpeechNotice(null);
       }
     } else {
@@ -288,7 +420,6 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
     setIsAnalyzing(true);
 
     try {
-      // 1. Chiamata API server
       const res = await fetch("/app-api/ai-parse-voice-set", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -302,34 +433,29 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
         const data = await res.json();
         if (data.success) {
           setParsedPreview({
+            is_multi_set: data.is_multi_set,
+            sets: data.sets,
             carico_kg: data.carico_kg,
             ripetizioni: data.ripetizioni,
             rpe: data.rpe,
             note: data.note,
+            coach_feedback: data.coach_feedback,
           });
-          toast.success(`Serie ${setIndex + 1} interpretata dall'Agente AI!`);
+          const setCounter = data.is_multi_set && data.sets?.length ? `${data.sets.length} serie` : `Serie ${setIndex + 1}`;
+          toast.success(`${setCounter} interpretate dall'Agente AI!`);
           setIsAnalyzing(false);
           return;
         }
       }
 
-      // 2. Fallback deterministico locale garantito
-      const localResult = parseWorkoutSetClientFallback(textToAnalyze);
-      if (localResult.success) {
-        setParsedPreview(localResult);
-        toast.success(`Serie ${setIndex + 1} elaborata con successo!`);
-      } else {
-        toast.error("Nessun parametro numerico rilevato. Prova a specificare carico e ripetizioni.");
-      }
+      // Fallback deterministico locale garantito
+      const localResult = parseWorkoutSetClientFallback(textToAnalyze, targetPrescrizione);
+      setParsedPreview(localResult);
+      toast.success("Dettatura elaborata con successo!");
     } catch (e) {
-      // Fallback deterministico locale
-      const localResult = parseWorkoutSetClientFallback(textToAnalyze);
-      if (localResult.success) {
-        setParsedPreview(localResult);
-        toast.success(`Serie ${setIndex + 1} elaborata localmente!`);
-      } else {
-        toast.error("Errore nell'analisi. Riprova indicando chili e ripetizioni.");
-      }
+      const localResult = parseWorkoutSetClientFallback(textToAnalyze, targetPrescrizione);
+      setParsedPreview(localResult);
+      toast.success("Dettatura elaborata localmente!");
     } finally {
       setIsAnalyzing(false);
     }
@@ -344,15 +470,18 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
 
   if (!open) return null;
 
+  const isMulti = Boolean(parsedPreview?.is_multi_set && (parsedPreview?.sets?.length ?? 0) > 1);
+  const setsCount = parsedPreview?.sets?.length || 1;
+
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="w-full max-w-sm rounded-3xl border border-zinc-800 bg-[#09090b] text-white shadow-2xl p-5 flex flex-col items-center text-center relative overflow-hidden"
+        className="w-full max-w-md rounded-3xl border border-zinc-800 bg-[#09090b] text-white shadow-2xl p-5 flex flex-col items-center text-center relative overflow-hidden max-h-[92vh] overflow-y-auto"
         style={{
           boxShadow: "0 0 50px rgba(28, 0, 255, 0.25), 0 20px 40px rgba(0, 0, 0, 0.9)",
         }}
       >
-        {/* Glow circolare estetico */}
+        {/* Glow estetico */}
         <div className="absolute -top-12 -right-12 size-36 rounded-full bg-[#1c00ff]/20 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 size-36 rounded-full bg-[#e3ff00]/10 blur-3xl pointer-events-none" />
 
@@ -365,21 +494,21 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
           <X className="size-4" />
         </button>
 
-        {/* Header con badge pulito (zero diciture "3 sec") */}
+        {/* Header con badge pulito */}
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1c00ff]/20 border border-[#1c00ff]/40 mb-2.5 text-[11px] font-black uppercase tracking-wider text-[#e3ff00]">
           <Sparkles className="size-3 text-[#e3ff00]" />
-          <span>Agente Voice Workout • Serie {setIndex + 1}</span>
+          <span>Agente Voice Workout • Multi-Set & Singolo</span>
         </div>
 
         <h3 className="text-lg font-black text-white tracking-tight">
-          Dettatura Libera Set
+          Dettatura Libera Serie
         </h3>
-        <p className="text-xs text-zinc-400 mt-0.5 max-w-[280px]">
-          Parla liberamente durante il recupero. L'IA traduce ed estrae carichi, reps, RPE e note.
+        <p className="text-xs text-zinc-400 mt-0.5 max-w-[320px]">
+          Parla liberamente per una o più serie. L'IA razionalizza la sequenza, i carichi, i colpi, l'RPE e vigila sulla tecnica.
         </p>
 
         {/* Microfono Pulsante Athletic-Luxury */}
-        <div className="my-5 relative flex items-center justify-center">
+        <div className="my-4 relative flex items-center justify-center">
           {isRecording && (
             <>
               <div className="absolute size-28 rounded-full bg-[#1c00ff]/30 animate-ping duration-1000" />
@@ -412,11 +541,11 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
           </button>
         </div>
 
-        {/* Stato di ascolto / avvisi */}
+        {/* Stato di ascolto */}
         {isRecording && (
           <div className="flex items-center gap-2 text-xs font-bold text-[#e3ff00] mb-2 animate-pulse">
             <span className="size-2 rounded-full bg-red-500" />
-            <span>In ascolto... Parla ora</span>
+            <span>In ascolto continuo... Parla liberamente</span>
           </div>
         )}
 
@@ -427,7 +556,7 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
           </div>
         )}
 
-        {/* Casella Trascrizione / Input Modificabile in Tempo Reale */}
+        {/* Casella Input Trascrizione */}
         <div className="w-full text-left space-y-1 mb-3">
           <div className="flex items-center justify-between text-[11px] font-bold text-zinc-400 px-1">
             <span className="flex items-center gap-1">
@@ -447,25 +576,24 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
           <textarea
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
-            placeholder="Dì o scrivi: '8 ripetizioni con 45 chili, sforzo tra 7 e mezzo e 8 e mezzo, spalla destra un po' rigida'…"
+            placeholder="Dì ad es: 'La prima serie 10 kg da 6 rpe 6, la seconda 20 kg 6 rip sporca rpe 8, la terza ho scalato a 8 kg chiuse 8 ad rpe 9'…"
             rows={3}
             className="w-full rounded-2xl bg-zinc-900 border border-zinc-700 p-3 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-[#1c00ff] focus:outline-none focus:ring-1 focus:ring-[#1c00ff]"
           />
         </div>
 
-        {/* Suggerimenti rapidi in 1 tocco per test immediato */}
+        {/* Suggerimento multi-serie in 1 tocco */}
         {!transcript && !parsedPreview && (
           <div className="w-full flex flex-wrap gap-1.5 justify-center mb-3">
             {[
-              "8 colpi con 50 kg rpe 8",
-              "6 colpi a 60 kg rpe tra 7.5 e 8.5",
-              "10 reps con 40 kg buone sensazioni",
+              "1ª serie 10 kg x 6 rpe 6, 2ª 20 kg x 6 sporca rpe 8, 3ª 8 kg x 8 rpe 9",
+              "8 colpi a 45 kg rpe tra 7.5 e 8.5, spalla fluida",
             ].map((sugg) => (
               <button
                 key={sugg}
                 type="button"
                 onClick={() => setTranscript(sugg)}
-                className="text-[10px] bg-zinc-800/90 hover:bg-zinc-700 text-zinc-300 px-2 py-1 rounded-lg border border-zinc-700/60 transition-colors cursor-pointer truncate max-w-[280px]"
+                className="text-[10px] bg-zinc-800/90 hover:bg-zinc-700 text-zinc-300 px-2 py-1 rounded-lg border border-zinc-700/60 transition-colors cursor-pointer truncate max-w-[340px]"
               >
                 + "{sugg}"
               </button>
@@ -473,37 +601,87 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
           </div>
         )}
 
-        {/* Anteprima Parametri Rilevati */}
+        {/* Anteprima Parametri Estratti */}
         {parsedPreview && (
-          <div className="w-full rounded-2xl bg-zinc-900/90 border border-zinc-700 p-3 mb-3 text-left space-y-2">
+          <div className="w-full rounded-2xl bg-zinc-900/90 border border-zinc-700 p-3 mb-3 text-left space-y-2.5">
             <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-emerald-400">
-              <span>Parametri Estratti dall'IA:</span>
-              <span className="text-zinc-400 font-normal">Pronto per la serie</span>
-            </div>
-            <div className="grid grid-cols-3 gap-1.5 text-center">
-              <div className="bg-zinc-800 p-2 rounded-xl border border-zinc-700/70">
-                <div className="text-[10px] text-zinc-400 font-bold uppercase">Carico</div>
-                <div className="text-sm font-black text-white">
-                  {parsedPreview.carico_kg !== null ? `${parsedPreview.carico_kg} kg` : "N/D"}
-                </div>
-              </div>
-              <div className="bg-zinc-800 p-2 rounded-xl border border-zinc-700/70">
-                <div className="text-[10px] text-zinc-400 font-bold uppercase">Reps</div>
-                <div className="text-sm font-black text-white">
-                  {parsedPreview.ripetizioni !== null ? `${parsedPreview.ripetizioni}` : "N/D"}
-                </div>
-              </div>
-              <div className="bg-zinc-800 p-2 rounded-xl border border-zinc-700/70">
-                <div className="text-[10px] text-zinc-400 font-bold uppercase">RPE</div>
-                <div className="text-sm font-black text-[#e3ff00]">
-                  {parsedPreview.rpe || "N/D"}
-                </div>
-              </div>
+              <span>{isMulti ? `${setsCount} Serie Razionalizzate:` : "Parametri Serie Estratti:"}</span>
+              <span className="text-zinc-400 font-normal">Pronto per la scheda</span>
             </div>
 
+            {/* Visualizzazione Tabellare Multi-Set */}
+            {isMulti && parsedPreview.sets ? (
+              <div className="space-y-1.5">
+                {parsedPreview.sets.map((s) => (
+                  <div
+                    key={s.set_numero}
+                    className="flex items-center justify-between p-2 rounded-xl bg-zinc-800/80 border border-zinc-700/60 text-xs"
+                  >
+                    <span className="font-black text-[#e3ff00] text-[11px] px-2 py-0.5 rounded bg-zinc-900">
+                      SET {s.set_numero}
+                    </span>
+                    <span className="font-bold text-white">
+                      {s.carico_kg !== null ? `${s.carico_kg} kg` : "N/D"}
+                    </span>
+                    <span className="font-bold text-zinc-300">
+                      {s.ripetizioni !== null ? `${s.ripetizioni} rip` : "N/D"}
+                    </span>
+                    <span className="font-black text-[#e3ff00]">
+                      {s.rpe ? `RPE ${s.rpe}` : "N/D"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-1.5 text-center">
+                <div className="bg-zinc-800 p-2 rounded-xl border border-zinc-700/70">
+                  <div className="text-[10px] text-zinc-400 font-bold uppercase">Carico</div>
+                  <div className="text-sm font-black text-white">
+                    {parsedPreview.carico_kg !== null ? `${parsedPreview.carico_kg} kg` : "N/D"}
+                  </div>
+                </div>
+                <div className="bg-zinc-800 p-2 rounded-xl border border-zinc-700/70">
+                  <div className="text-[10px] text-zinc-400 font-bold uppercase">Reps</div>
+                  <div className="text-sm font-black text-white">
+                    {parsedPreview.ripetizioni !== null ? `${parsedPreview.ripetizioni}` : "N/D"}
+                  </div>
+                </div>
+                <div className="bg-zinc-800 p-2 rounded-xl border border-zinc-700/70">
+                  <div className="text-[10px] text-zinc-400 font-bold uppercase">RPE</div>
+                  <div className="text-sm font-black text-[#e3ff00]">
+                    {parsedPreview.rpe || "N/D"}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Note Estratte */}
             {parsedPreview.note && (
               <div className="text-[11px] text-zinc-300 italic bg-zinc-800/50 p-2 rounded-lg border border-zinc-700/50">
-                <span className="font-bold text-zinc-400 not-italic">Note:</span> “{parsedPreview.note}”
+                <span className="font-bold text-zinc-400 not-italic">Note registrate:</span> “{parsedPreview.note}”
+              </div>
+            )}
+
+            {/* COACH GUARDRAIL ALERT BANNER */}
+            {parsedPreview.coach_feedback && (
+              <div
+                className="w-full rounded-xl p-3 border text-left space-y-1 animate-in fade-in duration-300"
+                style={{
+                  background:
+                    parsedPreview.coach_feedback.tipo === "warning"
+                      ? "rgba(245, 158, 11, 0.12)"
+                      : "rgba(28, 0, 255, 0.12)",
+                  borderColor:
+                    parsedPreview.coach_feedback.tipo === "warning" ? "#f59e0b" : "#1c00ff",
+                }}
+              >
+                <div className="flex items-center gap-1.5 text-amber-400 font-black text-xs uppercase tracking-wider">
+                  <AlertTriangle className="size-4 text-amber-400 shrink-0" />
+                  <span>{parsedPreview.coach_feedback.titolo}</span>
+                </div>
+                <p className="text-[11px] text-amber-100 font-medium leading-relaxed">
+                  {parsedPreview.coach_feedback.messaggio}
+                </p>
               </div>
             )}
           </div>
@@ -533,7 +711,9 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
                 }}
               >
                 <Check className="size-4 text-[#e3ff00]" />
-                <span>Applica alla Serie</span>
+                <span>
+                  {isMulti ? `Applica Tutte le ${setsCount} Serie` : "Applica alla Serie"}
+                </span>
               </button>
             </>
           ) : (
@@ -562,7 +742,7 @@ export const VoiceSetLoggerModal: React.FC<VoiceSetLoggerModalProps> = ({
                 {isAnalyzing ? (
                   <>
                     <Loader2 className="size-4 animate-spin text-[#e3ff00]" />
-                    <span>Analisi IA in corso…</span>
+                    <span>Razionalizzazione IA in corso…</span>
                   </>
                 ) : (
                   <>

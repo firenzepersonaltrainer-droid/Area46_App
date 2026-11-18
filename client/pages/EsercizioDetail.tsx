@@ -20,6 +20,7 @@ import {
   Mic,
   Sparkles,
   SlidersHorizontal,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -197,6 +198,7 @@ export default function EsercizioDetailPage() {
   const [activeSetIndex, setActiveSetIndex] = useState<number>(0);
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [voiceSetIndex, setVoiceSetIndex] = useState<number>(0);
+  const [coachAlert, setCoachAlert] = useState<{ tipo: string; titolo: string; messaggio: string } | null>(null);
 
   // 1. Query Esercizi della Seduta (dichiarati all'inizio per evitare TDZ)
   const { data: esercizi = [] } = useQuery<EsercizioScheda[]>({
@@ -435,24 +437,48 @@ export default function EsercizioDetailPage() {
   }
 
   function handleApplyVoiceSet(result: {
+    is_multi_set?: boolean;
+    sets?: Array<{
+      set_numero: number;
+      carico_kg: number | null;
+      ripetizioni: number | null;
+      rpe: string | null;
+      note?: string | null;
+    }>;
     carico_kg: number | null;
     ripetizioni: number | null;
     rpe: string | null;
     note: string | null;
+    coach_feedback?: { tipo: string; titolo: string; messaggio: string } | null;
   }) {
-    setSets((prev) =>
-      prev.map((s, idx) =>
-        idx === voiceSetIndex
-          ? {
-              carico_kg: result.carico_kg !== null ? String(result.carico_kg) : s.carico_kg,
-              ripetizioni: result.ripetizioni !== null ? String(result.ripetizioni) : s.ripetizioni,
-              rpe: result.rpe ? String(result.rpe) : s.rpe,
-            }
-          : s,
-      ),
-    );
+    if (result.is_multi_set && result.sets && result.sets.length > 0) {
+      const newSets: SetRow[] = result.sets.map((s) => ({
+        carico_kg: s.carico_kg !== null ? String(s.carico_kg) : "",
+        ripetizioni: s.ripetizioni !== null ? String(s.ripetizioni) : "",
+        rpe: s.rpe ? String(s.rpe) : "",
+      }));
+      setSets(newSets);
+      toast.success(`${newSets.length} serie impostate dall'Agente AI!`);
+    } else {
+      setSets((prev) =>
+        prev.map((s, idx) =>
+          idx === voiceSetIndex
+            ? {
+                carico_kg: result.carico_kg !== null ? String(result.carico_kg) : s.carico_kg,
+                ripetizioni: result.ripetizioni !== null ? String(result.ripetizioni) : s.ripetizioni,
+                rpe: result.rpe ? String(result.rpe) : s.rpe,
+              }
+            : s,
+        ),
+      );
+    }
+
     if (result.note) {
       setFeedback((prev) => (prev ? `${prev}\n${result.note}` : result.note!));
+    }
+
+    if (result.coach_feedback) {
+      setCoachAlert(result.coach_feedback);
     }
   }
 
@@ -1261,6 +1287,38 @@ export default function EsercizioDetailPage() {
                       </span>
                     </button>
                   </div>
+
+                  {/* Banner Coach Guardrail Alert */}
+                  {coachAlert && (
+                    <div
+                      className="rounded-2xl p-3.5 border text-left space-y-1.5 shadow-sm animate-in fade-in"
+                      style={{
+                        background:
+                          coachAlert.tipo === "warning"
+                            ? "rgba(245, 158, 11, 0.08)"
+                            : "rgba(28, 0, 255, 0.08)",
+                        borderColor:
+                          coachAlert.tipo === "warning" ? "#f59e0b" : "#1c00ff",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-amber-900">
+                          <AlertTriangle className="size-4 text-amber-600 shrink-0" />
+                          <span>{coachAlert.titolo}</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setCoachAlert(null)}
+                          className="text-[10px] text-zinc-500 hover:text-zinc-900 font-bold px-1.5 py-0.5 rounded hover:bg-zinc-200/60 cursor-pointer"
+                        >
+                          ✕ Chiudi
+                        </button>
+                      </div>
+                      <p className="text-xs text-zinc-900 font-medium leading-relaxed">
+                        {coachAlert.messaggio}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Note e Feedback */}
                   <div className="space-y-1.5 pt-2 border-t border-zinc-200">

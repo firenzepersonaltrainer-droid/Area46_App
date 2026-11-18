@@ -1,12 +1,31 @@
 import fs from "node:fs";
 import path from "node:path";
 
+export interface ParsedSingleSet {
+  set_numero: number;
+  carico_kg: number | null;
+  ripetizioni: number | null;
+  rpe: string | null;
+  note?: string | null;
+}
+
+export interface CoachAlert {
+  tipo: "warning" | "info" | "ok";
+  motivo: "rpe_sforato" | "tecnica_sporca" | "fastidio_articolare" | "ottimo";
+  titolo: string;
+  messaggio: string;
+}
+
 export interface VoiceWorkoutSetResult {
   success: boolean;
+  is_multi_set: boolean;
+  sets: ParsedSingleSet[];
+  // Retrocompatibilità per serie singola
   carico_kg: number | null;
   ripetizioni: number | null;
   rpe: string | null;
   note: string | null;
+  coach_feedback?: CoachAlert | null;
   raw_text: string;
 }
 
@@ -132,6 +151,7 @@ export function resolveRpeRange(testo: string): string | null {
   }
 
   // 2. Normalizzazione termini acustici di "RPE"
+  // Gestisce anche "ad rep 9" o "a rep 8" o "rep 8" quando usato come RPE
   const normalized = lower
     .replace(/\br\.p\.e\.\b/g, "rpe")
     .replace(/\br\s*p\s*e\b/g, "rpe")
@@ -141,7 +161,9 @@ export function resolveRpeRange(testo: string): string | null {
     .replace(/\bsforzo\b/g, "rpe")
     .replace(/\bfatica\b/g, "rpe")
     .replace(/\bintensit[àa]\b/g, "rpe")
-    .replace(/\bdifficolt[àa]\b/g, "rpe");
+    .replace(/\bdifficolt[àa]\b/g, "rpe")
+    .replace(/\bad\s*rep\s*([0-9]+)/gi, "rpe $1")
+    .replace(/\ba\s*rep\s*([0-9]+)/gi, "rpe $1");
 
   const rpeIdx = normalized.indexOf("rpe");
   let targetSubstring = normalized;
@@ -204,7 +226,7 @@ export function estraiNoteQualitative(testo: string): string | null {
   const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
   if (!sanitized) return null;
 
-  // Spezza la frase in clausole naturali (virgola, punto, punto e virgola, ma, però, tuttavia, sentivo, sensazione, perché)
+  // Spezza la frase in clausole naturali (virgola, punto, punto e virgola, ma, però, tuttavia, sentivo, sensazione, perché, anche se)
   const clausole = sanitized.split(/[,.;:]|\b(?:ma|però|tuttavia|anche se|invece|perché|perche|sentivo|avvertivo)\b/i);
 
   const clausoleNote: string[] = [];
@@ -215,7 +237,7 @@ export function estraiNoteQualitative(testo: string): string | null {
 
     const lower = trimCl.toLowerCase();
 
-    // Se la clausola è solo dichiarazione di serie numerica (es: "ho fatto 8 ripetizioni", "con 45 chili", "rpe 8", "fatte 10 con 50 kg")
+    // Se la clausola è solo dichiarazione di serie numerica
     const isPureParameters =
       /^(?:allora\s+|dunque\s+|ecco\s+)?(?:ho\s+fatto|fatte|chiuse|fatti|eseguite|tirate)?\s*(?:[0-9]+|[a-z]+)?\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)?\s*(?:con|a|al|per)?\s*(?:carico|peso)?\s*[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)?\s*(?:rpe\s*[0-9]+)?$/i.test(
         lower
@@ -223,19 +245,19 @@ export function estraiNoteQualitative(testo: string): string | null {
       /^(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)$/i.test(lower) ||
       /^(?:r\.?p\.?e\.?|sforzo|fatica)\s*(?:tra|fra|da)?\s*[0-9]+(?:[.,][0-9]+)?(?:\s*(?:e|o|-)\s*[0-9]+(?:[.,][0-9]+)?)?(?:\s*e\s*mezzo)?$/i.test(lower) ||
       /^(?:due|un|uno|tre|2|1|3)\s*(?:in\s*canna|di\s*riserva|colpi\s*di\s*riserva)$/i.test(lower) ||
-      /^(?:prima|seconda|terza|quarta)\s*serie\s*(?:andata|fatta)?$/i.test(lower);
+      /^(?:prima|seconda|terza|quarta|quinta|sesta)\s*serie\s*(?:andata|fatta|si\s*è\s*chiusa|chiusa)?$/i.test(lower);
 
     if (isPureParameters) continue;
 
     // Se contiene parole qualitative, cliniche o di sensazione atletica, teniamola!
     const haParoleQualitative =
-      /(?:sentivo|avvertivo|sensazione|sensazioni|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|braccio|pols[io]|collo|rigido|rigida|fluido|fluida|buon[ao]|ottimo|ottima|difficolt[àa]|pesante|pesantezza|leggero|leggera|facile|cedimento|fatica|assetto|controllo|velocit[àa]|esplosivit[àa]|pattern\s*motorio|bruciore|carico|spinta|stabilit[àa]|dolore|fitta|calo|energia|stanco|stanca|affaticat[ao])/i.test(
+      /(?:sentivo|avvertivo|sensazione|sensazioni|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|braccio|pols[io]|collo|rigido|rigida|fluido|fluida|buon[ao]|ottimo|ottima|difficolt[àa]|pesante|pesantezza|leggero|leggera|facile|cedimento|fatica|assetto|controllo|velocit[àa]|esplosivit[àa]|pattern\s*motorio|bruciore|carico|spinta|stabilit[àa]|dolore|fitta|calo|energia|stanco|stanca|affaticat[ao]|sporca|sporco|sporcizia|compenso|compensato|in\s*modo\s*sporco|tecnica)/i.test(
         lower
       );
 
     if (haParoleQualitative) {
-      // Pulisci eventuali rimasugli di numeri isolati di RPE o carico a inizio/fine clausola
       let pulita = trimCl
+        .replace(/^(?:la\s+)?(?:prima|seconda|terza|quarta|quinta)?\s*(?:serie)?\s*(?:con\s+)?[0-9]+(?:\.[0-9]+)?\s*(?:kg|chili)?\s*(?:[0-9]+\s*(?:ripetizioni|colpi|rep)?)?/gi, "")
         .replace(/^(?:e\s+|ed\s+|anche\s+|poi\s+)+/gi, "")
         .replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?(?:\s*e\s*mezzo)?/gi, "")
         .replace(/\b(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:kg|chili)\b/gi, "")
@@ -248,13 +270,10 @@ export function estraiNoteQualitative(testo: string): string | null {
   }
 
   if (clausoleNote.length === 0) {
-    // Fallback: se non abbiamo clausole isolate, verifichiamo se c'è una parola chiave nella frase intera
-    const lowerAll = sanitized.toLowerCase();
-    const matchSensazioni = sanitized.match(
-      /(?:sentivo|sensazion[ei]|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|rigido|rigida|fluido|buon[ao]|ottimo|cedimento|controllo).+/i
-    );
-    if (matchSensazioni) {
-      let candidate = matchSensazioni[0]
+    // Controllo parole chiave sporco/compenso
+    const matchQual = sanitized.match(/(?:sporca|sporco|in\s+modo\s+sporco|compenso|fatica|rigida|dolore).+/i);
+    if (matchQual) {
+      let candidate = matchQual[0]
         .replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?/gi, "")
         .trim();
       if (candidate.length > 4) {
@@ -275,27 +294,17 @@ export function estraiNoteQualitative(testo: string): string | null {
 }
 
 /**
- * Motore Semantico Deterministico di estrazione parametri set da frase libera in italiano.
+ * Parsing di una singola serie atomica
  */
-export function parseWorkoutSetDeterministic(testo: string): VoiceWorkoutSetResult {
+function parseSingleSetUnit(testo: string, setNumero: number = 1): ParsedSingleSet {
   const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
-  if (!sanitized) {
-    return {
-      success: false,
-      carico_kg: null,
-      ripetizioni: null,
-      rpe: null,
-      note: null,
-      raw_text: "",
-    };
-  }
-
   const lower = sanitized.toLowerCase();
+
   let carico_kg: number | null = null;
   let ripetizioni: number | null = null;
   let rpe: string | null = resolveRpeRange(lower);
 
-  // 1. ESTRAZIONE CARICO (KG)
+  // 1. CARICO
   if (
     lower.includes("corpo libero") ||
     lower.includes("senza peso") ||
@@ -304,7 +313,6 @@ export function parseWorkoutSetDeterministic(testo: string): VoiceWorkoutSetResu
   ) {
     carico_kg = 0;
   } else {
-    // A. Cerca numero arabo prima di chili/kg (es. "60 chili", "45.5 kg", "quarantadue e mezzo chili")
     const mNumKg = lower.match(/\b([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\b/i);
     if (mNumKg) {
       let val = parseFloat(mNumKg[1].replace(",", "."));
@@ -314,7 +322,6 @@ export function parseWorkoutSetDeterministic(testo: string): VoiceWorkoutSetResu
       }
     }
 
-    // B. Cerca parole prima di chili/kg (es. "sessanta chili", "trenta cinque chili", "quarantacinque e mezzo chili")
     if (carico_kg === null) {
       const mWordKg = lower.match(/((?:[a-z]+\s+){0,2}[a-z]+)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\b/i);
       if (mWordKg) {
@@ -342,11 +349,10 @@ export function parseWorkoutSetDeterministic(testo: string): VoiceWorkoutSetResu
       }
     }
 
-    // Pattern: "con X", "carico X", "peso X", "bilanciere a X"
     if (carico_kg === null) {
       const pCon = [
-        /(?:con|carico|peso|bilanciere\s*a|messo|caricato)\s+([0-9]+(?:[.,][0-9]+)?)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
-        /(?:con|carico|peso|bilanciere\s*a|messo|caricato)\s+([a-z]+)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
+        /(?:con|carico|peso|bilanciere\s*a|messo|caricato|scalato\s*a)\s+([0-9]+(?:[.,][0-9]+)?)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
+        /(?:con|carico|peso|bilanciere\s*a|messo|caricato|scalato\s*a)\s+([a-z]+)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
       ];
       for (const pat of pCon) {
         const m = lower.match(pat);
@@ -361,73 +367,237 @@ export function parseWorkoutSetDeterministic(testo: string): VoiceWorkoutSetResu
       }
     }
 
-    // Pattern: "50x8"
+    // Se ancora nullo, cerca pattern come "la seconda 20 kg"
     if (carico_kg === null) {
-      const mCross = lower.match(/([0-9]+(?:[.,][0-9]+)?)\s*x\s*([0-9]+)/i);
-      if (mCross) {
-        const n1 = parseFloat(mCross[1].replace(",", "."));
-        const n2 = parseInt(mCross[2], 10);
-        if (!isNaN(n1) && !isNaN(n2)) {
-          carico_kg = n1;
-          if (ripetizioni === null) ripetizioni = n2;
-        }
+      const mDirectKg = lower.match(/\b([0-9]+(?:[.,][0-9]+)?)\s*(?:kg|chili)\b/i);
+      if (mDirectKg) {
+        const n = parseFloat(mDirectKg[1].replace(",", "."));
+        if (!isNaN(n)) carico_kg = n;
       }
     }
   }
 
-  // 2. ESTRAZIONE RIPETIZIONI (REPS)
-  if (ripetizioni === null) {
-    const repPatterns = [
-      /([0-9]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
-      /([a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
-      /(?:fatte|chiuse|fatti|eseguite|tirate|chiuso|fatto)\s+([0-9]+|[a-z]+)/i,
-      /(?:ceduto\s+alla|mollato\s+alla)\s+([0-9]+a?|prima|seconda|terza|quarta|quinta|sesta|settima|ottava|nona|decima)/i,
-    ];
+  // 2. RIPETIZIONI
+  const repPatterns = [
+    /([0-9]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
+    /([a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
+    /(?:fatte|chiuse|fatti|eseguite|tirate|chiuso|fatto)\s+([0-9]+|[a-z]+)/i,
+    /(?:chiuso\s+con|chiuso\s+a)\s+([0-9]+|[a-z]+)\s*(?:rep|colpi|ripetizioni)?/i,
+    /(?:ceduto\s+alla|mollato\s+alla)\s+([0-9]+a?|prima|seconda|terza|quarta|quinta|sesta|settima|ottava|nona|decima)/i,
+  ];
 
-    const ordinali: Record<string, number> = {
-      prima: 1, seconda: 2, terza: 3, quarta: 4, quinta: 5,
-      sesta: 6, settima: 7, ottava: 8, nona: 9, decima: 10,
-    };
+  const ordinali: Record<string, number> = {
+    prima: 1, seconda: 2, terza: 3, quarta: 4, quinta: 5,
+    sesta: 6, settima: 7, ottava: 8, nona: 9, decima: 10,
+  };
 
-    for (const pat of repPatterns) {
-      const m = lower.match(pat);
-      if (m) {
-        const raw = m[1].toLowerCase().replace(/a$/, "");
-        if (ordinali[raw] !== undefined) {
-          ripetizioni = ordinali[raw];
-          break;
-        }
-        const val = parseNumeroParola(raw);
-        if (val !== null && val >= 1 && val <= 100) {
-          ripetizioni = Math.round(val);
-          break;
-        }
+  for (const pat of repPatterns) {
+    const m = lower.match(pat);
+    if (m) {
+      const raw = m[1].toLowerCase().replace(/a$/, "");
+      if (ordinali[raw] !== undefined) {
+        ripetizioni = ordinali[raw];
+        break;
       }
-    }
-  }
-
-  // Pattern: inizio frase con numero es: "8 con 50 kg"
-  if (ripetizioni === null) {
-    const startNumMatch = lower.match(/^(?:allora\s+|dunque\s+)?([0-9]+|[a-z]+)\s+(?:con|a|al|per)\s+/i);
-    if (startNumMatch) {
-      const val = parseNumeroParola(startNumMatch[1]);
-      if (val !== null && val >= 1 && val <= 50) {
+      const val = parseNumeroParola(raw);
+      if (val !== null && val >= 1 && val <= 100) {
         ripetizioni = Math.round(val);
+        break;
       }
     }
   }
 
-  // 3. ESTRAZIONE E ORDINAMENTO DELLE NOTE QUALITATIVE
-  const note = estraiNoteQualitative(sanitized);
-
-  const success = carico_kg !== null || ripetizioni !== null || rpe !== null;
+  const noteQual = estraiNoteQualitative(sanitized);
 
   return {
-    success,
+    set_numero: setNumero,
     carico_kg,
     ripetizioni,
     rpe,
-    note,
+    note: noteQual,
+  };
+}
+
+/**
+ * Valuta violazioni metodologiche e genera il Coach Guardrail Alert
+ */
+function valutaCoachAlert(
+  sets: ParsedSingleSet[],
+  testoCompleto: string,
+  targetPrescrizione?: string | number | { rpeTargetMax?: number; targetPrescrizione?: string; parametri?: string } | null
+): CoachAlert | null {
+  const lower = testoCompleto.toLowerCase();
+
+  // 1. Controllo Tecnica Sporca / Compensi
+  const haTecnicaSporca =
+    /(?:sporca|sporco|in\s*modo\s*sporco|sporcizia|compenso|compensato|schiena\s*inarcata|strappato|forzata|cedimento\s*non\s*controllato|brutta\s*esecuzione)/i.test(
+      lower
+    );
+
+  // 2. Controllo Sforamento RPE
+  let targetRpeMax = 8.5; // default massimo raccomandato di sicurezza
+  if (typeof targetPrescrizione === "number") {
+    targetRpeMax = targetPrescrizione;
+  } else if (typeof targetPrescrizione === "object" && targetPrescrizione !== null) {
+    if (typeof targetPrescrizione.rpeTargetMax === "number") {
+      targetRpeMax = targetPrescrizione.rpeTargetMax;
+    } else {
+      const s = targetPrescrizione.targetPrescrizione || targetPrescrizione.parametri || "";
+      const mTarget = s.match(/rpe\s*(?:tra|fra)?\s*([0-9]+(?:\.[0-9]+)?)(?:\s*(?:-|e|ed|a)\s*([0-9]+(?:\.[0-9]+)?))?/i);
+      if (mTarget) {
+        const v1 = parseFloat(mTarget[1]);
+        const v2 = mTarget[2] ? parseFloat(mTarget[2]) : v1;
+        if (!isNaN(v2)) targetRpeMax = Math.max(v1, v2);
+      }
+    }
+  } else if (typeof targetPrescrizione === "string") {
+    const mTarget = targetPrescrizione.match(/rpe\s*(?:tra|fra)?\s*([0-9]+(?:\.[0-9]+)?)(?:\s*(?:-|e|ed|a)\s*([0-9]+(?:\.[0-9]+)?))?/i);
+    if (mTarget) {
+      const v1 = parseFloat(mTarget[1]);
+      const v2 = mTarget[2] ? parseFloat(mTarget[2]) : v1;
+      if (!isNaN(v2)) targetRpeMax = Math.max(v1, v2);
+    }
+  }
+
+  const setSforati = sets.filter((s) => {
+    if (!s.rpe) return false;
+    const n = parseFloat(s.rpe);
+    return !isNaN(n) && (n >= 9.0 || n > targetRpeMax);
+  });
+
+  if (haTecnicaSporca && setSforati.length > 0) {
+    const maxRpe = Math.max(...setSforati.map((s) => parseFloat(s.rpe!)));
+    return {
+      tipo: "warning",
+      motivo: "tecnica_sporca",
+      titolo: "Richiamo Tecnico del Coach",
+      messaggio: `Attento: c'è un motivo se ti viene richiesta tecnica impeccabile e un RPE controllato! Raggiungere RPE ${maxRpe.toFixed(1)} sporcando il movimento vanifica il transfer motorio e stressa le articolazioni. Mantieni un'esecuzione pulita e scala il carico. Se hai dubbi chiedi a Stefano al Lab.`,
+    };
+  }
+
+  if (haTecnicaSporca) {
+    return {
+      tipo: "warning",
+      motivo: "tecnica_sporca",
+      titolo: "Qualità del Movimento Sotto Target",
+      messaggio: "Attento: l'esecuzione sporca o compensata interrompe la linea di spinta corretta. Dai la precedenza alla tecnica impeccabile rispetto al carico sollevato: riduci il peso alla serie successiva per mantenere il pattern motorio pulito.",
+    };
+  }
+
+  if (setSforati.length > 0) {
+    const maxRpe = Math.max(...setSforati.map((s) => parseFloat(s.rpe!)));
+    return {
+      tipo: "warning",
+      motivo: "rpe_sforato",
+      titolo: "RPE Oltre la Prescrizione",
+      messaggio: `Hai toccato RPE ${maxRpe.toFixed(1)} a fronte di un target raccomandato di RPE ${targetRpeMax.toFixed(1)}. Non forzare a cedimento: fermati con il giusto margine (buffer) per garantire la corretta progressione nel ciclo. Chiedi al coach se devi aggiustare il carico.`,
+    };
+  }
+
+  // 3. Controllo Fastidi Articolari
+  const haFastidio = /(?:dolore|fitta|male\s+alla|fastidio\s+al|fastidio\s+alla|blocco)/i.test(lower);
+  if (haFastidio) {
+    return {
+      tipo: "warning",
+      motivo: "fastidio_articolare",
+      titolo: "Attenzione Clinico-Articolare",
+      messaggio: "Hai segnalato un fastidio o indolenzimento articolare. Applica la Modalità B del Lab: non forzare sul punto critico, decomprimi con mobilità a terra e segnala la sensazione al coach durante la seduta.",
+    };
+  }
+
+  return null;
+}
+
+/**
+ * Motore Semantico Deterministico di estrazione parametri set (Singolo e Multi-Serie)
+ */
+export function parseWorkoutSetDeterministic(
+  testo: string,
+  targetPrescrizione?: string | number | { rpeTargetMax?: number; targetPrescrizione?: string; parametri?: string } | null
+): VoiceWorkoutSetResult {
+  const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
+  if (!sanitized) {
+    return {
+      success: false,
+      is_multi_set: false,
+      sets: [],
+      carico_kg: null,
+      ripetizioni: null,
+      rpe: null,
+      note: null,
+      coach_feedback: null,
+      raw_text: "",
+    };
+  }
+
+  const lower = sanitized.toLowerCase();
+
+  // -------------------------------------------------------------
+  // RILEVAMENTO E SEGMENTAZIONE MULTI-SERIE
+  // -------------------------------------------------------------
+  // Cerchiamo marcatori ordinali di serie (prima serie, seconda serie, terza serie, set 1, set 2...)
+  const ordinalMarkersRegex =
+    /(?:\b(?:la\s+)?prima\s+serie\b|\bprimo\s+set\b|\bset\s+1\b|\bla\s+prima\b)|(?:\b(?:la\s+)?seconda\s+serie\b|\bsecondo\s+set\b|\bset\s+2\b|\bla\s+seconda\b)|(?:\b(?:la\s+)?terza\s+serie\b|\bterzo\s+set\b|\bset\s+3\b|\bla\s+terza\b)|(?:\b(?:la\s+)?quarta\s+serie\b|\bquarto\s+set\b|\bset\s+4\b|\bla\s+quarta\b)|(?:\b(?:la\s+)?quinta\s+serie\b|\bquinto\s+set\b|\bset\s+5\b|\bla\s+quinta\b)/gi;
+
+  const matches: Array<{ index: number; text: string }> = [];
+  let m: RegExpExecArray | null;
+  while ((m = ordinalMarkersRegex.exec(lower)) !== null) {
+    matches.push({ index: m.index, text: m[0] });
+  }
+
+  // Se ci sono 2 o più serie distinte esplicite (es: prima e seconda, o prima seconda e terza)
+  if (matches.length >= 2) {
+    const rawSegments: string[] = [];
+    for (let i = 0; i < matches.length; i++) {
+      const start = matches[i].index;
+      const end = i < matches.length - 1 ? matches[i + 1].index : sanitized.length;
+      rawSegments.push(sanitized.substring(start, end));
+    }
+
+    const setsList: ParsedSingleSet[] = [];
+    const noteAggregate: string[] = [];
+
+    rawSegments.forEach((seg, idx) => {
+      const setParsed = parseSingleSetUnit(seg, idx + 1);
+      setsList.push(setParsed);
+      if (setParsed.note) {
+        noteAggregate.push(`Serie ${idx + 1}: ${setParsed.note}`);
+      }
+    });
+
+    const coachFeedback = valutaCoachAlert(setsList, sanitized, targetPrescrizione);
+
+    const first = setsList[0] || { carico_kg: null, ripetizioni: null, rpe: null };
+    const finalNote = noteAggregate.length > 0 ? noteAggregate.join("; ") : estraiNoteQualitative(sanitized);
+
+    return {
+      success: setsList.some((s) => s.carico_kg !== null || s.ripetizioni !== null || s.rpe !== null),
+      is_multi_set: true,
+      sets: setsList,
+      carico_kg: first.carico_kg,
+      ripetizioni: first.ripetizioni,
+      rpe: first.rpe,
+      note: finalNote,
+      coach_feedback: coachFeedback,
+      raw_text: sanitized,
+    };
+  }
+
+  // -------------------------------------------------------------
+  // CASO SERIE SINGOLA RETRO-COMPATIBILE
+  // -------------------------------------------------------------
+  const singleParsed = parseSingleSetUnit(sanitized, 1);
+  const coachFeedback = valutaCoachAlert([singleParsed], sanitized, targetPrescrizione);
+
+  return {
+    success: singleParsed.carico_kg !== null || singleParsed.ripetizioni !== null || singleParsed.rpe !== null,
+    is_multi_set: false,
+    sets: [singleParsed],
+    carico_kg: singleParsed.carico_kg,
+    ripetizioni: singleParsed.ripetizioni,
+    rpe: singleParsed.rpe,
+    note: singleParsed.note,
+    coach_feedback: coachFeedback,
     raw_text: sanitized,
   };
 }
@@ -467,24 +637,39 @@ export async function parseVoiceWorkoutSet(input: {
     try {
       const systemInstruction = `
 Sei l'Agente Voice Workout Logger (Aura & Socrates) di Area46 Landmine Lab.
-Il tuo compito è ascoltare/analizzare la dettatura vocale libera dell'atleta registrata dopo la serie ed estrarre i parametri numerici e le note in formato JSON.
+Il tuo compito è ascoltare/analizzare la dettatura vocale libera dell'atleta dopo le serie ed estrarre i parametri numerici e le note in formato JSON.
 
-REGOLE DI INTERPRETAZIONE:
-1. "carico_kg": numero intero o decimale espresso in kg (es. "cinquanta chili" -> 50, "42 e mezzo" -> 42.5, "a corpo libero" -> 0).
-2. "ripetizioni": intero di ripetizioni o colpi eseguiti (es. "8 ripetizioni", "sei colpi", "fatte 10" -> 8, 6, 10).
-3. "rpe": valore stringa con decimale.
-   - SE L'ATLETA INDICA UN RANGE O UN'INCERTEZZA (es. "tra 7.5 e 8.5", "otto o nove", "fra 7 e 8", "sforzo 8 e mezzo"),
-     CALCOLA LA MEDIA ESATTA DI BUON SENSO (es. (7.5+8.5)/2 = 8.0 -> "8.0", (8+9)/2 = 8.5 -> "8.5").
-   - SE PARLA DI BUFFER/RIR: "due in canna" -> "8.0", "una in canna" -> "9.0", "a tutta/cedimento" -> "10.0".
-4. "note": frase ordinata e pulita in italiano con le sensazioni muscolari o articolari.
+REGOLE DI INTERPRETAZIONE MULTI-SERIE:
+1. Se l'atleta descrive più serie (es: "la prima serie... la seconda... la terza..."), estrai l'array "sets" con ogni singola serie numerata.
+2. "carico_kg": numero intero o decimale in kg (es. "cinquanta chili" -> 50, "42 e mezzo" -> 42.5, "a corpo libero" -> 0).
+3. "ripetizioni": intero di ripetizioni o colpi eseguiti (es. "8 ripetizioni", "sei colpi" -> 8, 6).
+4. "rpe": valore stringa con decimale. Risolvi range calcolando la media esatta (es. "tra 7.5 e 8.5" -> "8.0", "ad rep 9" / "rpe 9" -> "9.0").
+5. "note": frase ordinata e pulita in italiano con le sensazioni muscolari o articolari.
    DIVIETO ASSOLUTO del termine "biomeccanica": usa "pattern motorio" o "economia del gesto".
+
+COACH GUARDRAIL:
+Se l'atleta segnala tecnica sporca, compensi, forzature o RPE >= 9.0 (o superiore alla prescrizione ${input.targetPrescrizione || "N/D"}),
+compila il campo "coach_feedback" con avviso autorevole ed empatico per l'atleta.
 
 Rispondi ESCLUSIVAMENTE con un JSON valido:
 {
-  "carico_kg": number | null,
-  "ripetizioni": number | null,
-  "rpe": string | null,
-  "note": string | null,
+  "is_multi_set": boolean,
+  "sets": [
+    {
+      "set_numero": number,
+      "carico_kg": number | null,
+      "ripetizioni": number | null,
+      "rpe": string | null,
+      "note": string | null
+    }
+  ],
+  "note_generali": string | null,
+  "coach_feedback": {
+    "tipo": "warning" | "info",
+    "motivo": "tecnica_sporca" | "rpe_sforato" | "fastidio_articolare",
+    "titolo": string,
+    "messaggio": string
+  } | null,
   "trascrizione": string
 }
 `;
@@ -528,28 +713,38 @@ Rispondi ESCLUSIVAMENTE con un JSON valido:
         if (textResponse) {
           const parsed = JSON.parse(textResponse);
           const rawText = parsed.trascrizione || input.text || "";
-          let finalRpe = parsed.rpe ? String(parsed.rpe).trim() : null;
-          if (finalRpe && (finalRpe.includes("-") || finalRpe.includes("e") || finalRpe.includes("o"))) {
-            const resolved = resolveRpeRange(finalRpe);
-            if (resolved) finalRpe = resolved;
-          }
+          const isMulti = Boolean(parsed.is_multi_set && Array.isArray(parsed.sets) && parsed.sets.length > 1);
+          const setsArr: ParsedSingleSet[] = Array.isArray(parsed.sets)
+            ? parsed.sets.map((s: any, idx: number) => ({
+                set_numero: s.set_numero || idx + 1,
+                carico_kg: s.carico_kg !== undefined ? s.carico_kg : null,
+                ripetizioni: s.ripetizioni !== undefined ? s.ripetizioni : null,
+                rpe: s.rpe ? String(s.rpe) : null,
+                note: s.note ? sanitizzaTermineBiomeccanica(s.note) : null,
+              }))
+            : [];
+
+          const first = setsArr[0] || { carico_kg: null, ripetizioni: null, rpe: null };
 
           return {
             success: true,
-            carico_kg: parsed.carico_kg !== undefined ? parsed.carico_kg : null,
-            ripetizioni: parsed.ripetizioni !== undefined ? parsed.ripetizioni : null,
-            rpe: finalRpe,
-            note: sanitizzaTermineBiomeccanica(parsed.note || ""),
+            is_multi_set: isMulti,
+            sets: setsArr,
+            carico_kg: first.carico_kg,
+            ripetizioni: first.ripetizioni,
+            rpe: first.rpe,
+            note: sanitizzaTermineBiomeccanica(parsed.note_generali || first.note || ""),
+            coach_feedback: parsed.coach_feedback || null,
             raw_text: sanitizzaTermineBiomeccanica(rawText) || "",
           };
         }
       }
     } catch (err) {
-      console.warn("Chiamata Gemini fallita, utilizzo motore semantico deterministico:", err);
+      console.warn("Chiamata Gemini fallita, passaggio al motore deterministico NLP:", err);
     }
   }
 
   // Motore Semantico Deterministico NLP di Verità Operativa
   const sourceText = input.text || "";
-  return parseWorkoutSetDeterministic(sourceText);
+  return parseWorkoutSetDeterministic(sourceText, input.targetPrescrizione);
 }

@@ -5476,6 +5476,17 @@ CALENDARIO E PRENOTAZIONI:
         res.statusCode = 401;
         return res.end(JSON.stringify({ error: "Non autorizzato" }));
       }
+      let aiAnalysisResult: any = null;
+      if (parsedBody.tipo === "feedback_seduta") {
+        aiAnalysisResult = fallbackClinicalAnalysis("biofeedback_workout", {
+          livello: parsedBody.livello,
+          giorno: parsedBody.giorno,
+          rpe: Number(parsedBody.rpe_globale) || 8,
+          sensazioni: parsedBody.sensazioni || [],
+          noteTesto: parsedBody.note_cinestesiche || parsedBody.note || parsedBody.feedback || "",
+        });
+      }
+
       const newEntry = {
         id: Date.now(),
         email_cliente: authorEmail,
@@ -5495,6 +5506,10 @@ CALENDARIO E PRENOTAZIONI:
         serie: parsedBody.sets_json ? null : (parsedBody.serie ?? null),
         sets_json: parsedBody.sets_json ?? null,
         rpe_json: parsedBody.rpe_json ?? null,
+        ai_allerta: aiAnalysisResult?.allerta ?? null,
+        ai_sintesi: aiAnalysisResult?.sintesi ?? null,
+        ai_proposta_azione: aiAnalysisResult?.proposta_azione ?? null,
+        consiglio_coach: aiAnalysisResult?.consiglio_coach ?? null,
         data_ora: new Date().toISOString(),
         created_at: new Date().toISOString(),
       };
@@ -5508,7 +5523,7 @@ CALENDARIO E PRENOTAZIONI:
       });
       saveData(db);
       res.statusCode = 201;
-      return res.end(JSON.stringify(newEntry));
+      return res.end(JSON.stringify({ ...newEntry, ai: aiAnalysisResult }));
     }
 
     // 15. Diario Modifica: PATCH /app-api/diario/:id
@@ -5721,6 +5736,7 @@ CALENDARIO E PRENOTAZIONI:
             ai_allerta: aiAnalysis.allerta,
             ai_sintesi: aiAnalysis.sintesi,
             ai_proposta_azione: aiAnalysis.proposta_azione,
+            consiglio_coach: aiAnalysis.consiglio_coach || aiAnalysis.proposta_azione || null,
             data_ora: new Date().toISOString(),
             created_at: new Date().toISOString(),
           };

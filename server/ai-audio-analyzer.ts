@@ -6,7 +6,20 @@ export interface AudioAnalysisResult {
   allerta: "verde" | "giallo" | "rosso";
   sintesi: string;
   proposta_azione: string;
+  consiglio_coach?: string;
   diagnosi_tecnica?: string;
+}
+
+/**
+ * Sanitizza il linguaggio per gli atleti rimuovendo tecnicismi accademici
+ */
+function sanitizzaLinguaggioAtleta(s: string): string {
+  if (!s) return "";
+  return s
+    .replace(/biomeccanic[a-zA-Z]*/gi, "pattern motorio")
+    .replace(/catena\s+cinetica(?:\s+aperta|\s+chiusa)?/gi, "linea di spinta")
+    .replace(/fulcro/gi, "punto d'appoggio")
+    .replace(/obbligatori[aoe]/gi, "consigliato");
 }
 
 /**
@@ -50,31 +63,32 @@ export async function analyzeAudioWithGemini(
     audioBase64 = buffer.toString("base64");
   }
 
-  // Se c'è una chiave Gemini valida e abbiamo il file, tentiamo la chiamata a Gemini 2.0 / 1.5 Flash
+  // Se c'è una chiave Gemini valida e abbiamo il file, tentiamo la chiamata a Gemini
   if (apiKey && audioBase64) {
     try {
       const systemInstruction = `
-Sei l'Agente Clinico-Semantico & Tecnico Senior di Area46 Landmine Lab.
-Il tuo compito è trascrivere con assoluta precisione la nota audio dell'atleta o utente e produrre un'analisi strutturata.
+Sei l'Agente Clinico-Semantico & Tecnico Senior (Socrates & Aura) di Area46 Landmine Lab.
+Il tuo compito è trascrivere con assoluta precisione la nota audio dell'atleta, analizzare il biofeedback post-workout e produrre una risposta razionale con consiglio pratico per l'atleta.
 
 REGOLE PERENTORIE E VINCOLI METODOLOGICI:
-1. DIVIETO ASSOLUTO DEL TERMINE "biomeccanica" o tecnicismi freddi per gli atleti: usa sempre "pattern motorio", "economia del gesto" o "cinematica".
+1. DIVIETO ASSOLUTO del termine "biomeccanica" o tecnicismi freddi per gli atleti: usa sempre "pattern motorio", "economia del gesto" o "cinematica".
 2. CLASSIFICAZIONE ALLERTA:
-   - 'verde': sessione regolare, sensazioni fluide, fatica fisiologica (RPE <= 8), oppure consiglio app ordinario.
-   - 'giallo': affaticamento elevato, piccoli compensi posturali, RPE 8.5-9, oppure bug non bloccante.
-   - 'rosso': fitte, dolore acuto articolare (lombare/L5-S1, ginocchio, anca, spalla), cedimento non controllato, oppure crash/blocco totale dell'app.
-3. PROPOSTA D'AZIONE WORKOUT:
-   - Applica la metodologia del Comitato Tecnico Area46 (Socrates Modalità B): rotazione del movimento critico con destrezza qualitativa, mobilità a terra o decompressione senza dogmi.
-4. DIAGNOSI TECNICA (se contesto è 'app_feedback'):
-   - Ispeziona il problema descritto e indica i file probabili dell'architettura Area46 (es. client/pages/GiornoDetail.tsx, local-api.ts, client/components/CalendarioMeseNavigabile.tsx, etc.) e la risoluzione.
+   - 'verde': sessione regolare, sensazioni fluide, fatica fisiologica (RPE <= 8).
+   - 'giallo': affaticamento elevato, piccoli compensi posturali, RPE 8.5-9.
+   - 'rosso': fitte, dolore acuto articolare (lombare/L5-S1, ginocchio, anca, spalla), cedimento non controllato.
+3. CONSIGLIO DEL COACH PER L'ATLETA:
+   - Risposta diretta e rassicurante in prima persona singolare o come Comitato Tecnico del Coach Stefano Tronconi.
+   - Applica la Modalità B di Socrates: se c'è dolore o compenso, proponi rotazione con destrezza a terra o decompressione senza dogmi.
+   - Dai consigli concreti di recupero naturale (idratazione, respirazione diaframmatica a terra, sonno).
 
 Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
 {
   "trascrizione": "Trascrizione letterale fedele in italiano",
   "allerta": "verde" | "giallo" | "rosso",
   "sintesi": "Riassunto conciso in 1 frase per il Coach",
-  "proposta_azione": "Consiglio pratico operativo e immediato per la seduta successiva",
-  "diagnosi_tecnica": "Diagnosi tecnica del bug o valutazione del suggerimento con indicazione dei componenti"
+  "proposta_azione": "Consiglio pratico operativo e metodologico per la seduta successiva",
+  "consiglio_coach": "Messaggio diretto, razionale e rassicurante rivolto all'atleta con il consiglio operativo del Coach",
+  "diagnosi_tecnica": "Diagnosi tecnica (se contesto è app_feedback)"
 }
 `;
 
@@ -129,33 +143,29 @@ Ascolta l'audio allegato, trascrivilo fedelmente ed esegui l'analisi clinico-sem
           geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (textResponse) {
           const parsed = JSON.parse(textResponse);
-          const pulisci = (s: string) =>
-            s ? s.replace(/biomeccanic[aoe]/gi, "pattern motorio") : "";
-
           return {
-            trascrizione: pulisci(parsed.trascrizione || ""),
+            trascrizione: sanitizzaLinguaggioAtleta(parsed.trascrizione || ""),
             allerta: ["verde", "giallo", "rosso"].includes(parsed.allerta)
               ? parsed.allerta
               : "verde",
-            sintesi: pulisci(parsed.sintesi || ""),
-            proposta_azione: pulisci(parsed.proposta_azione || ""),
-            diagnosi_tecnica: parsed.diagnosi_tecnica
-              ? pulisci(parsed.diagnosi_tecnica)
-              : undefined,
+            sintesi: sanitizzaLinguaggioAtleta(parsed.sintesi || ""),
+            proposta_azione: sanitizzaLinguaggioAtleta(parsed.proposta_azione || ""),
+            consiglio_coach: sanitizzaLinguaggioAtleta(parsed.consiglio_coach || parsed.proposta_azione || ""),
+            diagnosi_tecnica: parsed.diagnosi_tecnica || undefined,
           };
         }
       }
     } catch (err) {
-      console.warn("Gemini API non disponibile o errore:", err);
+      console.warn("Chiamata Gemini fallita, passaggio al motore clinico deterministico:", err);
     }
   }
 
-  // MOTORE EURISTICO CLINICO-SEMANTICO DETERMINISTICO DI VERITÀ OPERATIVA
+  // MOTORE CLINICO-SEMANTICO DETERMINISTICO DI VERITÀ OPERATIVA
   return fallbackClinicalAnalysis(contesto, metadata);
 }
 
 /**
- * Motore euristico clinico-semantico e diagnostico a regole deterministiche
+ * Motore clinico-semantico e diagnostico a regole deterministiche
  */
 export function fallbackClinicalAnalysis(
   contesto: "biofeedback_workout" | "app_feedback",
@@ -165,6 +175,7 @@ export function fallbackClinicalAnalysis(
     rpe?: number;
     sensazioni?: string[];
     noteTesto?: string;
+    trascrizioneLive?: string;
     tipoSegnalazione?: string;
     titolo?: string;
     descrizione?: string;
@@ -199,22 +210,29 @@ export function fallbackClinicalAnalysis(
         testo.includes("compenso") ||
         testo.includes("difficolt") ||
         testo.includes("instabil") ||
+        testo.includes("sporca") ||
+        testo.includes("sporco") ||
         rpe >= 9);
 
     let allerta: "verde" | "giallo" | "rosso" = "verde";
     let sintesi = "Sessione chiusa regolarmente con parametri motori stabili ed ottima risposta generale.";
     let proposta = "Proseguire con la periodizzazione prevista per la seduta successiva mantenendo il focus sulla qualità esecutiva.";
+    let consiglioCoach = "Sessione chiusa con successo e ottimo controllo! Il corpo ha risposto con facilità al carico di lavoro. Ricorda di bere adeguatamente e presentati alla prossima seduta con la stessa concentrazione sul pattern motorio.";
 
     if (isRedAlert) {
       allerta = "rosso";
       sintesi = `Allerta articolare/carico: segnalata criticità durante la seduta (RPE ${rpe}/10).`;
       proposta =
-        "Modalità B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a catena cinetica aperta, mobilità del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.";
+        "Modalità B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a terra, mobilità del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.";
+      consiglioCoach =
+        "Ho registrato la tua segnalazione sul fastidio avvertito. Nessun allarmismo: il corpo cerca equilibrio. Nella prossima seduta applicheremo la Modalità B sostituendo il movimento pesante con decompressione e mobilità a terra per farti muovere con facilità e senza stress. Se hai fitte parlane con me in sala prima di iniziare.";
     } else if (isYellowAlert) {
       allerta = "giallo";
       sintesi = `Fatica periferica alta o compenso posturale segnalato (RPE ${rpe}/10).`;
       proposta =
         "Regolare i carichi mantenendo 1-2 ripetizioni di riserva nel fondamentale e idratare il tessuto con mobilità attiva di scarico tra le serie.";
+      consiglioCoach =
+        `Hai espresso un'intensità elevata (RPE ${rpe}/10) con una sensazione di fatica marcata o piccolo compenso. Ottimo impegno per aver completato la scheda, ma per la prossima seduta mantieni 1-2 colpi di riserva (buffer) senza forzare la chiusura. Nelle prossime 24 ore dai priorità al sonno e ad una buona idratazione per favorire il recupero naturale dei tessuti.`;
     }
 
     const trascrizioneGenerata = metadata.trascrizioneLive
@@ -224,10 +242,11 @@ export function fallbackClinicalAnalysis(
       : `Registrazione vocale atleta su Seduta ${metadata.giorno || ""}: RPE percepito ${rpe}/10, sensazioni motorie: ${(metadata.sensazioni || []).join(", ") || "buone"}.`;
 
     return {
-      trascrizione: trascrizioneGenerata,
+      trascrizione: sanitizzaLinguaggioAtleta(trascrizioneGenerata),
       allerta,
-      sintesi,
-      proposta_azione: proposta,
+      sintesi: sanitizzaLinguaggioAtleta(sintesi),
+      proposta_azione: sanitizzaLinguaggioAtleta(proposta),
+      consiglio_coach: sanitizzaLinguaggioAtleta(consiglioCoach),
     };
   }
 
@@ -259,15 +278,12 @@ export function fallbackClinicalAnalysis(
     proposta = "Riprodurre su browser di test ed applicare hotfix nel gestionale.";
   }
 
-  const trascrizioneGenerata = metadata.descrizione
-    ? metadata.descrizione
-    : `Nota vocale di segnalazione (${metadata.tipoSegnalazione || "consiglio"}): ${metadata.titolo || ""}.`;
-
   return {
-    trascrizione: trascrizioneGenerata,
+    trascrizione: sanitizzaLinguaggioAtleta(rawTranscript || metadata.titolo || "Segnalazione testo"),
     allerta,
-    sintesi,
-    proposta_azione: proposta,
+    sintesi: sanitizzaLinguaggioAtleta(sintesi),
+    proposta_azione: sanitizzaLinguaggioAtleta(proposta),
+    consiglio_coach: sanitizzaLinguaggioAtleta(proposta),
     diagnosi_tecnica: diagnosi,
   };
 }

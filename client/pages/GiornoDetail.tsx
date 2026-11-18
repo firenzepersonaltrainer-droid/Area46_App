@@ -18,6 +18,10 @@ import {
   X,
   Activity,
   HeartHandshake,
+  Bot,
+  AlertTriangle,
+  CheckCircle2,
+  Lightbulb,
 } from "lucide-react";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { toast } from "sonner";
@@ -279,6 +283,13 @@ const SENSAZIONI_RAPIDE = [
   "RPE centrato",
 ];
 
+interface CoachAdviceFeedback {
+  allerta?: string;
+  sintesi?: string;
+  propostaAzione?: string;
+  consiglioCoach?: string;
+}
+
 function FeedbackSedutaModal({
   open,
   onOpenChange,
@@ -301,6 +312,7 @@ function FeedbackSedutaModal({
     transcript?: string;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [receivedAdvice, setReceivedAdvice] = useState<CoachAdviceFeedback | null>(null);
 
   const toggleSensazione = (s: string) => {
     setSelectedSensazioni((prev) =>
@@ -308,11 +320,20 @@ function FeedbackSedutaModal({
     );
   };
 
+  const handleClose = () => {
+    setReceivedAdvice(null);
+    setRecordedAudio(null);
+    setNote("");
+    onOpenChange(false);
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
+      let adviceData: CoachAdviceFeedback | null = null;
+
       if (recordedAudio) {
-        // Invio completo tramite la nuova pipeline audio multimodale
+        // Invio completo tramite la pipeline audio multimodale
         const res = await fetch("/app-api/audio-note", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -331,16 +352,22 @@ function FeedbackSedutaModal({
           }),
         });
         if (res.ok) {
-          toast.success("Nota vocale e biofeedback seduta inviati al Coach!");
+          const data = await res.json();
+          const noteObj = data.audio_note || {};
+          adviceData = {
+            allerta: noteObj.ai_allerta,
+            sintesi: noteObj.ai_sintesi,
+            propostaAzione: noteObj.ai_proposta_azione,
+            consiglioCoach: noteObj.consiglio_coach,
+          };
           queryClient.invalidateQueries({ queryKey: ["diario"] });
           queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
-          onOpenChange(false);
-          setRecordedAudio(null);
+          toast.success("Nota vocale e biofeedback analizzati con successo!");
         } else {
           toast.error("Errore nell'invio del biofeedback vocale.");
         }
       } else {
-        // Invio standard testuale
+        // Invio standard testuale con analisi biofeedback
         const res = await fetch("/app-api/diario", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -355,12 +382,25 @@ function FeedbackSedutaModal({
           }),
         });
         if (res.ok) {
-          toast.success("Feedback seduta registrato nel tuo diario!");
+          const data = await res.json();
+          const itemObj = data.item || {};
+          adviceData = {
+            allerta: itemObj.ai_allerta,
+            sintesi: itemObj.ai_sintesi,
+            propostaAzione: itemObj.ai_proposta_azione,
+            consiglioCoach: itemObj.consiglio_coach,
+          };
           queryClient.invalidateQueries({ queryKey: ["diario"] });
-          onOpenChange(false);
+          toast.success("Feedback seduta registrato nel tuo diario!");
         } else {
           toast.error("Errore nel salvataggio del feedback.");
         }
+      }
+
+      if (adviceData && (adviceData.consiglioCoach || adviceData.sintesi)) {
+        setReceivedAdvice(adviceData);
+      } else {
+        handleClose();
       }
     } catch {
       toast.error("Errore di connessione.");
@@ -370,122 +410,205 @@ function FeedbackSedutaModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!val) handleClose();
+        else onOpenChange(val);
+      }}
+    >
       <DialogContent className="max-w-md p-5 bg-white rounded-3xl shadow-2xl border-2 border-zinc-200 max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#1c00ff] text-[#e3ff00]">
-              Post-Workout
-            </span>
-          </div>
-          <DialogTitle className="text-xl font-black text-zinc-900 tracking-tight">
-            Feedback Seduta & Biofeedback Audio
-          </DialogTitle>
-          <p className="text-xs text-zinc-500 font-medium">
-            Registra le tue sensazioni in 3 secondi o registra una nota vocale per il Coach.
-          </p>
-        </DialogHeader>
-
-        <div className="space-y-4 pt-2">
-          {/* Selettore RPE a Grandi Tasti Touch (Anti-Magnesite) */}
-          <div>
-            <label className="block text-xs font-black text-zinc-900 uppercase tracking-wider mb-2">
-              RPE Percepito Globale: {rpe}/10
-            </label>
-            <div className="grid grid-cols-5 gap-1.5">
-              {[
-                { val: 6, label: "6", sub: "Facile", color: "bg-emerald-50 text-emerald-800 border-emerald-300" },
-                { val: 7, label: "7", sub: "Medio", color: "bg-lime-50 text-lime-800 border-lime-300" },
-                { val: 8, label: "8", sub: "Solido", color: "bg-amber-50 text-amber-800 border-amber-300" },
-                { val: 9, label: "9", sub: "Duro", color: "bg-orange-50 text-orange-800 border-orange-300" },
-                { val: 10, label: "10", sub: "Max", color: "bg-rose-50 text-rose-800 border-rose-300" },
-              ].map((item) => (
-                <button
-                  key={item.val}
-                  type="button"
-                  onClick={() => setRpe(item.val)}
-                  className={`py-3 px-1 rounded-2xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer shadow-xs ${
-                    rpe === item.val
-                      ? "ring-2 ring-zinc-950 border-zinc-950 scale-105 bg-[#09090b] text-[#e3ff00]"
-                      : `${item.color} hover:brightness-95`
+        {receivedAdvice ? (
+          /* Schermata Responso & Consiglio del Coach Stefano */
+          <div className="space-y-4 pt-1 animate-in fade-in duration-300">
+            <div className="flex items-center justify-between">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#1c00ff] text-[#e3ff00]">
+                Analisi AI Biofeedback
+              </span>
+              {receivedAdvice.allerta && (
+                <span
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                    receivedAdvice.allerta === "rosso"
+                      ? "bg-rose-100 text-rose-800 border border-rose-300"
+                      : receivedAdvice.allerta === "giallo"
+                      ? "bg-amber-100 text-amber-800 border border-amber-300"
+                      : "bg-emerald-100 text-emerald-800 border border-emerald-300"
                   }`}
                 >
-                  <span className="text-lg font-black">{item.label}</span>
-                  <span className="text-[9px] font-bold uppercase tracking-tight">{item.sub}</span>
+                  {receivedAdvice.allerta === "rosso"
+                    ? "🔴 Allerta Sovraccarico"
+                    : receivedAdvice.allerta === "giallo"
+                    ? "🟡 Attenzione / Scarico"
+                    : "🟢 Segnale Ottimale"}
+                </span>
+              )}
+            </div>
+
+            <DialogTitle className="text-xl font-black text-zinc-900 tracking-tight flex items-center gap-2">
+              <Bot className="size-5 text-[#1c00ff]" />
+              Risposta del Coach Stefano
+            </DialogTitle>
+
+            {receivedAdvice.sintesi && (
+              <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-3">
+                <span className="text-[10px] font-black uppercase text-zinc-500 tracking-wider block mb-1">
+                  Sintesi Rilevata
+                </span>
+                <p className="text-xs text-zinc-700 leading-relaxed font-medium">
+                  {receivedAdvice.sintesi}
+                </p>
+              </div>
+            )}
+
+            {receivedAdvice.consiglioCoach && (
+              <div className="bg-[#09090b] text-white border-2 border-[#1c00ff] rounded-2xl p-4 shadow-xl space-y-2">
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="size-4 text-[#e3ff00]" />
+                  <span className="text-xs font-black uppercase tracking-wider text-[#e3ff00]">
+                    Consiglio Operativo del Coach:
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-200 leading-relaxed font-semibold">
+                  "{receivedAdvice.consiglioCoach}"
+                </p>
+                {receivedAdvice.propostaAzione && (
+                  <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400">
+                    <span className="text-zinc-300 font-bold">Azione raccomandata: </span>
+                    {receivedAdvice.propostaAzione}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={handleClose}
+                className="w-full py-3 bg-[#1c00ff] text-white rounded-2xl text-xs font-black shadow-md hover:bg-[#1600cc] transition-colors cursor-pointer text-center"
+              >
+                Ho capito, grazie Coach ✓
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Form di Inserimento Feedback & Audio */
+          <>
+            <DialogHeader>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#1c00ff] text-[#e3ff00]">
+                  Post-Workout
+                </span>
+              </div>
+              <DialogTitle className="text-xl font-black text-zinc-900 tracking-tight">
+                Feedback Seduta & Biofeedback Audio
+              </DialogTitle>
+              <p className="text-xs text-zinc-500 font-medium">
+                Registra le tue sensazioni post-allenamento o invia una nota vocale al Coach Stefano.
+              </p>
+            </DialogHeader>
+
+            <div className="space-y-4 pt-2">
+              {/* Selettore RPE a Grandi Tasti Touch (Anti-Magnesite) */}
+              <div>
+                <label className="block text-xs font-black text-zinc-900 uppercase tracking-wider mb-2">
+                  RPE Percepito Globale: {rpe}/10
+                </label>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {[
+                    { val: 6, label: "6", sub: "Facile", color: "bg-emerald-50 text-emerald-800 border-emerald-300" },
+                    { val: 7, label: "7", sub: "Medio", color: "bg-lime-50 text-lime-800 border-lime-300" },
+                    { val: 8, label: "8", sub: "Solido", color: "bg-amber-50 text-amber-800 border-amber-300" },
+                    { val: 9, label: "9", sub: "Duro", color: "bg-orange-50 text-orange-800 border-orange-300" },
+                    { val: 10, label: "10", sub: "Max", color: "bg-rose-50 text-rose-800 border-rose-300" },
+                  ].map((item) => (
+                    <button
+                      key={item.val}
+                      type="button"
+                      onClick={() => setRpe(item.val)}
+                      className={`py-3 px-1 rounded-2xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer shadow-xs ${
+                        rpe === item.val
+                          ? "ring-2 ring-zinc-950 border-zinc-950 scale-105 bg-[#09090b] text-[#e3ff00]"
+                          : `${item.color} hover:brightness-95`
+                      }`}
+                    >
+                      <span className="text-lg font-black">{item.label}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-tight">{item.sub}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Chip Sensazioni Cinestesiche a 1-Tap */}
+              <div>
+                <label className="block text-xs font-black text-zinc-900 uppercase tracking-wider mb-2">
+                  Sensazioni Rapide (1-Tap):
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {SENSAZIONI_RAPIDE.map((s) => {
+                    const active = selectedSensazioni.includes(s);
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => toggleSensazione(s)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
+                          active
+                            ? "bg-[#1c00ff] text-white border-[#1c00ff] shadow-xs"
+                            : "bg-zinc-100 text-zinc-700 border-zinc-200 hover:bg-zinc-200"
+                        }`}
+                      >
+                        {active ? "✓ " : "+ "}
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* REGISTRATORE NOTA AUDIO INTEGRATO */}
+              <div>
+                <AudioFeedbackRecorder
+                  label="Nota Audio Vocale per il Coach (10-60s)"
+                  maxDurationSec={60}
+                  onAudioRecorded={(audio) => setRecordedAudio(audio)}
+                  onAudioCleared={() => setRecordedAudio(null)}
+                />
+              </div>
+
+              {/* Note Cinestesiche Testuali Opzionali */}
+              <div>
+                <label className="block text-xs font-bold text-zinc-700 mb-1">
+                  Note scritte aggiuntive (opzionali):
+                </label>
+                <Textarea
+                  placeholder="Es. ottima coordinazione al coiled deadlift, stanchezza sul finire del WOD…"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  className="text-xs h-18 rounded-xl"
+                />
+              </div>
+
+              {/* Bottone Salvataggio */}
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-zinc-100">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="px-4 py-2 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl cursor-pointer"
+                >
+                  Annulla
                 </button>
-              ))}
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={handleSubmit}
+                  className="px-5 py-2.5 bg-[#1c00ff] text-white rounded-xl text-xs font-black shadow-md hover:bg-[#1600cc] transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  {isSubmitting ? "Analisi AI in corso…" : recordedAudio ? "🎙️ Invia Audio al Coach" : "Salva Feedback"}
+                </button>
+              </div>
             </div>
-          </div>
-
-          {/* Chip Sensazioni Cinestesiche a 1-Tap */}
-          <div>
-            <label className="block text-xs font-black text-zinc-900 uppercase tracking-wider mb-2">
-              Sensazioni Rapide (1-Tap):
-            </label>
-            <div className="flex flex-wrap gap-1.5">
-              {SENSAZIONI_RAPIDE.map((s) => {
-                const active = selectedSensazioni.includes(s);
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => toggleSensazione(s)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
-                      active
-                        ? "bg-[#1c00ff] text-white border-[#1c00ff] shadow-xs"
-                        : "bg-zinc-100 text-zinc-700 border-zinc-200 hover:bg-zinc-200"
-                    }`}
-                  >
-                    {active ? "✓ " : "+ "}
-                    {s}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* REGISTRATORE NOTA AUDIO INTEGRATO */}
-          <div>
-            <AudioFeedbackRecorder
-              label="Nota Audio Vocale per il Coach (10-60s)"
-              maxDurationSec={60}
-              onAudioRecorded={(audio) => setRecordedAudio(audio)}
-              onAudioCleared={() => setRecordedAudio(null)}
-            />
-          </div>
-
-          {/* Note Cinestesiche Testuali Opzionali */}
-          <div>
-            <label className="block text-xs font-bold text-zinc-700 mb-1">
-              Note scritte aggiuntive (opzionali):
-            </label>
-            <Textarea
-              placeholder="Es. ottima coordinazione al coiled deadlift, stanchezza sul finire del WOD…"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className="text-xs h-18 rounded-xl"
-            />
-          </div>
-
-          {/* Bottone Salvataggio */}
-          <div className="pt-2 flex items-center justify-end gap-2 border-t border-zinc-100">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="px-4 py-2 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl cursor-pointer"
-            >
-              Annulla
-            </button>
-            <button
-              type="button"
-              disabled={isSubmitting}
-              onClick={handleSubmit}
-              className="px-5 py-2.5 bg-[#1c00ff] text-white rounded-xl text-xs font-black shadow-md hover:bg-[#1600cc] transition-colors cursor-pointer flex items-center gap-1.5"
-            >
-              {isSubmitting ? "Invio in corso…" : recordedAudio ? "🎙️ Salva Feedback & Audio" : "Salva Feedback"}
-            </button>
-          </div>
-        </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
@@ -503,8 +626,30 @@ export default function GiornoDetailPage() {
     enabled: !!livello && !!giorno,
   });
 
+  const { data: diarioEntries = [] } = useQuery<any[]>({
+    queryKey: ["diario"],
+    queryFn: () => fetch("/app-api/diario").then((r) => r.json()).catch(() => []),
+  });
+
   const blocchi = React.useMemo(() => raggruppa(esercizi), [esercizi]);
   const giornoDisplay = giorno ?? "";
+  const numMatch = String(giornoDisplay).match(/[0-9]+/);
+  const giornoNum = numMatch ? parseInt(numMatch[0], 10) : parseInt(giornoDisplay, 10) || 1;
+
+  const coachAdvice = React.useMemo(() => {
+    if (!diarioEntries || !Array.isArray(diarioEntries)) return null;
+    const match = diarioEntries
+      .filter(
+        (e) =>
+          (e.livello === livello || !e.livello) &&
+          (String(e.giorno) === String(giornoDisplay) || String(e.giorno) === String(giornoNum)) &&
+          (e.tipo === "feedback_seduta" || e.tipo === "audio_note") &&
+          Boolean(e.consiglio_coach)
+      )
+      .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())[0];
+    return match;
+  }, [diarioEntries, livello, giornoDisplay, giornoNum]);
+
   const primoEsercizio = esercizi[0];
   const giornoLabel = primoEsercizio?.giorno ? String(primoEsercizio.giorno) : `Giorno ${giornoDisplay}`;
   const cicloLabel = primoEsercizio?.settimana;
@@ -518,10 +663,6 @@ export default function GiornoDetailPage() {
     }
     return false;
   }, [cicloLabel]);
-
-  // Estrazione del numero giorno intero
-  const numMatch = String(giornoDisplay).match(/[0-9]+/);
-  const giornoNum = numMatch ? parseInt(numMatch[0], 10) : parseInt(giornoDisplay, 10) || 1;
 
   const { getStato, setStato, toggleGiorno } = useAllenamentiStati();
   const statoCorrente: StatoAllenamento = getStato(livello ?? "", giornoNum);
@@ -626,6 +767,46 @@ export default function GiornoDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* CARD CONSIGLIO DEL COACH STEFANO PER QUESTA SEDUTA (Se presente) */}
+      {coachAdvice && (
+        <div className="rounded-2xl bg-[#09090b] border-2 border-[#1c00ff] p-4 text-white shadow-xl space-y-2 print:hidden animate-in fade-in">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-4 text-[#e3ff00]" />
+              <span className="text-xs font-black uppercase tracking-wider text-[#e3ff00]">
+                Consiglio del Coach Stefano per questa Seduta
+              </span>
+            </div>
+            {coachAdvice.ai_allerta && (
+              <span
+                className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                  coachAdvice.ai_allerta === "rosso"
+                    ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+                    : coachAdvice.ai_allerta === "giallo"
+                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                    : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                }`}
+              >
+                {coachAdvice.ai_allerta === "rosso"
+                  ? "🔴 Modalità B / Cautela"
+                  : coachAdvice.ai_allerta === "giallo"
+                  ? "🟡 Affaticamento Rilevato"
+                  : "🟢 Progressione Libera"}
+              </span>
+            )}
+          </div>
+          <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed">
+            "{coachAdvice.consiglio_coach}"
+          </p>
+          {coachAdvice.ai_proposta_azione && (
+            <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400">
+              <span className="text-zinc-300 font-bold">Azione raccomandata: </span>
+              {coachAdvice.ai_proposta_azione}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* CONTROLLO STATO ALLENAMENTO & PULSANTE FEEDBACK POST-SEDUTA (Nascosto in Stampa) */}
       <div

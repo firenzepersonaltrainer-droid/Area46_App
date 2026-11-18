@@ -34982,7 +34982,7 @@ var demo_data_default = {
       ],
       anticipi_da_scontare: 0,
       updated_at: "2026-11-13T18:30:59.617Z",
-      data_ultimo_accesso: "2026-11-18T08:39:21.377Z",
+      data_ultimo_accesso: "2026-11-18T09:39:52.469Z",
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: null
     },
@@ -35005,7 +35005,7 @@ var demo_data_default = {
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: "usr-bw-1953985",
       updated_at: "2026-11-13T18:30:59.641Z",
-      data_ultimo_accesso: "2026-11-18T08:39:21.377Z"
+      data_ultimo_accesso: "2026-11-18T09:39:52.469Z"
     },
     {
       id: "usr-bw-2067105",
@@ -35108,7 +35108,7 @@ var demo_data_default = {
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
       updated_at: "2026-10-07T14:45:15.354Z",
-      data_ultimo_accesso: "2026-11-18T08:39:21.376Z"
+      data_ultimo_accesso: "2026-11-18T09:39:52.468Z"
     },
     {
       id: "usr-bw-2080725",
@@ -37438,6 +37438,30 @@ var demo_data_default = {
       email_cliente: "daniele.casci@gmail.com",
       nome_cliente: "Daniele Casci",
       data_ora: "2026-11-18T08:39:21.377Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794994792469-197",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T09:39:52.469Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794994792469-692",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T09:39:52.469Z",
       tipo: "prenotazione_slot",
       delta_crediti: -1,
       saldo_risultante: 0,
@@ -40501,6 +40525,10 @@ firenzepersonaltrainer@gmail.com`,
 // server/ai-audio-analyzer.ts
 import fs4 from "node:fs";
 import path3 from "node:path";
+function sanitizzaLinguaggioAtleta(s) {
+  if (!s) return "";
+  return s.replace(/biomeccanic[a-zA-Z]*/gi, "pattern motorio").replace(/catena\s+cinetica(?:\s+aperta|\s+chiusa)?/gi, "linea di spinta").replace(/fulcro/gi, "punto d'appoggio").replace(/obbligatori[aoe]/gi, "consigliato");
+}
 async function analyzeAudioWithGemini(filePath, contesto, metadata = {}) {
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
   let audioBase64 = "";
@@ -40518,27 +40546,28 @@ async function analyzeAudioWithGemini(filePath, contesto, metadata = {}) {
   if (apiKey && audioBase64) {
     try {
       const systemInstruction = `
-Sei l'Agente Clinico-Semantico & Tecnico Senior di Area46 Landmine Lab.
-Il tuo compito \xE8 trascrivere con assoluta precisione la nota audio dell'atleta o utente e produrre un'analisi strutturata.
+Sei l'Agente Clinico-Semantico & Tecnico Senior (Socrates & Aura) di Area46 Landmine Lab.
+Il tuo compito \xE8 trascrivere con assoluta precisione la nota audio dell'atleta, analizzare il biofeedback post-workout e produrre una risposta razionale con consiglio pratico per l'atleta.
 
 REGOLE PERENTORIE E VINCOLI METODOLOGICI:
-1. DIVIETO ASSOLUTO DEL TERMINE "biomeccanica" o tecnicismi freddi per gli atleti: usa sempre "pattern motorio", "economia del gesto" o "cinematica".
+1. DIVIETO ASSOLUTO del termine "biomeccanica" o tecnicismi freddi per gli atleti: usa sempre "pattern motorio", "economia del gesto" o "cinematica".
 2. CLASSIFICAZIONE ALLERTA:
-   - 'verde': sessione regolare, sensazioni fluide, fatica fisiologica (RPE <= 8), oppure consiglio app ordinario.
-   - 'giallo': affaticamento elevato, piccoli compensi posturali, RPE 8.5-9, oppure bug non bloccante.
-   - 'rosso': fitte, dolore acuto articolare (lombare/L5-S1, ginocchio, anca, spalla), cedimento non controllato, oppure crash/blocco totale dell'app.
-3. PROPOSTA D'AZIONE WORKOUT:
-   - Applica la metodologia del Comitato Tecnico Area46 (Socrates Modalit\xE0 B): rotazione del movimento critico con destrezza qualitativa, mobilit\xE0 a terra o decompressione senza dogmi.
-4. DIAGNOSI TECNICA (se contesto \xE8 'app_feedback'):
-   - Ispeziona il problema descritto e indica i file probabili dell'architettura Area46 (es. client/pages/GiornoDetail.tsx, local-api.ts, client/components/CalendarioMeseNavigabile.tsx, etc.) e la risoluzione.
+   - 'verde': sessione regolare, sensazioni fluide, fatica fisiologica (RPE <= 8).
+   - 'giallo': affaticamento elevato, piccoli compensi posturali, RPE 8.5-9.
+   - 'rosso': fitte, dolore acuto articolare (lombare/L5-S1, ginocchio, anca, spalla), cedimento non controllato.
+3. CONSIGLIO DEL COACH PER L'ATLETA:
+   - Risposta diretta e rassicurante in prima persona singolare o come Comitato Tecnico del Coach Stefano Tronconi.
+   - Applica la Modalit\xE0 B di Socrates: se c'\xE8 dolore o compenso, proponi rotazione con destrezza a terra o decompressione senza dogmi.
+   - Dai consigli concreti di recupero naturale (idratazione, respirazione diaframmatica a terra, sonno).
 
 Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
 {
   "trascrizione": "Trascrizione letterale fedele in italiano",
   "allerta": "verde" | "giallo" | "rosso",
   "sintesi": "Riassunto conciso in 1 frase per il Coach",
-  "proposta_azione": "Consiglio pratico operativo e immediato per la seduta successiva",
-  "diagnosi_tecnica": "Diagnosi tecnica del bug o valutazione del suggerimento con indicazione dei componenti"
+  "proposta_azione": "Consiglio pratico operativo e metodologico per la seduta successiva",
+  "consiglio_coach": "Messaggio diretto, razionale e rassicurante rivolto all'atleta con il consiglio operativo del Coach",
+  "diagnosi_tecnica": "Diagnosi tecnica (se contesto \xE8 app_feedback)"
 }
 `;
       const promptText = `
@@ -40589,18 +40618,18 @@ Ascolta l'audio allegato, trascrivilo fedelmente ed esegui l'analisi clinico-sem
         const textResponse = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (textResponse) {
           const parsed = JSON.parse(textResponse);
-          const pulisci = (s) => s ? s.replace(/biomeccanic[aoe]/gi, "pattern motorio") : "";
           return {
-            trascrizione: pulisci(parsed.trascrizione || ""),
+            trascrizione: sanitizzaLinguaggioAtleta(parsed.trascrizione || ""),
             allerta: ["verde", "giallo", "rosso"].includes(parsed.allerta) ? parsed.allerta : "verde",
-            sintesi: pulisci(parsed.sintesi || ""),
-            proposta_azione: pulisci(parsed.proposta_azione || ""),
-            diagnosi_tecnica: parsed.diagnosi_tecnica ? pulisci(parsed.diagnosi_tecnica) : void 0
+            sintesi: sanitizzaLinguaggioAtleta(parsed.sintesi || ""),
+            proposta_azione: sanitizzaLinguaggioAtleta(parsed.proposta_azione || ""),
+            consiglio_coach: sanitizzaLinguaggioAtleta(parsed.consiglio_coach || parsed.proposta_azione || ""),
+            diagnosi_tecnica: parsed.diagnosi_tecnica || void 0
           };
         }
       }
     } catch (err) {
-      console.warn("Gemini API non disponibile o errore:", err);
+      console.warn("Chiamata Gemini fallita, passaggio al motore clinico deterministico:", err);
     }
   }
   return fallbackClinicalAnalysis(contesto, metadata);
@@ -40611,25 +40640,29 @@ function fallbackClinicalAnalysis(contesto, metadata) {
   const rpe = metadata.rpe ?? 8;
   if (contesto === "biofeedback_workout") {
     const isRedAlert = testo.includes("dolore") || testo.includes("fitta") || testo.includes("blocc") || testo.includes("lombare") || testo.includes("ginocchio") || testo.includes("spalla") || testo.includes("strappo") || testo.includes("crack") || testo.includes("male acuto") || rpe >= 10;
-    const isYellowAlert = !isRedAlert && (testo.includes("fatica") || testo.includes("stanchezza") || testo.includes("pesant") || testo.includes("compenso") || testo.includes("difficolt") || testo.includes("instabil") || rpe >= 9);
+    const isYellowAlert = !isRedAlert && (testo.includes("fatica") || testo.includes("stanchezza") || testo.includes("pesant") || testo.includes("compenso") || testo.includes("difficolt") || testo.includes("instabil") || testo.includes("sporca") || testo.includes("sporco") || rpe >= 9);
     let allerta2 = "verde";
     let sintesi2 = "Sessione chiusa regolarmente con parametri motori stabili ed ottima risposta generale.";
     let proposta2 = "Proseguire con la periodizzazione prevista per la seduta successiva mantenendo il focus sulla qualit\xE0 esecutiva.";
+    let consiglioCoach = "Sessione chiusa con successo e ottimo controllo! Il corpo ha risposto con facilit\xE0 al carico di lavoro. Ricorda di bere adeguatamente e presentati alla prossima seduta con la stessa concentrazione sul pattern motorio.";
     if (isRedAlert) {
       allerta2 = "rosso";
       sintesi2 = `Allerta articolare/carico: segnalata criticit\xE0 durante la seduta (RPE ${rpe}/10).`;
-      proposta2 = "Modalit\xE0 B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a catena cinetica aperta, mobilit\xE0 del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.";
+      proposta2 = "Modalit\xE0 B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a terra, mobilit\xE0 del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.";
+      consiglioCoach = "Ho registrato la tua segnalazione sul fastidio avvertito. Nessun allarmismo: il corpo cerca equilibrio. Nella prossima seduta applicheremo la Modalit\xE0 B sostituendo il movimento pesante con decompressione e mobilit\xE0 a terra per farti muovere con facilit\xE0 e senza stress. Se hai fitte parlane con me in sala prima di iniziare.";
     } else if (isYellowAlert) {
       allerta2 = "giallo";
       sintesi2 = `Fatica periferica alta o compenso posturale segnalato (RPE ${rpe}/10).`;
       proposta2 = "Regolare i carichi mantenendo 1-2 ripetizioni di riserva nel fondamentale e idratare il tessuto con mobilit\xE0 attiva di scarico tra le serie.";
+      consiglioCoach = `Hai espresso un'intensit\xE0 elevata (RPE ${rpe}/10) con una sensazione di fatica marcata o piccolo compenso. Ottimo impegno per aver completato la scheda, ma per la prossima seduta mantieni 1-2 colpi di riserva (buffer) senza forzare la chiusura. Nelle prossime 24 ore dai priorit\xE0 al sonno e ad una buona idratazione per favorire il recupero naturale dei tessuti.`;
     }
-    const trascrizioneGenerata2 = metadata.trascrizioneLive ? metadata.trascrizioneLive : metadata.noteTesto ? metadata.noteTesto : `Registrazione vocale atleta su Seduta ${metadata.giorno || ""}: RPE percepito ${rpe}/10, sensazioni motorie: ${(metadata.sensazioni || []).join(", ") || "buone"}.`;
+    const trascrizioneGenerata = metadata.trascrizioneLive ? metadata.trascrizioneLive : metadata.noteTesto ? metadata.noteTesto : `Registrazione vocale atleta su Seduta ${metadata.giorno || ""}: RPE percepito ${rpe}/10, sensazioni motorie: ${(metadata.sensazioni || []).join(", ") || "buone"}.`;
     return {
-      trascrizione: trascrizioneGenerata2,
+      trascrizione: sanitizzaLinguaggioAtleta(trascrizioneGenerata),
       allerta: allerta2,
-      sintesi: sintesi2,
-      proposta_azione: proposta2
+      sintesi: sanitizzaLinguaggioAtleta(sintesi2),
+      proposta_azione: sanitizzaLinguaggioAtleta(proposta2),
+      consiglio_coach: sanitizzaLinguaggioAtleta(consiglioCoach)
     };
   }
   const isBug = metadata.tipoSegnalazione === "bug" || testo.includes("bug") || testo.includes("errore");
@@ -40649,12 +40682,12 @@ function fallbackClinicalAnalysis(contesto, metadata) {
     diagnosi = `Comportamento anomalo segnalato su ${metadata.deviceInfo || "dispositivo mobile"}. Componenti correlati in client/components/.`;
     proposta = "Riprodurre su browser di test ed applicare hotfix nel gestionale.";
   }
-  const trascrizioneGenerata = metadata.descrizione ? metadata.descrizione : `Nota vocale di segnalazione (${metadata.tipoSegnalazione || "consiglio"}): ${metadata.titolo || ""}.`;
   return {
-    trascrizione: trascrizioneGenerata,
+    trascrizione: sanitizzaLinguaggioAtleta(rawTranscript || metadata.titolo || "Segnalazione testo"),
     allerta,
-    sintesi,
-    proposta_azione: proposta,
+    sintesi: sanitizzaLinguaggioAtleta(sintesi),
+    proposta_azione: sanitizzaLinguaggioAtleta(proposta),
+    consiglio_coach: sanitizzaLinguaggioAtleta(proposta),
     diagnosi_tecnica: diagnosi
   };
 }
@@ -40778,7 +40811,7 @@ function resolveRpeRange(testo) {
   if (lower.match(/(?:a\s*tutta|a\s*cedimento|zero\s*in\s*canna|massimale|limite\s*assoluto)/i)) {
     return "10.0";
   }
-  const normalized2 = lower.replace(/\br\.p\.e\.\b/g, "rpe").replace(/\br\s*p\s*e\b/g, "rpe").replace(/\brp\b/g, "rpe").replace(/\berrepé\b/g, "rpe").replace(/\breppe\b/g, "rpe").replace(/\bsforzo\b/g, "rpe").replace(/\bfatica\b/g, "rpe").replace(/\bintensit[àa]\b/g, "rpe").replace(/\bdifficolt[àa]\b/g, "rpe");
+  const normalized2 = lower.replace(/\br\.p\.e\.\b/g, "rpe").replace(/\br\s*p\s*e\b/g, "rpe").replace(/\brp\b/g, "rpe").replace(/\berrepé\b/g, "rpe").replace(/\breppe\b/g, "rpe").replace(/\bsforzo\b/g, "rpe").replace(/\bfatica\b/g, "rpe").replace(/\bintensit[àa]\b/g, "rpe").replace(/\bdifficolt[àa]\b/g, "rpe").replace(/\bad\s*rep\s*([0-9]+)/gi, "rpe $1").replace(/\ba\s*rep\s*([0-9]+)/gi, "rpe $1");
   const rpeIdx = normalized2.indexOf("rpe");
   let targetSubstring = normalized2;
   if (rpeIdx !== -1) {
@@ -40833,25 +40866,22 @@ function estraiNoteQualitative(testo) {
     const lower = trimCl.toLowerCase();
     const isPureParameters = /^(?:allora\s+|dunque\s+|ecco\s+)?(?:ho\s+fatto|fatte|chiuse|fatti|eseguite|tirate)?\s*(?:[0-9]+|[a-z]+)?\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)?\s*(?:con|a|al|per)?\s*(?:carico|peso)?\s*[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)?\s*(?:rpe\s*[0-9]+)?$/i.test(
       lower
-    ) || /^(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)$/i.test(lower) || /^(?:r\.?p\.?e\.?|sforzo|fatica)\s*(?:tra|fra|da)?\s*[0-9]+(?:[.,][0-9]+)?(?:\s*(?:e|o|-)\s*[0-9]+(?:[.,][0-9]+)?)?(?:\s*e\s*mezzo)?$/i.test(lower) || /^(?:due|un|uno|tre|2|1|3)\s*(?:in\s*canna|di\s*riserva|colpi\s*di\s*riserva)$/i.test(lower) || /^(?:prima|seconda|terza|quarta)\s*serie\s*(?:andata|fatta)?$/i.test(lower);
+    ) || /^(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)$/i.test(lower) || /^(?:r\.?p\.?e\.?|sforzo|fatica)\s*(?:tra|fra|da)?\s*[0-9]+(?:[.,][0-9]+)?(?:\s*(?:e|o|-)\s*[0-9]+(?:[.,][0-9]+)?)?(?:\s*e\s*mezzo)?$/i.test(lower) || /^(?:due|un|uno|tre|2|1|3)\s*(?:in\s*canna|di\s*riserva|colpi\s*di\s*riserva)$/i.test(lower) || /^(?:prima|seconda|terza|quarta|quinta|sesta)\s*serie\s*(?:andata|fatta|si\s*è\s*chiusa|chiusa)?$/i.test(lower);
     if (isPureParameters) continue;
-    const haParoleQualitative = /(?:sentivo|avvertivo|sensazione|sensazioni|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|braccio|pols[io]|collo|rigido|rigida|fluido|fluida|buon[ao]|ottimo|ottima|difficolt[àa]|pesante|pesantezza|leggero|leggera|facile|cedimento|fatica|assetto|controllo|velocit[àa]|esplosivit[àa]|pattern\s*motorio|bruciore|carico|spinta|stabilit[àa]|dolore|fitta|calo|energia|stanco|stanca|affaticat[ao])/i.test(
+    const haParoleQualitative = /(?:sentivo|avvertivo|sensazione|sensazioni|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|braccio|pols[io]|collo|rigido|rigida|fluido|fluida|buon[ao]|ottimo|ottima|difficolt[àa]|pesante|pesantezza|leggero|leggera|facile|cedimento|fatica|assetto|controllo|velocit[àa]|esplosivit[àa]|pattern\s*motorio|bruciore|carico|spinta|stabilit[àa]|dolore|fitta|calo|energia|stanco|stanca|affaticat[ao]|sporca|sporco|sporcizia|compenso|compensato|in\s*modo\s*sporco|tecnica)/i.test(
       lower
     );
     if (haParoleQualitative) {
-      let pulita = trimCl.replace(/^(?:e\s+|ed\s+|anche\s+|poi\s+)+/gi, "").replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?(?:\s*e\s*mezzo)?/gi, "").replace(/\b(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:kg|chili)\b/gi, "").trim();
+      let pulita = trimCl.replace(/^(?:la\s+)?(?:prima|seconda|terza|quarta|quinta)?\s*(?:serie)?\s*(?:con\s+)?[0-9]+(?:\.[0-9]+)?\s*(?:kg|chili)?\s*(?:[0-9]+\s*(?:ripetizioni|colpi|rep)?)?/gi, "").replace(/^(?:e\s+|ed\s+|anche\s+|poi\s+)+/gi, "").replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?(?:\s*e\s*mezzo)?/gi, "").replace(/\b(?:con\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:kg|chili)\b/gi, "").trim();
       if (pulita.length > 3) {
         clausoleNote.push(pulita);
       }
     }
   }
   if (clausoleNote.length === 0) {
-    const lowerAll = sanitized.toLowerCase();
-    const matchSensazioni = sanitized.match(
-      /(?:sentivo|sensazion[ei]|spalla|schiena|femorale|gluteo|ginocchio|anca|gamba|rigido|rigida|fluido|buon[ao]|ottimo|cedimento|controllo).+/i
-    );
-    if (matchSensazioni) {
-      let candidate = matchSensazioni[0].replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?/gi, "").trim();
+    const matchQual = sanitized.match(/(?:sporca|sporco|in\s+modo\s+sporco|compenso|fatica|rigida|dolore).+/i);
+    if (matchQual) {
+      let candidate = matchQual[0].replace(/\b(?:r\.?p\.?e\.?|sforzo)\s*[0-9]+(?:[.,][0-9]+)?/gi, "").trim();
       if (candidate.length > 4) {
         return sanitizzaTermineBiomeccanica(candidate.charAt(0).toUpperCase() + candidate.slice(1));
       }
@@ -40867,18 +40897,8 @@ function estraiNoteQualitative(testo) {
   }
   return null;
 }
-function parseWorkoutSetDeterministic(testo) {
+function parseSingleSetUnit(testo, setNumero = 1) {
   const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
-  if (!sanitized) {
-    return {
-      success: false,
-      carico_kg: null,
-      ripetizioni: null,
-      rpe: null,
-      note: null,
-      raw_text: ""
-    };
-  }
   const lower = sanitized.toLowerCase();
   let carico_kg = null;
   let ripetizioni = null;
@@ -40922,8 +40942,8 @@ function parseWorkoutSetDeterministic(testo) {
     }
     if (carico_kg === null) {
       const pCon = [
-        /(?:con|carico|peso|bilanciere\s*a|messo|caricato)\s+([0-9]+(?:[.,][0-9]+)?)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
-        /(?:con|carico|peso|bilanciere\s*a|messo|caricato)\s+([a-z]+)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i
+        /(?:con|carico|peso|bilanciere\s*a|messo|caricato|scalato\s*a)\s+([0-9]+(?:[.,][0-9]+)?)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i,
+        /(?:con|carico|peso|bilanciere\s*a|messo|caricato|scalato\s*a)\s+([a-z]+)(?:\s*e\s*mezzo)?(?!\s*(?:colpi|rep|ripetizioni|volte))/i
       ];
       for (const pat of pCon) {
         const m = lower.match(pat);
@@ -40938,69 +40958,190 @@ function parseWorkoutSetDeterministic(testo) {
       }
     }
     if (carico_kg === null) {
-      const mCross = lower.match(/([0-9]+(?:[.,][0-9]+)?)\s*x\s*([0-9]+)/i);
-      if (mCross) {
-        const n1 = parseFloat(mCross[1].replace(",", "."));
-        const n2 = parseInt(mCross[2], 10);
-        if (!isNaN(n1) && !isNaN(n2)) {
-          carico_kg = n1;
-          if (ripetizioni === null) ripetizioni = n2;
-        }
+      const mDirectKg = lower.match(/\b([0-9]+(?:[.,][0-9]+)?)\s*(?:kg|chili)\b/i);
+      if (mDirectKg) {
+        const n = parseFloat(mDirectKg[1].replace(",", "."));
+        if (!isNaN(n)) carico_kg = n;
       }
     }
   }
-  if (ripetizioni === null) {
-    const repPatterns = [
-      /([0-9]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
-      /([a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
-      /(?:fatte|chiuse|fatti|eseguite|tirate|chiuso|fatto)\s+([0-9]+|[a-z]+)/i,
-      /(?:ceduto\s+alla|mollato\s+alla)\s+([0-9]+a?|prima|seconda|terza|quarta|quinta|sesta|settima|ottava|nona|decima)/i
-    ];
-    const ordinali = {
-      prima: 1,
-      seconda: 2,
-      terza: 3,
-      quarta: 4,
-      quinta: 5,
-      sesta: 6,
-      settima: 7,
-      ottava: 8,
-      nona: 9,
-      decima: 10
-    };
-    for (const pat of repPatterns) {
-      const m = lower.match(pat);
-      if (m) {
-        const raw = m[1].toLowerCase().replace(/a$/, "");
-        if (ordinali[raw] !== void 0) {
-          ripetizioni = ordinali[raw];
-          break;
-        }
-        const val = parseNumeroParola(raw);
-        if (val !== null && val >= 1 && val <= 100) {
-          ripetizioni = Math.round(val);
-          break;
-        }
+  const repPatterns = [
+    /([0-9]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
+    /([a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip|volte)/i,
+    /(?:fatte|chiuse|fatti|eseguite|tirate|chiuso|fatto)\s+([0-9]+|[a-z]+)/i,
+    /(?:chiuso\s+con|chiuso\s+a)\s+([0-9]+|[a-z]+)\s*(?:rep|colpi|ripetizioni)?/i,
+    /(?:ceduto\s+alla|mollato\s+alla)\s+([0-9]+a?|prima|seconda|terza|quarta|quinta|sesta|settima|ottava|nona|decima)/i
+  ];
+  const ordinali = {
+    prima: 1,
+    seconda: 2,
+    terza: 3,
+    quarta: 4,
+    quinta: 5,
+    sesta: 6,
+    settima: 7,
+    ottava: 8,
+    nona: 9,
+    decima: 10
+  };
+  for (const pat of repPatterns) {
+    const m = lower.match(pat);
+    if (m) {
+      const raw = m[1].toLowerCase().replace(/a$/, "");
+      if (ordinali[raw] !== void 0) {
+        ripetizioni = ordinali[raw];
+        break;
       }
-    }
-  }
-  if (ripetizioni === null) {
-    const startNumMatch = lower.match(/^(?:allora\s+|dunque\s+)?([0-9]+|[a-z]+)\s+(?:con|a|al|per)\s+/i);
-    if (startNumMatch) {
-      const val = parseNumeroParola(startNumMatch[1]);
-      if (val !== null && val >= 1 && val <= 50) {
+      const val = parseNumeroParola(raw);
+      if (val !== null && val >= 1 && val <= 100) {
         ripetizioni = Math.round(val);
+        break;
       }
     }
   }
-  const note = estraiNoteQualitative(sanitized);
-  const success = carico_kg !== null || ripetizioni !== null || rpe !== null;
+  const noteQual = estraiNoteQualitative(sanitized);
   return {
-    success,
+    set_numero: setNumero,
     carico_kg,
     ripetizioni,
     rpe,
-    note,
+    note: noteQual
+  };
+}
+function valutaCoachAlert(sets, testoCompleto, targetPrescrizione) {
+  const lower = testoCompleto.toLowerCase();
+  const haTecnicaSporca = /(?:sporca|sporco|in\s*modo\s*sporco|sporcizia|compenso|compensato|schiena\s*inarcata|strappato|forzata|cedimento\s*non\s*controllato|brutta\s*esecuzione)/i.test(
+    lower
+  );
+  let targetRpeMax = 8.5;
+  if (typeof targetPrescrizione === "number") {
+    targetRpeMax = targetPrescrizione;
+  } else if (typeof targetPrescrizione === "object" && targetPrescrizione !== null) {
+    if (typeof targetPrescrizione.rpeTargetMax === "number") {
+      targetRpeMax = targetPrescrizione.rpeTargetMax;
+    } else {
+      const s = targetPrescrizione.targetPrescrizione || targetPrescrizione.parametri || "";
+      const mTarget = s.match(/rpe\s*(?:tra|fra)?\s*([0-9]+(?:\.[0-9]+)?)(?:\s*(?:-|e|ed|a)\s*([0-9]+(?:\.[0-9]+)?))?/i);
+      if (mTarget) {
+        const v1 = parseFloat(mTarget[1]);
+        const v2 = mTarget[2] ? parseFloat(mTarget[2]) : v1;
+        if (!isNaN(v2)) targetRpeMax = Math.max(v1, v2);
+      }
+    }
+  } else if (typeof targetPrescrizione === "string") {
+    const mTarget = targetPrescrizione.match(/rpe\s*(?:tra|fra)?\s*([0-9]+(?:\.[0-9]+)?)(?:\s*(?:-|e|ed|a)\s*([0-9]+(?:\.[0-9]+)?))?/i);
+    if (mTarget) {
+      const v1 = parseFloat(mTarget[1]);
+      const v2 = mTarget[2] ? parseFloat(mTarget[2]) : v1;
+      if (!isNaN(v2)) targetRpeMax = Math.max(v1, v2);
+    }
+  }
+  const setSforati = sets.filter((s) => {
+    if (!s.rpe) return false;
+    const n = parseFloat(s.rpe);
+    return !isNaN(n) && (n >= 9 || n > targetRpeMax);
+  });
+  if (haTecnicaSporca && setSforati.length > 0) {
+    const maxRpe = Math.max(...setSforati.map((s) => parseFloat(s.rpe)));
+    return {
+      tipo: "warning",
+      motivo: "tecnica_sporca",
+      titolo: "Richiamo Tecnico del Coach",
+      messaggio: `Attento: c'\xE8 un motivo se ti viene richiesta tecnica impeccabile e un RPE controllato! Raggiungere RPE ${maxRpe.toFixed(1)} sporcando il movimento vanifica il transfer motorio e stressa le articolazioni. Mantieni un'esecuzione pulita e scala il carico. Se hai dubbi chiedi a Stefano al Lab.`
+    };
+  }
+  if (haTecnicaSporca) {
+    return {
+      tipo: "warning",
+      motivo: "tecnica_sporca",
+      titolo: "Qualit\xE0 del Movimento Sotto Target",
+      messaggio: "Attento: l'esecuzione sporca o compensata interrompe la linea di spinta corretta. Dai la precedenza alla tecnica impeccabile rispetto al carico sollevato: riduci il peso alla serie successiva per mantenere il pattern motorio pulito."
+    };
+  }
+  if (setSforati.length > 0) {
+    const maxRpe = Math.max(...setSforati.map((s) => parseFloat(s.rpe)));
+    return {
+      tipo: "warning",
+      motivo: "rpe_sforato",
+      titolo: "RPE Oltre la Prescrizione",
+      messaggio: `Hai toccato RPE ${maxRpe.toFixed(1)} a fronte di un target raccomandato di RPE ${targetRpeMax.toFixed(1)}. Non forzare a cedimento: fermati con il giusto margine (buffer) per garantire la corretta progressione nel ciclo. Chiedi al coach se devi aggiustare il carico.`
+    };
+  }
+  const haFastidio = /(?:dolore|fitta|male\s+alla|fastidio\s+al|fastidio\s+alla|blocco)/i.test(lower);
+  if (haFastidio) {
+    return {
+      tipo: "warning",
+      motivo: "fastidio_articolare",
+      titolo: "Attenzione Clinico-Articolare",
+      messaggio: "Hai segnalato un fastidio o indolenzimento articolare. Applica la Modalit\xE0 B del Lab: non forzare sul punto critico, decomprimi con mobilit\xE0 a terra e segnala la sensazione al coach durante la seduta."
+    };
+  }
+  return null;
+}
+function parseWorkoutSetDeterministic(testo, targetPrescrizione) {
+  const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
+  if (!sanitized) {
+    return {
+      success: false,
+      is_multi_set: false,
+      sets: [],
+      carico_kg: null,
+      ripetizioni: null,
+      rpe: null,
+      note: null,
+      coach_feedback: null,
+      raw_text: ""
+    };
+  }
+  const lower = sanitized.toLowerCase();
+  const ordinalMarkersRegex = /(?:\b(?:la\s+)?prima\s+serie\b|\bprimo\s+set\b|\bset\s+1\b|\bla\s+prima\b)|(?:\b(?:la\s+)?seconda\s+serie\b|\bsecondo\s+set\b|\bset\s+2\b|\bla\s+seconda\b)|(?:\b(?:la\s+)?terza\s+serie\b|\bterzo\s+set\b|\bset\s+3\b|\bla\s+terza\b)|(?:\b(?:la\s+)?quarta\s+serie\b|\bquarto\s+set\b|\bset\s+4\b|\bla\s+quarta\b)|(?:\b(?:la\s+)?quinta\s+serie\b|\bquinto\s+set\b|\bset\s+5\b|\bla\s+quinta\b)/gi;
+  const matches = [];
+  let m;
+  while ((m = ordinalMarkersRegex.exec(lower)) !== null) {
+    matches.push({ index: m.index, text: m[0] });
+  }
+  if (matches.length >= 2) {
+    const rawSegments = [];
+    for (let i = 0; i < matches.length; i++) {
+      const start = matches[i].index;
+      const end = i < matches.length - 1 ? matches[i + 1].index : sanitized.length;
+      rawSegments.push(sanitized.substring(start, end));
+    }
+    const setsList = [];
+    const noteAggregate = [];
+    rawSegments.forEach((seg, idx) => {
+      const setParsed = parseSingleSetUnit(seg, idx + 1);
+      setsList.push(setParsed);
+      if (setParsed.note) {
+        noteAggregate.push(`Serie ${idx + 1}: ${setParsed.note}`);
+      }
+    });
+    const coachFeedback2 = valutaCoachAlert(setsList, sanitized, targetPrescrizione);
+    const first = setsList[0] || { carico_kg: null, ripetizioni: null, rpe: null };
+    const finalNote = noteAggregate.length > 0 ? noteAggregate.join("; ") : estraiNoteQualitative(sanitized);
+    return {
+      success: setsList.some((s) => s.carico_kg !== null || s.ripetizioni !== null || s.rpe !== null),
+      is_multi_set: true,
+      sets: setsList,
+      carico_kg: first.carico_kg,
+      ripetizioni: first.ripetizioni,
+      rpe: first.rpe,
+      note: finalNote,
+      coach_feedback: coachFeedback2,
+      raw_text: sanitized
+    };
+  }
+  const singleParsed = parseSingleSetUnit(sanitized, 1);
+  const coachFeedback = valutaCoachAlert([singleParsed], sanitized, targetPrescrizione);
+  return {
+    success: singleParsed.carico_kg !== null || singleParsed.ripetizioni !== null || singleParsed.rpe !== null,
+    is_multi_set: false,
+    sets: [singleParsed],
+    carico_kg: singleParsed.carico_kg,
+    ripetizioni: singleParsed.ripetizioni,
+    rpe: singleParsed.rpe,
+    note: singleParsed.note,
+    coach_feedback: coachFeedback,
     raw_text: sanitized
   };
 }
@@ -41020,24 +41161,39 @@ async function parseVoiceWorkoutSet(input) {
     try {
       const systemInstruction = `
 Sei l'Agente Voice Workout Logger (Aura & Socrates) di Area46 Landmine Lab.
-Il tuo compito \xE8 ascoltare/analizzare la dettatura vocale libera dell'atleta registrata dopo la serie ed estrarre i parametri numerici e le note in formato JSON.
+Il tuo compito \xE8 ascoltare/analizzare la dettatura vocale libera dell'atleta dopo le serie ed estrarre i parametri numerici e le note in formato JSON.
 
-REGOLE DI INTERPRETAZIONE:
-1. "carico_kg": numero intero o decimale espresso in kg (es. "cinquanta chili" -> 50, "42 e mezzo" -> 42.5, "a corpo libero" -> 0).
-2. "ripetizioni": intero di ripetizioni o colpi eseguiti (es. "8 ripetizioni", "sei colpi", "fatte 10" -> 8, 6, 10).
-3. "rpe": valore stringa con decimale.
-   - SE L'ATLETA INDICA UN RANGE O UN'INCERTEZZA (es. "tra 7.5 e 8.5", "otto o nove", "fra 7 e 8", "sforzo 8 e mezzo"),
-     CALCOLA LA MEDIA ESATTA DI BUON SENSO (es. (7.5+8.5)/2 = 8.0 -> "8.0", (8+9)/2 = 8.5 -> "8.5").
-   - SE PARLA DI BUFFER/RIR: "due in canna" -> "8.0", "una in canna" -> "9.0", "a tutta/cedimento" -> "10.0".
-4. "note": frase ordinata e pulita in italiano con le sensazioni muscolari o articolari.
+REGOLE DI INTERPRETAZIONE MULTI-SERIE:
+1. Se l'atleta descrive pi\xF9 serie (es: "la prima serie... la seconda... la terza..."), estrai l'array "sets" con ogni singola serie numerata.
+2. "carico_kg": numero intero o decimale in kg (es. "cinquanta chili" -> 50, "42 e mezzo" -> 42.5, "a corpo libero" -> 0).
+3. "ripetizioni": intero di ripetizioni o colpi eseguiti (es. "8 ripetizioni", "sei colpi" -> 8, 6).
+4. "rpe": valore stringa con decimale. Risolvi range calcolando la media esatta (es. "tra 7.5 e 8.5" -> "8.0", "ad rep 9" / "rpe 9" -> "9.0").
+5. "note": frase ordinata e pulita in italiano con le sensazioni muscolari o articolari.
    DIVIETO ASSOLUTO del termine "biomeccanica": usa "pattern motorio" o "economia del gesto".
+
+COACH GUARDRAIL:
+Se l'atleta segnala tecnica sporca, compensi, forzature o RPE >= 9.0 (o superiore alla prescrizione ${input.targetPrescrizione || "N/D"}),
+compila il campo "coach_feedback" con avviso autorevole ed empatico per l'atleta.
 
 Rispondi ESCLUSIVAMENTE con un JSON valido:
 {
-  "carico_kg": number | null,
-  "ripetizioni": number | null,
-  "rpe": string | null,
-  "note": string | null,
+  "is_multi_set": boolean,
+  "sets": [
+    {
+      "set_numero": number,
+      "carico_kg": number | null,
+      "ripetizioni": number | null,
+      "rpe": string | null,
+      "note": string | null
+    }
+  ],
+  "note_generali": string | null,
+  "coach_feedback": {
+    "tipo": "warning" | "info",
+    "motivo": "tecnica_sporca" | "rpe_sforato" | "fastidio_articolare",
+    "titolo": string,
+    "messaggio": string
+  } | null,
   "trascrizione": string
 }
 `;
@@ -41078,27 +41234,34 @@ Rispondi ESCLUSIVAMENTE con un JSON valido:
         if (textResponse) {
           const parsed = JSON.parse(textResponse);
           const rawText = parsed.trascrizione || input.text || "";
-          let finalRpe = parsed.rpe ? String(parsed.rpe).trim() : null;
-          if (finalRpe && (finalRpe.includes("-") || finalRpe.includes("e") || finalRpe.includes("o"))) {
-            const resolved = resolveRpeRange(finalRpe);
-            if (resolved) finalRpe = resolved;
-          }
+          const isMulti = Boolean(parsed.is_multi_set && Array.isArray(parsed.sets) && parsed.sets.length > 1);
+          const setsArr = Array.isArray(parsed.sets) ? parsed.sets.map((s, idx) => ({
+            set_numero: s.set_numero || idx + 1,
+            carico_kg: s.carico_kg !== void 0 ? s.carico_kg : null,
+            ripetizioni: s.ripetizioni !== void 0 ? s.ripetizioni : null,
+            rpe: s.rpe ? String(s.rpe) : null,
+            note: s.note ? sanitizzaTermineBiomeccanica(s.note) : null
+          })) : [];
+          const first = setsArr[0] || { carico_kg: null, ripetizioni: null, rpe: null };
           return {
             success: true,
-            carico_kg: parsed.carico_kg !== void 0 ? parsed.carico_kg : null,
-            ripetizioni: parsed.ripetizioni !== void 0 ? parsed.ripetizioni : null,
-            rpe: finalRpe,
-            note: sanitizzaTermineBiomeccanica(parsed.note || ""),
+            is_multi_set: isMulti,
+            sets: setsArr,
+            carico_kg: first.carico_kg,
+            ripetizioni: first.ripetizioni,
+            rpe: first.rpe,
+            note: sanitizzaTermineBiomeccanica(parsed.note_generali || first.note || ""),
+            coach_feedback: parsed.coach_feedback || null,
             raw_text: sanitizzaTermineBiomeccanica(rawText) || ""
           };
         }
       }
     } catch (err) {
-      console.warn("Chiamata Gemini fallita, utilizzo motore semantico deterministico:", err);
+      console.warn("Chiamata Gemini fallita, passaggio al motore deterministico NLP:", err);
     }
   }
   const sourceText = input.text || "";
-  return parseWorkoutSetDeterministic(sourceText);
+  return parseWorkoutSetDeterministic(sourceText, input.targetPrescrizione);
 }
 
 // server/audio-feedback-repo.ts
@@ -45866,6 +46029,16 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
       res.statusCode = 401;
       return res.end(JSON.stringify({ error: "Non autorizzato" }));
     }
+    let aiAnalysisResult = null;
+    if (parsedBody.tipo === "feedback_seduta") {
+      aiAnalysisResult = fallbackClinicalAnalysis("biofeedback_workout", {
+        livello: parsedBody.livello,
+        giorno: parsedBody.giorno,
+        rpe: Number(parsedBody.rpe_globale) || 8,
+        sensazioni: parsedBody.sensazioni || [],
+        noteTesto: parsedBody.note_cinestesiche || parsedBody.note || parsedBody.feedback || ""
+      });
+    }
     const newEntry = {
       id: Date.now(),
       email_cliente: authorEmail,
@@ -45883,6 +46056,10 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
       serie: parsedBody.sets_json ? null : parsedBody.serie ?? null,
       sets_json: parsedBody.sets_json ?? null,
       rpe_json: parsedBody.rpe_json ?? null,
+      ai_allerta: aiAnalysisResult?.allerta ?? null,
+      ai_sintesi: aiAnalysisResult?.sintesi ?? null,
+      ai_proposta_azione: aiAnalysisResult?.proposta_azione ?? null,
+      consiglio_coach: aiAnalysisResult?.consiglio_coach ?? null,
       data_ora: (/* @__PURE__ */ new Date()).toISOString(),
       created_at: (/* @__PURE__ */ new Date()).toISOString()
     };
@@ -45896,7 +46073,7 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
     });
     saveData(db);
     res.statusCode = 201;
-    return res.end(JSON.stringify(newEntry));
+    return res.end(JSON.stringify({ ...newEntry, ai: aiAnalysisResult }));
   }
   const diarioPatchMatch = pathname.match(/^\/app-api\/diario\/(\d+)$/);
   if (diarioPatchMatch && method === "PATCH") {
@@ -46069,6 +46246,7 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
           ai_allerta: aiAnalysis.allerta,
           ai_sintesi: aiAnalysis.sintesi,
           ai_proposta_azione: aiAnalysis.proposta_azione,
+          consiglio_coach: aiAnalysis.consiglio_coach || aiAnalysis.proposta_azione || null,
           data_ora: (/* @__PURE__ */ new Date()).toISOString(),
           created_at: (/* @__PURE__ */ new Date()).toISOString()
         };
