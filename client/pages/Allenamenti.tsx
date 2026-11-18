@@ -17,6 +17,7 @@ import {
   BookOpen,
   Sparkles,
   ExternalLink,
+  ArrowRight,
 } from "lucide-react";
 import {
   Select,
@@ -935,18 +936,31 @@ export default function AllenamentiPage() {
             {haNuoviApprofondimenti && !isApprofondimenti && ultimoVideoNuovo && (
               <div
                 onClick={() => setLivello("Approfondimenti ed extra")}
-                className="rounded-xl px-3.5 py-2 flex items-center justify-between gap-3 cursor-pointer transition-all hover:bg-amber-500/15 border border-amber-500/40 bg-amber-500/10 text-amber-950 shadow-2xs group"
-                title="Tocca per visualizzare il nuovo approfondimento"
+                className="w-full rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-amber-500/15 border border-amber-500/35 bg-amber-500/10 shadow-xs group"
+                title="Tocca per andare ai video e ai contenuti extra del Lab"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-base shrink-0 animate-bounce">🔥</span>
-                  <p className="text-xs font-bold truncate">
-                    Nuovo: <span className="font-extrabold underline">{ultimoVideoNuovo.nome_esercizio}</span>
-                  </p>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/25 border border-amber-400/40 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1.5">
+                  <span className="text-xs">🔥</span>
+                  <span>Nuovo Approfondimento Lab</span>
                 </div>
-                <span className="text-xs font-black underline shrink-0 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                  Leggi ora →
-                </span>
+                
+                <h4 className="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug px-2 max-w-md mx-auto">
+                  {ultimoVideoNuovo.nome_esercizio}
+                </h4>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLivello("Approfondimenti ed extra");
+                  }}
+                  className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black bg-amber-400 hover:bg-amber-300 text-zinc-950 transition-all shadow-xs cursor-pointer active:scale-95 group-hover:bg-amber-300"
+                  title="Vai ai video e contenuti extra del Lab"
+                >
+                  <BookOpen className="size-3.5" />
+                  <span>Leggi ora</span>
+                  <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                </button>
               </div>
             )}
           </div>

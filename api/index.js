@@ -35066,8 +35066,8 @@ var demo_data_default = {
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
-      memoria_livello: "PRO",
-      updated_at: "2026-11-18T17:55:52.711Z"
+      memoria_livello: "Approfondimenti ed extra",
+      updated_at: "2026-11-18T19:03:26.478Z"
     },
     {
       email_cliente: "silvia.brenzini@gmail.com",
@@ -41471,7 +41471,11 @@ firenzepersonaltrainer@gmail.com`,
       tipo: "benvenuto_nuovo_atleta",
       stato: "inviata"
     }
-  ]
+  ],
+  shadow_event_log: [],
+  audio_note_feedback: [],
+  app_segnalazioni_bug: [],
+  active_user_id: null
 };
 
 // server/ai-audio-analyzer.ts
