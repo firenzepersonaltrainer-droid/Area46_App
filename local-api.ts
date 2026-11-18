@@ -12,9 +12,12 @@ import {
   getAudioNotes,
   updateAudioNoteStatus,
   updateAudioNoteAnalysis,
+  deleteAudioNotePermanently,
   insertAppSegnalazione,
   getAppSegnalazioni,
   updateAppSegnalazioneStatus,
+  deleteAppSegnalazionePermanently,
+  setMemoryStore,
 } from "./server/audio-feedback-repo";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -113,6 +116,11 @@ function loadData() {
   }
   loaded.richieste_cancellazione_tardiva = loaded.richieste_cancellazione_tardiva || [];
   loaded.shadow_event_log = loaded.shadow_event_log || [];
+  loaded.audio_note_feedback = loaded.audio_note_feedback || [];
+  loaded.app_segnalazioni_bug = loaded.app_segnalazioni_bug || [];
+  try {
+    setMemoryStore(loaded.audio_note_feedback, loaded.app_segnalazioni_bug);
+  } catch {}
   return loaded;
 }
 
@@ -5658,6 +5666,7 @@ CALENDARIO E PRENOTAZIONI:
         }
 
         const audioUrl = `/uploads/audio_notes/${audioFileName}`;
+        const clientTranscript = parsedBody.transcript || parsedBody.trascrizione_live || "";
 
         // Esecuzione Pipeline Agente AI di Trascrizione & Analisi Clinico-Semantica
         const aiAnalysis = await analyzeAudioWithGemini(fullFilePath, effectiveContesto, {
@@ -5666,25 +5675,33 @@ CALENDARIO E PRENOTAZIONI:
           rpe: Number(rpe) || undefined,
           sensazioni,
           noteTesto,
+          trascrizioneLive: clientTranscript,
           tipoSegnalazione,
           titolo,
           descrizione,
           deviceInfo,
         });
 
-        // Inserimento permanente nel database SQLite
+        // Inserimento permanente nel database SQLite e memoria
         const audioRecord = insertAudioNote({
           utente_id: utenteId,
           email_cliente: emailCliente,
+          nome_cliente: currentUser?.name || currentUser?.nome || null,
           contesto: effectiveContesto,
           audio_url: audioUrl,
+          audio_base64: rawAudio || null,
           durata_sec: effectiveDuration,
-          trascrizione_testo: aiAnalysis.trascrizione,
+          trascrizione_testo: aiAnalysis.trascrizione || clientTranscript || null,
           ai_allerta: aiAnalysis.allerta,
           ai_sintesi: aiAnalysis.sintesi,
           ai_proposta_azione: aiAnalysis.proposta_azione,
           stato: "nuovo",
         });
+
+        // Persistenza blindata su db JSON principale
+        db.audio_note_feedback = db.audio_note_feedback || [];
+        db.audio_note_feedback.unshift(audioRecord);
+        saveData(db);
 
         // Se è un biofeedback di allenamento, arricchiamo anche il diario utente
         if (effectiveContesto === "biofeedback_workout" && emailCliente) {
@@ -5696,10 +5713,11 @@ CALENDARIO E PRENOTAZIONI:
             giorno: giorno ?? null,
             rpe_globale: Number(rpe) || 8,
             sensazioni: sensazioni || [],
-            note_cinestesiche: aiAnalysis.trascrizione || noteTesto || null,
+            note_cinestesiche: aiAnalysis.trascrizione || clientTranscript || noteTesto || null,
             nome_esercizio: `Feedback Vocale Giorno ${giorno || ""}`,
             feedback: `Nota Vocale (${effectiveDuration}s) • ${aiAnalysis.sintesi} • Allerta: ${aiAnalysis.allerta.toUpperCase()}`,
             audio_url: audioUrl,
+            audio_base64: rawAudio || null,
             ai_allerta: aiAnalysis.allerta,
             ai_sintesi: aiAnalysis.sintesi,
             ai_proposta_azione: aiAnalysis.proposta_azione,
@@ -5719,12 +5737,17 @@ CALENDARIO E PRENOTAZIONI:
             anonimo: effectiveAnonimo,
             tipo: (tipoSegnalazione as any) || "consiglio",
             titolo: titolo || "Nota Vocale Feedback",
-            descrizione: descrizione || aiAnalysis.trascrizione || "Nessuna descrizione testuale",
+            descrizione: descrizione || aiAnalysis.trascrizione || clientTranscript || "Nessuna descrizione testuale",
             audio_id: audioRecord.id,
+            audio_base64: rawAudio || null,
             device_info: deviceInfo || "Web / Mobile",
             ai_diagnosi_tecnica: aiAnalysis.diagnosi_tecnica || "In attesa di revisione",
             stato: "aperto",
           });
+
+          db.app_segnalazioni_bug = db.app_segnalazioni_bug || [];
+          db.app_segnalazioni_bug.unshift(bugRecord);
+          saveData(db);
         }
 
         res.statusCode = 201;
@@ -5748,25 +5771,60 @@ CALENDARIO E PRENOTAZIONI:
       const contesto = url.searchParams.get("contesto") || undefined;
       const stato = url.searchParams.get("stato") || undefined;
       const email = url.searchParams.get("email") || undefined;
-      const notes = getAudioNotes({ contesto, stato, email });
+      
+      const rawDb = db.audio_note_feedback || [];
+      const rawSql = getAudioNotes();
+      const map = new Map<number, any>();
+      rawDb.forEach((n: any) => { if (n && n.id) map.set(Number(n.id), n); });
+      rawSql.forEach((n: any) => {
+        if (n && n.id) {
+          const existing = map.get(Number(n.id)) || {};
+          map.set(Number(n.id), { ...existing, ...n });
+        }
+      });
+      let notes = Array.from(map.values());
+      if (contesto) notes = notes.filter((n: any) => n.contesto === contesto);
+      if (stato) {
+        if (stato === "tutti") notes = notes.filter((n: any) => n.stato !== "cestino");
+        else if (stato === "gestito") notes = notes.filter((n: any) => ["ascoltato", "applicato", "archiviato"].includes(n.stato));
+        else notes = notes.filter((n: any) => n.stato === stato);
+      }
+      if (email) notes = notes.filter((n: any) => (n.email_cliente || "").toLowerCase() === email.toLowerCase());
+      notes.sort((a: any, b: any) => (b.id || 0) - (a.id || 0));
       return res.end(JSON.stringify(notes));
     }
 
-    // PATCH /app-api/audio-notes/:id (Aggiorna stato nota audio: 'ascoltato', 'applicato', 'archiviato')
+    // PATCH /app-api/audio-notes/:id (Aggiorna stato nota audio)
     const matchAudioPatch = pathname.match(/^\/app-api\/audio-notes\/(\d+)$/);
     if (matchAudioPatch && method === "PATCH") {
       const id = parseInt(matchAudioPatch[1], 10);
       const stato = parsedBody.stato;
-      if (!stato || !["nuovo", "ascoltato", "applicato", "archiviato"].includes(stato)) {
+      if (!stato || !["nuovo", "ascoltato", "applicato", "archiviato", "cestino"].includes(stato)) {
         res.statusCode = 400;
         return res.end(JSON.stringify({ error: "Stato non valido" }));
       }
       const updated = updateAudioNoteStatus(id, stato);
-      if (!updated) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "Nota non trovata" }));
+      if (db.audio_note_feedback) {
+        const found = db.audio_note_feedback.find((n: any) => Number(n.id) === id);
+        if (found) {
+          found.stato = stato;
+          saveData(db);
+        }
       }
-      return res.end(JSON.stringify(updated));
+      return res.end(JSON.stringify(updated || { id, stato }));
+    }
+
+    // DELETE /app-api/audio-notes/:id (Elimina definitivamente nota audio)
+    const matchAudioDelete = pathname.match(/^\/app-api\/audio-notes\/(\d+)$/);
+    if (matchAudioDelete && method === "DELETE") {
+      const id = parseInt(matchAudioDelete[1], 10);
+      deleteAudioNotePermanently(id);
+      if (db.audio_note_feedback) {
+        db.audio_note_feedback = db.audio_note_feedback.filter((n: any) => Number(n.id) !== id);
+        saveData(db);
+      }
+      res.statusCode = 200;
+      return res.end(JSON.stringify({ ok: true, deleted: id }));
     }
 
     // POST /app-api/segnalazioni-bug (Invio segnalazione bug/consiglio con o senza audio)
@@ -5778,23 +5836,29 @@ CALENDARIO E PRENOTAZIONI:
           descrizione,
           anonimo,
           audio_id,
+          audioBase64,
+          audio_base64,
+          transcript,
+          trascrizione_live,
           device_info,
         } = parsedBody;
 
-        if (!titolo || !descrizione) {
+        if (!titolo && !descrizione && !audioBase64 && !audio_base64) {
           res.statusCode = 400;
-          return res.end(JSON.stringify({ error: "Titolo e descrizione sono obbligatori" }));
+          return res.end(JSON.stringify({ error: "Titolo o registrazione vocale obbligatori" }));
         }
 
         const isAnon = !!anonimo;
         const utenteId = isAnon ? null : (currentUser?.id || null);
         const emailCliente = isAnon ? null : (currentUser?.email || null);
+        const clientTranscript = transcript || trascrizione_live || "";
 
         // Diagnosi preliminare intelligente
         const fallbackDiag = fallbackClinicalAnalysis("app_feedback", {
           tipoSegnalazione: tipo,
-          titolo,
-          descrizione,
+          titolo: titolo || "Segnalazione Atleta",
+          descrizione: descrizione || clientTranscript || "Nessun dettaglio",
+          trascrizioneLive: clientTranscript,
           deviceInfo: device_info,
         });
 
@@ -5803,13 +5867,18 @@ CALENDARIO E PRENOTAZIONI:
           email_cliente: emailCliente,
           anonimo: isAnon,
           tipo: (tipo as any) || "consiglio",
-          titolo,
-          descrizione,
+          titolo: titolo || (clientTranscript ? `Nota Vocale: ${clientTranscript.substring(0, 30)}...` : "Segnalazione"),
+          descrizione: descrizione || clientTranscript || "Nota vocale allegata",
           audio_id: audio_id ? Number(audio_id) : null,
+          audio_base64: audioBase64 || audio_base64 || null,
           device_info: device_info || "Browser Web",
-          ai_diagnosi_tecnica: fallbackDiag.diagnosi_tecnica || "Da verificare",
+          ai_diagnosi_tecnica: fallbackDiag.diagnosi_tecnica || "In valutazione",
           stato: "aperto",
         });
+
+        db.app_segnalazioni_bug = db.app_segnalazioni_bug || [];
+        db.app_segnalazioni_bug.unshift(record);
+        saveData(db);
 
         res.statusCode = 201;
         return res.end(JSON.stringify(record));
@@ -5823,25 +5892,59 @@ CALENDARIO E PRENOTAZIONI:
     if (pathname === "/app-api/segnalazioni-bug" && method === "GET") {
       const stato = url.searchParams.get("stato") || undefined;
       const tipo = url.searchParams.get("tipo") || undefined;
-      const segnalazioni = getAppSegnalazioni({ stato, tipo });
+
+      const rawDb = db.app_segnalazioni_bug || [];
+      const rawSql = getAppSegnalazioni();
+      const map = new Map<number, any>();
+      rawDb.forEach((b: any) => { if (b && b.id) map.set(Number(b.id), b); });
+      rawSql.forEach((b: any) => {
+        if (b && b.id) {
+          const existing = map.get(Number(b.id)) || {};
+          map.set(Number(b.id), { ...existing, ...b });
+        }
+      });
+      let segnalazioni = Array.from(map.values());
+      if (stato) {
+        if (stato === "tutti") segnalazioni = segnalazioni.filter((b: any) => b.stato !== "cestino");
+        else if (stato === "gestito") segnalazioni = segnalazioni.filter((b: any) => ["in_valutazione", "risolto", "scartato"].includes(b.stato));
+        else segnalazioni = segnalazioni.filter((b: any) => b.stato === stato);
+      }
+      if (tipo) segnalazioni = segnalazioni.filter((b: any) => b.tipo === tipo);
+      segnalazioni.sort((a: any, b: any) => (b.id || 0) - (a.id || 0));
       return res.end(JSON.stringify(segnalazioni));
     }
 
-    // PATCH /app-api/segnalazioni-bug/:id (Aggiorna stato segnalazione: 'in_valutazione', 'risolto', 'scartato')
+    // PATCH /app-api/segnalazioni-bug/:id (Aggiorna stato segnalazione)
     const matchBugPatch = pathname.match(/^\/app-api\/segnalazioni-bug\/(\d+)$/);
     if (matchBugPatch && method === "PATCH") {
       const id = parseInt(matchBugPatch[1], 10);
       const stato = parsedBody.stato;
-      if (!stato || !["aperto", "in_valutazione", "risolto", "scartato"].includes(stato)) {
+      if (!stato || !["aperto", "in_valutazione", "risolto", "scartato", "cestino"].includes(stato)) {
         res.statusCode = 400;
         return res.end(JSON.stringify({ error: "Stato non valido" }));
       }
       const updated = updateAppSegnalazioneStatus(id, stato);
-      if (!updated) {
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ error: "Segnalazione non trovata" }));
+      if (db.app_segnalazioni_bug) {
+        const found = db.app_segnalazioni_bug.find((b: any) => Number(b.id) === id);
+        if (found) {
+          found.stato = stato;
+          saveData(db);
+        }
       }
-      return res.end(JSON.stringify(updated));
+      return res.end(JSON.stringify(updated || { id, stato }));
+    }
+
+    // DELETE /app-api/segnalazioni-bug/:id (Elimina definitivamente segnalazione)
+    const matchBugDelete = pathname.match(/^\/app-api\/segnalazioni-bug\/(\d+)$/);
+    if (matchBugDelete && method === "DELETE") {
+      const id = parseInt(matchBugDelete[1], 10);
+      deleteAppSegnalazionePermanently(id);
+      if (db.app_segnalazioni_bug) {
+        db.app_segnalazioni_bug = db.app_segnalazioni_bug.filter((b: any) => Number(b.id) !== id);
+        saveData(db);
+      }
+      res.statusCode = 200;
+      return res.end(JSON.stringify({ ok: true, deleted: id }));
     }
 
     // POST /app-api/process-audio-note (Trigger manuale o re-analisi pipeline Gemini)

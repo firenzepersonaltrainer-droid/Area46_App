@@ -298,6 +298,7 @@ function FeedbackSedutaModal({
     blob: Blob;
     base64: string;
     durationSec: number;
+    transcript?: string;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -324,7 +325,9 @@ function FeedbackSedutaModal({
             giorno,
             rpe,
             sensazioni: selectedSensazioni,
-            noteTesto: note,
+            noteTesto: note || recordedAudio.transcript || "",
+            transcript: recordedAudio.transcript || undefined,
+            trascrizione_live: recordedAudio.transcript || undefined,
           }),
         });
         if (res.ok) {

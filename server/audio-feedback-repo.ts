@@ -42,6 +42,15 @@ function getDbPath(): string {
 let inMemoryAudioNotes: any[] = [];
 let inMemoryBugs: any[] = [];
 
+export function setMemoryStore(notes: any[], bugs: any[]) {
+  if (Array.isArray(notes)) inMemoryAudioNotes = notes;
+  if (Array.isArray(bugs)) inMemoryBugs = bugs;
+}
+
+export function getMemoryStore() {
+  return { audioNotes: inMemoryAudioNotes, bugs: inMemoryBugs };
+}
+
 function getDb(): DatabaseSync | null {
   try {
     const targetPath = getDbPath();
@@ -51,14 +60,15 @@ function getDb(): DatabaseSync | null {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         utente_id TEXT,
         email_cliente TEXT,
-        contesto TEXT CHECK(contesto IN ('biofeedback_workout', 'app_feedback')),
+        contesto TEXT,
         audio_url TEXT NOT NULL,
+        audio_base64 TEXT,
         durata_sec INTEGER DEFAULT 0,
         trascrizione_testo TEXT,
-        ai_allerta TEXT CHECK(ai_allerta IN ('verde', 'giallo', 'rosso')) DEFAULT 'verde',
+        ai_allerta TEXT DEFAULT 'verde\,
         ai_sintesi TEXT,
         ai_proposta_azione TEXT,
-        stato TEXT CHECK(stato IN ('nuovo', 'ascoltato', 'applicato', 'archiviato')) DEFAULT 'nuovo',
+        stato TEXT DEFAULT 'nuovo\,
         data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -67,16 +77,26 @@ function getDb(): DatabaseSync | null {
         utente_id TEXT,
         email_cliente TEXT,
         anonimo BOOLEAN DEFAULT 0,
-        tipo TEXT CHECK(tipo IN ('consiglio', 'bug', 'altro')) DEFAULT 'consiglio',
+        tipo TEXT DEFAULT 'consiglio\,
         titolo TEXT NOT NULL,
         descrizione TEXT NOT NULL,
-        audio_id INTEGER REFERENCES audio_note_feedback(id),
+        audio_id INTEGER,
+        audio_base64 TEXT,
         device_info TEXT,
         ai_diagnosi_tecnica TEXT,
-        stato TEXT CHECK(stato IN ('aperto', 'in_valutazione', 'risolto', 'scartato')) DEFAULT 'aperto',
+        stato TEXT DEFAULT 'aperto\,
         data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+
+    // Migrazioni safe a caldo su colonne opzionali
+    try {
+      db.exec("ALTER TABLE audio_note_feedback ADD COLUMN audio_base64 TEXT;");
+    } catch {}
+    try {
+      db.exec("ALTER TABLE app_segnalazioni_bug ADD COLUMN audio_base64 TEXT;");
+    } catch {}
+
     return db;
   } catch (err) {
     console.warn("Avviso: fallback in-memory SQLite attivato:", err);
@@ -88,14 +108,16 @@ export interface AudioNoteRecord {
   id?: number;
   utente_id?: string | null;
   email_cliente?: string | null;
+  nome_cliente?: string | null;
   contesto: "biofeedback_workout" | "app_feedback";
   audio_url: string;
+  audio_base64?: string | null;
   durata_sec?: number;
   trascrizione_testo?: string | null;
   ai_allerta?: "verde" | "giallo" | "rosso";
   ai_sintesi?: string | null;
   ai_proposta_azione?: string | null;
-  stato?: "nuovo" | "ascoltato" | "applicato" | "archiviato";
+  stato?: "nuovo" | "ascoltato" | "applicato" | "archiviato" | "cestino";
   data_creazione?: string;
 }
 
@@ -108,9 +130,10 @@ export interface AppSegnalazioneRecord {
   titolo: string;
   descrizione: string;
   audio_id?: number | null;
+  audio_base64?: string | null;
   device_info?: string | null;
   ai_diagnosi_tecnica?: string | null;
-  stato?: "aperto" | "in_valutazione" | "risolto" | "scartato";
+  stato?: "aperto" | "in_valutazione" | "risolto" | "scartato" | "cestino";
   data_creazione?: string;
   audio_url?: string | null;
   durata_sec?: number | null;
@@ -124,9 +147,9 @@ export function insertAudioNote(record: AudioNoteRecord): AudioNoteRecord {
   if (db) {
     const stmt = db.prepare(`
       INSERT INTO audio_note_feedback (
-        utente_id, email_cliente, contesto, audio_url, durata_sec,
+        utente_id, email_cliente, contesto, audio_url, audio_base64, durata_sec,
         trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const info = stmt.run(
@@ -134,6 +157,7 @@ export function insertAudioNote(record: AudioNoteRecord): AudioNoteRecord {
       record.email_cliente || null,
       record.contesto,
       record.audio_url,
+      record.audio_base64 || null,
       record.durata_sec || 0,
       record.trascrizione_testo || null,
       record.ai_allerta || "verde",
@@ -146,7 +170,12 @@ export function insertAudioNote(record: AudioNoteRecord): AudioNoteRecord {
     const getStmt = db.prepare("SELECT * FROM audio_note_feedback WHERE id = ?");
     const row = getStmt.get(lastId) as any;
     db.close();
-    return row;
+
+    // Aggiorna anche store in memoria
+    if (row) {
+      inMemoryAudioNotes.unshift(row);
+    }
+    return row || record;
   }
 
   // Fallback in-memory resiliente
@@ -174,8 +203,14 @@ export function getAudioNotes(filter?: {
       params.push(filter.contesto);
     }
     if (filter?.stato) {
-      query += " AND stato = ?";
-      params.push(filter.stato);
+      if (filter.stato === "tutti") {
+        query += " AND stato != 'cestino'";
+      } else if (filter.stato === "gestito") {
+        query += " AND stato IN ('ascoltato\, 'applicato\, 'archiviato\)";
+      } else {
+        query += " AND stato = ?";
+        params.push(filter.stato);
+      }
     }
     if (filter?.email) {
       query += " AND email_cliente = ?";
@@ -185,12 +220,16 @@ export function getAudioNotes(filter?: {
 
     const rows = db.prepare(query).all(...params) as any[];
     db.close();
-    return rows;
+    if (rows && rows.length > 0) return rows;
   }
 
   return inMemoryAudioNotes.filter((n) => {
     if (filter?.contesto && n.contesto !== filter.contesto) return false;
-    if (filter?.stato && n.stato !== filter.stato) return false;
+    if (filter?.stato) {
+      if (filter.stato === "tutti") return n.stato !== "cestino";
+      if (filter.stato === "gestito") return ["ascoltato", "applicato", "archiviato"].includes(n.stato);
+      if (n.stato !== filter.stato) return false;
+    }
     if (filter?.email && n.email_cliente !== filter.email) return false;
     return true;
   });
@@ -198,7 +237,7 @@ export function getAudioNotes(filter?: {
 
 export function updateAudioNoteStatus(
   id: number,
-  stato: "nuovo" | "ascoltato" | "applicato" | "archiviato"
+  stato: "nuovo" | "ascoltato" | "applicato" | "archiviato" | "cestino"
 ): AudioNoteRecord | null {
   const db = getDb();
   if (db) {
@@ -206,12 +245,28 @@ export function updateAudioNoteStatus(
     stmt.run(stato, id);
     const row = db.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id) as any;
     db.close();
+
+    const mem = inMemoryAudioNotes.find((n) => n.id === id);
+    if (mem) mem.stato = stato;
     return row || null;
   }
 
   const found = inMemoryAudioNotes.find((n) => n.id === id);
   if (found) found.stato = stato;
   return found || null;
+}
+
+export function deleteAudioNotePermanently(id: number): boolean {
+  const db = getDb();
+  if (db) {
+    try {
+      db.prepare("DELETE FROM audio_note_feedback WHERE id = ?").run(id);
+      db.close();
+    } catch {}
+  }
+  const idx = inMemoryAudioNotes.findIndex((n) => n.id === id);
+  if (idx !== -1) inMemoryAudioNotes.splice(idx, 1);
+  return true;
 }
 
 export function updateAudioNoteAnalysis(
@@ -253,8 +308,8 @@ export function insertAppSegnalazione(
     const stmt = db.prepare(`
       INSERT INTO app_segnalazioni_bug (
         utente_id, email_cliente, anonimo, tipo, titolo,
-        descrizione, audio_id, device_info, ai_diagnosi_tecnica, stato
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        descrizione, audio_id, audio_base64, device_info, ai_diagnosi_tecnica, stato
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const info = stmt.run(
@@ -265,6 +320,7 @@ export function insertAppSegnalazione(
       record.titolo,
       record.descrizione,
       record.audio_id || null,
+      record.audio_base64 || null,
       record.device_info || null,
       record.ai_diagnosi_tecnica || null,
       record.stato || "aperto"
@@ -278,7 +334,11 @@ export function insertAppSegnalazione(
       WHERE s.id = ?
     `).get(lastId) as any;
     db.close();
-    return row;
+
+    if (row) {
+      inMemoryBugs.unshift(row);
+    }
+    return row || record;
   }
 
   const newBug: AppSegnalazioneRecord = {
@@ -305,8 +365,14 @@ export function getAppSegnalazioni(filter?: {
     const params: any[] = [];
 
     if (filter?.stato) {
-      query += " AND s.stato = ?";
-      params.push(filter.stato);
+      if (filter.stato === "tutti") {
+        query += " AND s.stato != 'cestino'";
+      } else if (filter.stato === "gestito") {
+        query += " AND s.stato IN ('in_valutazione\, 'risolto\, 'scartato\)";
+      } else {
+        query += " AND s.stato = ?";
+        params.push(filter.stato);
+      }
     }
     if (filter?.tipo) {
       query += " AND s.tipo = ?";
@@ -316,11 +382,15 @@ export function getAppSegnalazioni(filter?: {
 
     const rows = db.prepare(query).all(...params) as any[];
     db.close();
-    return rows;
+    if (rows && rows.length > 0) return rows;
   }
 
   return inMemoryBugs.filter((b) => {
-    if (filter?.stato && b.stato !== filter.stato) return false;
+    if (filter?.stato) {
+      if (filter.stato === "tutti") return b.stato !== "cestino";
+      if (filter.stato === "gestito") return ["in_valutazione", "risolto", "scartato"].includes(b.stato);
+      if (b.stato !== filter.stato) return false;
+    }
     if (filter?.tipo && b.tipo !== filter.tipo) return false;
     return true;
   });
@@ -328,7 +398,7 @@ export function getAppSegnalazioni(filter?: {
 
 export function updateAppSegnalazioneStatus(
   id: number,
-  stato: "aperto" | "in_valutazione" | "risolto" | "scartato"
+  stato: "aperto" | "in_valutazione" | "risolto" | "scartato" | "cestino"
 ): AppSegnalazioneRecord | null {
   const db = getDb();
   if (db) {
@@ -341,10 +411,26 @@ export function updateAppSegnalazioneStatus(
       WHERE s.id = ?
     `).get(id) as any;
     db.close();
+
+    const mem = inMemoryBugs.find((b) => b.id === id);
+    if (mem) mem.stato = stato;
     return row || null;
   }
 
   const found = inMemoryBugs.find((b) => b.id === id);
   if (found) found.stato = stato;
   return found || null;
+}
+
+export function deleteAppSegnalazionePermanently(id: number): boolean {
+  const db = getDb();
+  if (db) {
+    try {
+      db.prepare("DELETE FROM app_segnalazioni_bug WHERE id = ?").run(id);
+      db.close();
+    } catch {}
+  }
+  const idx = inMemoryBugs.findIndex((b) => b.id === id);
+  if (idx !== -1) inMemoryBugs.splice(idx, 1);
+  return true;
 }

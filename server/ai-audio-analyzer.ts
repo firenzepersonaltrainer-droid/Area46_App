@@ -22,6 +22,7 @@ export async function analyzeAudioWithGemini(
     rpe?: number;
     sensazioni?: string[];
     noteTesto?: string;
+    trascrizioneLive?: string;
     tipoSegnalazione?: string;
     titolo?: string;
     descrizione?: string;
@@ -84,6 +85,7 @@ Metadati noti:
 - Giorno: ${metadata.giorno || "N/D"}
 - RPE registrato: ${metadata.rpe ?? "N/D"}
 - Sensazioni espresse a chip: ${(metadata.sensazioni || []).join(", ") || "Nessuna"}
+- Trascrizione vocale rilevata dal dispositivo: ${metadata.trascrizioneLive || "Nessuna trascrizione client disponibile"}
 - Note scritte: ${metadata.noteTesto || metadata.descrizione || "Nessuna"}
 - Tipo segnalazione: ${metadata.tipoSegnalazione || "N/D"}
 - Titolo segnalazione: ${metadata.titolo || "N/D"}
@@ -169,8 +171,9 @@ export function fallbackClinicalAnalysis(
     deviceInfo?: string;
   }
 ): AudioAnalysisResult {
+  const rawTranscript = metadata.trascrizioneLive || metadata.noteTesto || metadata.descrizione || "";
   const testo = (
-    `${metadata.noteTesto || ""} ${metadata.descrizione || ""} ${metadata.titolo || ""} ${(metadata.sensazioni || []).join(" ")}`
+    `${rawTranscript} ${metadata.noteTesto || ""} ${metadata.descrizione || ""} ${metadata.titolo || ""} ${(metadata.sensazioni || []).join(" ")}`
   ).toLowerCase();
 
   const rpe = metadata.rpe ?? 8;
@@ -214,7 +217,9 @@ export function fallbackClinicalAnalysis(
         "Regolare i carichi mantenendo 1-2 ripetizioni di riserva nel fondamentale e idratare il tessuto con mobilità attiva di scarico tra le serie.";
     }
 
-    const trascrizioneGenerata = metadata.noteTesto
+    const trascrizioneGenerata = metadata.trascrizioneLive
+      ? metadata.trascrizioneLive
+      : metadata.noteTesto
       ? metadata.noteTesto
       : `Registrazione vocale atleta su Seduta ${metadata.giorno || ""}: RPE percepito ${rpe}/10, sensazioni motorie: ${(metadata.sensazioni || []).join(", ") || "buone"}.`;
 

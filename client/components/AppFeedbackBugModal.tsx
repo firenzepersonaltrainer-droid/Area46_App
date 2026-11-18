@@ -45,6 +45,7 @@ export function AppFeedbackBugModal({
     blob: Blob;
     base64: string;
     durationSec: number;
+    transcript?: string;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -81,8 +82,10 @@ export function AppFeedbackBugModal({
             formato: "webm",
             contesto: "app_feedback",
             tipoSegnalazione: tipo,
-            titolo: titolo.trim() || `Nota Vocale: ${tipo.toUpperCase()}`,
-            descrizione: descrizione.trim(),
+            titolo: titolo.trim() || (recordedAudio.transcript ? `Nota Vocale: ${recordedAudio.transcript.substring(0, 30)}...` : `Nota Vocale: ${tipo.toUpperCase()}`),
+            descrizione: descrizione.trim() || recordedAudio.transcript || "Nota vocale allegata",
+            transcript: recordedAudio.transcript || undefined,
+            trascrizione_live: recordedAudio.transcript || undefined,
             anonimo: isAnonimo,
             deviceInfo,
           }),

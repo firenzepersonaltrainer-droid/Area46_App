@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Mic, Square, Trash2, Play, Pause, RefreshCw, Volume2, AlertCircle } from "lucide-react";
 
 interface AudioFeedbackRecorderProps {
-  onAudioRecorded: (audioData: { blob: Blob; base64: string; durationSec: number }) => void;
+  onAudioRecorded: (audioData: { blob: Blob; base64: string; durationSec: number; transcript?: string }) => void;
   onAudioCleared?: () => void;
   maxDurationSec?: number;
   label?: string;
@@ -23,8 +23,10 @@ export function AudioFeedbackRecorder({
   const [playbackTime, setPlaybackTime] = useState(0);
   const [totalRecordedSec, setTotalRecordedSec] = useState(0);
   const [permissionError, setPermissionError] = useState<string | null>(null);
+  const [liveTranscript, setLiveTranscript] = useState<string>("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recognitionRef = useRef<any>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerIntervalRef = useRef<any>(null);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
@@ -36,6 +38,9 @@ export function AudioFeedbackRecorder({
       if (audioUrl) URL.revokeObjectURL(audioUrl);
       if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
         mediaRecorderRef.current.stop();
+      }
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch {}
       }
     };
   }, [audioUrl]);
@@ -59,8 +64,29 @@ export function AudioFeedbackRecorder({
 
   const startRecording = async () => {
     setPermissionError(null);
+    setLiveTranscript("");
     audioChunksRef.current = [];
     setRecordingSeconds(0);
+
+    try {
+      const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRec) {
+        const rec = new SpeechRec();
+        rec.lang = "it-IT";
+        rec.continuous = true;
+        rec.interimResults = true;
+        rec.onresult = (ev: any) => {
+          let t = "";
+          for (let i = 0; i < ev.results.length; i++) {
+            t += ev.results[i][0].transcript;
+          }
+          setLiveTranscript(t);
+        };
+        rec.onerror = () => {};
+        rec.start();
+        recognitionRef.current = rec;
+      }
+    } catch {}
 
     if (!navigator?.mediaDevices?.getUserMedia) {
       setPermissionError("Il tuo browser non supporta la registrazione vocale diretta.");
@@ -100,6 +126,7 @@ export function AudioFeedbackRecorder({
             blob,
             base64,
             durationSec: recordingSeconds || 1,
+            transcript: liveTranscript.trim() || undefined,
           });
         };
       };
@@ -129,6 +156,10 @@ export function AudioFeedbackRecorder({
   };
 
   const stopRecording = () => {
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch {}
+      recognitionRef.current = null;
+    }
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
       timerIntervalRef.current = null;
