@@ -333,7 +333,9 @@
       "note_obbligatorie": [
         "Svolgi 2-4 serie di avvicinamento prima della serie allenante"
       ],
-      "divieti_tassativi": [],
+      "divieti_tassativi": [
+        "VIETATO_TRAIETTORIA_FLUIDA: vietata la frase \"mantieni la traiettoria fluida nello scambio aereo\"."
+      ],
       "didattica_primo_utilizzo": null,
       "note_strutturali": "Esercizio ad alto RPE svolto alternando rep destra e sinistra in Touch & Go aereo: prescrivere a volume ridotto continuo (4 X 8 in C7, 4 X 6 in C8). Mai notazione con +."
     },
@@ -1279,9 +1281,9 @@
       "nome": "vogatore",
       "attrezzo": "vogatore",
       "categoria": "engine e benchmark",
-      "pattern": "hip hinge, catena estensoria, monoplanare",
-      "ruolo": "engine, benchmark",
-      "modalita_prescrizione_predefinita": "TEMPO_ALTERNATO_CONTINUO",
+      "pattern": "condizionamento metabolico / ergometro",
+      "ruolo": "accessorio metabolico",
+      "modalita_prescrizione_predefinita": "METABOLICO_VARIABILE",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [],
@@ -1591,7 +1593,9 @@
       "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "divieti_tassativi": [
+        "DIVIETO_BASSO_VOLUME: esercizio core/fitness a corpo libero, vietate basse ripetizioni come 10+10, prescrivere 15-20 rep."
+      ],
       "didattica_primo_utilizzo": null
     },
     "045": {
@@ -2214,11 +2218,16 @@
       "attrezzo": "elastico o cavo",
       "categoria": "warm up e mobilità",
       "pattern": "coordinazione alto basso, core stability in trazione monolaterale, cerniera d'anca",
-      "ruolo": "",
+      "ruolo": "accessorio",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
       "vincolo_notazione": "OBBLIGATORIO_PIU",
-      "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "note_obbligatorie": [
+        "esegui lo stesso movimento di braccia che si ha nella blade position, portando la mano a fianco del mento"
+      ],
+      "divieti_tassativi": [
+        "DIVIETO_ADDUZIONE_SCAPOLARE: vietata la frase \"adduzione scapolare attiva\" priva di senso in questo esercizio.",
+        "DIVIETO_BASSO_VOLUME: esercizio accessorio con elastico, prescrivere almeno 10 ripetizioni per lato."
+      ],
       "didattica_primo_utilizzo": null
     },
     "025": {
@@ -2284,6 +2293,23 @@
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [],
+      "didattica_primo_utilizzo": null
+    },
+    "019": {
+      "id": "019",
+      "nome": "Ground mobility Series",
+      "attrezzo": "corpo libero",
+      "categoria": "warm up e mobilità",
+      "pattern": "routine di mobilità completa",
+      "ruolo": "warm up",
+      "modalita_prescrizione_predefinita": "ROUTINE_SENZA_PARAMETRI",
+      "vincolo_notazione": "NESSUN_PARAMETRO",
+      "note_obbligatorie": [
+        "dedica al massimo 8-9 minuti allo svolgimento dell’intera routine, ogni movimento ripetilo 6-10 volte"
+      ],
+      "divieti_tassativi": [
+        "DIVIETO_PARAMETRI_RIGIDI: è una routine, non inserire serie/ripetizioni rigide nei parametri ma indicare tempo e ripetizioni per movimento nelle note."
+      ],
       "didattica_primo_utilizzo": null
     }
   }

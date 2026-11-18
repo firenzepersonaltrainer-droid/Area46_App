@@ -42,6 +42,12 @@
       "status": "attivo / programmato",
       "sessioni": 6,
       "focus": "Picco Mesociclo 3: Varietà Warm Up (Ground Mobility Series + Side Closing in A; Tri-set Wall Stretch + Wall Driver + Bat around head 90°-180° in B), Intensificazione Fondamentali RPE 8.5 (COMBO Split Snatch H-H Switch 4x6, Landmine Coiled Deadlift 4x5+5), Seated Endless Rope Power Pull 4x40\", Consolidamento Aerial Jerk 4x6+6, Punch Isoinerziale, Matador Transitions e AMRAP progressivo 10'-11'-13'"
+    },
+    "Ciclo 9": {
+      "status": "attivo / in corso",
+      "sessioni": 2,
+      "data_avvio": "2026-11-17",
+      "rpe_target": "RPE 7-9"
     }
   },
   "pattern_status": {
@@ -92,7 +98,7 @@
       "ruolo": "fondamentale",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 9
+      "usage_count": 10
     },
     {
       "id": "82",
@@ -272,7 +278,7 @@
       "ruolo": "complementare",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 10
+      "usage_count": 11
     },
     {
       "id": "93",
@@ -322,7 +328,7 @@
       "ruolo": "complementare",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "78",
@@ -392,7 +398,7 @@
       "ruolo": "accessorio",
       "categoria": "forza e struttura",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "232",
@@ -582,7 +588,7 @@
       "ruolo": "complementare",
       "categoria": "potenza e balistica",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "180",
@@ -742,7 +748,7 @@
       "ruolo": "fondamentale",
       "categoria": "skill e combo",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "129",
@@ -842,7 +848,7 @@
       "ruolo": "complementare",
       "categoria": "skill e combo",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "107",
@@ -892,7 +898,7 @@
       "ruolo": "engine",
       "categoria": "engine e benchmark",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 7
+      "usage_count": 8
     },
     {
       "id": "121",
@@ -912,7 +918,7 @@
       "ruolo": "engine, benchmark",
       "categoria": "engine e benchmark",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "170",
@@ -1122,7 +1128,7 @@
       "ruolo": "engine",
       "categoria": "engine e benchmark",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "201",
@@ -1442,7 +1448,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 2
+      "usage_count": 3
     },
     {
       "id": "160",
@@ -1512,7 +1518,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "31",
@@ -1562,7 +1568,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 8
+      "usage_count": 9
     },
     {
       "id": "74",
@@ -1622,7 +1628,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 7
+      "usage_count": 8
     },
     {
       "id": "25",
@@ -1632,7 +1638,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 1
+      "usage_count": 2
     },
     {
       "id": "26",
@@ -1682,7 +1688,7 @@
       "ruolo": "",
       "categoria": "warm up e mobilità",
       "last_cycle_used": "Ciclo 8",
-      "usage_count": 3
+      "usage_count": 4
     },
     {
       "id": "242",
@@ -1693,7 +1699,7 @@
       "ultimo_ciclo_usato": "Ciclo 6",
       "presenze_totali": 1,
       "stato": "USATO",
-      "usage_count": 7,
+      "usage_count": 8,
       "last_cycle_used": "Ciclo 8"
     },
     {
@@ -1705,7 +1711,7 @@
       "ultimo_ciclo_usato": "Ciclo 6",
       "presenze_totali": 1,
       "stato": "USATO",
-      "usage_count": 7,
+      "usage_count": 8,
       "last_cycle_used": "Ciclo 8"
     }
   ]

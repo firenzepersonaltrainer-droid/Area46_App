@@ -48,3 +48,5 @@ Thumbs.db
 
 # Scratch & temporary migration inspection scripts
 scratch/
+*.sqlite*
+*.bak_*

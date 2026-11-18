@@ -17,14 +17,23 @@ console.log("===================================================================
 
 // Funzione generatrice Seduta A: 43 (round 1), 45 (round 2), 47 (round 3)
 function getEserciziA(round) {
+  const cableRowParam = round === 1 ? "4x10+10" : round === 2 ? "4x12+12" : "4x12+12";
+  const deadbugParam = round === 1 ? "3x15-20" : round === 2 ? "3x18-20" : "3x20";
+  const rowerParam = round === 1 ? '3x90"' : round === 2 ? '3x105"' : '3x120"';
+  const rowerNote = round === 1 
+    ? "circuito (3 round) | RPE 8 | condizionamento metabolico a cadenza costante (24-26 SPM)"
+    : round === 2
+    ? "circuito (3 round) | progressione intensità e tenuta metabolica (26-28 SPM)"
+    : "circuito (3 round) | picco metabolico del ciclo a cadenza sostenuta (28-30 SPM)";
+
   return [
     {
       seq: "1a",
       id: "019",
       nome: "Ground mobility Series",
-      param: "3x8+8",
+      param: "",
       rec: "",
-      note: "jump set | mobilità articolare a terra per bacino, anche e rachide",
+      note: "dedica al massimo 8-9 minuti allo svolgimento dell’intera routine, ogni movimento ripetilo 6-10 volte",
       video: "https://youtu.be/3wZjPvwGt8U",
     },
     {
@@ -33,7 +42,7 @@ function getEserciziA(round) {
       nome: "Side Closing",
       param: "3x10+10",
       rec: '45"',
-      note: "jump set | attivazione piano frontale con elastico, flessione laterale bacino su torace",
+      note: "attivazione piano frontale con elastico, flessione laterale bacino su torace",
       video: "https://youtu.be/Z9bhpmPIRkM",
     },
     {
@@ -41,17 +50,17 @@ function getEserciziA(round) {
       id: "128",
       nome: "COMBO: Landmine Split snatch High hand switch T/GO",
       param: "4 X 6",
-      rec: '75"',
-      note: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5 | mantieni la traiettoria fluida nello scambio aereo",
+      rec: '75/90"',
+      note: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5",
       video: "https://youtube.com/shorts/I9GYUvD_Ink",
     },
     {
       seq: "3a",
       id: "023",
       nome: "Coiled Cable ROW",
-      param: "4x6+6",
+      param: cableRowParam,
       rec: "",
-      note: "jump set | RPE 8 | adduzione scapolare attiva e coiling spirale",
+      note: "jump set | RPE 8 | esegui lo stesso movimento di braccia che si ha nella blade position, portando la mano a fianco del mento",
       video: "https://youtu.be/OdhNUbqajmM",
     },
     {
@@ -85,7 +94,7 @@ function getEserciziA(round) {
       seq: "6a",
       id: "089",
       nome: "Deadbug",
-      param: "3x10+10",
+      param: deadbugParam,
       rec: "",
       note: "circuito (3 round) | anti-estensione lombare con fitball e core stability",
       video: "https://youtu.be/b4InDUstH8Y?si=NP68qp2ACf_YIo2-",
@@ -94,9 +103,9 @@ function getEserciziA(round) {
       seq: "6b",
       id: "243",
       nome: "vogatore",
-      param: '3x90"',
+      param: rowerParam,
       rec: '60"',
-      note: "circuito (3 round) | RPE 8 | condizionamento metabolico a cadenza costante (24-26 SPM)",
+      note: rowerNote,
       video: "https://youtube.com/shorts/LJtEOWOPcs0?si=M8nmE_1THh0Gj20a",
     },
   ];

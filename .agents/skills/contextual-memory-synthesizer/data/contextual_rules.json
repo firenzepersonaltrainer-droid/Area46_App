@@ -1,0 +1,338 @@
+{
+  "version": "2.0.0",
+  "synced_at": "2026-11-18T08:13:21.998922",
+  "rules": [
+    {
+      "id": "RULE_006_CLINICAL_JOINT_SHIELDING",
+      "domain": "clinical",
+      "title": "Joint Shielding & Veto Clinico Socrates",
+      "rule_summary": "Blocco rigoroso di carichi assiali e stop a RPE elevato in presenza di Joint Pain >= 2 o Red Flags (ernie, discopatie, dolore spalla).",
+      "context_applicability": {
+        "audiences_active": [
+          "tutti_gli_atleti"
+        ],
+        "environments_active": [
+          "sala_pesi",
+          "schede_allenamento",
+          "coaching"
+        ],
+        "rationale": "Protezione biologica assoluta di L5-S1 e articolazioni contigue. Mai sovraccaricare la stessa cerniera in sedute contigue."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": "La salute articolare dell'atleta è non negoziabile."
+      },
+      "core_philosophy": "Integrità Clinica (Socrates) > Volume/Carico (Chronos).",
+      "enforcement_level": "STRICT_VETO",
+      "source": "Costituzione Centrale & Socrates Agent",
+      "created_at": "2026-11-16T16:48:00Z",
+      "updated_at": "2026-11-17T15:00:00Z"
+    },
+    {
+      "id": "RULE_004_DESIGN_SAFE_ZONE_GRID",
+      "domain": "design",
+      "title": "Safe Zone 1:1 Centrale nei Contenuti Visivi",
+      "rule_summary": "Tutti i testi grafici (hook, claim, badge) e loghi devono rimanere tassativamente dentro la Safe Zone 1:1 centrale con margine di respiro.",
+      "context_applicability": {
+        "audiences_active": [
+          "pubblico_social",
+          "utenti_web"
+        ],
+        "environments_active": [
+          "instagram_feed",
+          "reel_cover",
+          "google_maps_card"
+        ],
+        "rationale": "Nella vista a griglia (thumbnail 1:1), il testo e il claim devono rimanere integri e mai tagliati fuori; ad immagine aperta mantengono respiro."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [
+          "pdf_gestionali",
+          "cruscotti_desktop"
+        ],
+        "rationale_exception": "I documenti fiscali o cruscotti desktop seguono layout tabellari ad alta densità informativa guidati da L'Artista."
+      },
+      "core_philosophy": "Eleganza athletic-luxury, pulizia radicale e assenza di testo mozzato.",
+      "enforcement_level": "STRICT_FILTER",
+      "source": "L'Artista & Art Director Area46",
+      "created_at": "2026-11-12T10:00:00Z",
+      "updated_at": "2026-11-17T15:00:00Z"
+    },
+    {
+      "id": "RULE_005_EDITORIAL_SENSATIONS_OVER_TECH",
+      "domain": "editorial",
+      "title": "Sensazioni Reali & Frequenza Promozione",
+      "rule_summary": "La pubblicità esplicita va proposta solo 1 volta ogni 2-4 contenuti. Il resto sono pillole di saggezza ed empatia sulle sensazioni fisiche reali.",
+      "context_applicability": {
+        "audiences_active": [
+          "sedentari",
+          "persone_mal_di_schiena",
+          "sovrappeso",
+          "budget_sostenibile"
+        ],
+        "environments_active": [
+          "copywriting",
+          "blog",
+          "social_media"
+        ],
+        "rationale": "Parlare di come ci si sente (sentirsi leggeri, sbloccati, svegliarsi senza fitte, camminare sciolti, energia vitale)."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [
+          "campagne_lancio_spot"
+        ],
+        "rationale_exception": "Nei periodi di apertura iscrizioni Landmine Lab è ammessa comunicazione di conversione diretta."
+      },
+      "core_philosophy": "Tono saggio, empatico, mai da televendita né cattedratico.",
+      "enforcement_level": "STYLE_GUIDE",
+      "source": "Direttive Editoriali Stefano Tronconi",
+      "created_at": "2026-11-15T18:00:00Z",
+      "updated_at": "2026-11-17T15:00:00Z"
+    },
+    {
+      "id": "RULE_007_FINANCE_LIQUIDITY_RUNWAY",
+      "domain": "finance",
+      "title": "Sicurezza Liquidità & Veto Cash Sentinel",
+      "rule_summary": "Allerta immediata e blocco visivo su scoperto di conto corrente (< 0) e liquidità negativa.",
+      "context_applicability": {
+        "audiences_active": [
+          "gestione_stefano"
+        ],
+        "environments_active": [
+          "sgg_desktop",
+          "m_mobile",
+          "prima_nota"
+        ],
+        "rationale": "Monitoraggio in tempo reale della Prima Nota e calcolo saldi reali Banca e Cassa depurati dal Fondo Tasse."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": "Nessuna eccezione su cassa o conto scoperto."
+      },
+      "core_philosophy": "Serenità finanziaria e rispetto del patrimonio personale.",
+      "enforcement_level": "STRICT_VETO",
+      "source": "Costituzione Centrale & Cash Sentinel",
+      "created_at": "2026-11-16T16:48:00Z",
+      "updated_at": "2026-11-17T15:00:00Z"
+    },
+    {
+      "id": "RULE_001_LEXICON_MOTOR_PATTERN",
+      "domain": "lexicon",
+      "title": "Pattern motorio vs Tecnicismi Ingegneristici",
+      "rule_summary": "Evitare la parola 'b-i-o-m-e-c-c-a-n-i-c-a' e tecnicismi da laboratorio. Usare 'pattern motorio', 'schemi motori funzionali' o 'cinematica del movimento'.",
+      "context_applicability": {
+        "audiences_active": [
+          "clienti",
+          "pazienti",
+          "sedentari",
+          "social",
+          "marketing",
+          "copy",
+          "atleti_base"
+        ],
+        "environments_active": [
+          "social",
+          "instagram",
+          "google_maps",
+          "blog_pubblico",
+          "app_atleta"
+        ],
+        "rationale": "Creano distanza e non interessano a chi cerca solo di stare meglio, sciogliersi e riacquistare vitalità naturale."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [
+          "tecnici",
+          "addetti_ai_lavori",
+          "allenatori",
+          "istruttori",
+          "manuali_interni"
+        ],
+        "rationale_exception": "Nei contesti specialistici per tecnici del settore, i termini analitici e di cinematica sono corretti, appropriati e autorevoli."
+      },
+      "core_philosophy": "Tutto è contesto. Il corpo non cerca punizioni o accademia: cerca equilibrio naturale.",
+      "enforcement_level": "STRICT_FILTER",
+      "source": "Correzione permanente Stefano Tronconi (Costituzione Ecosistema)",
+      "created_at": "2026-11-16T16:48:00Z",
+      "updated_at": "2026-11-17T15:00:00Z"
+    },
+    {
+      "id": "RULE_002_METHOD_SIXTY_MINUTES_CAP",
+      "domain": "methodology",
+      "title": "Tetto dei 60 Minuti in Sessione",
+      "rule_summary": "Nessuna seduta deve superare i 60 minuti.",
+      "context_applicability": {
+        "audiences_active": [
+          "atleti_studio",
+          "clienti_landmine_lab"
+        ],
+        "environments_active": [
+          "studio_landmine_lab"
+        ],
+        "rationale": "Gestione orari lezioni in studio, massima densità e rispetto dei tempi dell'atleta e del coach."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [
+          "online_coaching",
+          "ai_pt_assistant_app",
+          "allenamenti_esterni"
+        ],
+        "rationale_exception": "Nella futura AI PT Assistant App e nel coaching a distanza, il sistema DEVE chiedere al coach se applicare o meno il tetto dei 60 minuti prima di programmare la sessione."
+      },
+      "core_philosophy": "Zero automatismi ciechi: la durata dipende dalla location e dall'obiettivo.",
+      "enforcement_level": "CONTEXT_PROMPT_REQUIRED",
+      "source": "Costituzione Centrale e Linee Guida Area46 PRO",
+      "created_at": "2026-11-16T16:48:00Z",
+      "updated_at": "2026-11-17T15:00:00Z"
+    },
+    {
+      "id": "RULE_003_METHOD_RBS_VARIETY",
+      "domain": "methodology",
+      "title": "Gestione Dinamica dell'RBS (Rest Between Sides)",
+      "rule_summary": "In allenamento il termine 'obbligatorio' non esiste. L'RBS non è un automatismo rigido ma una scelta contestuale e ciclica.",
+      "context_applicability": {
+        "audiences_active": [
+          "tutti_gli_atleti"
+        ],
+        "environments_active": [
+          "tutti"
+        ],
+        "rationale": "Valutato liberamente su: 1) Vicinanza a 1RM (carico alto -> valuta RBS 30-45s); 2) Serie lunghe lattacide 12-15 rep (valuta RBS per smaltire acidosi); 3) Densità/Engine a BPM alti (azzera RBS 0s e recupera a fine coppia); 4) Principio di Varietà (alternare cicli con e senza RBS)."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": "Nessuna eccezione dogmatica: ogni scelta deve essere motivata tecnicamente."
+      },
+      "core_philosophy": "Zero dogmi assoluti: alternare per stimolare l'adattamento motorio ed evitare assuefazione.",
+      "enforcement_level": "FLEXIBLE_ENGINE",
+      "source": "Direttive Didattiche Stefano Tronconi & Mentor Knowledge Graph",
+      "created_at": "2026-11-16T16:48:00Z",
+      "updated_at": "2026-11-17T15:00:00Z"
+    },
+    {
+      "id": "RULE_008_ROUTINE_GROUND_MOBILITY",
+      "domain": "methodology",
+      "title": "Ground Mobility Series come Routine Senza Parametri Rigidi",
+      "rule_summary": "Il Ground mobility Series (ID 019) è una routine di mobilità, non ha serie e ripetizioni fisse. I parametri vanno lasciati vuoti e nelle note va inserito: \"dedica al massimo 8-9 minuti allo svolgimento dell’intera routine, ogni movimento ripetilo 6-10 volte\".",
+      "context_applicability": {
+        "audiences_active": [
+          "tutti_gli_atleti"
+        ],
+        "environments_active": [
+          "warm_up",
+          "tutti"
+        ],
+        "rationale": "Essendo una routine continua di mobilità a terra, vincolare a serie x rep rigide snatura il flow e l’esplorazione articolare."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": ""
+      },
+      "core_philosophy": "Le routine articolari richiedono respiro temporale e autoregolazione, non costrizioni numeriche da serie allenante.",
+      "enforcement_level": "STRICT_FILTER",
+      "source": "Direttive Didattiche Stefano Tronconi - Ciclo 8",
+      "created_at": "2026-11-18T08:13:21.963591",
+      "updated_at": "2026-11-18T08:13:21.963591"
+    },
+    {
+      "id": "RULE_009_CABLE_ROW_ACCESSORY_VOLUME",
+      "domain": "methodology",
+      "title": "Coiled Cable ROW Volume & Cue Tecnico Blade Position",
+      "rule_summary": "Il Coiled cable row (ID 023) è un esercizio accessorio eseguito con elastico/cavo: va prescritto con volume elevato (da 10 rep in su per lato, es. 4x10+10 o 4x12+12). Divieto del termine \"adduzione scapolare attiva\" (senza senso qui). Cue obbligatorio: \"esegui lo stesso movimento di braccia che si ha nella blade position, portando la mano a fianco del mento\".",
+      "context_applicability": {
+        "audiences_active": [
+          "tutti_gli_atleti"
+        ],
+        "environments_active": [
+          "tutti"
+        ],
+        "rationale": "Con elastico la modulazione millimetrica del carico a basse ripetizioni e l’RPE massimale sono inefficaci; richiede accumulo volumetrico e coordinazione a spirale della blade position."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": ""
+      },
+      "core_philosophy": "Gli accessori con resistenza elastica vivono di volume e sensazione cinestesica, non di basse ripetizioni da sollevamento pesi.",
+      "enforcement_level": "STRICT_FILTER",
+      "source": "Direttive Didattiche Stefano Tronconi - Ciclo 8",
+      "created_at": "2026-11-18T08:13:21.973363",
+      "updated_at": "2026-11-18T08:13:21.973363"
+    },
+    {
+      "id": "RULE_010_DEADBUG_CORE_HIGH_VOLUME",
+      "domain": "methodology",
+      "title": "Deadbug Volume Elevato per Core Fitness",
+      "rule_summary": "Il Deadbug (ID 089) è un esercizio per addominali assimilabile al classico fitness a corpo libero/fitball. Richiede maggior volume di lavoro per stimolare la resistenza del torchio addominale: prescrivere 3 x 15-20 rep (mai volumi ridotti come 10+10 adatti a sovraccarichi pesanti).",
+      "context_applicability": {
+        "audiences_active": [
+          "tutti_gli_atleti"
+        ],
+        "environments_active": [
+          "core",
+          "circuito",
+          "tutti"
+        ],
+        "rationale": "Il torchio addominale risponde all’alto volume e al tempo sotto tensione prolungato negli schemi a corpo libero."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": ""
+      },
+      "core_philosophy": "Adattare il volume alla natura dell’attrezzo: a corpo libero e fitball il volume per gli addominali deve essere abbondante.",
+      "enforcement_level": "STRICT_FILTER",
+      "source": "Direttive Didattiche Stefano Tronconi - Ciclo 8",
+      "created_at": "2026-11-18T08:13:21.979544",
+      "updated_at": "2026-11-18T08:13:21.979544"
+    },
+    {
+      "id": "RULE_011_ROWER_METABOLIC_VARIABILITY",
+      "domain": "methodology",
+      "title": "Vogatore: Variabilità Sistematica dei Parametri e Progressione d’Intensità",
+      "rule_summary": "Sul Vogatore (ID 243) variare regolarmente i parametri nei diversi cicli e contesti: tempo continuo (es. 90\"-120\"), distanze fisse (es. 500m, 1000m), cadenza / colpi al minuto (SPM 24-28), calorie target, AMRAP km, stili CrossFit WOD. All’interno dello stesso ciclo, prevedere una progressione di intensità e volume negli allenamenti successivi (es. A1 3x90\" -> A2 3x105\" -> A3 3x120\").",
+      "context_applicability": {
+        "audiences_active": [
+          "tutti_gli_atleti"
+        ],
+        "environments_active": [
+          "engine",
+          "metabolico",
+          "tutti"
+        ],
+        "rationale": "L’ergometro richiede continua variazione degli stimoli e sovraccarico progressivo per evitare l’adattamento cardiorespiratorio e mantenere alta la motivazione."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": ""
+      },
+      "core_philosophy": "L’engine metabolico non è un binario morto: variazione di stimolo, cadenza e densità.",
+      "enforcement_level": "FLEXIBLE_ENGINE",
+      "source": "Direttive Didattiche Stefano Tronconi - Ciclo 8",
+      "created_at": "2026-11-18T08:13:21.985376",
+      "updated_at": "2026-11-18T08:13:21.985376"
+    },
+    {
+      "id": "RULE_012_SPLIT_SNATCH_HH_SWITCH_REST",
+      "domain": "methodology",
+      "title": "Split Snatch High Hand Switch: Recupero Adeguato e No Diciture Astratte",
+      "rule_summary": "Nello Split snatch high hand switch T/GO (ID 128), eliminare frasi senza senso come \"mantieni la traiettoria fluida nello scambio aereo\". Recupero adeguato di 75/90\" (75-90 secondi) dato l’alto RPE e la componente balistica neurale.",
+      "context_applicability": {
+        "audiences_active": [
+          "tutti_gli_atleti"
+        ],
+        "environments_active": [
+          "potenza",
+          "fondamentale"
+        ],
+        "rationale": "Essendo un fondamentale di potenza balistica con cambio mano in volo, il tempo di recupero deve permettere il ripristino dei fosfageni (75-90s) e le note devono essere concrete e prive di orpelli astratti."
+      },
+      "context_exceptions": {
+        "audiences_allowed": [],
+        "rationale_exception": ""
+      },
+      "core_philosophy": "Note concrete e riposo adeguato sui sollevamenti esplosivi.",
+      "enforcement_level": "STRICT_FILTER",
+      "source": "Direttive Didattiche Stefano Tronconi - Ciclo 8",
+      "created_at": "2026-11-18T08:13:21.990415",
+      "updated_at": "2026-11-18T08:13:21.990415"
+    }
+  ]
+}

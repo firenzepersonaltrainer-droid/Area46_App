@@ -98,6 +98,13 @@ function estimateRowDurationSeconds(row) {
     return sets * mins * 60 + 60;
   }
 
+  // Routine a minuti nelle note (es. "8-9 minuti") quando i parametri sono liberi
+  const routineNoteMatch = notes.match(/(\d+)(?:-(\d+))?\s*minuti/i);
+  if (routineNoteMatch && (!param || param.toLowerCase().includes("routine"))) {
+    const mins = parseInt(routineNoteMatch[2] || routineNoteMatch[1], 10);
+    return mins * 60;
+  }
+
   // Estrazione sets
   let sets = 1;
   const setMatch = param.match(/^(\d+)\s*[xX]/);
@@ -220,7 +227,12 @@ export function validateProCycle(workouts, cycleName, rules, catalogMap = null) 
       errors: [],
     };
 
-    let totalDurationSec = 300; // 5 min attivazione generale
+    // Se la seduta include già una routine strutturata di mobilità/warmup (>= 5 min), l'attivazione generale è già assorbita
+    const hasWarmupRoutine = sessionRows.some((r) => {
+      const n = (r.note_tecniche || "").toLowerCase();
+      return n.includes("routine") || (n.includes("minuti") && (r.sequenza || "").startsWith("1"));
+    });
+    let totalDurationSec = hasWarmupRoutine ? 60 : 300; // 60s micro-transizione oppure 300s attivazione standard
 
     for (const row of sessionRows) {
       const durSec = estimateRowDurationSeconds(row);
