@@ -1572,7 +1572,10 @@ export async function handleLocalApi(
 
   if (pathname.startsWith("/uploads/audio_notes/")) {
     const fileName = path.basename(pathname);
-    const filePath = path.resolve(__dirname, "uploads", "audio_notes", fileName);
+    let filePath = path.resolve(__dirname, "uploads", "audio_notes", fileName);
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join("/tmp/uploads/audio_notes", fileName);
+    }
     if (fs.existsSync(filePath)) {
       const ext = path.extname(fileName).toLowerCase();
       const mime =
@@ -5625,9 +5628,23 @@ CALENDARIO E PRENOTAZIONI:
         const ext = formato ? (formato.startsWith(".") ? formato.slice(1) : formato) : "webm";
         audioFileName += `.${ext}`;
 
-        const uploadDir = path.resolve(__dirname, "uploads", "audio_notes");
-        if (!fs.existsSync(uploadDir)) {
-          fs.mkdirSync(uploadDir, { recursive: true });
+        const isServerless =
+          process.env.VERCEL === "1" ||
+          !!process.env.AWS_LAMBDA_FUNCTION_NAME ||
+          process.env.NODE_ENV === "production";
+        let uploadDir = isServerless
+          ? "/tmp/uploads/audio_notes"
+          : path.resolve(__dirname, "uploads", "audio_notes");
+
+        try {
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+          }
+        } catch {
+          uploadDir = "/tmp/uploads/audio_notes";
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+          }
         }
         const fullFilePath = path.join(uploadDir, audioFileName);
 

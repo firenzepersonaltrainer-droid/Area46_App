@@ -5,7 +5,7 @@ var __export = (target, all) => {
 };
 
 // local-api.ts
-import fs5 from "node:fs";
+import fs6 from "node:fs";
 import path5 from "node:path";
 import crypto8 from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -33387,6 +33387,27 @@ var demo_data_default = {
       ],
       data_ora: "2026-11-13T17:22:56.547Z",
       created_at: "2026-11-13T17:22:56.547Z"
+    },
+    {
+      id: 1794988761396,
+      email_cliente: "atleta@area46.it",
+      tipo: "feedback_seduta",
+      livello: "Livello Pro",
+      giorno: "1 allenamento A",
+      rpe_globale: 9,
+      sensazioni: [
+        "stanchezza",
+        "buona coordinazione"
+      ],
+      note_cinestesiche: "Sensazione di affaticamento lombare nelle ultime 2 serie al coiled deadlift, per il resto pattern motorio solido.",
+      nome_esercizio: "Feedback Vocale Giorno 1 allenamento A",
+      feedback: "Nota Vocale (18s) \u2022 Allerta articolare/carico: segnalata criticit\xE0 durante la seduta (RPE 9/10). \u2022 Allerta: ROSSO",
+      audio_url: "/uploads/audio_notes/audio_1794988761386_34qscl.webm",
+      ai_allerta: "rosso",
+      ai_sintesi: "Allerta articolare/carico: segnalata criticit\xE0 durante la seduta (RPE 9/10).",
+      ai_proposta_azione: "Modalit\xE0 B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a catena cinetica aperta, mobilit\xE0 del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.",
+      data_ora: "2026-11-18T07:59:21.396Z",
+      created_at: "2026-11-18T07:59:21.396Z"
     }
   ],
   stato_allenamenti: [
@@ -33429,8 +33450,8 @@ var demo_data_default = {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 10,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
@@ -33443,43 +33464,43 @@ var demo_data_default = {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 1,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 2,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 3,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 4,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 5,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 6,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
@@ -33667,99 +33688,99 @@ var demo_data_default = {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 7,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 8,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 9,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 11,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 12,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 13,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 14,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 15,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 16,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 17,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 18,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 19,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 20,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "Level 1",
       giorno: 21,
-      stato: "completato",
-      updated_at: "2026-10-08T10:00:21.449Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-16T15:09:38.654Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
@@ -34838,6 +34859,41 @@ var demo_data_default = {
       giorno: 21,
       stato: "completato",
       updated_at: "2026-11-13T19:11:34.138Z"
+    },
+    {
+      email_cliente: "annap.maddy@gmail.com",
+      livello: "Level 1",
+      giorno: 4,
+      stato: "completato",
+      updated_at: "2026-11-16T14:57:58.131Z"
+    },
+    {
+      email_cliente: "tebog1887@gmail.com",
+      livello: "Level 2",
+      giorno: 10,
+      stato: "completato",
+      updated_at: "2026-11-16T17:25:56.312Z"
+    },
+    {
+      email_cliente: "matteo.calosci@gmail.com",
+      livello: "Advanced",
+      giorno: 1,
+      stato: "completato",
+      updated_at: "2026-11-16T19:26:05.012Z"
+    },
+    {
+      email_cliente: "silvia.brenzini@gmail.com",
+      livello: "Level 2",
+      giorno: 13,
+      stato: "completato",
+      updated_at: "2026-11-17T13:59:12.596Z"
+    },
+    {
+      email_cliente: "annap.maddy@gmail.com",
+      livello: "Level 1",
+      giorno: 5,
+      stato: "completato",
+      updated_at: "2026-11-18T08:07:43.833Z"
     }
   ],
   preferenze_utente: [
@@ -34849,7 +34905,7 @@ var demo_data_default = {
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       memoria_livello: "PRO",
-      updated_at: "2026-11-14T18:19:00.286Z"
+      updated_at: "2026-11-18T05:56:11.661Z"
     },
     {
       email_cliente: "silvia.brenzini@gmail.com",
@@ -34909,7 +34965,7 @@ var demo_data_default = {
       cognome: "Pantanella",
       name: "Alessandro Pantanella",
       ruolo: "atleta",
-      crediti: 10,
+      crediti: 4,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -34921,7 +34977,7 @@ var demo_data_default = {
       ],
       anticipi_da_scontare: 0,
       updated_at: "2026-11-13T18:30:59.617Z",
-      data_ultimo_accesso: "2026-11-15T16:59:35.914Z",
+      data_ultimo_accesso: "2026-11-18T08:09:00.332Z",
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: null
     },
@@ -34933,7 +34989,7 @@ var demo_data_default = {
       cognome: "Ciancia",
       name: "Pierpaola Ciancia",
       ruolo: "atleta",
-      crediti: 11,
+      crediti: 4,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -34944,7 +35000,7 @@ var demo_data_default = {
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: "usr-bw-1953985",
       updated_at: "2026-11-13T18:30:59.641Z",
-      data_ultimo_accesso: "2026-11-15T16:59:35.914Z"
+      data_ultimo_accesso: "2026-11-18T08:09:00.332Z"
     },
     {
       id: "usr-bw-2067105",
@@ -34973,14 +35029,14 @@ var demo_data_default = {
       nickname: "Maddy",
       name: "Anna Paola Maddalena",
       ruolo: "atleta",
-      crediti: 15,
+      crediti: 14,
       data_scadenza_crediti: "2027-01-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
       updated_at: "2026-10-07T14:43:38.330Z",
-      data_ultimo_accesso: "2026-11-10T13:50:16.194Z"
+      data_ultimo_accesso: "2026-11-18T08:08:33.897Z"
     },
     {
       id: "usr-bw-1953979",
@@ -35040,14 +35096,14 @@ var demo_data_default = {
       nickname: "Casciozzi",
       name: "Daniele Casci",
       ruolo: "atleta",
-      crediti: 11,
+      crediti: 1,
       data_scadenza_crediti: "2027-07-31",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
       updated_at: "2026-10-07T14:45:15.354Z",
-      data_ultimo_accesso: "2026-10-15T19:52:53.118Z"
+      data_ultimo_accesso: "2026-11-18T08:09:00.332Z"
     },
     {
       id: "usr-bw-2080725",
@@ -35112,28 +35168,17 @@ var demo_data_default = {
   ],
   movimenti_crediti: [
     {
-      id: "mov-1794761976673-557",
+      id: "mov-man-1794515911691",
       atleta_id: "usr-bw-1953985",
       email_cliente: "pantanella@gmail.com",
       nome_cliente: "Alessandro Pantanella",
-      data_ora: "2026-11-15T16:59:36.673Z",
       tipo: "prenotazione_slot",
       delta_crediti: -1,
-      saldo_risultante: 10,
-      motivazione: "Prenotazione slot del 2026-11-18 ore 11:00 per Pierpaola Ciancia [Borsellino Condiviso]",
-      operatore: "atleta"
-    },
-    {
-      id: "mov-1794597064071-200",
-      atleta_id: "usr-bw-1953992",
-      email_cliente: "matteo.calosci@gmail.com",
-      nome_cliente: "Matteo Calosci",
-      data_ora: "2026-11-13T19:11:04.071Z",
-      tipo: "prenotazione_slot",
-      delta_crediti: -1,
-      saldo_risultante: 15,
-      motivazione: "Prenotazione slot del 2026-11-16 ore 19:00",
-      operatore: "atleta"
+      saldo_risultante: 14,
+      motivazione: "Prenotazione slot del 2026-11-13 ore 10:45 [Assegnazione diretta dal Coach]",
+      operatore: "coach",
+      data_movimento: "2026-11-12T20:38:32.000Z",
+      created_at: "2026-11-12T20:38:32.000Z"
     },
     {
       id: "mov-man-1794058827306",
@@ -35175,17 +35220,28 @@ var demo_data_default = {
       created_at: "2026-10-29T17:28:04.000Z"
     },
     {
-      id: "mov-man-1794515911691",
+      id: "mov-1794761976673-557",
       atleta_id: "usr-bw-1953985",
       email_cliente: "pantanella@gmail.com",
       nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-15T16:59:36.673Z",
       tipo: "prenotazione_slot",
       delta_crediti: -1,
-      saldo_risultante: 14,
-      motivazione: "Prenotazione slot del 2026-11-13 ore 10:45 [Assegnazione diretta dal Coach]",
-      operatore: "coach",
-      data_movimento: "2026-11-12T20:38:32.000Z",
-      created_at: "2026-11-12T20:38:32.000Z"
+      saldo_risultante: 10,
+      motivazione: "Prenotazione slot del 2026-11-18 ore 11:00 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1794597064071-200",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      data_ora: "2026-11-13T19:11:04.071Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 15,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 19:00",
+      operatore: "atleta"
     },
     {
       id: "mov-1794384772307-416",
@@ -36601,6 +36657,294 @@ var demo_data_default = {
       delta_crediti: 10,
       saldo_risultante: 10,
       motivazione: "Crediti configurati in anagrafica",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794837230087-437",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-16T13:53:50.087Z",
+      tipo: "rimborso_cancellazione",
+      delta_crediti: 1,
+      saldo_risultante: 12,
+      motivazione: "Ripristino credito per cancellazione/spostamento slot 2026-12-30 17:15 per Daniele Casci",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794841003579-627",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-11-16T14:56:43.579Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 14,
+      motivazione: "Prenotazione slot del 2026-11-20 ore 18:15",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1794856476455-759",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-16T19:14:36.455Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 11,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794856481123-765",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-16T19:14:41.123Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 11,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794856490433-649",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-16T19:14:50.433Z",
+      tipo: "rimborso_cancellazione",
+      delta_crediti: 1,
+      saldo_risultante: 11,
+      motivazione: "Ripristino credito per cancellazione/spostamento slot 2026-11-16 18:30 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794856495914-405",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-16T19:14:55.914Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 10,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794856512676-508",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-16T19:15:12.676Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 9,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794918504191-20",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-17T12:28:24.191Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 8,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794988338020-19",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T07:52:18.020Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 10,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794988338019-681",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T07:52:18.019Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 7,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794988358250-244",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T07:52:38.250Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 9,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794988358249-842",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T07:52:38.249Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 6,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794988909131-458",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:01:49.131Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 8,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794988909130-155",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:01:49.130Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 5,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989266075-998",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:07:46.075Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 7,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989266075-346",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:07:46.075Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 4,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989287002-677",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-11-18T08:08:07.002Z",
+      tipo: "rimborso_cancellazione",
+      delta_crediti: 1,
+      saldo_risultante: 15,
+      motivazione: "Rimborso per cancellazione in tempo slot del 2026-11-20 18:15",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1794989293949-585",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:08:13.949Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 6,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989293949-655",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:08:13.949Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 3,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989315281-405",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:08:35.281Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 5,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989315281-943",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:08:35.281Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 2,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989314881-869",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-11-18T08:08:34.881Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 14,
+      motivazione: "Prenotazione slot del 2026-11-20 ore 17:30",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1794989340332-377",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:09:00.332Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 4,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794989340332-953",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:09:00.332Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 1,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
       operatore: "coach"
     }
   ],
@@ -38557,20 +38901,6 @@ var demo_data_default = {
       google_event_id: "l4fgskh5fvg5ak6n3qkdqlrvpo"
     },
     {
-      id: "bk-1794384771514",
-      data: "2026-11-16",
-      orario: "18:30",
-      atleta_id: "usr-bw-1953987",
-      email_cliente: "pierpaolaciancia@gmail.com",
-      nome_cliente: "Pierpaola Ciancia",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-11T08:12:51.514Z",
-      google_event_id: "1eu9sn99sfls8bmicgb8j5ec6c"
-    },
-    {
       id: "bk-1792683000000-casci-6",
       data: "2026-11-18",
       orario: "17:15",
@@ -38781,20 +39111,6 @@ var demo_data_default = {
       created_at: "2026-10-22T16:50:18.000Z"
     },
     {
-      id: "bk-1792683000000-casci-17",
-      data: "2026-12-30",
-      orario: "17:15",
-      atleta_id: "usr-bw-1953976",
-      email_cliente: "daniele.casci@gmail.com",
-      nome_cliente: "Daniele Casci",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "Prenotazione Multipla Rapida",
-      google_event_id: "71lr1798957ev6373gepesrcvc",
-      created_at: "2026-10-22T16:50:19.000Z"
-    },
-    {
       id: "bk-1794597063217",
       data: "2026-11-16",
       orario: "19:00",
@@ -38821,6 +39137,20 @@ var demo_data_default = {
       note: "",
       created_at: "2026-11-15T16:59:35.914Z",
       google_event_id: "a0vs7f99ln1mlf58e3qv459pk4"
+    },
+    {
+      id: "bk-1794989313897",
+      data: "2026-11-20",
+      orario: "17:30",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-18T08:08:33.897Z",
+      google_event_id: "r7gv99dm0nrqn92fst8ld3a8p0"
     }
   ],
   prenotazioni_cancellate: [
@@ -38878,7 +39208,13 @@ var demo_data_default = {
     "bk-1793550051037",
     "lab_bk-1793550051037",
     "bk-1794173412906",
-    "lab_bk-1794173412906"
+    "lab_bk-1794173412906",
+    "bk-1792683000000-casci-17",
+    "lab_bk-1792683000000-casci-17",
+    "bk-1794384771514",
+    "lab_bk-1794384771514",
+    "bk-1794841002698",
+    "lab_bk-1794841002698"
   ],
   eccezioni_calendario: [
     {
@@ -39810,173 +40146,262 @@ function fallbackClinicalAnalysis(contesto, metadata) {
 
 // server/audio-feedback-repo.ts
 import path4 from "node:path";
+import fs5 from "node:fs";
 import { DatabaseSync } from "node:sqlite";
-var DB_PATH = path4.resolve(process.cwd(), "area46_v2.sqlite");
+function getDbPath() {
+  const isServerless = process.env.VERCEL === "1" || !!process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === "production";
+  const localDb = path4.resolve(process.cwd(), "area46_v2.sqlite");
+  const tmpDb = "/tmp/area46_v2.sqlite";
+  if (isServerless) {
+    if (!fs5.existsSync(tmpDb)) {
+      if (fs5.existsSync(localDb)) {
+        try {
+          fs5.copyFileSync(localDb, tmpDb);
+        } catch {
+        }
+      }
+    }
+    return tmpDb;
+  }
+  try {
+    fs5.accessSync(process.cwd(), fs5.constants.W_OK);
+    return localDb;
+  } catch {
+    if (!fs5.existsSync(tmpDb) && fs5.existsSync(localDb)) {
+      try {
+        fs5.copyFileSync(localDb, tmpDb);
+      } catch {
+      }
+    }
+    return tmpDb;
+  }
+}
+var inMemoryAudioNotes = [];
+var inMemoryBugs = [];
 function getDb() {
-  const db2 = new DatabaseSync(DB_PATH);
-  db2.exec(`
-    CREATE TABLE IF NOT EXISTS audio_note_feedback (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      utente_id TEXT,
-      email_cliente TEXT,
-      contesto TEXT CHECK(contesto IN ('biofeedback_workout', 'app_feedback')),
-      audio_url TEXT NOT NULL,
-      durata_sec INTEGER DEFAULT 0,
-      trascrizione_testo TEXT,
-      ai_allerta TEXT CHECK(ai_allerta IN ('verde', 'giallo', 'rosso')) DEFAULT 'verde',
-      ai_sintesi TEXT,
-      ai_proposta_azione TEXT,
-      stato TEXT CHECK(stato IN ('nuovo', 'ascoltato', 'applicato', 'archiviato')) DEFAULT 'nuovo',
-      data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+  try {
+    const targetPath = getDbPath();
+    const db2 = new DatabaseSync(targetPath);
+    db2.exec(`
+      CREATE TABLE IF NOT EXISTS audio_note_feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        utente_id TEXT,
+        email_cliente TEXT,
+        contesto TEXT CHECK(contesto IN ('biofeedback_workout', 'app_feedback')),
+        audio_url TEXT NOT NULL,
+        durata_sec INTEGER DEFAULT 0,
+        trascrizione_testo TEXT,
+        ai_allerta TEXT CHECK(ai_allerta IN ('verde', 'giallo', 'rosso')) DEFAULT 'verde',
+        ai_sintesi TEXT,
+        ai_proposta_azione TEXT,
+        stato TEXT CHECK(stato IN ('nuovo', 'ascoltato', 'applicato', 'archiviato')) DEFAULT 'nuovo',
+        data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
 
-    CREATE TABLE IF NOT EXISTS app_segnalazioni_bug (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      utente_id TEXT,
-      email_cliente TEXT,
-      anonimo BOOLEAN DEFAULT 0,
-      tipo TEXT CHECK(tipo IN ('consiglio', 'bug', 'altro')) DEFAULT 'consiglio',
-      titolo TEXT NOT NULL,
-      descrizione TEXT NOT NULL,
-      audio_id INTEGER REFERENCES audio_note_feedback(id),
-      device_info TEXT,
-      ai_diagnosi_tecnica TEXT,
-      stato TEXT CHECK(stato IN ('aperto', 'in_valutazione', 'risolto', 'scartato')) DEFAULT 'aperto',
-      data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-  return db2;
+      CREATE TABLE IF NOT EXISTS app_segnalazioni_bug (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        utente_id TEXT,
+        email_cliente TEXT,
+        anonimo BOOLEAN DEFAULT 0,
+        tipo TEXT CHECK(tipo IN ('consiglio', 'bug', 'altro')) DEFAULT 'consiglio',
+        titolo TEXT NOT NULL,
+        descrizione TEXT NOT NULL,
+        audio_id INTEGER REFERENCES audio_note_feedback(id),
+        device_info TEXT,
+        ai_diagnosi_tecnica TEXT,
+        stato TEXT CHECK(stato IN ('aperto', 'in_valutazione', 'risolto', 'scartato')) DEFAULT 'aperto',
+        data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    return db2;
+  } catch (err) {
+    console.warn("Avviso: fallback in-memory SQLite attivato:", err);
+    return null;
+  }
 }
 function insertAudioNote(record) {
   const db2 = getDb();
-  const stmt = db2.prepare(`
-    INSERT INTO audio_note_feedback (
-      utente_id, email_cliente, contesto, audio_url, durata_sec,
-      trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  const info = stmt.run(
-    record.utente_id || null,
-    record.email_cliente || null,
-    record.contesto,
-    record.audio_url,
-    record.durata_sec || 0,
-    record.trascrizione_testo || null,
-    record.ai_allerta || "verde",
-    record.ai_sintesi || null,
-    record.ai_proposta_azione || null,
-    record.stato || "nuovo"
-  );
-  const lastId = Number(info.lastInsertRowid);
-  const getStmt = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?");
-  const row = getStmt.get(lastId);
-  db2.close();
-  return row;
+  if (db2) {
+    const stmt = db2.prepare(`
+      INSERT INTO audio_note_feedback (
+        utente_id, email_cliente, contesto, audio_url, durata_sec,
+        trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const info = stmt.run(
+      record.utente_id || null,
+      record.email_cliente || null,
+      record.contesto,
+      record.audio_url,
+      record.durata_sec || 0,
+      record.trascrizione_testo || null,
+      record.ai_allerta || "verde",
+      record.ai_sintesi || null,
+      record.ai_proposta_azione || null,
+      record.stato || "nuovo"
+    );
+    const lastId = Number(info.lastInsertRowid);
+    const getStmt = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?");
+    const row = getStmt.get(lastId);
+    db2.close();
+    return row;
+  }
+  const newRow = {
+    ...record,
+    id: Date.now(),
+    data_creazione: (/* @__PURE__ */ new Date()).toISOString()
+  };
+  inMemoryAudioNotes.unshift(newRow);
+  return newRow;
 }
 function getAudioNotes(filter) {
   const db2 = getDb();
-  let query = "SELECT * FROM audio_note_feedback WHERE 1=1";
-  const params = [];
-  if (filter?.contesto) {
-    query += " AND contesto = ?";
-    params.push(filter.contesto);
+  if (db2) {
+    let query = "SELECT * FROM audio_note_feedback WHERE 1=1";
+    const params = [];
+    if (filter?.contesto) {
+      query += " AND contesto = ?";
+      params.push(filter.contesto);
+    }
+    if (filter?.stato) {
+      query += " AND stato = ?";
+      params.push(filter.stato);
+    }
+    if (filter?.email) {
+      query += " AND email_cliente = ?";
+      params.push(filter.email);
+    }
+    query += " ORDER BY id DESC";
+    const rows = db2.prepare(query).all(...params);
+    db2.close();
+    return rows;
   }
-  if (filter?.stato) {
-    query += " AND stato = ?";
-    params.push(filter.stato);
-  }
-  if (filter?.email) {
-    query += " AND email_cliente = ?";
-    params.push(filter.email);
-  }
-  query += " ORDER BY id DESC";
-  const rows = db2.prepare(query).all(...params);
-  db2.close();
-  return rows;
+  return inMemoryAudioNotes.filter((n) => {
+    if (filter?.contesto && n.contesto !== filter.contesto) return false;
+    if (filter?.stato && n.stato !== filter.stato) return false;
+    if (filter?.email && n.email_cliente !== filter.email) return false;
+    return true;
+  });
 }
 function updateAudioNoteStatus(id, stato) {
   const db2 = getDb();
-  const stmt = db2.prepare("UPDATE audio_note_feedback SET stato = ? WHERE id = ?");
-  stmt.run(stato, id);
-  const row = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id);
-  db2.close();
-  return row || null;
+  if (db2) {
+    const stmt = db2.prepare("UPDATE audio_note_feedback SET stato = ? WHERE id = ?");
+    stmt.run(stato, id);
+    const row = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id);
+    db2.close();
+    return row || null;
+  }
+  const found = inMemoryAudioNotes.find((n) => n.id === id);
+  if (found) found.stato = stato;
+  return found || null;
 }
 function updateAudioNoteAnalysis(id, analysis) {
   const db2 = getDb();
-  db2.prepare(`
-    UPDATE audio_note_feedback
-    SET trascrizione_testo = ?, ai_allerta = ?, ai_sintesi = ?, ai_proposta_azione = ?
-    WHERE id = ?
-  `).run(analysis.trascrizione, analysis.allerta, analysis.sintesi, analysis.proposta_azione, id);
-  const row = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id);
-  db2.close();
-  return row || null;
+  if (db2) {
+    db2.prepare(`
+      UPDATE audio_note_feedback
+      SET trascrizione_testo = ?, ai_allerta = ?, ai_sintesi = ?, ai_proposta_azione = ?
+      WHERE id = ?
+    `).run(analysis.trascrizione, analysis.allerta, analysis.sintesi, analysis.proposta_azione, id);
+    const row = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id);
+    db2.close();
+    return row || null;
+  }
+  const found = inMemoryAudioNotes.find((n) => n.id === id);
+  if (found) {
+    found.trascrizione_testo = analysis.trascrizione;
+    found.ai_allerta = analysis.allerta;
+    found.ai_sintesi = analysis.sintesi;
+    found.ai_proposta_azione = analysis.proposta_azione;
+  }
+  return found || null;
 }
 function insertAppSegnalazione(record) {
   const db2 = getDb();
-  const stmt = db2.prepare(`
-    INSERT INTO app_segnalazioni_bug (
-      utente_id, email_cliente, anonimo, tipo, titolo,
-      descrizione, audio_id, device_info, ai_diagnosi_tecnica, stato
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  const info = stmt.run(
-    record.anonimo ? null : record.utente_id || null,
-    record.anonimo ? null : record.email_cliente || null,
-    record.anonimo ? 1 : 0,
-    record.tipo || "consiglio",
-    record.titolo,
-    record.descrizione,
-    record.audio_id || null,
-    record.device_info || null,
-    record.ai_diagnosi_tecnica || null,
-    record.stato || "aperto"
-  );
-  const lastId = Number(info.lastInsertRowid);
-  const row = db2.prepare(`
-    SELECT s.*, a.audio_url, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
-    FROM app_segnalazioni_bug s
-    LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
-    WHERE s.id = ?
-  `).get(lastId);
-  db2.close();
-  return row;
+  if (db2) {
+    const stmt = db2.prepare(`
+      INSERT INTO app_segnalazioni_bug (
+        utente_id, email_cliente, anonimo, tipo, titolo,
+        descrizione, audio_id, device_info, ai_diagnosi_tecnica, stato
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const info = stmt.run(
+      record.anonimo ? null : record.utente_id || null,
+      record.anonimo ? null : record.email_cliente || null,
+      record.anonimo ? 1 : 0,
+      record.tipo || "consiglio",
+      record.titolo,
+      record.descrizione,
+      record.audio_id || null,
+      record.device_info || null,
+      record.ai_diagnosi_tecnica || null,
+      record.stato || "aperto"
+    );
+    const lastId = Number(info.lastInsertRowid);
+    const row = db2.prepare(`
+      SELECT s.*, a.audio_url, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
+      FROM app_segnalazioni_bug s
+      LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+      WHERE s.id = ?
+    `).get(lastId);
+    db2.close();
+    return row;
+  }
+  const newBug = {
+    ...record,
+    id: Date.now(),
+    data_creazione: (/* @__PURE__ */ new Date()).toISOString()
+  };
+  inMemoryBugs.unshift(newBug);
+  return newBug;
 }
 function getAppSegnalazioni(filter) {
   const db2 = getDb();
-  let query = `
-    SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi, a.ai_proposta_azione
-    FROM app_segnalazioni_bug s
-    LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
-    WHERE 1=1
-  `;
-  const params = [];
-  if (filter?.stato) {
-    query += " AND s.stato = ?";
-    params.push(filter.stato);
+  if (db2) {
+    let query = `
+      SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi, a.ai_proposta_azione
+      FROM app_segnalazioni_bug s
+      LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+      WHERE 1=1
+    `;
+    const params = [];
+    if (filter?.stato) {
+      query += " AND s.stato = ?";
+      params.push(filter.stato);
+    }
+    if (filter?.tipo) {
+      query += " AND s.tipo = ?";
+      params.push(filter.tipo);
+    }
+    query += " ORDER BY s.id DESC";
+    const rows = db2.prepare(query).all(...params);
+    db2.close();
+    return rows;
   }
-  if (filter?.tipo) {
-    query += " AND s.tipo = ?";
-    params.push(filter.tipo);
-  }
-  query += " ORDER BY s.id DESC";
-  const rows = db2.prepare(query).all(...params);
-  db2.close();
-  return rows;
+  return inMemoryBugs.filter((b) => {
+    if (filter?.stato && b.stato !== filter.stato) return false;
+    if (filter?.tipo && b.tipo !== filter.tipo) return false;
+    return true;
+  });
 }
 function updateAppSegnalazioneStatus(id, stato) {
   const db2 = getDb();
-  const stmt = db2.prepare("UPDATE app_segnalazioni_bug SET stato = ? WHERE id = ?");
-  stmt.run(stato, id);
-  const row = db2.prepare(`
-    SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
-    FROM app_segnalazioni_bug s
-    LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
-    WHERE s.id = ?
-  `).get(id);
-  db2.close();
-  return row || null;
+  if (db2) {
+    const stmt = db2.prepare("UPDATE app_segnalazioni_bug SET stato = ? WHERE id = ?");
+    stmt.run(stato, id);
+    const row = db2.prepare(`
+      SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
+      FROM app_segnalazioni_bug s
+      LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+      WHERE s.id = ?
+    `).get(id);
+    db2.close();
+    return row || null;
+  }
+  const found = inMemoryBugs.find((b) => b.id === id);
+  if (found) found.stato = stato;
+  return found || null;
 }
 
 // local-api.ts
@@ -40009,16 +40434,16 @@ function parseSafeDate(iso) {
 }
 function loadData() {
   let loaded = null;
-  if (IS_SANDBOX && fs5.existsSync(SANDBOX_FILE)) {
+  if (IS_SANDBOX && fs6.existsSync(SANDBOX_FILE)) {
     try {
-      const raw = fs5.readFileSync(SANDBOX_FILE, "utf-8");
+      const raw = fs6.readFileSync(SANDBOX_FILE, "utf-8");
       return JSON.parse(raw);
     } catch {
     }
   }
-  if (fs5.existsSync(TMP_DATA_FILE)) {
+  if (fs6.existsSync(TMP_DATA_FILE)) {
     try {
-      const raw = fs5.readFileSync(TMP_DATA_FILE, "utf-8");
+      const raw = fs6.readFileSync(TMP_DATA_FILE, "utf-8");
       loaded = JSON.parse(raw);
     } catch {
     }
@@ -40172,29 +40597,29 @@ function saveData(data, skipCloudSync = false) {
   db = data;
   if (IS_SANDBOX) {
     try {
-      fs5.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
-      fs5.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs6.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs6.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
     } catch {
     }
     return Promise.resolve();
   }
   try {
-    fs5.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+    fs6.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch {
   }
   try {
     const directPath = path5.resolve(__dirname, "demo-data.json");
     const parentPath = path5.resolve(__dirname, "..", "demo-data.json");
-    const destPath = fs5.existsSync(directPath) ? directPath : fs5.existsSync(parentPath) ? parentPath : null;
+    const destPath = fs6.existsSync(directPath) ? directPath : fs6.existsSync(parentPath) ? parentPath : null;
     if (destPath) {
       const sanitized = JSON.parse(JSON.stringify(data));
       if (sanitized.configurazione_lab && sanitized.configurazione_lab.stripe_secret_key) {
         sanitized.configurazione_lab.stripe_secret_key = "";
       }
-      fs5.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
+      fs6.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
       try {
         const vaultDir = path5.resolve(path5.dirname(destPath), "data", "vault");
-        if (fs5.existsSync(vaultDir)) {
+        if (fs6.existsSync(vaultDir)) {
           const mod1 = {
             profili_utenti: data.profili_utenti || [],
             movimenti_crediti: data.movimenti_crediti || [],
@@ -40203,7 +40628,7 @@ function saveData(data, skipCloudSync = false) {
             utenti_cancellati: data.utenti_cancellati || [],
             tariffario_pacchetti: data.tariffario_pacchetti || []
           };
-          fs5.writeFileSync(path5.join(vaultDir, "1_gestionale_utenti_crediti.json"), JSON.stringify(mod1, null, 2), "utf-8");
+          fs6.writeFileSync(path5.join(vaultDir, "1_gestionale_utenti_crediti.json"), JSON.stringify(mod1, null, 2), "utf-8");
           const mod2 = {
             prenotazioni_slot: data.prenotazioni_slot || [],
             prenotazioni_cancellate: data.prenotazioni_cancellate || [],
@@ -40211,19 +40636,19 @@ function saveData(data, skipCloudSync = false) {
             regole_palinsesto: data.regole_palinsesto || [],
             richieste_cancellazione_tardiva: data.richieste_cancellazione_tardiva || []
           };
-          fs5.writeFileSync(path5.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
+          fs6.writeFileSync(path5.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
           const modDiario = {
             diario_utente: data.diario_utente || [],
             stato_allenamenti: data.stato_allenamenti || [],
             preferenze_utente: data.preferenze_utente || []
           };
-          fs5.writeFileSync(path5.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
+          fs6.writeFileSync(path5.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
           const mod4 = {
             database_esercizi: data.database_esercizi || [],
             livelli: data.livelli || [],
             ordine_livelli: data.ordine_livelli || []
           };
-          fs5.writeFileSync(path5.join(vaultDir, "4_metodologia_esercizi.json"), JSON.stringify(mod4, null, 2), "utf-8");
+          fs6.writeFileSync(path5.join(vaultDir, "4_metodologia_esercizi.json"), JSON.stringify(mod4, null, 2), "utf-8");
         }
       } catch {
       }
@@ -40231,9 +40656,9 @@ function saveData(data, skipCloudSync = false) {
       if (now - lastAutoBackupTime > 4 * 3600 * 1e3) {
         lastAutoBackupTime = now;
         const bkpDir = path5.resolve(path5.dirname(destPath), "backups");
-        if (fs5.existsSync(bkpDir)) {
+        if (fs6.existsSync(bkpDir)) {
           const bkpFile = path5.join(bkpDir, `auto_backup_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`);
-          fs5.writeFileSync(bkpFile, JSON.stringify(data, null, 2), "utf-8");
+          fs6.writeFileSync(bkpFile, JSON.stringify(data, null, 2), "utf-8");
         }
       }
     }
@@ -40258,16 +40683,16 @@ var FALLBACK_SERVICE_ACCOUNT = {
   client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/bot-allenamenti%40landmine-lab-level-pro.iam.gserviceaccount.com",
   universe_domain: "googleapis.com"
 };
-var CREDENZIALI_PATH = fs5.existsSync(path5.resolve(__dirname, "credenziali.json")) ? path5.resolve(__dirname, "credenziali.json") : path5.resolve(__dirname, "..", "credenziali.json");
+var CREDENZIALI_PATH = fs6.existsSync(path5.resolve(__dirname, "credenziali.json")) ? path5.resolve(__dirname, "credenziali.json") : path5.resolve(__dirname, "..", "credenziali.json");
 var GDRIVE_DEMO_DATA_ID = "129ts4wdwsypvWCB2cBHXWw3WTIKmtktA";
 function base64url(str) {
   return Buffer.from(str).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 async function getGoogleDriveAccessToken() {
   let creds = null;
-  if (fs5.existsSync(CREDENZIALI_PATH)) {
+  if (fs6.existsSync(CREDENZIALI_PATH)) {
     try {
-      creds = JSON.parse(fs5.readFileSync(CREDENZIALI_PATH, "utf-8"));
+      creds = JSON.parse(fs6.readFileSync(CREDENZIALI_PATH, "utf-8"));
     } catch {
     }
   }
@@ -40313,9 +40738,9 @@ async function getGoogleDriveAccessToken() {
 var GCAL_CALENDAR_ID = "firenzepersonaltrainer@gmail.com";
 async function getGoogleCalendarAccessToken() {
   let creds = null;
-  if (fs5.existsSync(CREDENZIALI_PATH)) {
+  if (fs6.existsSync(CREDENZIALI_PATH)) {
     try {
-      creds = JSON.parse(fs5.readFileSync(CREDENZIALI_PATH, "utf-8"));
+      creds = JSON.parse(fs6.readFileSync(CREDENZIALI_PATH, "utf-8"));
     } catch {
     }
   }
@@ -40666,12 +41091,12 @@ async function pullGoogleCalendarLabSlots(options = {}) {
       try {
         const vaultCalFile = path5.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json");
         const altVaultCalFile = path5.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json");
-        const targetVault = fs5.existsSync(vaultCalFile) ? vaultCalFile : fs5.existsSync(altVaultCalFile) ? altVaultCalFile : null;
+        const targetVault = fs6.existsSync(vaultCalFile) ? vaultCalFile : fs6.existsSync(altVaultCalFile) ? altVaultCalFile : null;
         if (targetVault) {
-          const vData = JSON.parse(fs5.readFileSync(targetVault, "utf-8"));
+          const vData = JSON.parse(fs6.readFileSync(targetVault, "utf-8"));
           vData.prenotazioni_slot = db.prenotazioni_slot;
           vData.prenotazioni_cancellate = db.prenotazioni_cancellate;
-          fs5.writeFileSync(targetVault, JSON.stringify(vData, null, 2), "utf-8");
+          fs6.writeFileSync(targetVault, JSON.stringify(vData, null, 2), "utf-8");
         }
       } catch (vErr) {
         console.warn("[GCAL PULL] Vault file update:", vErr);
@@ -40723,7 +41148,7 @@ async function triggerSggSyncAsync(singleTx) {
   try {
     const direct = path5.resolve(__dirname, "scripts", "sync_to_sgg.py");
     const parent = path5.resolve(__dirname, "..", "scripts", "sync_to_sgg.py");
-    const scriptPath = fs5.existsSync(direct) ? direct : fs5.existsSync(parent) ? parent : null;
+    const scriptPath = fs6.existsSync(direct) ? direct : fs6.existsSync(parent) ? parent : null;
     if (scriptPath) {
       import("node:child_process").then(({ exec }) => {
         exec(`python3 "${scriptPath}"`, (err) => {
@@ -41234,16 +41659,19 @@ async function handleLocalApi(req, res, next) {
   let pathname = url.pathname;
   if (pathname.startsWith("/uploads/audio_notes/")) {
     const fileName = path5.basename(pathname);
-    const filePath = path5.resolve(__dirname, "uploads", "audio_notes", fileName);
-    if (fs5.existsSync(filePath)) {
+    let filePath = path5.resolve(__dirname, "uploads", "audio_notes", fileName);
+    if (!fs6.existsSync(filePath)) {
+      filePath = path5.join("/tmp/uploads/audio_notes", fileName);
+    }
+    if (fs6.existsSync(filePath)) {
       const ext = path5.extname(fileName).toLowerCase();
       const mime = ext === ".mp4" || ext === ".m4a" ? "audio/mp4" : ext === ".wav" ? "audio/wav" : "audio/webm";
       res.setHeader("Content-Type", mime);
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader("Accept-Ranges", "bytes");
-      const stat = fs5.statSync(filePath);
+      const stat = fs6.statSync(filePath);
       res.setHeader("Content-Length", stat.size);
-      const stream = fs5.createReadStream(filePath);
+      const stream = fs6.createReadStream(filePath);
       return stream.pipe(res);
     } else {
       res.statusCode = 404;
@@ -44539,16 +44967,24 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
       let audioFileName = `audio_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
       const ext = formato ? formato.startsWith(".") ? formato.slice(1) : formato : "webm";
       audioFileName += `.${ext}`;
-      const uploadDir = path5.resolve(__dirname, "uploads", "audio_notes");
-      if (!fs5.existsSync(uploadDir)) {
-        fs5.mkdirSync(uploadDir, { recursive: true });
+      const isServerless = process.env.VERCEL === "1" || !!process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === "production";
+      let uploadDir = isServerless ? "/tmp/uploads/audio_notes" : path5.resolve(__dirname, "uploads", "audio_notes");
+      try {
+        if (!fs6.existsSync(uploadDir)) {
+          fs6.mkdirSync(uploadDir, { recursive: true });
+        }
+      } catch {
+        uploadDir = "/tmp/uploads/audio_notes";
+        if (!fs6.existsSync(uploadDir)) {
+          fs6.mkdirSync(uploadDir, { recursive: true });
+        }
       }
       const fullFilePath = path5.join(uploadDir, audioFileName);
       if (rawAudio) {
         const cleanBase64 = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
-        fs5.writeFileSync(fullFilePath, Buffer.from(cleanBase64, "base64"));
+        fs6.writeFileSync(fullFilePath, Buffer.from(cleanBase64, "base64"));
       } else {
-        fs5.writeFileSync(fullFilePath, Buffer.from("RIFF....WAVEfmt ....data...."));
+        fs6.writeFileSync(fullFilePath, Buffer.from("RIFF....WAVEfmt ....data...."));
       }
       const audioUrl = `/uploads/audio_notes/${audioFileName}`;
       const aiAnalysis = await analyzeAudioWithGemini(fullFilePath, effectiveContesto, {
