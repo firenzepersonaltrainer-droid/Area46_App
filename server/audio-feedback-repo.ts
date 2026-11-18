@@ -95,6 +95,9 @@ function getDb(): DatabaseSync | null {
     try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN consiglio_approvato_coach BOOLEAN DEFAULT 0;"); } catch {}
     try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN giorno_destinazione TEXT;"); } catch {}
     try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN tipo_intervento TEXT;"); } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN coach_audio_url TEXT;"); } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN coach_audio_base64 TEXT;"); } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN coach_audio_durata_sec INTEGER DEFAULT 0;"); } catch {}
     try { db.exec("ALTER TABLE app_segnalazioni_bug ADD COLUMN audio_base64 TEXT;"); } catch {}
 
     return db;
@@ -117,6 +120,13 @@ export interface AudioNoteRecord {
   ai_allerta?: "verde" | "giallo" | "rosso";
   ai_sintesi?: string | null;
   ai_proposta_azione?: string | null;
+  consiglio_coach?: string | null;
+  consiglio_approvato_coach?: boolean;
+  giorno_destinazione?: string | number | null;
+  tipo_intervento?: "spinta" | "scarico" | "consolidamento" | null;
+  coach_audio_url?: string | null;
+  coach_audio_base64?: string | null;
+  coach_audio_durata_sec?: number | null;
   stato?: "nuovo" | "ascoltato" | "applicato" | "archiviato" | "cestino";
   data_creazione?: string;
 }
@@ -149,8 +159,9 @@ export function insertAudioNote(record: AudioNoteRecord): AudioNoteRecord {
       INSERT INTO audio_note_feedback (
         utente_id, email_cliente, contesto, audio_url, audio_base64, durata_sec,
         trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato,
-        consiglio_coach, consiglio_approvato_coach, giorno_destinazione, tipo_intervento
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        consiglio_coach, consiglio_approvato_coach, giorno_destinazione, tipo_intervento,
+        coach_audio_url, coach_audio_base64, coach_audio_durata_sec
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const info = stmt.run(
@@ -168,7 +179,10 @@ export function insertAudioNote(record: AudioNoteRecord): AudioNoteRecord {
       record.consiglio_coach || null,
       record.consiglio_approvato_coach ? 1 : 0,
       record.giorno_destinazione !== undefined ? record.giorno_destinazione : null,
-      record.tipo_intervento || null
+      record.tipo_intervento || null,
+      record.coach_audio_url || null,
+      record.coach_audio_base64 || null,
+      record.coach_audio_durata_sec || 0
     );
 
     const lastId = Number(info.lastInsertRowid);
@@ -248,21 +262,30 @@ export function updateAudioNoteStatus(
     consiglio_approvato_coach?: boolean;
     giorno_destinazione?: string | number;
     tipo_intervento?: string;
+    coach_audio_url?: string | null;
+    coach_audio_base64?: string | null;
+    coach_audio_durata_sec?: number | null;
   } = {}
 ): AudioNoteRecord | null {
   const db = getDb();
   if (db) {
-    if (extraData.consiglio_coach !== undefined) {
+    if (extraData.consiglio_coach !== undefined || extraData.coach_audio_base64 !== undefined || extraData.coach_audio_url !== undefined) {
       db.prepare(`
         UPDATE audio_note_feedback 
-        SET stato = ?, consiglio_coach = ?, consiglio_approvato_coach = ?, giorno_destinazione = ?, tipo_intervento = ? 
+        SET stato = ?, consiglio_coach = ?, consiglio_approvato_coach = ?, giorno_destinazione = ?, tipo_intervento = ?,
+            coach_audio_url = COALESCE(?, coach_audio_url),
+            coach_audio_base64 = COALESCE(?, coach_audio_base64),
+            coach_audio_durata_sec = COALESCE(?, coach_audio_durata_sec)
         WHERE id = ?
       `).run(
         stato,
-        extraData.consiglio_coach,
+        extraData.consiglio_coach !== undefined ? extraData.consiglio_coach : null,
         extraData.consiglio_approvato_coach ? 1 : 0,
         extraData.giorno_destinazione ? String(extraData.giorno_destinazione) : null,
         extraData.tipo_intervento || null,
+        extraData.coach_audio_url !== undefined ? extraData.coach_audio_url : null,
+        extraData.coach_audio_base64 !== undefined ? extraData.coach_audio_base64 : null,
+        extraData.coach_audio_durata_sec !== undefined ? extraData.coach_audio_durata_sec : null,
         id
       );
     } else {
@@ -279,6 +302,9 @@ export function updateAudioNoteStatus(
       if (extraData.consiglio_approvato_coach !== undefined) mem.consiglio_approvato_coach = extraData.consiglio_approvato_coach;
       if (extraData.giorno_destinazione !== undefined) mem.giorno_destinazione = extraData.giorno_destinazione;
       if (extraData.tipo_intervento !== undefined) mem.tipo_intervento = extraData.tipo_intervento;
+      if (extraData.coach_audio_url !== undefined) mem.coach_audio_url = extraData.coach_audio_url;
+      if (extraData.coach_audio_base64 !== undefined) mem.coach_audio_base64 = extraData.coach_audio_base64;
+      if (extraData.coach_audio_durata_sec !== undefined) mem.coach_audio_durata_sec = extraData.coach_audio_durata_sec;
     }
     return row || null;
   }
@@ -290,6 +316,9 @@ export function updateAudioNoteStatus(
     if (extraData.consiglio_approvato_coach !== undefined) found.consiglio_approvato_coach = extraData.consiglio_approvato_coach;
     if (extraData.giorno_destinazione !== undefined) found.giorno_destinazione = extraData.giorno_destinazione;
     if (extraData.tipo_intervento !== undefined) found.tipo_intervento = extraData.tipo_intervento;
+    if (extraData.coach_audio_url !== undefined) found.coach_audio_url = extraData.coach_audio_url;
+    if (extraData.coach_audio_base64 !== undefined) found.coach_audio_base64 = extraData.coach_audio_base64;
+    if (extraData.coach_audio_durata_sec !== undefined) found.coach_audio_durata_sec = extraData.coach_audio_durata_sec;
   }
   return found || null;
 }

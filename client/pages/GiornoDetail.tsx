@@ -23,6 +23,7 @@ import {
   CheckCircle2,
   Lightbulb,
   ArrowLeft,
+  Mic,
 } from "lucide-react";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { toast } from "sonner";
@@ -31,6 +32,7 @@ import { VideoClipModal } from "../components/VideoClipModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/Dialog";
 import { Textarea } from "../components/Textarea";
 import { AudioFeedbackRecorder } from "../components/AudioFeedbackRecorder";
+import { ExecutiveAudioPlayer } from "../components/CoachAudioFeedbackDrawer";
 
 interface Esercizio {
   id: number;
@@ -614,7 +616,7 @@ export default function GiornoDetailPage() {
     const match = diarioEntries
       .filter((e) => {
         if (!e.consiglio_approvato_coach) return false;
-        if (!e.consiglio_coach) return false;
+        if (!e.consiglio_coach && !e.coach_audio_base64 && !e.coach_audio_url) return false;
         if (e.livello && livello && e.livello !== livello) return false;
 
         const destNum = e.giorno_destinazione ? Number(String(e.giorno_destinazione).match(/[0-9]+/)?.[0]) : null;
@@ -787,9 +789,34 @@ export default function GiornoDetailPage() {
               </span>
             )}
           </div>
-          <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed">
-            "{coachAdvice.consiglio_coach}"
-          </p>
+
+          {/* Player Nota Vocale del Coach Stefano per questa seduta */}
+          {(coachAdvice.coach_audio_base64 || coachAdvice.coach_audio_url) && (
+            <div className="p-3 rounded-2xl bg-zinc-950 border border-[#e3ff00]/40 space-y-2 mt-1 shadow-inner">
+              <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-[#e3ff00]">
+                <span className="flex items-center gap-1.5">
+                  <Mic className="size-4 text-[#e3ff00]" />
+                  <span>Nota Vocale di Stefano Tronconi per Te</span>
+                </span>
+                <span className="text-[10px] font-mono text-zinc-400">Audio del Coach</span>
+              </div>
+              <ExecutiveAudioPlayer
+                src={coachAdvice.coach_audio_base64 || coachAdvice.coach_audio_url}
+                durationSec={coachAdvice.coach_audio_durata_sec || 0}
+              />
+              <p className="text-[11px] text-zinc-400 italic">
+                Ascolta la nota vocale registrata dal Coach Stefano specificamente per guidare la tua seduta di oggi.
+              </p>
+            </div>
+          )}
+
+          {/* Testo Direttiva del Coach (se presente) */}
+          {coachAdvice.consiglio_coach && (
+            <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed pt-1">
+              "{coachAdvice.consiglio_coach}"
+            </p>
+          )}
+
           {coachAdvice.ai_proposta_azione && (
             <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400">
               <span className="text-zinc-300 font-bold">Azione metodologica: </span>

@@ -47,5 +47,7 @@ Regole Tassative:
     - *Destinazione Seduta Successiva:* I consigli del coach o modulazioni carichi/scarico NON devono MAI comparire nella seduta appena conclusa, bensì sempre nella **seduta successiva** (es. Seduta 43 $\rightarrow$ consiglio per Seduta 44).
     - *Spettro Bipolare (Scarico vs Spinta):* Prevedere sia scarico se duro, sia l'indicazione di **spingere maggiormente** (+carico / +intensità) se l'allenamento è risultato agevole.
     - *Sovranità Esclusiva del Coach & Ricevuta Atleta:* Il consiglio compare all'atleta **solo previa approvazione esplicita del Coach Stefano**; all'invio del form l'atleta riceve solo la conferma di avvenuto recapito.
+    - *Risposta Vocale del Coach per la Seduta Futura:* Il Coach Stefano può registrare una propria nota vocale di risposta per la seduta successiva (es. Seduta 44 per feedback della 43): l'atleta la troverà ed ascolterà aprendo la seduta del giorno.
+
 
 

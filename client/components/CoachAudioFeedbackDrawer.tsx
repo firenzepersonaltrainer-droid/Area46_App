@@ -23,6 +23,7 @@ import {
   Pause,
   Trash2,
   RotateCcw,
+  Square,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,7 +36,7 @@ interface CoachAudioFeedbackDrawerProps {
  * Lettore Audio Executive Tattile ad alta affidabilita
  * Funziona nativamente con data URI Base64 e file URL senza dipendere da Safari controls
  */
-function ExecutiveAudioPlayer({
+export function ExecutiveAudioPlayer({
   src,
   durationSec = 0,
 }: {
@@ -154,10 +155,13 @@ function CoachAdviceDecisionSection({
   note: any;
   onSaveAdvice: (data: {
     id: number;
-    consiglio_coach: string;
+    consiglio_coach?: string;
     consiglio_approvato_coach: boolean;
     giorno_destinazione: string | number;
     tipo_intervento: "spinta" | "scarico" | "consolidamento";
+    coach_audio_base64?: string | null;
+    coach_audio_url?: string | null;
+    coach_audio_durata_sec?: number | null;
   }) => void;
   isPending: boolean;
 }) {
@@ -175,6 +179,111 @@ function CoachAdviceDecisionSection({
   const destGiorno = defaultDest;
   const isApproved = note.consiglio_approvato_coach === true;
 
+  // Stato Registratore Audio Vocale Coach
+  const [coachAudioUrl, setCoachAudioUrl] = useState<string | null>(
+    note.coach_audio_url || note.coach_audio_base64 || null
+  );
+  const [coachAudioBase64, setCoachAudioBase64] = useState<string | null>(
+    note.coach_audio_base64 || null
+  );
+  const [coachAudioDuration, setCoachAudioDuration] = useState<number>(
+    note.coach_audio_durata_sec || 0
+  );
+  const [isRecordingCoach, setIsRecordingCoach] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const timerIntervalRef = useRef<any>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, []);
+
+  const getBestMimeType = (): string => {
+    if (typeof MediaRecorder === "undefined") return "";
+    const types = [
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/mp4",
+      "audio/aac",
+      "audio/ogg;codecs=opus",
+    ];
+    for (const t of types) {
+      if (MediaRecorder.isTypeSupported(t)) return t;
+    }
+    return "";
+  };
+
+  const startCoachRecording = async () => {
+    audioChunksRef.current = [];
+    setRecordingSeconds(0);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = getBestMimeType();
+      const options = mimeType ? { mimeType } : undefined;
+      const mediaRecorder = new MediaRecorder(stream, options);
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: mimeType || "audio/webm",
+        });
+        const finalUrl = URL.createObjectURL(audioBlob);
+        setCoachAudioUrl(finalUrl);
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          setCoachAudioBase64(base64String);
+        };
+        reader.readAsDataURL(audioBlob);
+
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start(250);
+      setIsRecordingCoach(true);
+
+      timerIntervalRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => {
+          if (prev >= 90) {
+            stopCoachRecording();
+            return 90;
+          }
+          const nextVal = prev + 1;
+          setCoachAudioDuration(nextVal);
+          return nextVal;
+        });
+      }, 1000);
+    } catch (err) {
+      console.error("Errore accesso microfono Coach:", err);
+      toast.error("Impossibile accedere al microfono. Verifica i permessi del browser.");
+    }
+  };
+
+  const stopCoachRecording = () => {
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecordingCoach(false);
+  };
+
   const handleApplyPreset = (newTipo: "spinta" | "scarico" | "consolidamento") => {
     setTipo(newTipo);
     if (newTipo === "spinta") {
@@ -184,6 +293,12 @@ function CoachAdviceDecisionSection({
     } else {
       setConsiglio("Sessione chiusa con successo e ottimo controllo sul pattern motorio! Per la prossima seduta mantieni la stessa qualità e concentrazione esecutiva.");
     }
+  };
+
+  const formatTimer = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s < 10 ? "0" : ""}${s}`;
   };
 
   return (
@@ -239,6 +354,71 @@ function CoachAdviceDecisionSection({
         </button>
       </div>
 
+      {/* SEZIONE NOTA VOCALE REGISTRATA DAL COACH PER LA SEDUTA SUCCESSIVA */}
+      <div className="space-y-1.5 pt-1 border-t border-zinc-800">
+        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between">
+          <span className="flex items-center gap-1 text-[#e3ff00]">
+            <Mic className="size-3.5" /> Risposta Vocale di Stefano per Seduta {destGiorno}:
+          </span>
+          {coachAudioUrl && (
+            <span className="text-[9px] text-emerald-400 font-bold">Nota audio pronta</span>
+          )}
+        </label>
+
+        {isRecordingCoach ? (
+          <div className="p-3 rounded-xl bg-red-950/70 border border-red-500 flex items-center justify-between gap-3 animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <span className="size-2.5 rounded-full bg-red-500 animate-ping" />
+              <div className="text-xs font-mono font-black text-red-200">
+                Registrazione Coach: {formatTimer(recordingSeconds)} / 1:30
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={stopCoachRecording}
+              className="px-3.5 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-black rounded-lg flex items-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-95"
+            >
+              <Square className="size-3.5 fill-white" />
+              <span>Ferma e Salva</span>
+            </button>
+          </div>
+        ) : coachAudioUrl ? (
+          <div className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
+            <div className="flex items-center justify-between text-[11px] text-zinc-300">
+              <span className="text-xs font-bold text-[#e3ff00] flex items-center gap-1">
+                🎙️ Nota Vocale Pronta per l'Atleta
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setCoachAudioUrl(null);
+                  setCoachAudioBase64(null);
+                  setCoachAudioDuration(0);
+                }}
+                className="text-[10px] text-zinc-400 hover:text-red-400 flex items-center gap-1 cursor-pointer transition-colors"
+                title="Elimina nota vocale registrata"
+              >
+                <Trash2 className="size-3" />
+                <span>Ri-registra</span>
+              </button>
+            </div>
+            <ExecutiveAudioPlayer
+              src={coachAudioUrl}
+              durationSec={coachAudioDuration}
+            />
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={startCoachRecording}
+            className="w-full py-2.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 hover:border-[#e3ff00] transition-all cursor-pointer flex items-center justify-center gap-2 text-xs font-bold shadow-xs active:scale-98"
+          >
+            <Mic className="size-4 text-[#e3ff00]" />
+            <span>Registra Nota Vocale di risposta per la Seduta {destGiorno}</span>
+          </button>
+        )}
+      </div>
+
       {/* Testo del consiglio editabile da Stefano */}
       <div className="space-y-1">
         <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between">
@@ -256,7 +436,7 @@ function CoachAdviceDecisionSection({
       {/* Tasto Approvazione & Pubblicazione Ufficiale */}
       <button
         type="button"
-        disabled={isPending}
+        disabled={isPending || isRecordingCoach}
         onClick={() => {
           onSaveAdvice({
             id: note.id,
@@ -264,6 +444,9 @@ function CoachAdviceDecisionSection({
             consiglio_approvato_coach: true,
             giorno_destinazione: destGiorno,
             tipo_intervento: tipo,
+            coach_audio_base64: coachAudioBase64,
+            coach_audio_url: coachAudioUrl,
+            coach_audio_durata_sec: coachAudioDuration,
           });
         }}
         className={`w-full py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md ${
@@ -275,7 +458,7 @@ function CoachAdviceDecisionSection({
         <CheckCircle2 className="size-4" />
         <span>
           {isApproved
-            ? `Aggiorna Direttiva per Seduta ${destGiorno} ✓`
+            ? `Aggiorna Direttiva & Audio per Seduta ${destGiorno} ✓`
             : `Approva e Mostra all'Atleta per Seduta ${destGiorno} ✓`}
         </span>
       </button>
@@ -337,10 +520,13 @@ export function CoachAudioFeedbackDrawer({
   const saveCoachAdviceMutation = useMutation({
     mutationFn: async (payload: {
       id: number;
-      consiglio_coach: string;
+      consiglio_coach?: string;
       consiglio_approvato_coach: boolean;
       giorno_destinazione: string | number;
       tipo_intervento: "spinta" | "scarico" | "consolidamento";
+      coach_audio_base64?: string | null;
+      coach_audio_url?: string | null;
+      coach_audio_durata_sec?: number | null;
     }) => {
       const res = await fetch(`/app-api/audio-notes/${payload.id}`, {
         method: "PATCH",
@@ -351,6 +537,9 @@ export function CoachAudioFeedbackDrawer({
           consiglio_approvato_coach: payload.consiglio_approvato_coach,
           giorno_destinazione: payload.giorno_destinazione,
           tipo_intervento: payload.tipo_intervento,
+          coach_audio_base64: payload.coach_audio_base64,
+          coach_audio_url: payload.coach_audio_url,
+          coach_audio_durata_sec: payload.coach_audio_durata_sec,
         }),
       });
       if (!res.ok) throw new Error("Errore salvataggio direttiva");

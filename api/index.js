@@ -42351,6 +42351,18 @@ function getDb() {
     } catch {
     }
     try {
+      db2.exec("ALTER TABLE audio_note_feedback ADD COLUMN coach_audio_url TEXT;");
+    } catch {
+    }
+    try {
+      db2.exec("ALTER TABLE audio_note_feedback ADD COLUMN coach_audio_base64 TEXT;");
+    } catch {
+    }
+    try {
+      db2.exec("ALTER TABLE audio_note_feedback ADD COLUMN coach_audio_durata_sec INTEGER DEFAULT 0;");
+    } catch {
+    }
+    try {
       db2.exec("ALTER TABLE app_segnalazioni_bug ADD COLUMN audio_base64 TEXT;");
     } catch {
     }
@@ -42367,8 +42379,9 @@ function insertAudioNote(record) {
       INSERT INTO audio_note_feedback (
         utente_id, email_cliente, contesto, audio_url, audio_base64, durata_sec,
         trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato,
-        consiglio_coach, consiglio_approvato_coach, giorno_destinazione, tipo_intervento
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        consiglio_coach, consiglio_approvato_coach, giorno_destinazione, tipo_intervento,
+        coach_audio_url, coach_audio_base64, coach_audio_durata_sec
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const info = stmt.run(
       record.utente_id || null,
@@ -42385,7 +42398,10 @@ function insertAudioNote(record) {
       record.consiglio_coach || null,
       record.consiglio_approvato_coach ? 1 : 0,
       record.giorno_destinazione !== void 0 ? record.giorno_destinazione : null,
-      record.tipo_intervento || null
+      record.tipo_intervento || null,
+      record.coach_audio_url || null,
+      record.coach_audio_base64 || null,
+      record.coach_audio_durata_sec || 0
     );
     const lastId = Number(info.lastInsertRowid);
     const getStmt = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?");
@@ -42446,17 +42462,23 @@ function getAudioNotes(filter) {
 function updateAudioNoteStatus(id, stato, extraData = {}) {
   const db2 = getDb();
   if (db2) {
-    if (extraData.consiglio_coach !== void 0) {
+    if (extraData.consiglio_coach !== void 0 || extraData.coach_audio_base64 !== void 0 || extraData.coach_audio_url !== void 0) {
       db2.prepare(`
         UPDATE audio_note_feedback 
-        SET stato = ?, consiglio_coach = ?, consiglio_approvato_coach = ?, giorno_destinazione = ?, tipo_intervento = ? 
+        SET stato = ?, consiglio_coach = ?, consiglio_approvato_coach = ?, giorno_destinazione = ?, tipo_intervento = ?,
+            coach_audio_url = COALESCE(?, coach_audio_url),
+            coach_audio_base64 = COALESCE(?, coach_audio_base64),
+            coach_audio_durata_sec = COALESCE(?, coach_audio_durata_sec)
         WHERE id = ?
       `).run(
         stato,
-        extraData.consiglio_coach,
+        extraData.consiglio_coach !== void 0 ? extraData.consiglio_coach : null,
         extraData.consiglio_approvato_coach ? 1 : 0,
         extraData.giorno_destinazione ? String(extraData.giorno_destinazione) : null,
         extraData.tipo_intervento || null,
+        extraData.coach_audio_url !== void 0 ? extraData.coach_audio_url : null,
+        extraData.coach_audio_base64 !== void 0 ? extraData.coach_audio_base64 : null,
+        extraData.coach_audio_durata_sec !== void 0 ? extraData.coach_audio_durata_sec : null,
         id
       );
     } else {
@@ -42472,6 +42494,9 @@ function updateAudioNoteStatus(id, stato, extraData = {}) {
       if (extraData.consiglio_approvato_coach !== void 0) mem.consiglio_approvato_coach = extraData.consiglio_approvato_coach;
       if (extraData.giorno_destinazione !== void 0) mem.giorno_destinazione = extraData.giorno_destinazione;
       if (extraData.tipo_intervento !== void 0) mem.tipo_intervento = extraData.tipo_intervento;
+      if (extraData.coach_audio_url !== void 0) mem.coach_audio_url = extraData.coach_audio_url;
+      if (extraData.coach_audio_base64 !== void 0) mem.coach_audio_base64 = extraData.coach_audio_base64;
+      if (extraData.coach_audio_durata_sec !== void 0) mem.coach_audio_durata_sec = extraData.coach_audio_durata_sec;
     }
     return row || null;
   }
@@ -42482,6 +42507,9 @@ function updateAudioNoteStatus(id, stato, extraData = {}) {
     if (extraData.consiglio_approvato_coach !== void 0) found.consiglio_approvato_coach = extraData.consiglio_approvato_coach;
     if (extraData.giorno_destinazione !== void 0) found.giorno_destinazione = extraData.giorno_destinazione;
     if (extraData.tipo_intervento !== void 0) found.tipo_intervento = extraData.tipo_intervento;
+    if (extraData.coach_audio_url !== void 0) found.coach_audio_url = extraData.coach_audio_url;
+    if (extraData.coach_audio_base64 !== void 0) found.coach_audio_base64 = extraData.coach_audio_base64;
+    if (extraData.coach_audio_durata_sec !== void 0) found.coach_audio_durata_sec = extraData.coach_audio_durata_sec;
   }
   return found || null;
 }
@@ -47379,6 +47407,9 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
     const consiglioApprovato = parsedBody.consiglio_approvato_coach !== void 0 ? !!parsedBody.consiglio_approvato_coach : void 0;
     const giornoDestinazione = parsedBody.giorno_destinazione;
     const tipoIntervento = parsedBody.tipo_intervento;
+    const coachAudioBase64 = parsedBody.coach_audio_base64;
+    const coachAudioUrl = parsedBody.coach_audio_url;
+    const coachAudioDurataSec = parsedBody.coach_audio_durata_sec !== void 0 ? Number(parsedBody.coach_audio_durata_sec) : void 0;
     if (stato && !["nuovo", "ascoltato", "applicato", "archiviato", "cestino"].includes(stato)) {
       res.statusCode = 400;
       return res.end(JSON.stringify({ error: "Stato non valido" }));
@@ -47387,7 +47418,10 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
       consiglio_coach: consiglioCoach,
       consiglio_approvato_coach: consiglioApprovato,
       giorno_destinazione: giornoDestinazione,
-      tipo_intervento: tipoIntervento
+      tipo_intervento: tipoIntervento,
+      coach_audio_base64: coachAudioBase64,
+      coach_audio_url: coachAudioUrl,
+      coach_audio_durata_sec: coachAudioDurataSec
     });
     if (db.audio_note_feedback) {
       const found = db.audio_note_feedback.find((n) => Number(n.id) === id);
@@ -47397,16 +47431,22 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
         if (consiglioApprovato !== void 0) found.consiglio_approvato_coach = consiglioApprovato;
         if (giornoDestinazione !== void 0) found.giorno_destinazione = giornoDestinazione;
         if (tipoIntervento !== void 0) found.tipo_intervento = tipoIntervento;
-        if (consiglioApprovato === true || consiglioCoach) {
+        if (coachAudioBase64 !== void 0) found.coach_audio_base64 = coachAudioBase64;
+        if (coachAudioUrl !== void 0) found.coach_audio_url = coachAudioUrl;
+        if (coachAudioDurataSec !== void 0) found.coach_audio_durata_sec = coachAudioDurataSec;
+        if (consiglioApprovato === true || consiglioCoach || coachAudioBase64 || coachAudioUrl) {
           const athleteEmail = found.email_cliente;
           if (athleteEmail && db.diario_utente) {
             const destGiorno = giornoDestinazione || found.giorno_destinazione || null;
             let diaryEntry = db.diario_utente.filter((d) => (d.email_cliente || "").toLowerCase() === athleteEmail.toLowerCase()).reverse().find((d) => d.audio_url === found.audio_url || d.id === found.id);
             if (diaryEntry) {
-              if (consiglioCoach) diaryEntry.consiglio_coach = consiglioCoach;
+              if (consiglioCoach !== void 0) diaryEntry.consiglio_coach = consiglioCoach;
               if (consiglioApprovato !== void 0) diaryEntry.consiglio_approvato_coach = consiglioApprovato;
               if (destGiorno) diaryEntry.giorno_destinazione = destGiorno;
               if (tipoIntervento) diaryEntry.tipo_intervento = tipoIntervento;
+              if (coachAudioBase64 !== void 0) diaryEntry.coach_audio_base64 = coachAudioBase64;
+              if (coachAudioUrl !== void 0) diaryEntry.coach_audio_url = coachAudioUrl;
+              if (coachAudioDurataSec !== void 0) diaryEntry.coach_audio_durata_sec = coachAudioDurataSec;
             } else {
               db.diario_utente.push({
                 id: Date.now(),
@@ -47417,6 +47457,9 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
                 giorno_destinazione: destGiorno || null,
                 tipo_intervento: tipoIntervento || "spinta",
                 consiglio_coach: consiglioCoach || found.ai_proposta_azione || null,
+                coach_audio_base64: coachAudioBase64 || found.coach_audio_base64 || null,
+                coach_audio_url: coachAudioUrl || found.coach_audio_url || null,
+                coach_audio_durata_sec: coachAudioDurataSec || found.coach_audio_durata_sec || 0,
                 consiglio_approvato_coach: true,
                 feedback: `Consiglio del Coach Stefano per Seduta ${destGiorno || "successiva"}`,
                 data_ora: (/* @__PURE__ */ new Date()).toISOString(),

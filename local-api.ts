@@ -5835,6 +5835,9 @@ CALENDARIO E PRENOTAZIONI:
       const consiglioApprovato = parsedBody.consiglio_approvato_coach !== undefined ? !!parsedBody.consiglio_approvato_coach : undefined;
       const giornoDestinazione = parsedBody.giorno_destinazione;
       const tipoIntervento = parsedBody.tipo_intervento;
+      const coachAudioBase64 = parsedBody.coach_audio_base64;
+      const coachAudioUrl = parsedBody.coach_audio_url;
+      const coachAudioDurataSec = parsedBody.coach_audio_durata_sec !== undefined ? Number(parsedBody.coach_audio_durata_sec) : undefined;
 
       if (stato && !["nuovo", "ascoltato", "applicato", "archiviato", "cestino"].includes(stato)) {
         res.statusCode = 400;
@@ -5845,6 +5848,9 @@ CALENDARIO E PRENOTAZIONI:
         consiglio_approvato_coach: consiglioApprovato,
         giorno_destinazione: giornoDestinazione,
         tipo_intervento: tipoIntervento,
+        coach_audio_base64: coachAudioBase64,
+        coach_audio_url: coachAudioUrl,
+        coach_audio_durata_sec: coachAudioDurataSec,
       });
       if (db.audio_note_feedback) {
         const found = db.audio_note_feedback.find((n: any) => Number(n.id) === id);
@@ -5854,9 +5860,12 @@ CALENDARIO E PRENOTAZIONI:
           if (consiglioApprovato !== undefined) found.consiglio_approvato_coach = consiglioApprovato;
           if (giornoDestinazione !== undefined) found.giorno_destinazione = giornoDestinazione;
           if (tipoIntervento !== undefined) found.tipo_intervento = tipoIntervento;
+          if (coachAudioBase64 !== undefined) found.coach_audio_base64 = coachAudioBase64;
+          if (coachAudioUrl !== undefined) found.coach_audio_url = coachAudioUrl;
+          if (coachAudioDurataSec !== undefined) found.coach_audio_durata_sec = coachAudioDurataSec;
 
-          // Se il Coach ha approvato / inviato il consiglio, propaga al diario atleta per renderlo visibile alla seduta successiva
-          if (consiglioApprovato === true || consiglioCoach) {
+          // Se il Coach ha approvato / inviato il consiglio o la nota vocale, propaga al diario atleta per renderlo visibile alla seduta successiva
+          if (consiglioApprovato === true || consiglioCoach || coachAudioBase64 || coachAudioUrl) {
             const athleteEmail = found.email_cliente;
             if (athleteEmail && db.diario_utente) {
               const destGiorno = giornoDestinazione || found.giorno_destinazione || null;
@@ -5867,10 +5876,13 @@ CALENDARIO E PRENOTAZIONI:
                 .find((d: any) => d.audio_url === found.audio_url || d.id === found.id);
 
               if (diaryEntry) {
-                if (consiglioCoach) diaryEntry.consiglio_coach = consiglioCoach;
+                if (consiglioCoach !== undefined) diaryEntry.consiglio_coach = consiglioCoach;
                 if (consiglioApprovato !== undefined) diaryEntry.consiglio_approvato_coach = consiglioApprovato;
                 if (destGiorno) diaryEntry.giorno_destinazione = destGiorno;
                 if (tipoIntervento) diaryEntry.tipo_intervento = tipoIntervento;
+                if (coachAudioBase64 !== undefined) diaryEntry.coach_audio_base64 = coachAudioBase64;
+                if (coachAudioUrl !== undefined) diaryEntry.coach_audio_url = coachAudioUrl;
+                if (coachAudioDurataSec !== undefined) diaryEntry.coach_audio_durata_sec = coachAudioDurataSec;
               } else {
                 db.diario_utente.push({
                   id: Date.now(),
@@ -5881,6 +5893,9 @@ CALENDARIO E PRENOTAZIONI:
                   giorno_destinazione: destGiorno || null,
                   tipo_intervento: tipoIntervento || "spinta",
                   consiglio_coach: consiglioCoach || found.ai_proposta_azione || null,
+                  coach_audio_base64: coachAudioBase64 || found.coach_audio_base64 || null,
+                  coach_audio_url: coachAudioUrl || found.coach_audio_url || null,
+                  coach_audio_durata_sec: coachAudioDurataSec || found.coach_audio_durata_sec || 0,
                   consiglio_approvato_coach: true,
                   feedback: `Consiglio del Coach Stefano per Seduta ${destGiorno || "successiva"}`,
                   data_ora: new Date().toISOString(),

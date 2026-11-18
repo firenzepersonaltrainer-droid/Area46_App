@@ -147,5 +147,7 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
    - *Destinazione Seduta Successiva:* I consigli del coach o modulazioni carichi/scarico NON devono MAI comparire nella seduta appena conclusa, bensì tassativamente nella **seduta successiva** (es. feedback della Seduta 43 $\rightarrow$ consiglio per la Seduta 44).
    - *Spettro Bipolare (Scarico vs Spinta):* Le indicazioni non si limitano al lavoro più leggero/scarico per le sedute dure, ma includono esplicitamente di **spingere maggiormente** (+sovraccarico progressivo / +intensità) se l'allenamento si è rivelato leggero e agevole.
    - *Sovranità Esclusiva del Coach & Ricevuta Atleta:* Il consiglio compare all'atleta **solo ed esclusivamente previa approvazione esplicita del Coach Stefano**. All'invio del feedback, l'atleta riceve unicamente la conferma formale di avvenuto recapito al coach (*"Feedback recapitato al Coach Stefano: la tua nota e le tue sensazioni sono state inviate con successo..."*).
+   - *Risposta Vocale del Coach per la Seduta Futura:* Il Coach Stefano ha la facoltà di registrare e allegare una propria nota vocale di risposta direttamente dal drawer. Questa nota viene recapitata nell'allenamento successivo dell'atleta (es. Seduta 44 per feedback dato alla Seduta 43): aprendo l'allenamento del giorno, l'atleta trova ed ascolta il messaggio vocale di Stefano registrato per guidare la sessione.
+
 
 
