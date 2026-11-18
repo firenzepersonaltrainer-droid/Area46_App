@@ -101,7 +101,7 @@ export function validatePedagogy(targetCycleName, workouts = null) {
     if (continuousBannedPlus.includes(eid)) {
       if (param.includes("+")) {
         errors.push(
-          `⛔ NOTAZIONE VIETATA SU ALTERNATO CONTINUO: '${name}' (ID ${eid}) deve essere prescritto a tempo complessivo (es. 3 X 45\"). Trovato '+' in '${param}' in '${giorno}'.`
+          `⛔ NOTAZIONE VIETATA SU ALTERNATO CONTINUO: '${name}' (ID ${eid}) deve essere prescritto a tempo complessivo o ripetizioni totali alternate (es. 3x10 o 3 X 45"). Trovato '+' in '${param}' in '${giorno}'.`
         );
       }
     }

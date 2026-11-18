@@ -80,8 +80,9 @@ Nell'arco del Mesociclo, il totale delle serie allenanti (*hard sets*) deve risp
 2. **Equilibrio Distrettuale ed Estetica**:
    * MAI sovraccaricare la cerniera d'anca/bassa schiena in sedute contigue.
    * Inserire SEMPRE lavoro diretto per braccia (bicipiti/tricipiti) e spalle.
-3. **Sicurezza, Notazione e Gestione RBS (Zero Dogmi / Pura Contestualizzazione)**:
-   * Esercizi asimmetrici/unilaterali con annotazione esplicita `+` (es. `3x8+8` o `3x15"+15"`).
+   * **Prescrizione Esercizi Monolaterali & Scelta `x+x` vs `x totale` (Regola Coach 18/11/2026):**
+     - D'ora in avanti, nella prescrizione di esercizi monolaterali o asimmetrici, l'agente/sistema **DEVE chiedere sempre preventivamente a Stefano** se prescriverli `x+x` (per lato) oppure `x totale` (ripetizioni alternate o volume totale).
+     - **Step Up esplosivo alternato (ID 201):** Esercizio che si svolge alternando gamba destra e sinistra. Va prescritto tassativamente a ripetizioni totali alternate (es. `3x10` o `X 10`), **MAI** con notazione `+` (vietato `8+8`). Questa logica è vincolante per tutti gli allenamenti A e per il futuro.
    * **Valutazione Contestuale di RBS (Rest Between Sides)**:
      Nell'allenamento il termine *"obbligatorio"* NON esiste: tutto è soggettivo e contestualizzato. L'RBS non è un automatismo rigido, ma una scelta tecnica che il coach/algoritmo valuta liberamente considerando:
      - *Intensità e vicinanza a 1RM:* Ha senso valutare un RBS (30"-45") quando il carico elevato richiede freschezza neurale per non far decadere la tecnica del secondo arto.

@@ -233,7 +233,7 @@ C4_A = [
     ("2",  127, "COMBO: Landmine clean ALT. SCRD T/GO", "4x6", '60"', "RPE 8"),
     ("3a", 23,  "Coiled Cable ROW", "4x10+10", "", "jump set | RPE 8"),
     ("3b", 84,  "Kneeling Transition over head press", "4x8+8", '60"', "jump set | RPE 8"),
-    ("4a", 201, "Step Up esplosivo alternato", "3x8+8", "", "circuito (3 round)"),
+    ("4a", 201, "Step Up esplosivo alternato", "3x10", "", "circuito (3 round)"),
     ("4b", 231, "Banded hoock", "3x10+10", "", "circuito (3 round)"),
     ("4c", 2,   "skierg pagaia mono", '3x30"+30"', '60"', "circuito (3 round)")
 ]

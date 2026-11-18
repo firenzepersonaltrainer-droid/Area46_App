@@ -73,8 +73,18 @@
       "prescrizione_obbligatoria": "TEMPO_COMPLESSIVO_CONTINUO",
       "esempio_consentito": "3x30\"-40\"",
       "motivo": "Pagaia continua alternata, vietata la notazione monolaterale con '+'."
+    },
+    {
+      "id": "201",
+      "nome": "Step Up esplosivo alternato",
+      "prescrizione_obbligatoria": "RIPETIZIONI_TOTALI_ALTERNATE",
+      "esempio_consentito": "3x10",
+      "motivo": "Esercizio che si svolge alternando gamba destra e sinistra: prescrivere a ripetizioni totali (es. 3x10 o X 10), divieto assoluto della notazione monolaterale con '+' (vietato 8+8)."
     }
   ],
+  "regola_prescrizione_esercizi_monolaterali": {
+    "descrizione": "Nella prescrizione degli esercizi, d'ora in avanti, quando si prescrivono esercizi monolaterali, chiedere sempre conferma preventiva al Coach Stefano se prescriverli 'x+x' (per lato) oppure 'x totale' (alternato/totale)."
+  },
   "regola_anti_pigrizia": {
     "finestra_cicli_precedenti": 2,
     "descrizione": "Vietato riutilizzare esercizi di warm-up o accessori già comparsi nei 2 cicli immediatamente precedenti se esistono ancora esercizi vergini (usage_count == 0) nella stessa categoria del catalogo PRO."

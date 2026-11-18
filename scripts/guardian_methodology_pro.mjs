@@ -263,10 +263,10 @@ export function validateProCycle(workouts, cycleName, rules, catalogMap = null) 
 
       // Guardrail 2: Regole esecutive specifiche da catalogo
       if (rule) {
-        // Vincolo VIETATO_PIU (es. Coiled Cobra a tempo continuo alternato)
-        if (rule.vincolo_notazione === "VIETATO_PIU" || rule.modalita_prescrizione_predefinita === "TEMPO_ALTERNATO_CONTINUO") {
+        // Vincolo VIETATO_PIU (es. Coiled Cobra a tempo continuo alternato, Step Up esplosivo alternato, COMBO switch)
+        if (rule.vincolo_notazione === "VIETATO_PIU" || rule.modalita_prescrizione_predefinita === "TEMPO_ALTERNATO_CONTINUO" || rule.modalita_prescrizione_predefinita === "RIPETIZIONI_CONTINUE_ALTERNATE") {
           if (rowParam.includes("+")) {
-            const msg = `ERRORE NOTAZIONE: '${rowName}' è un esercizio alternato continuo (${rule.modalita_prescrizione_predefinita}). Vietata la notazione monolaterale con '+' (trovato '${rowParam}'). Usare parametro a tempo continuo (es. 30"-40").`;
+            const msg = `ERRORE NOTAZIONE: '${rowName}' è un esercizio alternato continuo (${rule.modalita_prescrizione_predefinita}). Vietata la notazione monolaterale con '+' (trovato '${rowParam}'). Prescrivere a ripetizioni totali alternate (es. X 10 o 3x10) o a tempo continuo (es. 30"-40").`;
             sessionRes.errors.push(msg);
             report.violations.push(msg);
             report.ok = false;

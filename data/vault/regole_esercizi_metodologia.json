@@ -873,11 +873,14 @@
       "categoria": "engine e benchmark",
       "pattern": "scalino, salita monolaterale alternata esplosiva",
       "ruolo": "engine",
-      "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
-      "vincolo_notazione": "OBBLIGATORIO_PIU",
+      "modalita_prescrizione_predefinita": "RIPETIZIONI_CONTINUE_ALTERNATE",
+      "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
-      "divieti_tassativi": [],
-      "didattica_primo_utilizzo": null
+      "divieti_tassativi": [
+        "VIETATO_NOTAZIONE_PIU: esercizio che si svolge alternando gamba destra e sinistra, vietata la notazione con '+' (es. 8+8), prescrivere a ripetizioni totali (es. X 10 o 3x10)."
+      ],
+      "didattica_primo_utilizzo": null,
+      "descrizione_regola": "Esercizio che si svolge alternando gamba destra e sinistra. Prescrivere sempre a ripetizioni totali alternate (es. X 10 o 3x10), mai a ripetizioni per lato con '+' (mai 8+8)."
     },
     "203": {
       "id": "203",
