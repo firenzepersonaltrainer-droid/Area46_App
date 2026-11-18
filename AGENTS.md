@@ -142,4 +142,10 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
 13. **PRESCRIZIONE ESERCIZI MONOLATERALI & STEP UP ESPLOSIVO ALTERNATO (ID 201) (18/11/2026)**:
    - *Regola Generale Prescrizione Monolaterali:* D'ora in avanti, nella prescrizione di qualsiasi esercizio monolaterale, il sistema/agente **DEVE chiedere preventivamente conferma a Stefano** se prescriverlo `x+x` (per lato con RBS o continuo) oppure `x totale` (alternato/totale).
    - *Step Up esplosivo alternato (ID 201):* È un esercizio che si svolge alternando gamba destra e sinistra. Parametro tassativo a ripetizioni totali alternate (es. `3x10` o `X 10`). È fatto **DIVIETO ASSOLUTO** della notazione `+` (mai `8+8` o simili). Questa logica è vincolante per tutti gli allenamenti A del ciclo e per tutte le prescrizioni future dello Step Up esplosivo.
+14. **FEEDBACK POST-WORKOUT & CONSIGLI DEL COACH (18/11/2026)**:
+   - *Priorità Assoluta alla Nota Vocale:* Il report per il coach non deve fermarsi alle opzioni spuntate: l'AI deve tassativamente comprendere, trascrivere e sintetizzare la nota vocale dell'atleta. Il coach ha a disposizione sia l'ascolto dell'audio originale sia la sintesi AI in drawer.
+   - *Destinazione Seduta Successiva:* I consigli del coach o modulazioni carichi/scarico NON devono MAI comparire nella seduta appena conclusa, bensì tassativamente nella **seduta successiva** (es. feedback della Seduta 43 $\rightarrow$ consiglio per la Seduta 44).
+   - *Spettro Bipolare (Scarico vs Spinta):* Le indicazioni non si limitano al lavoro più leggero/scarico per le sedute dure, ma includono esplicitamente di **spingere maggiormente** (+sovraccarico progressivo / +intensità) se l'allenamento si è rivelato leggero e agevole.
+   - *Sovranità Esclusiva del Coach & Ricevuta Atleta:* Il consiglio compare all'atleta **solo ed esclusivamente previa approvazione esplicita del Coach Stefano**. All'invio del feedback, l'atleta riceve unicamente la conferma formale di avvenuto recapito al coach (*"Feedback recapitato al Coach Stefano: la tua nota e le tue sensazioni sono state inviate con successo..."*).
+
 

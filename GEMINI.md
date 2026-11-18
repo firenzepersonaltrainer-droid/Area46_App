@@ -42,4 +42,10 @@ Regole Tassative:
 14. PRESCRIZIONE ESERCIZI MONOLATERALI & STEP UP ESPLOSIVO ALTERNATO (ID 201) (18/11/2026):
     - *Regola Generale Prescrizione Monolaterali:* D'ora in avanti, nella prescrizione di qualsiasi esercizio monolaterale, il sistema/agente **DEVE chiedere preventivamente conferma a Stefano** se prescriverlo `x+x` (per lato con RBS o continuo) oppure `x totale` (alternato/totale).
     - *Step Up esplosivo alternato (ID 201):* È un esercizio che si svolge alternando gamba destra e sinistra. Parametro tassativo a ripetizioni totali alternate (es. `3x10` o `X 10`). È fatto **DIVIETO ASSOLUTO** della notazione `+` (mai `8+8` o simili). Questa logica è vincolante per tutti gli allenamenti A del ciclo e per tutte le prescrizioni future dello Step Up esplosivo.
+15. FEEDBACK POST-WORKOUT & CONSIGLI DEL COACH (18/11/2026):
+    - *Priorità Assoluta alla Nota Vocale:* L'AI deve comprendere, trascrivere e sintetizzare la nota vocale nel report coach.
+    - *Destinazione Seduta Successiva:* I consigli del coach o modulazioni carichi/scarico NON devono MAI comparire nella seduta appena conclusa, bensì sempre nella **seduta successiva** (es. Seduta 43 $\rightarrow$ consiglio per Seduta 44).
+    - *Spettro Bipolare (Scarico vs Spinta):* Prevedere sia scarico se duro, sia l'indicazione di **spingere maggiormente** (+carico / +intensità) se l'allenamento è risultato agevole.
+    - *Sovranità Esclusiva del Coach & Ricevuta Atleta:* Il consiglio compare all'atleta **solo previa approvazione esplicita del Coach Stefano**; all'invio del form l'atleta riceve solo la conferma di avvenuto recapito.
+
 

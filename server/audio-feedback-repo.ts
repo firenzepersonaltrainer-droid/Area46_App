@@ -148,8 +148,9 @@ export function insertAudioNote(record: AudioNoteRecord): AudioNoteRecord {
     const stmt = db.prepare(`
       INSERT INTO audio_note_feedback (
         utente_id, email_cliente, contesto, audio_url, audio_base64, durata_sec,
-        trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato,
+        consiglio_coach, consiglio_approvato_coach, giorno_destinazione, tipo_intervento
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const info = stmt.run(
@@ -163,7 +164,11 @@ export function insertAudioNote(record: AudioNoteRecord): AudioNoteRecord {
       record.ai_allerta || "verde",
       record.ai_sintesi || null,
       record.ai_proposta_azione || null,
-      record.stato || "nuovo"
+      record.stato || "nuovo",
+      record.consiglio_coach || null,
+      record.consiglio_approvato_coach ? 1 : 0,
+      record.giorno_destinazione !== undefined ? record.giorno_destinazione : null,
+      record.tipo_intervento || null
     );
 
     const lastId = Number(info.lastInsertRowid);

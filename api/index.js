@@ -42354,8 +42354,9 @@ function insertAudioNote(record) {
     const stmt = db2.prepare(`
       INSERT INTO audio_note_feedback (
         utente_id, email_cliente, contesto, audio_url, audio_base64, durata_sec,
-        trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato,
+        consiglio_coach, consiglio_approvato_coach, giorno_destinazione, tipo_intervento
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const info = stmt.run(
       record.utente_id || null,
@@ -42368,7 +42369,11 @@ function insertAudioNote(record) {
       record.ai_allerta || "verde",
       record.ai_sintesi || null,
       record.ai_proposta_azione || null,
-      record.stato || "nuovo"
+      record.stato || "nuovo",
+      record.consiglio_coach || null,
+      record.consiglio_approvato_coach ? 1 : 0,
+      record.giorno_destinazione !== void 0 ? record.giorno_destinazione : null,
+      record.tipo_intervento || null
     );
     const lastId = Number(info.lastInsertRowid);
     const getStmt = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?");
@@ -42400,7 +42405,7 @@ function getAudioNotes(filter) {
       if (filter.stato === "tutti") {
         query += " AND stato != 'cestino'";
       } else if (filter.stato === "gestito") {
-        query += " AND stato IN ('ascoltato, 'applicato, 'archiviato)";
+        query += " AND stato IN ('ascoltato', 'applicato', 'archiviato')";
       } else {
         query += " AND stato = ?";
         params.push(filter.stato);
@@ -42559,7 +42564,7 @@ function getAppSegnalazioni(filter) {
       if (filter.stato === "tutti") {
         query += " AND s.stato != 'cestino'";
       } else if (filter.stato === "gestito") {
-        query += " AND s.stato IN ('in_valutazione, 'risolto, 'scartato)";
+        query += " AND s.stato IN ('in_valutazione', 'risolto', 'scartato')";
       } else {
         query += " AND s.stato = ?";
         params.push(filter.stato);
