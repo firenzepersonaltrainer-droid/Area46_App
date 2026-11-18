@@ -2160,4 +2160,145 @@ app.delete("/app-api/regole-palinsesto/:id", async (c) => {
   }
 });
 
+// ─── AUDIO FEEDBACK & SEGNALAZIONI BUG ─────────────────────────────────────────
+
+app.post("/app-api/audio-note", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const body = await c.req.json();
+    const rows = await sql`
+      INSERT INTO audio_note_feedback (
+        utente_id, email_cliente, contesto, audio_url, durata_sec,
+        trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato
+      ) VALUES (
+        ${body.anonimo ? null : body.utente_id || null},
+        ${body.anonimo ? null : body.email_cliente || null},
+        ${body.contesto || 'biofeedback_workout'},
+        ${body.audio_url || '/uploads/audio_notes/sample.webm'},
+        ${body.durata_sec || 0},
+        ${body.trascrizione_testo || null},
+        ${body.ai_allerta || 'verde'},
+        ${body.ai_sintesi || null},
+        ${body.ai_proposta_azione || null},
+        ${body.stato || 'nuovo'}
+      )
+      RETURNING *
+    `;
+    return c.json({ ok: true, audio: rows[0] }, 201);
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.get("/app-api/audio-notes", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const contesto = c.req.query("contesto");
+    const stato = c.req.query("stato");
+
+    let rows;
+    if (contesto && stato) {
+      rows = await sql`SELECT * FROM audio_note_feedback WHERE contesto = ${contesto} AND stato = ${stato} ORDER BY id DESC`;
+    } else if (contesto) {
+      rows = await sql`SELECT * FROM audio_note_feedback WHERE contesto = ${contesto} ORDER BY id DESC`;
+    } else if (stato) {
+      rows = await sql`SELECT * FROM audio_note_feedback WHERE stato = ${stato} ORDER BY id DESC`;
+    } else {
+      rows = await sql`SELECT * FROM audio_note_feedback ORDER BY id DESC`;
+    }
+    return c.json(rows);
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.patch("/app-api/audio-notes/:id", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const id = c.req.param("id");
+    const body = await c.req.json();
+    const rows = await sql`
+      UPDATE audio_note_feedback
+      SET stato = ${body.stato}
+      WHERE id = ${id}
+      RETURNING *
+    `;
+    return c.json(rows[0] || { ok: true });
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.post("/app-api/segnalazioni-bug", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const body = await c.req.json();
+    const rows = await sql`
+      INSERT INTO app_segnalazioni_bug (
+        utente_id, email_cliente, anonimo, tipo, titolo,
+        descrizione, audio_id, device_info, ai_diagnosi_tecnica, stato
+      ) VALUES (
+        ${body.anonimo ? null : body.utente_id || null},
+        ${body.anonimo ? null : body.email_cliente || null},
+        ${body.anonimo ? true : false},
+        ${body.tipo || 'consiglio'},
+        ${body.titolo},
+        ${body.descrizione},
+        ${body.audio_id || null},
+        ${body.device_info || null},
+        ${body.ai_diagnosi_tecnica || null},
+        'aperto'
+      )
+      RETURNING *
+    `;
+    return c.json(rows[0], 201);
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.get("/app-api/segnalazioni-bug", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const stato = c.req.query("stato");
+    let rows;
+    if (stato) {
+      rows = await sql`
+        SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
+        FROM app_segnalazioni_bug s
+        LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+        WHERE s.stato = ${stato}
+        ORDER BY s.id DESC
+      `;
+    } else {
+      rows = await sql`
+        SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
+        FROM app_segnalazioni_bug s
+        LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+        ORDER BY s.id DESC
+      `;
+    }
+    return c.json(rows);
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.patch("/app-api/segnalazioni-bug/:id", async (c) => {
+  try {
+    const sql = neon(c.env.DATABASE_URL);
+    const id = c.req.param("id");
+    const body = await c.req.json();
+    const rows = await sql`
+      UPDATE app_segnalazioni_bug
+      SET stato = ${body.stato}
+      WHERE id = ${id}
+      RETURNING *
+    `;
+    return c.json(rows[0] || { ok: true });
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
 export default { fetch: app.fetch };

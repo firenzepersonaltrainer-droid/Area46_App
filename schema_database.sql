@@ -376,4 +376,42 @@ CREATE TABLE IF NOT EXISTS eccezioni_calendario (
   created_at timestamptz DEFAULT now()
 );
 COMMENT ON TABLE eccezioni_calendario IS 'Gestione orari flessibili coach: orari straordinari (es. 12:15), blocchi singoli o ferie/chiusura intera giornata.';
+
+-- ─────────────────────────────────────────
+-- audio_note_feedback (Note vocali Biofeedback & Segnalazioni)
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS audio_note_feedback (
+  id                  serial PRIMARY KEY,
+  utente_id           text,
+  email_cliente       text,
+  contesto            text NOT NULL CHECK (contesto IN ('biofeedback_workout', 'app_feedback')),
+  audio_url           text NOT NULL,
+  durata_sec          integer DEFAULT 0,
+  trascrizione_testo  text,
+  ai_allerta          text CHECK (ai_allerta IN ('verde', 'giallo', 'rosso')) DEFAULT 'verde',
+  ai_sintesi          text,
+  ai_proposta_azione  text,
+  stato               text NOT NULL CHECK (stato IN ('nuovo', 'ascoltato', 'applicato', 'archiviato')) DEFAULT 'nuovo',
+  data_creazione      timestamptz DEFAULT now()
+);
+COMMENT ON TABLE audio_note_feedback IS 'Archivio fisico e trascrizioni AI delle note vocali post-workout e audio di segnalazione atleti.';
+
+-- ─────────────────────────────────────────
+-- app_segnalazioni_bug (Idee, Consigli e Bug App con opzione Anonima)
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS app_segnalazioni_bug (
+  id                  serial PRIMARY KEY,
+  utente_id           text,
+  email_cliente       text,
+  anonimo             boolean DEFAULT false,
+  tipo                text NOT NULL CHECK (tipo IN ('consiglio', 'bug', 'altro')) DEFAULT 'consiglio',
+  titolo              text NOT NULL,
+  descrizione         text NOT NULL,
+  audio_id            integer REFERENCES audio_note_feedback(id) ON DELETE SET NULL,
+  device_info         text,
+  ai_diagnosi_tecnica text,
+  stato               text NOT NULL CHECK (stato IN ('aperto', 'in_valutazione', 'risolto', 'scartato')) DEFAULT 'aperto',
+  data_creazione      timestamptz DEFAULT now()
+);
+COMMENT ON TABLE app_segnalazioni_bug IS 'Registro segnalazioni anomalie, bug e suggerimenti utenti con supporto audio e diagnosi preventiva AI.';
 ```

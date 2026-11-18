@@ -25,6 +25,7 @@ import { useAllenamentiStati, type StatoAllenamento } from "../lib/useAllenament
 import { VideoClipModal } from "../components/VideoClipModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/Dialog";
 import { Textarea } from "../components/Textarea";
+import { AudioFeedbackRecorder } from "../components/AudioFeedbackRecorder";
 
 interface Esercizio {
   id: number;
@@ -293,6 +294,11 @@ function FeedbackSedutaModal({
   const [rpe, setRpe] = useState<number>(8);
   const [selectedSensazioni, setSelectedSensazioni] = useState<string[]>([]);
   const [note, setNote] = useState("");
+  const [recordedAudio, setRecordedAudio] = useState<{
+    blob: Blob;
+    base64: string;
+    durationSec: number;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleSensazione = (s: string) => {
@@ -304,25 +310,54 @@ function FeedbackSedutaModal({
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const res = await fetch("/app-api/diario", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tipo: "feedback_seduta",
-          livello,
-          giorno,
-          rpe_globale: rpe,
-          sensazioni: selectedSensazioni,
-          note_cinestesiche: note,
-          feedback: `RPE ${rpe}/10 • ${selectedSensazioni.join(", ")} ${note ? `• ${note}` : ""}`.trim(),
-        }),
-      });
-      if (res.ok) {
-        toast.success("Feedback seduta registrato nel tuo diario!");
-        queryClient.invalidateQueries({ queryKey: ["diario"] });
-        onOpenChange(false);
+      if (recordedAudio) {
+        // Invio completo tramite la nuova pipeline audio multimodale
+        const res = await fetch("/app-api/audio-note", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            audioBase64: recordedAudio.base64,
+            durata_sec: recordedAudio.durationSec,
+            formato: "webm",
+            contesto: "biofeedback_workout",
+            livello,
+            giorno,
+            rpe,
+            sensazioni: selectedSensazioni,
+            noteTesto: note,
+          }),
+        });
+        if (res.ok) {
+          toast.success("Nota vocale e biofeedback seduta inviati al Coach!");
+          queryClient.invalidateQueries({ queryKey: ["diario"] });
+          queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
+          onOpenChange(false);
+          setRecordedAudio(null);
+        } else {
+          toast.error("Errore nell'invio del biofeedback vocale.");
+        }
       } else {
-        toast.error("Errore nel salvataggio del feedback.");
+        // Invio standard testuale
+        const res = await fetch("/app-api/diario", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tipo: "feedback_seduta",
+            livello,
+            giorno,
+            rpe_globale: rpe,
+            sensazioni: selectedSensazioni,
+            note_cinestesiche: note,
+            feedback: `RPE ${rpe}/10 • ${selectedSensazioni.join(", ")} ${note ? `• ${note}` : ""}`.trim(),
+          }),
+        });
+        if (res.ok) {
+          toast.success("Feedback seduta registrato nel tuo diario!");
+          queryClient.invalidateQueries({ queryKey: ["diario"] });
+          onOpenChange(false);
+        } else {
+          toast.error("Errore nel salvataggio del feedback.");
+        }
       }
     } catch {
       toast.error("Errore di connessione.");
@@ -333,7 +368,7 @@ function FeedbackSedutaModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md p-5 bg-white rounded-3xl shadow-2xl border-2 border-zinc-200">
+      <DialogContent className="max-w-md p-5 bg-white rounded-3xl shadow-2xl border-2 border-zinc-200 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#1c00ff] text-[#e3ff00]">
@@ -341,10 +376,10 @@ function FeedbackSedutaModal({
             </span>
           </div>
           <DialogTitle className="text-xl font-black text-zinc-900 tracking-tight">
-            Feedback Seduta & RPE
+            Feedback Seduta & Biofeedback Audio
           </DialogTitle>
           <p className="text-xs text-zinc-500 font-medium">
-            Registra le tue sensazioni in 3 secondi per orientare il carico del prossimo ciclo.
+            Registra le tue sensazioni in 3 secondi o registra una nota vocale per il Coach.
           </p>
         </DialogHeader>
 
@@ -406,25 +441,35 @@ function FeedbackSedutaModal({
             </div>
           </div>
 
-          {/* Note Cinestesiche Opzionali */}
+          {/* REGISTRATORE NOTA AUDIO INTEGRATO */}
+          <div>
+            <AudioFeedbackRecorder
+              label="Nota Audio Vocale per il Coach (10-60s)"
+              maxDurationSec={60}
+              onAudioRecorded={(audio) => setRecordedAudio(audio)}
+              onAudioCleared={() => setRecordedAudio(null)}
+            />
+          </div>
+
+          {/* Note Cinestesiche Testuali Opzionali */}
           <div>
             <label className="block text-xs font-bold text-zinc-700 mb-1">
-              Note o commento per il Coach (opzionale):
+              Note scritte aggiuntive (opzionali):
             </label>
             <Textarea
               placeholder="Es. ottima coordinazione al coiled deadlift, stanchezza sul finire del WOD…"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="text-xs h-20 rounded-xl"
+              className="text-xs h-18 rounded-xl"
             />
           </div>
 
           {/* Bottone Salvataggio */}
-          <div className="pt-2 flex items-center justify-end gap-2">
+          <div className="pt-2 flex items-center justify-end gap-2 border-t border-zinc-100">
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl"
+              className="px-4 py-2 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl cursor-pointer"
             >
               Annulla
             </button>
@@ -432,9 +477,9 @@ function FeedbackSedutaModal({
               type="button"
               disabled={isSubmitting}
               onClick={handleSubmit}
-              className="px-5 py-2.5 bg-[#1c00ff] text-white rounded-xl text-xs font-black shadow-md hover:bg-[#1600cc] transition-colors cursor-pointer"
+              className="px-5 py-2.5 bg-[#1c00ff] text-white rounded-xl text-xs font-black shadow-md hover:bg-[#1600cc] transition-colors cursor-pointer flex items-center gap-1.5"
             >
-              {isSubmitting ? "Salvataggio…" : "Salva Feedback"}
+              {isSubmitting ? "Invio in corso…" : recordedAudio ? "🎙️ Salva Feedback & Audio" : "Salva Feedback"}
             </button>
           </div>
         </div>

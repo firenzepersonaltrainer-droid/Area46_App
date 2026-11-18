@@ -5,6 +5,16 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { fileURLToPath } from "node:url";
 import nodemailer from "nodemailer";
 import defaultData from "./demo-data.json";
+import { analyzeAudioWithGemini, fallbackClinicalAnalysis } from "./server/ai-audio-analyzer";
+import {
+  insertAudioNote,
+  getAudioNotes,
+  updateAudioNoteStatus,
+  updateAudioNoteAnalysis,
+  insertAppSegnalazione,
+  getAppSegnalazioni,
+  updateAppSegnalazioneStatus,
+} from "./server/audio-feedback-repo";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1559,6 +1569,31 @@ export async function handleLocalApi(
   const host = req.headers?.host || "localhost:5173";
   const url = new URL(req.url ?? "/", `http://${host}`);
   let pathname = url.pathname;
+
+  if (pathname.startsWith("/uploads/audio_notes/")) {
+    const fileName = path.basename(pathname);
+    const filePath = path.resolve(__dirname, "uploads", "audio_notes", fileName);
+    if (fs.existsSync(filePath)) {
+      const ext = path.extname(fileName).toLowerCase();
+      const mime =
+        ext === ".mp4" || ext === ".m4a"
+          ? "audio/mp4"
+          : ext === ".wav"
+          ? "audio/wav"
+          : "audio/webm";
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Accept-Ranges", "bytes");
+      const stat = fs.statSync(filePath);
+      res.setHeader("Content-Length", stat.size);
+      const stream = fs.createReadStream(filePath);
+      return stream.pipe(res);
+    } else {
+      res.statusCode = 404;
+      res.setHeader("Content-Type", "text/plain");
+      return res.end("Audio not found");
+    }
+  }
 
   if (!pathname.startsWith("/app-api")) {
     const route = url.searchParams.get("__route");
@@ -5551,6 +5586,269 @@ CALENDARIO E PRENOTAZIONI:
         })
         .sort((a: any, b: any) => new Date(a.data_ora).getTime() - new Date(b.data_ora).getTime());
       return res.end(JSON.stringify(rows));
+    }
+
+    // ─── 20. AUDIO FEEDBACK & SEGNALAZIONI BUG ────────────────────────────────
+
+    // POST /app-api/audio-note (Ricezione file audio fisico + Analisi AI multimodale)
+    if (pathname === "/app-api/audio-note" && method === "POST") {
+      try {
+        const {
+          audioBase64,
+          audioData,
+          formato,
+          durata_sec,
+          contesto,
+          livello,
+          giorno,
+          rpe,
+          sensazioni,
+          noteTesto,
+          tipoSegnalazione,
+          titolo,
+          descrizione,
+          anonimo,
+          deviceInfo,
+        } = parsedBody;
+
+        const effectiveContesto = contesto || "biofeedback_workout";
+        const effectiveDuration = Number(durata_sec) || 0;
+        const effectiveAnonimo = !!anonimo;
+
+        // Gestione atleta o anonimo
+        const utenteId = effectiveAnonimo ? null : (currentUser?.id || "usr-atleta-01");
+        const emailCliente = effectiveAnonimo ? null : (currentUser?.email || "atleta@area46.it");
+
+        // Salvataggio fisico del file audio su disco in uploads/audio_notes/
+        const rawAudio = audioBase64 || audioData || "";
+        let audioFileName = `audio_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+        const ext = formato ? (formato.startsWith(".") ? formato.slice(1) : formato) : "webm";
+        audioFileName += `.${ext}`;
+
+        const uploadDir = path.resolve(__dirname, "uploads", "audio_notes");
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        const fullFilePath = path.join(uploadDir, audioFileName);
+
+        if (rawAudio) {
+          const cleanBase64 = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
+          fs.writeFileSync(fullFilePath, Buffer.from(cleanBase64, "base64"));
+        } else {
+          // File placeholder fittizio a salvaguardia (es. test audio)
+          fs.writeFileSync(fullFilePath, Buffer.from("RIFF....WAVEfmt ....data...."));
+        }
+
+        const audioUrl = `/uploads/audio_notes/${audioFileName}`;
+
+        // Esecuzione Pipeline Agente AI di Trascrizione & Analisi Clinico-Semantica
+        const aiAnalysis = await analyzeAudioWithGemini(fullFilePath, effectiveContesto, {
+          livello,
+          giorno,
+          rpe: Number(rpe) || undefined,
+          sensazioni,
+          noteTesto,
+          tipoSegnalazione,
+          titolo,
+          descrizione,
+          deviceInfo,
+        });
+
+        // Inserimento permanente nel database SQLite
+        const audioRecord = insertAudioNote({
+          utente_id: utenteId,
+          email_cliente: emailCliente,
+          contesto: effectiveContesto,
+          audio_url: audioUrl,
+          durata_sec: effectiveDuration,
+          trascrizione_testo: aiAnalysis.trascrizione,
+          ai_allerta: aiAnalysis.allerta,
+          ai_sintesi: aiAnalysis.sintesi,
+          ai_proposta_azione: aiAnalysis.proposta_azione,
+          stato: "nuovo",
+        });
+
+        // Se è un biofeedback di allenamento, arricchiamo anche il diario utente
+        if (effectiveContesto === "biofeedback_workout" && emailCliente) {
+          const newDiaryEntry = {
+            id: Date.now(),
+            email_cliente: emailCliente,
+            tipo: "feedback_seduta",
+            livello: livello ?? null,
+            giorno: giorno ?? null,
+            rpe_globale: Number(rpe) || 8,
+            sensazioni: sensazioni || [],
+            note_cinestesiche: aiAnalysis.trascrizione || noteTesto || null,
+            nome_esercizio: `Feedback Vocale Giorno ${giorno || ""}`,
+            feedback: `Nota Vocale (${effectiveDuration}s) • ${aiAnalysis.sintesi} • Allerta: ${aiAnalysis.allerta.toUpperCase()}`,
+            audio_url: audioUrl,
+            ai_allerta: aiAnalysis.allerta,
+            ai_sintesi: aiAnalysis.sintesi,
+            ai_proposta_azione: aiAnalysis.proposta_azione,
+            data_ora: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+          };
+          db.diario_utente.push(newDiaryEntry);
+          saveData(db);
+        }
+
+        // Se è una segnalazione bug/consiglio con audio allegato
+        let bugRecord: any = null;
+        if (effectiveContesto === "app_feedback" || titolo || descrizione) {
+          bugRecord = insertAppSegnalazione({
+            utente_id: utenteId,
+            email_cliente: emailCliente,
+            anonimo: effectiveAnonimo,
+            tipo: (tipoSegnalazione as any) || "consiglio",
+            titolo: titolo || "Nota Vocale Feedback",
+            descrizione: descrizione || aiAnalysis.trascrizione || "Nessuna descrizione testuale",
+            audio_id: audioRecord.id,
+            device_info: deviceInfo || "Web / Mobile",
+            ai_diagnosi_tecnica: aiAnalysis.diagnosi_tecnica || "In attesa di revisione",
+            stato: "aperto",
+          });
+        }
+
+        res.statusCode = 201;
+        return res.end(
+          JSON.stringify({
+            ok: true,
+            audio: audioRecord,
+            segnalazione: bugRecord,
+            ai: aiAnalysis,
+          })
+        );
+      } catch (err: any) {
+        console.error("Errore salvataggio audio note:", err);
+        res.statusCode = 500;
+        return res.end(JSON.stringify({ error: err.message || "Errore elaborazione audio note" }));
+      }
+    }
+
+    // GET /app-api/audio-notes (Bacheca note audio per il Coach)
+    if (pathname === "/app-api/audio-notes" && method === "GET") {
+      const contesto = url.searchParams.get("contesto") || undefined;
+      const stato = url.searchParams.get("stato") || undefined;
+      const email = url.searchParams.get("email") || undefined;
+      const notes = getAudioNotes({ contesto, stato, email });
+      return res.end(JSON.stringify(notes));
+    }
+
+    // PATCH /app-api/audio-notes/:id (Aggiorna stato nota audio: 'ascoltato', 'applicato', 'archiviato')
+    const matchAudioPatch = pathname.match(/^\/app-api\/audio-notes\/(\d+)$/);
+    if (matchAudioPatch && method === "PATCH") {
+      const id = parseInt(matchAudioPatch[1], 10);
+      const stato = parsedBody.stato;
+      if (!stato || !["nuovo", "ascoltato", "applicato", "archiviato"].includes(stato)) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Stato non valido" }));
+      }
+      const updated = updateAudioNoteStatus(id, stato);
+      if (!updated) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Nota non trovata" }));
+      }
+      return res.end(JSON.stringify(updated));
+    }
+
+    // POST /app-api/segnalazioni-bug (Invio segnalazione bug/consiglio con o senza audio)
+    if (pathname === "/app-api/segnalazioni-bug" && method === "POST") {
+      try {
+        const {
+          tipo,
+          titolo,
+          descrizione,
+          anonimo,
+          audio_id,
+          device_info,
+        } = parsedBody;
+
+        if (!titolo || !descrizione) {
+          res.statusCode = 400;
+          return res.end(JSON.stringify({ error: "Titolo e descrizione sono obbligatori" }));
+        }
+
+        const isAnon = !!anonimo;
+        const utenteId = isAnon ? null : (currentUser?.id || null);
+        const emailCliente = isAnon ? null : (currentUser?.email || null);
+
+        // Diagnosi preliminare intelligente
+        const fallbackDiag = fallbackClinicalAnalysis("app_feedback", {
+          tipoSegnalazione: tipo,
+          titolo,
+          descrizione,
+          deviceInfo: device_info,
+        });
+
+        const record = insertAppSegnalazione({
+          utente_id: utenteId,
+          email_cliente: emailCliente,
+          anonimo: isAnon,
+          tipo: (tipo as any) || "consiglio",
+          titolo,
+          descrizione,
+          audio_id: audio_id ? Number(audio_id) : null,
+          device_info: device_info || "Browser Web",
+          ai_diagnosi_tecnica: fallbackDiag.diagnosi_tecnica || "Da verificare",
+          stato: "aperto",
+        });
+
+        res.statusCode = 201;
+        return res.end(JSON.stringify(record));
+      } catch (err: any) {
+        res.statusCode = 500;
+        return res.end(JSON.stringify({ error: err.message || "Errore salvataggio segnalazione" }));
+      }
+    }
+
+    // GET /app-api/segnalazioni-bug (Elenco segnalazioni per il Coach)
+    if (pathname === "/app-api/segnalazioni-bug" && method === "GET") {
+      const stato = url.searchParams.get("stato") || undefined;
+      const tipo = url.searchParams.get("tipo") || undefined;
+      const segnalazioni = getAppSegnalazioni({ stato, tipo });
+      return res.end(JSON.stringify(segnalazioni));
+    }
+
+    // PATCH /app-api/segnalazioni-bug/:id (Aggiorna stato segnalazione: 'in_valutazione', 'risolto', 'scartato')
+    const matchBugPatch = pathname.match(/^\/app-api\/segnalazioni-bug\/(\d+)$/);
+    if (matchBugPatch && method === "PATCH") {
+      const id = parseInt(matchBugPatch[1], 10);
+      const stato = parsedBody.stato;
+      if (!stato || !["aperto", "in_valutazione", "risolto", "scartato"].includes(stato)) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Stato non valido" }));
+      }
+      const updated = updateAppSegnalazioneStatus(id, stato);
+      if (!updated) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Segnalazione non trovata" }));
+      }
+      return res.end(JSON.stringify(updated));
+    }
+
+    // POST /app-api/process-audio-note (Trigger manuale o re-analisi pipeline Gemini)
+    if (pathname === "/app-api/process-audio-note" && method === "POST") {
+      const { audio_id } = parsedBody;
+      if (!audio_id) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "audio_id richiesto" }));
+      }
+      const notes = getAudioNotes();
+      const note = notes.find((n: any) => n.id === Number(audio_id));
+      if (!note) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ error: "Nota non trovata" }));
+      }
+
+      const filePath = path.resolve(__dirname, note.audio_url.replace(/^\/+/, ""));
+      const analysis = await analyzeAudioWithGemini(filePath, note.contesto as any, {
+        noteTesto: note.trascrizione_testo || undefined,
+      });
+
+      // Aggiorna record permanentemente nel DB
+      const updated = updateAudioNoteAnalysis(note.id, analysis);
+
+      return res.end(JSON.stringify({ ok: true, ai: analysis, note: updated }));
     }
 
     res.statusCode = 404;

@@ -50,3 +50,7 @@ Thumbs.db
 scratch/
 *.sqlite*
 *.bak_*
+
+# Physical audio uploads
+uploads/audio_notes/*
+!uploads/audio_notes/.gitkeep

@@ -49,6 +49,7 @@ import {
   LogOut,
   Share2,
   Crown,
+  MessageSquarePlus,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -64,6 +65,7 @@ import { AIBookingConcierge } from "../components/AIBookingConcierge";
 import { InfoContinuativoModal } from "../components/InfoContinuativoModal";
 import { ManualeUtenteModal } from "../components/ManualeUtenteModal";
 import { WaitlistModal } from "../components/WaitlistModal";
+import { AppFeedbackBugModal } from "../components/AppFeedbackBugModal";
 import { getSimulatedSlotState, getStoredWaitlist } from "../lib/useSimulatedCalendar";
 import { Bell } from "lucide-react";
 import { toast } from "sonner";
@@ -394,10 +396,11 @@ export default function AreaPersonalePage() {
     },
   });
 
-  // ─── STATO MODALI (AI CONCIERGE, CONTINUATIVO INFO, MANUALE UTENTE) ────────
+  // ─── STATO MODALI (AI CONCIERGE, CONTINUATIVO INFO, MANUALE UTENTE, FEEDBACK BUG) ────
   const [showAIModal, setShowAIModal] = useState(false);
   const [showContinuativoModal, setShowContinuativoModal] = useState(false);
   const [showManualModal, setShowManualModal] = useState(false);
+  const [showFeedbackBugModal, setShowFeedbackBugModal] = useState(false);
 
   // ─── STATO ACCESSO COACH CON PIN ──────────────────────────────────────────
   const [coachPinModal, setCoachPinModal] = useState(false);
@@ -2596,6 +2599,23 @@ export default function AreaPersonalePage() {
               </div>
               <ChevronRight className="size-4 text-[#e3ff00]" />
             </button>
+
+            <button
+              type="button"
+              onClick={() => setShowFeedbackBugModal(true)}
+              className="p-3.5 rounded-2xl bg-white border border-zinc-200 hover:border-[#1c00ff] text-left transition-all shadow-2xs flex items-center justify-between cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[#1c00ff]/10 text-[#1c00ff] font-bold">
+                  <MessageSquarePlus className="size-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-zinc-900">Idee, Suggerimenti & Bug</div>
+                  <div className="text-[10px] text-zinc-500">Note vocali, consigli e segnalazioni</div>
+                </div>
+              </div>
+              <ChevronRight className="size-4 text-zinc-400" />
+            </button>
           </div>
 
           {/* ACCESSO RISERVATO COACH / GESTORE (DISCRETO E SICURO) */}
@@ -3456,6 +3476,12 @@ export default function AreaPersonalePage() {
       />
 
       <ManualeUtenteModal open={showManualModal} onOpenChange={setShowManualModal} />
+
+      <AppFeedbackBugModal
+        open={showFeedbackBugModal}
+        onOpenChange={setShowFeedbackBugModal}
+        currentUser={user}
+      />
     </div>
   );
 }

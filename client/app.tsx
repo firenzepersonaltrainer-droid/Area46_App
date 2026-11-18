@@ -14,12 +14,15 @@ import {
   ShieldCheck,
   User,
   Monitor,
+  Mic,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Nav } from "./components/Nav";
 import { Toaster } from "./components/Toast";
 import { WalletBar } from "./components/WalletBar";
 import { useCurrentUser, useLabConfig } from "./lib/useUser";
 import { useLivelloMemoria } from "./lib/useLivelloMemoria";
+import { CoachAudioFeedbackDrawer } from "./components/CoachAudioFeedbackDrawer";
 
 import AllenamentiPage from "./pages/Allenamenti";
 import GiornoDetailPage from "./pages/GiornoDetail";
@@ -96,14 +99,44 @@ import { CalendarNotificationBell } from "./components/CalendarNotificationBell"
 function AppHeader({
   onOpenManual,
   onOpenSwitcher,
+  onOpenCoachNotes,
 }: {
   onOpenManual?: () => void;
   onOpenSwitcher?: () => void;
+  onOpenCoachNotes?: () => void;
 }) {
   const { user, isManager } = useCurrentUser();
   const { config } = useLabConfig();
   const { livello: livelloMemoria } = useLivelloMemoria();
   const location = useLocation();
+
+  // Badge live per note audio e bug non gestiti
+  const { data: audioNotes = [] } = useQuery<any[]>({
+    queryKey: ["audio-notes"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/audio-notes");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!isManager,
+    refetchInterval: 10000,
+  });
+
+  const { data: bugReports = [] } = useQuery<any[]>({
+    queryKey: ["segnalazioni-bug"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/segnalazioni-bug");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!isManager,
+    refetchInterval: 10000,
+  });
+
+  const unreadCount =
+    audioNotes.filter((n) => n.stato === "nuovo").length +
+    bugReports.filter((b) => b.stato === "aperto").length;
+  const hasRedAlert = audioNotes.some((n) => n.stato === "nuovo" && n.ai_allerta === "rosso");
 
   // Rileva dinamicamente il livello visualizzato o memorizzato
   const matchAllenamento = location.pathname.match(/^\/allenamento\/([^/]+)/);
@@ -134,6 +167,33 @@ function AppHeader({
             userPhone={user.telefono}
             coachPhone={config?.notifica_whatsapp}
           />
+        )}
+
+        {/* Icona Microfono/Campanella Bacheca per il Coach */}
+        {isManager && onOpenCoachNotes && (
+          <button
+            type="button"
+            onClick={onOpenCoachNotes}
+            className={`relative p-1.5 rounded-full flex items-center justify-center cursor-pointer transition-all ${
+              hasRedAlert
+                ? "bg-red-600 text-white animate-pulse ring-2 ring-red-400"
+                : unreadCount > 0
+                ? "bg-[#1c00ff] text-[#e3ff00] shadow-xs"
+                : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
+            }`}
+            title="Bacheca Note Audio & Bug Coach"
+          >
+            <Mic className="size-3.5" />
+            {unreadCount > 0 && (
+              <span
+                className={`absolute -top-1 -right-1 size-4 rounded-full text-[9px] font-black flex items-center justify-center font-mono ${
+                  hasRedAlert ? "bg-white text-red-600" : "bg-[#e3ff00] text-zinc-950"
+                }`}
+              >
+                {unreadCount}
+              </span>
+            )}
+          </button>
         )}
 
         {onOpenManual && (
@@ -195,6 +255,7 @@ function AppContent() {
   const { user, isManager, isLoading } = useCurrentUser();
   const [showManualModal, setShowManualModal] = useState(false);
   const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
+  const [showCoachNotes, setShowCoachNotes] = useState(false);
   const location = useLocation();
 
   const isDesktopRoute =
@@ -302,6 +363,7 @@ function AppContent() {
       <AppHeader
         onOpenManual={() => setShowManualModal(true)}
         onOpenSwitcher={() => setShowRoleSwitcher(true)}
+        onOpenCoachNotes={() => setShowCoachNotes(true)}
       />
 
       {/* Modale Manuale Utente Globale */}
@@ -309,6 +371,9 @@ function AppContent() {
 
       {/* Modale Switch Ruolo & Profilo */}
       <RoleSwitcherModal open={showRoleSwitcher} onOpenChange={setShowRoleSwitcher} />
+
+      {/* Drawer Note Audio & Bug per il Coach su Mobile */}
+      <CoachAudioFeedbackDrawer open={showCoachNotes} onClose={() => setShowCoachNotes(false)} />
 
       {/* Wallet Bar con Saldo Crediti / Debito & Role Switcher */}
       <WalletBar />

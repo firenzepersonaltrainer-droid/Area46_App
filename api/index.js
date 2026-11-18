@@ -5,8 +5,8 @@ var __export = (target, all) => {
 };
 
 // local-api.ts
-import fs4 from "node:fs";
-import path3 from "node:path";
+import fs5 from "node:fs";
+import path5 from "node:path";
 import crypto8 from "node:crypto";
 import { fileURLToPath } from "node:url";
 
@@ -559,11 +559,11 @@ var Cookies = class {
   getPath(pathname) {
     const pathParts = (pathname || "/").split("/");
     pathParts.pop();
-    const path4 = pathParts.join("/").trim();
-    if (path4.charAt(0) !== "/") {
+    const path6 = pathParts.join("/").trim();
+    if (path6.charAt(0) !== "/") {
       return "/";
     }
-    return path4;
+    return path6;
   }
 };
 var cookies_default = Cookies;
@@ -39649,11 +39649,341 @@ firenzepersonaltrainer@gmail.com`,
   shadow_event_log: []
 };
 
+// server/ai-audio-analyzer.ts
+import fs4 from "node:fs";
+import path3 from "node:path";
+async function analyzeAudioWithGemini(filePath, contesto, metadata = {}) {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
+  let audioBase64 = "";
+  let mimeType = "audio/webm";
+  if (fs4.existsSync(filePath)) {
+    const ext = path3.extname(filePath).toLowerCase();
+    if (ext === ".mp4" || ext === ".m4a") mimeType = "audio/mp4";
+    else if (ext === ".wav") mimeType = "audio/wav";
+    else if (ext === ".mp3") mimeType = "audio/mpeg";
+    else if (ext === ".ogg") mimeType = "audio/ogg";
+    else mimeType = "audio/webm";
+    const buffer = fs4.readFileSync(filePath);
+    audioBase64 = buffer.toString("base64");
+  }
+  if (apiKey && audioBase64) {
+    try {
+      const systemInstruction = `
+Sei l'Agente Clinico-Semantico & Tecnico Senior di Area46 Landmine Lab.
+Il tuo compito \xE8 trascrivere con assoluta precisione la nota audio dell'atleta o utente e produrre un'analisi strutturata.
+
+REGOLE PERENTORIE E VINCOLI METODOLOGICI:
+1. DIVIETO ASSOLUTO DEL TERMINE "biomeccanica" o tecnicismi freddi per gli atleti: usa sempre "pattern motorio", "economia del gesto" o "cinematica".
+2. CLASSIFICAZIONE ALLERTA:
+   - 'verde': sessione regolare, sensazioni fluide, fatica fisiologica (RPE <= 8), oppure consiglio app ordinario.
+   - 'giallo': affaticamento elevato, piccoli compensi posturali, RPE 8.5-9, oppure bug non bloccante.
+   - 'rosso': fitte, dolore acuto articolare (lombare/L5-S1, ginocchio, anca, spalla), cedimento non controllato, oppure crash/blocco totale dell'app.
+3. PROPOSTA D'AZIONE WORKOUT:
+   - Applica la metodologia del Comitato Tecnico Area46 (Socrates Modalit\xE0 B): rotazione del movimento critico con destrezza qualitativa, mobilit\xE0 a terra o decompressione senza dogmi.
+4. DIAGNOSI TECNICA (se contesto \xE8 'app_feedback'):
+   - Ispeziona il problema descritto e indica i file probabili dell'architettura Area46 (es. client/pages/GiornoDetail.tsx, local-api.ts, client/components/CalendarioMeseNavigabile.tsx, etc.) e la risoluzione.
+
+Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
+{
+  "trascrizione": "Trascrizione letterale fedele in italiano",
+  "allerta": "verde" | "giallo" | "rosso",
+  "sintesi": "Riassunto conciso in 1 frase per il Coach",
+  "proposta_azione": "Consiglio pratico operativo e immediato per la seduta successiva",
+  "diagnosi_tecnica": "Diagnosi tecnica del bug o valutazione del suggerimento con indicazione dei componenti"
+}
+`;
+      const promptText = `
+Contesto: ${contesto}
+Metadati noti:
+- Livello: ${metadata.livello || "N/D"}
+- Giorno: ${metadata.giorno || "N/D"}
+- RPE registrato: ${metadata.rpe ?? "N/D"}
+- Sensazioni espresse a chip: ${(metadata.sensazioni || []).join(", ") || "Nessuna"}
+- Note scritte: ${metadata.noteTesto || metadata.descrizione || "Nessuna"}
+- Tipo segnalazione: ${metadata.tipoSegnalazione || "N/D"}
+- Titolo segnalazione: ${metadata.titolo || "N/D"}
+- Device info: ${metadata.deviceInfo || "N/D"}
+
+Ascolta l'audio allegato, trascrivilo fedelmente ed esegui l'analisi clinico-semantica o tecnica.
+`;
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [
+                {
+                  inlineData: {
+                    mimeType,
+                    data: audioBase64
+                  }
+                },
+                { text: promptText }
+              ]
+            }
+          ],
+          systemInstruction: {
+            parts: [{ text: systemInstruction }]
+          },
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: "application/json"
+          }
+        })
+      });
+      if (response.ok) {
+        const geminiData = await response.json();
+        const textResponse = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (textResponse) {
+          const parsed = JSON.parse(textResponse);
+          const pulisci = (s) => s ? s.replace(/biomeccanic[aoe]/gi, "pattern motorio") : "";
+          return {
+            trascrizione: pulisci(parsed.trascrizione || ""),
+            allerta: ["verde", "giallo", "rosso"].includes(parsed.allerta) ? parsed.allerta : "verde",
+            sintesi: pulisci(parsed.sintesi || ""),
+            proposta_azione: pulisci(parsed.proposta_azione || ""),
+            diagnosi_tecnica: parsed.diagnosi_tecnica ? pulisci(parsed.diagnosi_tecnica) : void 0
+          };
+        }
+      }
+    } catch (err) {
+      console.warn("Gemini API non disponibile o errore:", err);
+    }
+  }
+  return fallbackClinicalAnalysis(contesto, metadata);
+}
+function fallbackClinicalAnalysis(contesto, metadata) {
+  const testo = `${metadata.noteTesto || ""} ${metadata.descrizione || ""} ${metadata.titolo || ""} ${(metadata.sensazioni || []).join(" ")}`.toLowerCase();
+  const rpe = metadata.rpe ?? 8;
+  if (contesto === "biofeedback_workout") {
+    const isRedAlert = testo.includes("dolore") || testo.includes("fitta") || testo.includes("blocc") || testo.includes("lombare") || testo.includes("ginocchio") || testo.includes("spalla") || testo.includes("strappo") || testo.includes("crack") || testo.includes("male acuto") || rpe >= 10;
+    const isYellowAlert = !isRedAlert && (testo.includes("fatica") || testo.includes("stanchezza") || testo.includes("pesant") || testo.includes("compenso") || testo.includes("difficolt") || testo.includes("instabil") || rpe >= 9);
+    let allerta2 = "verde";
+    let sintesi2 = "Sessione chiusa regolarmente con parametri motori stabili ed ottima risposta generale.";
+    let proposta2 = "Proseguire con la periodizzazione prevista per la seduta successiva mantenendo il focus sulla qualit\xE0 esecutiva.";
+    if (isRedAlert) {
+      allerta2 = "rosso";
+      sintesi2 = `Allerta articolare/carico: segnalata criticit\xE0 durante la seduta (RPE ${rpe}/10).`;
+      proposta2 = "Modalit\xE0 B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a catena cinetica aperta, mobilit\xE0 del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.";
+    } else if (isYellowAlert) {
+      allerta2 = "giallo";
+      sintesi2 = `Fatica periferica alta o compenso posturale segnalato (RPE ${rpe}/10).`;
+      proposta2 = "Regolare i carichi mantenendo 1-2 ripetizioni di riserva nel fondamentale e idratare il tessuto con mobilit\xE0 attiva di scarico tra le serie.";
+    }
+    const trascrizioneGenerata2 = metadata.noteTesto ? metadata.noteTesto : `Registrazione vocale atleta su Seduta ${metadata.giorno || ""}: RPE percepito ${rpe}/10, sensazioni motorie: ${(metadata.sensazioni || []).join(", ") || "buone"}.`;
+    return {
+      trascrizione: trascrizioneGenerata2,
+      allerta: allerta2,
+      sintesi: sintesi2,
+      proposta_azione: proposta2
+    };
+  }
+  const isBug = metadata.tipoSegnalazione === "bug" || testo.includes("bug") || testo.includes("errore");
+  const isCriticalBug = isBug && (testo.includes("crash") || testo.includes("blocc") || testo.includes("impossibile") || testo.includes("bianc") || testo.includes("perso") || testo.includes("non salva"));
+  let allerta = "verde";
+  let sintesi = `Segnalazione ${metadata.tipoSegnalazione || "consiglio"}: "${metadata.titolo || "Suggerimento per l'App"}"`;
+  let diagnosi = "Suggerimento utile per l'evoluzione dell'interfaccia e l'esperienza atleta in sala.";
+  let proposta = "Valutare l'implementazione nel prossimo sprint di rifinitura UI/UX.";
+  if (isCriticalBug) {
+    allerta = "rosso";
+    sintesi = `BUG CRITICO SEGNALATO: ${metadata.titolo || "Anomalia bloccante in applicazione"}`;
+    diagnosi = `Rilevata anomalia bloccante su context ${metadata.deviceInfo || "Browser"}. File probabili da ispezionare: client/pages/GiornoDetail.tsx, local-api.ts o client/components/Dialog.tsx.`;
+    proposta = "Verifica immediata del flusso dati e ripristino idempotente con test in locale.";
+  } else if (isBug) {
+    allerta = "giallo";
+    sintesi = `Anomalia non bloccante: ${metadata.titolo || "Comportamento imprevisto app"}`;
+    diagnosi = `Comportamento anomalo segnalato su ${metadata.deviceInfo || "dispositivo mobile"}. Componenti correlati in client/components/.`;
+    proposta = "Riprodurre su browser di test ed applicare hotfix nel gestionale.";
+  }
+  const trascrizioneGenerata = metadata.descrizione ? metadata.descrizione : `Nota vocale di segnalazione (${metadata.tipoSegnalazione || "consiglio"}): ${metadata.titolo || ""}.`;
+  return {
+    trascrizione: trascrizioneGenerata,
+    allerta,
+    sintesi,
+    proposta_azione: proposta,
+    diagnosi_tecnica: diagnosi
+  };
+}
+
+// server/audio-feedback-repo.ts
+import path4 from "node:path";
+import { DatabaseSync } from "node:sqlite";
+var DB_PATH = path4.resolve(process.cwd(), "area46_v2.sqlite");
+function getDb() {
+  const db2 = new DatabaseSync(DB_PATH);
+  db2.exec(`
+    CREATE TABLE IF NOT EXISTS audio_note_feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      utente_id TEXT,
+      email_cliente TEXT,
+      contesto TEXT CHECK(contesto IN ('biofeedback_workout', 'app_feedback')),
+      audio_url TEXT NOT NULL,
+      durata_sec INTEGER DEFAULT 0,
+      trascrizione_testo TEXT,
+      ai_allerta TEXT CHECK(ai_allerta IN ('verde', 'giallo', 'rosso')) DEFAULT 'verde',
+      ai_sintesi TEXT,
+      ai_proposta_azione TEXT,
+      stato TEXT CHECK(stato IN ('nuovo', 'ascoltato', 'applicato', 'archiviato')) DEFAULT 'nuovo',
+      data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS app_segnalazioni_bug (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      utente_id TEXT,
+      email_cliente TEXT,
+      anonimo BOOLEAN DEFAULT 0,
+      tipo TEXT CHECK(tipo IN ('consiglio', 'bug', 'altro')) DEFAULT 'consiglio',
+      titolo TEXT NOT NULL,
+      descrizione TEXT NOT NULL,
+      audio_id INTEGER REFERENCES audio_note_feedback(id),
+      device_info TEXT,
+      ai_diagnosi_tecnica TEXT,
+      stato TEXT CHECK(stato IN ('aperto', 'in_valutazione', 'risolto', 'scartato')) DEFAULT 'aperto',
+      data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+  return db2;
+}
+function insertAudioNote(record) {
+  const db2 = getDb();
+  const stmt = db2.prepare(`
+    INSERT INTO audio_note_feedback (
+      utente_id, email_cliente, contesto, audio_url, durata_sec,
+      trascrizione_testo, ai_allerta, ai_sintesi, ai_proposta_azione, stato
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const info = stmt.run(
+    record.utente_id || null,
+    record.email_cliente || null,
+    record.contesto,
+    record.audio_url,
+    record.durata_sec || 0,
+    record.trascrizione_testo || null,
+    record.ai_allerta || "verde",
+    record.ai_sintesi || null,
+    record.ai_proposta_azione || null,
+    record.stato || "nuovo"
+  );
+  const lastId = Number(info.lastInsertRowid);
+  const getStmt = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?");
+  const row = getStmt.get(lastId);
+  db2.close();
+  return row;
+}
+function getAudioNotes(filter) {
+  const db2 = getDb();
+  let query = "SELECT * FROM audio_note_feedback WHERE 1=1";
+  const params = [];
+  if (filter?.contesto) {
+    query += " AND contesto = ?";
+    params.push(filter.contesto);
+  }
+  if (filter?.stato) {
+    query += " AND stato = ?";
+    params.push(filter.stato);
+  }
+  if (filter?.email) {
+    query += " AND email_cliente = ?";
+    params.push(filter.email);
+  }
+  query += " ORDER BY id DESC";
+  const rows = db2.prepare(query).all(...params);
+  db2.close();
+  return rows;
+}
+function updateAudioNoteStatus(id, stato) {
+  const db2 = getDb();
+  const stmt = db2.prepare("UPDATE audio_note_feedback SET stato = ? WHERE id = ?");
+  stmt.run(stato, id);
+  const row = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id);
+  db2.close();
+  return row || null;
+}
+function updateAudioNoteAnalysis(id, analysis) {
+  const db2 = getDb();
+  db2.prepare(`
+    UPDATE audio_note_feedback
+    SET trascrizione_testo = ?, ai_allerta = ?, ai_sintesi = ?, ai_proposta_azione = ?
+    WHERE id = ?
+  `).run(analysis.trascrizione, analysis.allerta, analysis.sintesi, analysis.proposta_azione, id);
+  const row = db2.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id);
+  db2.close();
+  return row || null;
+}
+function insertAppSegnalazione(record) {
+  const db2 = getDb();
+  const stmt = db2.prepare(`
+    INSERT INTO app_segnalazioni_bug (
+      utente_id, email_cliente, anonimo, tipo, titolo,
+      descrizione, audio_id, device_info, ai_diagnosi_tecnica, stato
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const info = stmt.run(
+    record.anonimo ? null : record.utente_id || null,
+    record.anonimo ? null : record.email_cliente || null,
+    record.anonimo ? 1 : 0,
+    record.tipo || "consiglio",
+    record.titolo,
+    record.descrizione,
+    record.audio_id || null,
+    record.device_info || null,
+    record.ai_diagnosi_tecnica || null,
+    record.stato || "aperto"
+  );
+  const lastId = Number(info.lastInsertRowid);
+  const row = db2.prepare(`
+    SELECT s.*, a.audio_url, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
+    FROM app_segnalazioni_bug s
+    LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+    WHERE s.id = ?
+  `).get(lastId);
+  db2.close();
+  return row;
+}
+function getAppSegnalazioni(filter) {
+  const db2 = getDb();
+  let query = `
+    SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi, a.ai_proposta_azione
+    FROM app_segnalazioni_bug s
+    LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+    WHERE 1=1
+  `;
+  const params = [];
+  if (filter?.stato) {
+    query += " AND s.stato = ?";
+    params.push(filter.stato);
+  }
+  if (filter?.tipo) {
+    query += " AND s.tipo = ?";
+    params.push(filter.tipo);
+  }
+  query += " ORDER BY s.id DESC";
+  const rows = db2.prepare(query).all(...params);
+  db2.close();
+  return rows;
+}
+function updateAppSegnalazioneStatus(id, stato) {
+  const db2 = getDb();
+  const stmt = db2.prepare("UPDATE app_segnalazioni_bug SET stato = ? WHERE id = ?");
+  stmt.run(stato, id);
+  const row = db2.prepare(`
+    SELECT s.*, a.audio_url, a.durata_sec, a.trascrizione_testo, a.ai_allerta, a.ai_sintesi
+    FROM app_segnalazioni_bug s
+    LEFT JOIN audio_note_feedback a ON s.audio_id = a.id
+    WHERE s.id = ?
+  `).get(id);
+  db2.close();
+  return row || null;
+}
+
 // local-api.ts
 var __filename = fileURLToPath(import.meta.url);
-var __dirname = path3.dirname(__filename);
+var __dirname = path5.dirname(__filename);
 var IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX === "true";
-var SANDBOX_FILE = path3.resolve(__dirname, "data", "sandbox-data.json");
+var SANDBOX_FILE = path5.resolve(__dirname, "data", "sandbox-data.json");
 var TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
 function isBookingIdCancelled(id, cancelledList) {
   if (!id || !cancelledList || !Array.isArray(cancelledList) || cancelledList.length === 0) return false;
@@ -39679,16 +40009,16 @@ function parseSafeDate(iso) {
 }
 function loadData() {
   let loaded = null;
-  if (IS_SANDBOX && fs4.existsSync(SANDBOX_FILE)) {
+  if (IS_SANDBOX && fs5.existsSync(SANDBOX_FILE)) {
     try {
-      const raw = fs4.readFileSync(SANDBOX_FILE, "utf-8");
+      const raw = fs5.readFileSync(SANDBOX_FILE, "utf-8");
       return JSON.parse(raw);
     } catch {
     }
   }
-  if (fs4.existsSync(TMP_DATA_FILE)) {
+  if (fs5.existsSync(TMP_DATA_FILE)) {
     try {
-      const raw = fs4.readFileSync(TMP_DATA_FILE, "utf-8");
+      const raw = fs5.readFileSync(TMP_DATA_FILE, "utf-8");
       loaded = JSON.parse(raw);
     } catch {
     }
@@ -39842,29 +40172,29 @@ function saveData(data, skipCloudSync = false) {
   db = data;
   if (IS_SANDBOX) {
     try {
-      fs4.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
-      fs4.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs5.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs5.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
     } catch {
     }
     return Promise.resolve();
   }
   try {
-    fs4.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+    fs5.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch {
   }
   try {
-    const directPath = path3.resolve(__dirname, "demo-data.json");
-    const parentPath = path3.resolve(__dirname, "..", "demo-data.json");
-    const destPath = fs4.existsSync(directPath) ? directPath : fs4.existsSync(parentPath) ? parentPath : null;
+    const directPath = path5.resolve(__dirname, "demo-data.json");
+    const parentPath = path5.resolve(__dirname, "..", "demo-data.json");
+    const destPath = fs5.existsSync(directPath) ? directPath : fs5.existsSync(parentPath) ? parentPath : null;
     if (destPath) {
       const sanitized = JSON.parse(JSON.stringify(data));
       if (sanitized.configurazione_lab && sanitized.configurazione_lab.stripe_secret_key) {
         sanitized.configurazione_lab.stripe_secret_key = "";
       }
-      fs4.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
+      fs5.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
       try {
-        const vaultDir = path3.resolve(path3.dirname(destPath), "data", "vault");
-        if (fs4.existsSync(vaultDir)) {
+        const vaultDir = path5.resolve(path5.dirname(destPath), "data", "vault");
+        if (fs5.existsSync(vaultDir)) {
           const mod1 = {
             profili_utenti: data.profili_utenti || [],
             movimenti_crediti: data.movimenti_crediti || [],
@@ -39873,7 +40203,7 @@ function saveData(data, skipCloudSync = false) {
             utenti_cancellati: data.utenti_cancellati || [],
             tariffario_pacchetti: data.tariffario_pacchetti || []
           };
-          fs4.writeFileSync(path3.join(vaultDir, "1_gestionale_utenti_crediti.json"), JSON.stringify(mod1, null, 2), "utf-8");
+          fs5.writeFileSync(path5.join(vaultDir, "1_gestionale_utenti_crediti.json"), JSON.stringify(mod1, null, 2), "utf-8");
           const mod2 = {
             prenotazioni_slot: data.prenotazioni_slot || [],
             prenotazioni_cancellate: data.prenotazioni_cancellate || [],
@@ -39881,29 +40211,29 @@ function saveData(data, skipCloudSync = false) {
             regole_palinsesto: data.regole_palinsesto || [],
             richieste_cancellazione_tardiva: data.richieste_cancellazione_tardiva || []
           };
-          fs4.writeFileSync(path3.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
+          fs5.writeFileSync(path5.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
           const modDiario = {
             diario_utente: data.diario_utente || [],
             stato_allenamenti: data.stato_allenamenti || [],
             preferenze_utente: data.preferenze_utente || []
           };
-          fs4.writeFileSync(path3.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
+          fs5.writeFileSync(path5.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
           const mod4 = {
             database_esercizi: data.database_esercizi || [],
             livelli: data.livelli || [],
             ordine_livelli: data.ordine_livelli || []
           };
-          fs4.writeFileSync(path3.join(vaultDir, "4_metodologia_esercizi.json"), JSON.stringify(mod4, null, 2), "utf-8");
+          fs5.writeFileSync(path5.join(vaultDir, "4_metodologia_esercizi.json"), JSON.stringify(mod4, null, 2), "utf-8");
         }
       } catch {
       }
       const now = Date.now();
       if (now - lastAutoBackupTime > 4 * 3600 * 1e3) {
         lastAutoBackupTime = now;
-        const bkpDir = path3.resolve(path3.dirname(destPath), "backups");
-        if (fs4.existsSync(bkpDir)) {
-          const bkpFile = path3.join(bkpDir, `auto_backup_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`);
-          fs4.writeFileSync(bkpFile, JSON.stringify(data, null, 2), "utf-8");
+        const bkpDir = path5.resolve(path5.dirname(destPath), "backups");
+        if (fs5.existsSync(bkpDir)) {
+          const bkpFile = path5.join(bkpDir, `auto_backup_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`);
+          fs5.writeFileSync(bkpFile, JSON.stringify(data, null, 2), "utf-8");
         }
       }
     }
@@ -39928,16 +40258,16 @@ var FALLBACK_SERVICE_ACCOUNT = {
   client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/bot-allenamenti%40landmine-lab-level-pro.iam.gserviceaccount.com",
   universe_domain: "googleapis.com"
 };
-var CREDENZIALI_PATH = fs4.existsSync(path3.resolve(__dirname, "credenziali.json")) ? path3.resolve(__dirname, "credenziali.json") : path3.resolve(__dirname, "..", "credenziali.json");
+var CREDENZIALI_PATH = fs5.existsSync(path5.resolve(__dirname, "credenziali.json")) ? path5.resolve(__dirname, "credenziali.json") : path5.resolve(__dirname, "..", "credenziali.json");
 var GDRIVE_DEMO_DATA_ID = "129ts4wdwsypvWCB2cBHXWw3WTIKmtktA";
 function base64url(str) {
   return Buffer.from(str).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 async function getGoogleDriveAccessToken() {
   let creds = null;
-  if (fs4.existsSync(CREDENZIALI_PATH)) {
+  if (fs5.existsSync(CREDENZIALI_PATH)) {
     try {
-      creds = JSON.parse(fs4.readFileSync(CREDENZIALI_PATH, "utf-8"));
+      creds = JSON.parse(fs5.readFileSync(CREDENZIALI_PATH, "utf-8"));
     } catch {
     }
   }
@@ -39983,9 +40313,9 @@ async function getGoogleDriveAccessToken() {
 var GCAL_CALENDAR_ID = "firenzepersonaltrainer@gmail.com";
 async function getGoogleCalendarAccessToken() {
   let creds = null;
-  if (fs4.existsSync(CREDENZIALI_PATH)) {
+  if (fs5.existsSync(CREDENZIALI_PATH)) {
     try {
-      creds = JSON.parse(fs4.readFileSync(CREDENZIALI_PATH, "utf-8"));
+      creds = JSON.parse(fs5.readFileSync(CREDENZIALI_PATH, "utf-8"));
     } catch {
     }
   }
@@ -40334,14 +40664,14 @@ async function pullGoogleCalendarLabSlots(options = {}) {
       db.prenotazioni_slot.sort((a, b) => (a.data + a.orario).localeCompare(b.data + b.orario));
       await saveData(db);
       try {
-        const vaultCalFile = path3.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json");
-        const altVaultCalFile = path3.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json");
-        const targetVault = fs4.existsSync(vaultCalFile) ? vaultCalFile : fs4.existsSync(altVaultCalFile) ? altVaultCalFile : null;
+        const vaultCalFile = path5.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json");
+        const altVaultCalFile = path5.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json");
+        const targetVault = fs5.existsSync(vaultCalFile) ? vaultCalFile : fs5.existsSync(altVaultCalFile) ? altVaultCalFile : null;
         if (targetVault) {
-          const vData = JSON.parse(fs4.readFileSync(targetVault, "utf-8"));
+          const vData = JSON.parse(fs5.readFileSync(targetVault, "utf-8"));
           vData.prenotazioni_slot = db.prenotazioni_slot;
           vData.prenotazioni_cancellate = db.prenotazioni_cancellate;
-          fs4.writeFileSync(targetVault, JSON.stringify(vData, null, 2), "utf-8");
+          fs5.writeFileSync(targetVault, JSON.stringify(vData, null, 2), "utf-8");
         }
       } catch (vErr) {
         console.warn("[GCAL PULL] Vault file update:", vErr);
@@ -40391,9 +40721,9 @@ async function triggerSggSyncAsync(singleTx) {
     });
   }
   try {
-    const direct = path3.resolve(__dirname, "scripts", "sync_to_sgg.py");
-    const parent = path3.resolve(__dirname, "..", "scripts", "sync_to_sgg.py");
-    const scriptPath = fs4.existsSync(direct) ? direct : fs4.existsSync(parent) ? parent : null;
+    const direct = path5.resolve(__dirname, "scripts", "sync_to_sgg.py");
+    const parent = path5.resolve(__dirname, "..", "scripts", "sync_to_sgg.py");
+    const scriptPath = fs5.existsSync(direct) ? direct : fs5.existsSync(parent) ? parent : null;
     if (scriptPath) {
       import("node:child_process").then(({ exec }) => {
         exec(`python3 "${scriptPath}"`, (err) => {
@@ -40902,6 +41232,25 @@ async function handleLocalApi(req, res, next) {
   const host = req.headers?.host || "localhost:5173";
   const url = new URL(req.url ?? "/", `http://${host}`);
   let pathname = url.pathname;
+  if (pathname.startsWith("/uploads/audio_notes/")) {
+    const fileName = path5.basename(pathname);
+    const filePath = path5.resolve(__dirname, "uploads", "audio_notes", fileName);
+    if (fs5.existsSync(filePath)) {
+      const ext = path5.extname(fileName).toLowerCase();
+      const mime = ext === ".mp4" || ext === ".m4a" ? "audio/mp4" : ext === ".wav" ? "audio/wav" : "audio/webm";
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Accept-Ranges", "bytes");
+      const stat = fs5.statSync(filePath);
+      res.setHeader("Content-Length", stat.size);
+      const stream = fs5.createReadStream(filePath);
+      return stream.pipe(res);
+    } else {
+      res.statusCode = 404;
+      res.setHeader("Content-Type", "text/plain");
+      return res.end("Audio not found");
+    }
+  }
   if (!pathname.startsWith("/app-api")) {
     const route = url.searchParams.get("__route");
     if (route) {
@@ -44161,6 +44510,225 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
       };
     }).sort((a, b) => new Date(a.data_ora).getTime() - new Date(b.data_ora).getTime());
     return res.end(JSON.stringify(rows));
+  }
+  if (pathname === "/app-api/audio-note" && method === "POST") {
+    try {
+      const {
+        audioBase64,
+        audioData,
+        formato,
+        durata_sec,
+        contesto,
+        livello,
+        giorno,
+        rpe,
+        sensazioni,
+        noteTesto,
+        tipoSegnalazione,
+        titolo,
+        descrizione,
+        anonimo,
+        deviceInfo
+      } = parsedBody;
+      const effectiveContesto = contesto || "biofeedback_workout";
+      const effectiveDuration = Number(durata_sec) || 0;
+      const effectiveAnonimo = !!anonimo;
+      const utenteId = effectiveAnonimo ? null : currentUser?.id || "usr-atleta-01";
+      const emailCliente = effectiveAnonimo ? null : currentUser?.email || "atleta@area46.it";
+      const rawAudio = audioBase64 || audioData || "";
+      let audioFileName = `audio_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+      const ext = formato ? formato.startsWith(".") ? formato.slice(1) : formato : "webm";
+      audioFileName += `.${ext}`;
+      const uploadDir = path5.resolve(__dirname, "uploads", "audio_notes");
+      if (!fs5.existsSync(uploadDir)) {
+        fs5.mkdirSync(uploadDir, { recursive: true });
+      }
+      const fullFilePath = path5.join(uploadDir, audioFileName);
+      if (rawAudio) {
+        const cleanBase64 = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
+        fs5.writeFileSync(fullFilePath, Buffer.from(cleanBase64, "base64"));
+      } else {
+        fs5.writeFileSync(fullFilePath, Buffer.from("RIFF....WAVEfmt ....data...."));
+      }
+      const audioUrl = `/uploads/audio_notes/${audioFileName}`;
+      const aiAnalysis = await analyzeAudioWithGemini(fullFilePath, effectiveContesto, {
+        livello,
+        giorno,
+        rpe: Number(rpe) || void 0,
+        sensazioni,
+        noteTesto,
+        tipoSegnalazione,
+        titolo,
+        descrizione,
+        deviceInfo
+      });
+      const audioRecord = insertAudioNote({
+        utente_id: utenteId,
+        email_cliente: emailCliente,
+        contesto: effectiveContesto,
+        audio_url: audioUrl,
+        durata_sec: effectiveDuration,
+        trascrizione_testo: aiAnalysis.trascrizione,
+        ai_allerta: aiAnalysis.allerta,
+        ai_sintesi: aiAnalysis.sintesi,
+        ai_proposta_azione: aiAnalysis.proposta_azione,
+        stato: "nuovo"
+      });
+      if (effectiveContesto === "biofeedback_workout" && emailCliente) {
+        const newDiaryEntry = {
+          id: Date.now(),
+          email_cliente: emailCliente,
+          tipo: "feedback_seduta",
+          livello: livello ?? null,
+          giorno: giorno ?? null,
+          rpe_globale: Number(rpe) || 8,
+          sensazioni: sensazioni || [],
+          note_cinestesiche: aiAnalysis.trascrizione || noteTesto || null,
+          nome_esercizio: `Feedback Vocale Giorno ${giorno || ""}`,
+          feedback: `Nota Vocale (${effectiveDuration}s) \u2022 ${aiAnalysis.sintesi} \u2022 Allerta: ${aiAnalysis.allerta.toUpperCase()}`,
+          audio_url: audioUrl,
+          ai_allerta: aiAnalysis.allerta,
+          ai_sintesi: aiAnalysis.sintesi,
+          ai_proposta_azione: aiAnalysis.proposta_azione,
+          data_ora: (/* @__PURE__ */ new Date()).toISOString(),
+          created_at: (/* @__PURE__ */ new Date()).toISOString()
+        };
+        db.diario_utente.push(newDiaryEntry);
+        saveData(db);
+      }
+      let bugRecord = null;
+      if (effectiveContesto === "app_feedback" || titolo || descrizione) {
+        bugRecord = insertAppSegnalazione({
+          utente_id: utenteId,
+          email_cliente: emailCliente,
+          anonimo: effectiveAnonimo,
+          tipo: tipoSegnalazione || "consiglio",
+          titolo: titolo || "Nota Vocale Feedback",
+          descrizione: descrizione || aiAnalysis.trascrizione || "Nessuna descrizione testuale",
+          audio_id: audioRecord.id,
+          device_info: deviceInfo || "Web / Mobile",
+          ai_diagnosi_tecnica: aiAnalysis.diagnosi_tecnica || "In attesa di revisione",
+          stato: "aperto"
+        });
+      }
+      res.statusCode = 201;
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          audio: audioRecord,
+          segnalazione: bugRecord,
+          ai: aiAnalysis
+        })
+      );
+    } catch (err) {
+      console.error("Errore salvataggio audio note:", err);
+      res.statusCode = 500;
+      return res.end(JSON.stringify({ error: err.message || "Errore elaborazione audio note" }));
+    }
+  }
+  if (pathname === "/app-api/audio-notes" && method === "GET") {
+    const contesto = url.searchParams.get("contesto") || void 0;
+    const stato = url.searchParams.get("stato") || void 0;
+    const email = url.searchParams.get("email") || void 0;
+    const notes = getAudioNotes({ contesto, stato, email });
+    return res.end(JSON.stringify(notes));
+  }
+  const matchAudioPatch = pathname.match(/^\/app-api\/audio-notes\/(\d+)$/);
+  if (matchAudioPatch && method === "PATCH") {
+    const id = parseInt(matchAudioPatch[1], 10);
+    const stato = parsedBody.stato;
+    if (!stato || !["nuovo", "ascoltato", "applicato", "archiviato"].includes(stato)) {
+      res.statusCode = 400;
+      return res.end(JSON.stringify({ error: "Stato non valido" }));
+    }
+    const updated = updateAudioNoteStatus(id, stato);
+    if (!updated) {
+      res.statusCode = 404;
+      return res.end(JSON.stringify({ error: "Nota non trovata" }));
+    }
+    return res.end(JSON.stringify(updated));
+  }
+  if (pathname === "/app-api/segnalazioni-bug" && method === "POST") {
+    try {
+      const {
+        tipo,
+        titolo,
+        descrizione,
+        anonimo,
+        audio_id,
+        device_info
+      } = parsedBody;
+      if (!titolo || !descrizione) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Titolo e descrizione sono obbligatori" }));
+      }
+      const isAnon = !!anonimo;
+      const utenteId = isAnon ? null : currentUser?.id || null;
+      const emailCliente = isAnon ? null : currentUser?.email || null;
+      const fallbackDiag = fallbackClinicalAnalysis("app_feedback", {
+        tipoSegnalazione: tipo,
+        titolo,
+        descrizione,
+        deviceInfo: device_info
+      });
+      const record = insertAppSegnalazione({
+        utente_id: utenteId,
+        email_cliente: emailCliente,
+        anonimo: isAnon,
+        tipo: tipo || "consiglio",
+        titolo,
+        descrizione,
+        audio_id: audio_id ? Number(audio_id) : null,
+        device_info: device_info || "Browser Web",
+        ai_diagnosi_tecnica: fallbackDiag.diagnosi_tecnica || "Da verificare",
+        stato: "aperto"
+      });
+      res.statusCode = 201;
+      return res.end(JSON.stringify(record));
+    } catch (err) {
+      res.statusCode = 500;
+      return res.end(JSON.stringify({ error: err.message || "Errore salvataggio segnalazione" }));
+    }
+  }
+  if (pathname === "/app-api/segnalazioni-bug" && method === "GET") {
+    const stato = url.searchParams.get("stato") || void 0;
+    const tipo = url.searchParams.get("tipo") || void 0;
+    const segnalazioni = getAppSegnalazioni({ stato, tipo });
+    return res.end(JSON.stringify(segnalazioni));
+  }
+  const matchBugPatch = pathname.match(/^\/app-api\/segnalazioni-bug\/(\d+)$/);
+  if (matchBugPatch && method === "PATCH") {
+    const id = parseInt(matchBugPatch[1], 10);
+    const stato = parsedBody.stato;
+    if (!stato || !["aperto", "in_valutazione", "risolto", "scartato"].includes(stato)) {
+      res.statusCode = 400;
+      return res.end(JSON.stringify({ error: "Stato non valido" }));
+    }
+    const updated = updateAppSegnalazioneStatus(id, stato);
+    if (!updated) {
+      res.statusCode = 404;
+      return res.end(JSON.stringify({ error: "Segnalazione non trovata" }));
+    }
+    return res.end(JSON.stringify(updated));
+  }
+  if (pathname === "/app-api/process-audio-note" && method === "POST") {
+    const { audio_id } = parsedBody;
+    if (!audio_id) {
+      res.statusCode = 400;
+      return res.end(JSON.stringify({ error: "audio_id richiesto" }));
+    }
+    const notes = getAudioNotes();
+    const note = notes.find((n) => n.id === Number(audio_id));
+    if (!note) {
+      res.statusCode = 404;
+      return res.end(JSON.stringify({ error: "Nota non trovata" }));
+    }
+    const filePath = path5.resolve(__dirname, note.audio_url.replace(/^\/+/, ""));
+    const analysis = await analyzeAudioWithGemini(filePath, note.contesto, {
+      noteTesto: note.trascrizione_testo || void 0
+    });
+    const updated = updateAudioNoteAnalysis(note.id, analysis);
+    return res.end(JSON.stringify({ ok: true, ai: analysis, note: updated }));
   }
   res.statusCode = 404;
   res.end(JSON.stringify({ error: "Endpoint demo non trovato" }));

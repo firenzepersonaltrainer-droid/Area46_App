@@ -21572,6 +21572,27 @@
       ],
       "data_ora": "2026-11-13T17:22:56.547Z",
       "created_at": "2026-11-13T17:22:56.547Z"
+    },
+    {
+      "id": 1794988761396,
+      "email_cliente": "atleta@area46.it",
+      "tipo": "feedback_seduta",
+      "livello": "Livello Pro",
+      "giorno": "1 allenamento A",
+      "rpe_globale": 9,
+      "sensazioni": [
+        "stanchezza",
+        "buona coordinazione"
+      ],
+      "note_cinestesiche": "Sensazione di affaticamento lombare nelle ultime 2 serie al coiled deadlift, per il resto pattern motorio solido.",
+      "nome_esercizio": "Feedback Vocale Giorno 1 allenamento A",
+      "feedback": "Nota Vocale (18s) • Allerta articolare/carico: segnalata criticità durante la seduta (RPE 9/10). • Allerta: ROSSO",
+      "audio_url": "/uploads/audio_notes/audio_1794988761386_34qscl.webm",
+      "ai_allerta": "rosso",
+      "ai_sintesi": "Allerta articolare/carico: segnalata criticità durante la seduta (RPE 9/10).",
+      "ai_proposta_azione": "Modalità B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a catena cinetica aperta, mobilità del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.",
+      "data_ora": "2026-11-18T07:59:21.396Z",
+      "created_at": "2026-11-18T07:59:21.396Z"
     }
   ],
   "stato_allenamenti": [
@@ -21614,8 +21635,8 @@
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 10,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -21628,43 +21649,43 @@
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 1,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 2,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 3,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 4,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 5,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 6,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -21852,99 +21873,99 @@
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 7,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 8,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 9,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 11,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 12,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 13,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 14,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 15,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 16,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 17,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 18,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 19,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 20,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 21,
-      "stato": "completato",
-      "updated_at": "2026-10-08T10:00:21.449Z"
+      "stato": "non_iniziato",
+      "updated_at": "2026-11-16T15:09:38.654Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -23023,6 +23044,34 @@
       "giorno": 21,
       "stato": "completato",
       "updated_at": "2026-11-13T19:11:34.138Z"
+    },
+    {
+      "email_cliente": "annap.maddy@gmail.com",
+      "livello": "Level 1",
+      "giorno": 4,
+      "stato": "completato",
+      "updated_at": "2026-11-16T14:57:58.131Z"
+    },
+    {
+      "email_cliente": "tebog1887@gmail.com",
+      "livello": "Level 2",
+      "giorno": 10,
+      "stato": "completato",
+      "updated_at": "2026-11-16T17:25:56.312Z"
+    },
+    {
+      "email_cliente": "matteo.calosci@gmail.com",
+      "livello": "Advanced",
+      "giorno": 1,
+      "stato": "completato",
+      "updated_at": "2026-11-16T19:26:05.012Z"
+    },
+    {
+      "email_cliente": "silvia.brenzini@gmail.com",
+      "livello": "Level 2",
+      "giorno": 13,
+      "stato": "completato",
+      "updated_at": "2026-11-17T13:59:12.596Z"
     }
   ],
   "preferenze_utente": [
@@ -23034,7 +23083,7 @@
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "memoria_livello": "PRO",
-      "updated_at": "2026-11-14T18:19:00.286Z"
+      "updated_at": "2026-11-18T05:56:11.661Z"
     },
     {
       "email_cliente": "silvia.brenzini@gmail.com",
@@ -23094,7 +23143,7 @@
       "cognome": "Pantanella",
       "name": "Alessandro Pantanella",
       "ruolo": "atleta",
-      "crediti": 10,
+      "crediti": 9,
       "data_scadenza_crediti": "2026-11-29",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
@@ -23106,7 +23155,7 @@
       ],
       "anticipi_da_scontare": 0,
       "updated_at": "2026-11-13T18:30:59.617Z",
-      "data_ultimo_accesso": "2026-11-15T16:59:35.914Z",
+      "data_ultimo_accesso": "2026-11-18T07:52:38.250Z",
       "tempo_anticipo_prenotazione_ore": 24,
       "shared_wallet_with": null
     },
@@ -23118,7 +23167,7 @@
       "cognome": "Ciancia",
       "name": "Pierpaola Ciancia",
       "ruolo": "atleta",
-      "crediti": 11,
+      "crediti": 9,
       "data_scadenza_crediti": "2026-11-29",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
@@ -23129,7 +23178,7 @@
       "tempo_anticipo_prenotazione_ore": 24,
       "shared_wallet_with": "usr-bw-1953985",
       "updated_at": "2026-11-13T18:30:59.641Z",
-      "data_ultimo_accesso": "2026-11-15T16:59:35.914Z"
+      "data_ultimo_accesso": "2026-11-18T07:52:38.250Z"
     },
     {
       "id": "usr-bw-2067105",
@@ -23158,14 +23207,14 @@
       "nickname": "Maddy",
       "name": "Anna Paola Maddalena",
       "ruolo": "atleta",
-      "crediti": 15,
+      "crediti": 14,
       "data_scadenza_crediti": "2027-01-07",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 0,
       "updated_at": "2026-10-07T14:43:38.330Z",
-      "data_ultimo_accesso": "2026-11-10T13:50:16.194Z"
+      "data_ultimo_accesso": "2026-11-16T14:56:42.697Z"
     },
     {
       "id": "usr-bw-1953979",
@@ -23225,14 +23274,14 @@
       "nickname": "Casciozzi",
       "name": "Daniele Casci",
       "ruolo": "atleta",
-      "crediti": 11,
+      "crediti": 6,
       "data_scadenza_crediti": "2027-07-31",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 0,
       "updated_at": "2026-10-07T14:45:15.354Z",
-      "data_ultimo_accesso": "2026-10-15T19:52:53.118Z"
+      "data_ultimo_accesso": "2026-11-18T07:52:38.249Z"
     },
     {
       "id": "usr-bw-2080725",
@@ -23297,28 +23346,17 @@
   ],
   "movimenti_crediti": [
     {
-      "id": "mov-1794761976673-557",
+      "id": "mov-man-1794515911691",
       "atleta_id": "usr-bw-1953985",
       "email_cliente": "pantanella@gmail.com",
       "nome_cliente": "Alessandro Pantanella",
-      "data_ora": "2026-11-15T16:59:36.673Z",
       "tipo": "prenotazione_slot",
       "delta_crediti": -1,
-      "saldo_risultante": 10,
-      "motivazione": "Prenotazione slot del 2026-11-18 ore 11:00 per Pierpaola Ciancia [Borsellino Condiviso]",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-1794597064071-200",
-      "atleta_id": "usr-bw-1953992",
-      "email_cliente": "matteo.calosci@gmail.com",
-      "nome_cliente": "Matteo Calosci",
-      "data_ora": "2026-11-13T19:11:04.071Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 15,
-      "motivazione": "Prenotazione slot del 2026-11-16 ore 19:00",
-      "operatore": "atleta"
+      "saldo_risultante": 14,
+      "motivazione": "Prenotazione slot del 2026-11-13 ore 10:45 [Assegnazione diretta dal Coach]",
+      "operatore": "coach",
+      "data_movimento": "2026-11-12T20:38:32.000Z",
+      "created_at": "2026-11-12T20:38:32.000Z"
     },
     {
       "id": "mov-man-1794058827306",
@@ -23360,17 +23398,28 @@
       "created_at": "2026-10-29T17:28:04.000Z"
     },
     {
-      "id": "mov-man-1794515911691",
+      "id": "mov-1794761976673-557",
       "atleta_id": "usr-bw-1953985",
       "email_cliente": "pantanella@gmail.com",
       "nome_cliente": "Alessandro Pantanella",
+      "data_ora": "2026-11-15T16:59:36.673Z",
       "tipo": "prenotazione_slot",
       "delta_crediti": -1,
-      "saldo_risultante": 14,
-      "motivazione": "Prenotazione slot del 2026-11-13 ore 10:45 [Assegnazione diretta dal Coach]",
-      "operatore": "coach",
-      "data_movimento": "2026-11-12T20:38:32.000Z",
-      "created_at": "2026-11-12T20:38:32.000Z"
+      "saldo_risultante": 10,
+      "motivazione": "Prenotazione slot del 2026-11-18 ore 11:00 per Pierpaola Ciancia [Borsellino Condiviso]",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1794597064071-200",
+      "atleta_id": "usr-bw-1953992",
+      "email_cliente": "matteo.calosci@gmail.com",
+      "nome_cliente": "Matteo Calosci",
+      "data_ora": "2026-11-13T19:11:04.071Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 15,
+      "motivazione": "Prenotazione slot del 2026-11-16 ore 19:00",
+      "operatore": "atleta"
     },
     {
       "id": "mov-1794384772307-416",
@@ -24786,6 +24835,150 @@
       "delta_crediti": 10,
       "saldo_risultante": 10,
       "motivazione": "Crediti configurati in anagrafica",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794837230087-437",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-16T13:53:50.087Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 12,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-12-30 17:15 per Daniele Casci",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794841003579-627",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-11-16T14:56:43.579Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 14,
+      "motivazione": "Prenotazione slot del 2026-11-20 ore 18:15",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1794856476455-759",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-16T19:14:36.455Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 11,
+      "motivazione": "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794856481123-765",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-16T19:14:41.123Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 11,
+      "motivazione": "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794856490433-649",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "data_ora": "2026-11-16T19:14:50.433Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 11,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-11-16 18:30 per Pierpaola Ciancia [Borsellino Condiviso]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794856495914-405",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-16T19:14:55.914Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 10,
+      "motivazione": "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794856512676-508",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-16T19:15:12.676Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 9,
+      "motivazione": "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794918504191-20",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-17T12:28:24.191Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 8,
+      "motivazione": "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794988338020-19",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "data_ora": "2026-11-18T07:52:18.020Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 10,
+      "motivazione": "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794988338019-681",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-18T07:52:18.019Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 7,
+      "motivazione": "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794988358250-244",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "data_ora": "2026-11-18T07:52:38.250Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 9,
+      "motivazione": "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794988358249-842",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-18T07:52:38.249Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 6,
+      "motivazione": "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
       "operatore": "coach"
     }
   ],
@@ -26742,20 +26935,6 @@
       "google_event_id": "l4fgskh5fvg5ak6n3qkdqlrvpo"
     },
     {
-      "id": "bk-1794384771514",
-      "data": "2026-11-16",
-      "orario": "18:30",
-      "atleta_id": "usr-bw-1953987",
-      "email_cliente": "pierpaolaciancia@gmail.com",
-      "nome_cliente": "Pierpaola Ciancia",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "note": "",
-      "created_at": "2026-11-11T08:12:51.514Z",
-      "google_event_id": "1eu9sn99sfls8bmicgb8j5ec6c"
-    },
-    {
       "id": "bk-1792683000000-casci-6",
       "data": "2026-11-18",
       "orario": "17:15",
@@ -26966,20 +27145,6 @@
       "created_at": "2026-10-22T16:50:18.000Z"
     },
     {
-      "id": "bk-1792683000000-casci-17",
-      "data": "2026-12-30",
-      "orario": "17:15",
-      "atleta_id": "usr-bw-1953976",
-      "email_cliente": "daniele.casci@gmail.com",
-      "nome_cliente": "Daniele Casci",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "note": "Prenotazione Multipla Rapida",
-      "google_event_id": "71lr1798957ev6373gepesrcvc",
-      "created_at": "2026-10-22T16:50:19.000Z"
-    },
-    {
       "id": "bk-1794597063217",
       "data": "2026-11-16",
       "orario": "19:00",
@@ -27006,6 +27171,20 @@
       "note": "",
       "created_at": "2026-11-15T16:59:35.914Z",
       "google_event_id": "a0vs7f99ln1mlf58e3qv459pk4"
+    },
+    {
+      "id": "bk-1794841002698",
+      "data": "2026-11-20",
+      "orario": "18:15",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "",
+      "created_at": "2026-11-16T14:56:42.698Z",
+      "google_event_id": "5nm9vu371lc13m4atvt7l0t3i8"
     }
   ],
   "prenotazioni_cancellate": [
@@ -27063,7 +27242,11 @@
     "bk-1793550051037",
     "lab_bk-1793550051037",
     "bk-1794173412906",
-    "lab_bk-1794173412906"
+    "lab_bk-1794173412906",
+    "bk-1792683000000-casci-17",
+    "lab_bk-1792683000000-casci-17",
+    "bk-1794384771514",
+    "lab_bk-1794384771514"
   ],
   "eccezioni_calendario": [
     {

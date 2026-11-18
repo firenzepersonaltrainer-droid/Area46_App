@@ -22,11 +22,15 @@ import {
   AlertTriangle,
   Zap,
   BookOpen,
+  Mic,
+  Bell,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { useCurrentUser, useProfili, useLabConfig } from "../lib/useUser";
 import ManagerCalendarPage from "./ManagerCalendar";
 import ManagerAtletiPage from "./ManagerAtleti";
 import ManagerFiscoPage from "./ManagerFisco";
+import { CoachAudioFeedbackDrawer } from "../components/CoachAudioFeedbackDrawer";
 import { Button } from "../components/Button";
 import { toast } from "sonner";
 
@@ -52,6 +56,35 @@ export default function DesktopControlPanel() {
       setSearchParams({ tab: activeTab }, { replace: true });
     }
   }, [activeTab, searchParams, setSearchParams]);
+
+  // Drawer Note Vocali & Bug
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  // Polling Real-time per Note Vocali e Segnalazioni Bug
+  const { data: audioNotes = [] } = useQuery<any[]>({
+    queryKey: ["audio-notes"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/audio-notes");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    refetchInterval: 10000,
+  });
+
+  const { data: bugReports = [] } = useQuery<any[]>({
+    queryKey: ["segnalazioni-bug"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/segnalazioni-bug");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    refetchInterval: 10000,
+  });
+
+  const unreadNotesCount = audioNotes.filter((n) => n.stato === "nuovo").length;
+  const unreadBugsCount = bugReports.filter((b) => b.stato === "aperto").length;
+  const totalUnread = unreadNotesCount + unreadBugsCount;
+  const hasRedAlert = audioNotes.some((n) => n.stato === "nuovo" && n.ai_allerta === "rosso");
 
   // Orologio tempo reale
   const [currentTime, setCurrentTime] = useState("");
@@ -399,6 +432,37 @@ export default function DesktopControlPanel() {
               </button>
             </div>
 
+            {/* PULSANTE BACHECA NOTE AUDIO & BUG CON BADGE */}
+            <button
+              type="button"
+              onClick={() => setShowDrawer(true)}
+              className={`relative px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                hasRedAlert
+                  ? "bg-red-500 text-white font-black animate-pulse shadow-red-500/30 ring-2 ring-red-400"
+                  : totalUnread > 0
+                  ? "bg-[#1c00ff] text-white font-black shadow-[#1c00ff]/20"
+                  : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 font-bold border border-zinc-200"
+              }`}
+              title="Bacheca Note Audio, Biofeedback & Bug Report"
+            >
+              <div className="flex items-center gap-1">
+                <Bell className="size-3.5" />
+                <Mic className={`size-3.5 ${hasRedAlert ? "text-white" : totalUnread > 0 ? "text-[#e3ff00]" : "text-zinc-600"}`} />
+              </div>
+              <span className="text-xs">Bacheca Note</span>
+              {totalUnread > 0 && (
+                <span
+                  className={`min-w-5 h-5 px-1 rounded-full text-[10px] font-black flex items-center justify-center font-mono ${
+                    hasRedAlert
+                      ? "bg-white text-red-600"
+                      : "bg-[#e3ff00] text-zinc-950"
+                  }`}
+                >
+                  {totalUnread}
+                </span>
+              )}
+            </button>
+
             {/* PULSANTE PASSAGGIO MOBILE */}
             <Link
               to="/"
@@ -432,6 +496,9 @@ export default function DesktopControlPanel() {
           )}
         </div>
       </main>
+
+      {/* CASSETTO / DRAWER BACHECA NOTE AUDIO & BUG */}
+      <CoachAudioFeedbackDrawer open={showDrawer} onClose={() => setShowDrawer(false)} />
     </div>
   );
 }
