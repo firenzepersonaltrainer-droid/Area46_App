@@ -5,8 +5,8 @@ var __export = (target, all) => {
 };
 
 // local-api.ts
-import fs6 from "node:fs";
-import path5 from "node:path";
+import fs7 from "node:fs";
+import path6 from "node:path";
 import crypto8 from "node:crypto";
 import { fileURLToPath } from "node:url";
 
@@ -559,11 +559,11 @@ var Cookies = class {
   getPath(pathname) {
     const pathParts = (pathname || "/").split("/");
     pathParts.pop();
-    const path6 = pathParts.join("/").trim();
-    if (path6.charAt(0) !== "/") {
+    const path7 = pathParts.join("/").trim();
+    if (path7.charAt(0) !== "/") {
       return "/";
     }
-    return path6;
+    return path7;
   }
 };
 var cookies_default = Cookies;
@@ -34936,6 +34936,11 @@ var demo_data_default = {
       email_cliente: "matteo.calosci@gmail.com",
       memoria_livello: "Advanced",
       updated_at: "2026-11-13T22:05:57.248Z"
+    },
+    {
+      email_cliente: "stefyvit@gmail.com",
+      memoria_livello: "PRO",
+      updated_at: "2026-11-18T08:15:11.004Z"
     }
   ],
   profili_utenti: [
@@ -34965,7 +34970,7 @@ var demo_data_default = {
       cognome: "Pantanella",
       name: "Alessandro Pantanella",
       ruolo: "atleta",
-      crediti: 4,
+      crediti: 0,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -34977,7 +34982,7 @@ var demo_data_default = {
       ],
       anticipi_da_scontare: 0,
       updated_at: "2026-11-13T18:30:59.617Z",
-      data_ultimo_accesso: "2026-11-18T08:09:00.332Z",
+      data_ultimo_accesso: "2026-11-18T08:28:17.977Z",
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: null
     },
@@ -34989,7 +34994,7 @@ var demo_data_default = {
       cognome: "Ciancia",
       name: "Pierpaola Ciancia",
       ruolo: "atleta",
-      crediti: 4,
+      crediti: 0,
       data_scadenza_crediti: "2026-11-29",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -35000,7 +35005,7 @@ var demo_data_default = {
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: "usr-bw-1953985",
       updated_at: "2026-11-13T18:30:59.641Z",
-      data_ultimo_accesso: "2026-11-18T08:09:00.332Z"
+      data_ultimo_accesso: "2026-11-18T08:28:17.977Z"
     },
     {
       id: "usr-bw-2067105",
@@ -35096,14 +35101,14 @@ var demo_data_default = {
       nickname: "Casciozzi",
       name: "Daniele Casci",
       ruolo: "atleta",
-      crediti: 1,
+      crediti: 0,
       data_scadenza_crediti: "2027-07-31",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
       updated_at: "2026-10-07T14:45:15.354Z",
-      data_ultimo_accesso: "2026-11-18T08:09:00.332Z"
+      data_ultimo_accesso: "2026-11-18T08:28:17.976Z"
     },
     {
       id: "usr-bw-2080725",
@@ -36944,6 +36949,390 @@ var demo_data_default = {
       tipo: "prenotazione_slot",
       delta_crediti: -1,
       saldo_risultante: 1,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990076753-702",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:21:16.753Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 3,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990076752-779",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:21:16.752Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990097103-230",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:21:37.103Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 2,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990097102-909",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:21:37.102Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990115391-281",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:21:55.391Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 1,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990115390-893",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:21:55.390Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990135938-90",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:22:15.938Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990135938-480",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:22:15.938Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990156433-709",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:22:36.433Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990156433-831",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:22:36.433Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990176383-623",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:22:56.383Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990176382-106",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:22:56.382Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990197191-548",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:23:17.191Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990197190-24",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:23:17.190Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990217253-94",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:23:37.253Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990217252-122",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:23:37.252Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990237920-101",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:23:57.920Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990237919-228",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:23:57.919Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990223528-224",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:23:43.528Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990223527-519",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:23:43.527Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990230083-784",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:23:50.083Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990230080-603",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:23:50.080Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990254242-752",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:24:14.242Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990254242-687",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:24:14.242Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990355782-565",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:25:55.782Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990355781-2",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:25:55.781Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990469826-581",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:27:49.826Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990469826-587",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:27:49.826Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990490743-440",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:28:10.743Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990490742-719",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:28:10.742Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990497977-779",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-18T08:28:17.977Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
+      motivazione: "Prenotazione slot del 2026-11-16 ore 18:30 per Pierpaola [Borsellino Condiviso - Da Google Calendar]",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1794990497976-122",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
+      data_ora: "2026-11-18T08:28:17.976Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 0,
       motivazione: "Prenotazione slot del 2026-12-30 ore 17:15 [Da Google Calendar]",
       operatore: "coach"
     }
@@ -40144,19 +40533,378 @@ function fallbackClinicalAnalysis(contesto, metadata) {
   };
 }
 
-// server/audio-feedback-repo.ts
-import path4 from "node:path";
+// server/voice-set-parser.ts
 import fs5 from "node:fs";
+import path4 from "node:path";
+var NUMERI_ITALIANI = {
+  zero: 0,
+  uno: 1,
+  due: 2,
+  tre: 3,
+  quattro: 4,
+  cinque: 5,
+  sei: 6,
+  sette: 7,
+  otto: 8,
+  nove: 9,
+  dieci: 10,
+  undici: 11,
+  dodici: 12,
+  tredici: 13,
+  quattordici: 14,
+  quindici: 15,
+  sedici: 16,
+  diciassette: 17,
+  diciotto: 18,
+  diciannove: 19,
+  venti: 20,
+  ventuno: 21,
+  ventidue: 22,
+  ventitre: 23,
+  ventitr\u00E9: 23,
+  ventiquattro: 24,
+  venticinque: 25,
+  trenta: 30,
+  trentacinque: 35,
+  quaranta: 40,
+  quarantacinque: 45,
+  cinquanta: 50,
+  cinquantacinque: 55,
+  sessanta: 60,
+  sessantacinque: 65,
+  settanta: 70,
+  settantacinque: 75,
+  ottanta: 80,
+  ottantacinque: 85,
+  novanta: 90,
+  cento: 100
+};
+function sanitizzaTermineBiomeccanica(s) {
+  if (!s) return "";
+  return s.replace(/biomeccanic[a-zA-Z]*/gi, "pattern motorio");
+}
+function parseNumeroParola(parola) {
+  const p = parola.toLowerCase().trim().replace(/[,]/g, ".");
+  if (!isNaN(parseFloat(p))) return parseFloat(p);
+  if (NUMERI_ITALIANI[p] !== void 0) return NUMERI_ITALIANI[p];
+  const decine = {
+    vent: 20,
+    venti: 20,
+    trent: 30,
+    trenta: 30,
+    quarant: 40,
+    quaranta: 40,
+    cinquant: 50,
+    cinquanta: 50,
+    sessant: 60,
+    sessanta: 60,
+    settant: 70,
+    settanta: 70,
+    ottant: 80,
+    ottanta: 80,
+    novant: 90,
+    novanta: 90
+  };
+  const unita = {
+    uno: 1,
+    due: 2,
+    tre: 3,
+    tr\u00E9: 3,
+    quattro: 4,
+    cinque: 5,
+    sei: 6,
+    sette: 7,
+    otto: 8,
+    nove: 9
+  };
+  for (const [decStr, decVal] of Object.entries(decine)) {
+    if (p.startsWith(decStr)) {
+      const resto = p.slice(decStr.length);
+      if (!resto) return decVal;
+      if (unita[resto] !== void 0) return decVal + unita[resto];
+    }
+  }
+  return null;
+}
+function resolveRpeRange(testo) {
+  const lower = testo.toLowerCase();
+  const rpeKeywordIndex = lower.indexOf("rpe");
+  let targetSubstring = lower;
+  if (rpeKeywordIndex !== -1) {
+    targetSubstring = lower.substring(rpeKeywordIndex);
+  }
+  const matchRange = targetSubstring.match(
+    /(?:tra|fra|da)?\s*([0-9]+(?:[.,][0-9]+)?|sei|sette|otto|nove|dieci)\s*(?:e\s*mezzo)?\s*(?:e|ed|a|o|-)\s*([0-9]+(?:[.,][0-9]+)?|sei|sette|otto|nove|dieci)\s*(?:e\s*mezzo)?/i
+  );
+  if (matchRange) {
+    let v1 = parseNumeroParola(matchRange[1]);
+    let v2 = parseNumeroParola(matchRange[2]);
+    if (matchRange[0].includes("e mezzo") || matchRange[0].includes("e mezzo")) {
+      const parts = matchRange[0].split(/(?:e|ed|a|o|-)/i);
+      if (parts[0] && parts[0].includes("mezzo") && v1 !== null) v1 += 0.5;
+      if (parts[1] && parts[1].includes("mezzo") && v2 !== null) v2 += 0.5;
+    }
+    if (v1 !== null && v2 !== null && v1 >= 5 && v1 <= 10 && v2 >= 5 && v2 <= 10) {
+      const media = (v1 + v2) / 2;
+      return media.toFixed(1);
+    }
+  }
+  const singleMatch = targetSubstring.match(
+    /rpe\s*(?:credo|direi|circa|intorno a|su)?\s*([0-9]+(?:[.,][0-9]+)?|sei|sette|otto|nove|dieci)(?:\s*e\s*mezzo)?/i
+  );
+  if (singleMatch) {
+    let val = parseNumeroParola(singleMatch[1]);
+    if (val !== null) {
+      if (singleMatch[0].includes("e mezzo")) val += 0.5;
+      if (val >= 5 && val <= 10) {
+        return val.toFixed(1);
+      }
+    }
+  }
+  const generalRpe = targetSubstring.match(/rpe[^0-9a-z]*([5-9](?:[.,][0-9])?|10)/i);
+  if (generalRpe) {
+    const val = parseFloat(generalRpe[1].replace(",", "."));
+    if (!isNaN(val) && val >= 5 && val <= 10) {
+      return val.toFixed(1);
+    }
+  }
+  return null;
+}
+function parseWorkoutSetDeterministic(testo) {
+  const sanitized = sanitizzaTermineBiomeccanica(testo).trim();
+  const lower = sanitized.toLowerCase();
+  let carico_kg = null;
+  let ripetizioni = null;
+  let rpe = resolveRpeRange(lower);
+  if (lower.includes("corpo libero") || lower.includes("senza peso") || lower.includes("peso corporeo")) {
+    carico_kg = 0;
+  } else {
+    const caricoPatterns = [
+      /([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\s*(?:e\s*mezzo)?/i,
+      /([a-z]+)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\s*(?:e\s*mezzo)?/i,
+      /(?:con|carico|peso|bilanciere)\s*([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?/i,
+      /(?:con|carico|peso)\s*([a-z]+)\s*(?:e\s*mezzo)?/i
+    ];
+    for (const pat of caricoPatterns) {
+      const m = lower.match(pat);
+      if (m) {
+        let val = parseNumeroParola(m[1]);
+        if (val !== null) {
+          if (m[0].includes("e mezzo") || m[0].includes("mezzo")) val += 0.5;
+          carico_kg = val;
+          break;
+        }
+      }
+    }
+    if (carico_kg === null) {
+      const matchCon = lower.match(/(?:con|a)\s+([0-9]+(?:[.,][0-9]+)?)(?!\s*(?:colpi|rep|ripetizioni))/i);
+      if (matchCon) {
+        const val = parseFloat(matchCon[1].replace(",", "."));
+        if (!isNaN(val)) carico_kg = val;
+      }
+    }
+  }
+  const repPatterns = [
+    /([0-9]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip)/i,
+    /([a-z]+)\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip)/i,
+    /(?:fatte|chiuse|fatti|eseguite)\s*([0-9]+|[a-z]+)/i
+  ];
+  for (const pat of repPatterns) {
+    const m = lower.match(pat);
+    if (m) {
+      const val = parseNumeroParola(m[1]);
+      if (val !== null && val >= 1 && val <= 100) {
+        ripetizioni = Math.round(val);
+        break;
+      }
+    }
+  }
+  if (ripetizioni === null) {
+    const startNumMatch = lower.match(/^([0-9]+)\s+(?:con|a|al)\s+/i);
+    if (startNumMatch) {
+      const val = parseInt(startNumMatch[1], 10);
+      if (!isNaN(val) && val >= 1 && val <= 100) {
+        ripetizioni = val;
+      }
+    }
+  }
+  let noteText = sanitized;
+  noteText = noteText.replace(/(?:con\s+)?(?:carico\s+)?(?:peso\s+)?[0-9]+(?:[.,][0-9]+)?\s*(?:e\s*mezzo)?\s*(?:kg|chili|kili)?/gi, " ");
+  noteText = noteText.replace(/(?:a\s+)?corpo\s+libero/gi, " ");
+  noteText = noteText.replace(/[0-9]+\s*(?:ripetizioni|ripetizione|colpi|colpo|rep|reps|rip)/gi, " ");
+  noteText = noteText.replace(/(?:fatte|chiuse|eseguite)\s*[0-9]+/gi, " ");
+  noteText = noteText.replace(/rpe\s*(?:credo|direi|circa|intorno a|su)?\s*(?:tra|fra|da)?\s*[0-9]+(?:[.,][0-9]+)?\s*(?:e|ed|a|o|-)\s*[0-9]+(?:[.,][0-9]+)?/gi, " ");
+  noteText = noteText.replace(/rpe\s*(?:credo|direi|circa|intorno a|su)?\s*[0-9]+(?:[.,][0-9]+)?(?:\s*e\s*mezzo)?/gi, " ");
+  noteText = noteText.replace(/rpe/gi, " ");
+  const paroleDaEscludere = /* @__PURE__ */ new Set([
+    "con",
+    "fra",
+    "tra",
+    "del",
+    "della",
+    "delle",
+    "dei",
+    "credo",
+    "direi",
+    "circa",
+    "fatto",
+    "fatta",
+    "fatti",
+    "fatte",
+    "set",
+    "serie",
+    "ripetizioni",
+    "ripetizione",
+    "colpi",
+    "colpo",
+    "rep",
+    "reps",
+    "rip",
+    "chili",
+    "kili",
+    "kg",
+    "mezzo",
+    "mezzi",
+    "fino",
+    "intorno",
+    "peso",
+    "carico",
+    "bilanciere",
+    "sensazione",
+    ...Object.keys(NUMERI_ITALIANI)
+  ]);
+  const parolePulite = noteText.split(/\s+/).map((w) => w.trim().replace(/^[,.;:!?()"-]+|[,.;:!?()"-]+$/g, "")).filter((w) => {
+    const lowerWord = w.toLowerCase();
+    if (w.length <= 2) return false;
+    if (paroleDaEscludere.has(lowerWord)) return false;
+    if (parseNumeroParola(lowerWord) !== null) return false;
+    return true;
+  });
+  const finalNote = parolePulite.length > 0 ? parolePulite.join(" ") : null;
+  return {
+    success: carico_kg !== null || ripetizioni !== null || rpe !== null,
+    carico_kg,
+    ripetizioni,
+    rpe,
+    note: finalNote ? sanitizzaTermineBiomeccanica(finalNote) : null,
+    raw_text: sanitized
+  };
+}
+async function parseVoiceWorkoutSet(input) {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
+  let audioData = input.audioBase64 || "";
+  let mimeType = input.mimeType || "audio/webm";
+  if (!audioData && input.filePath && fs5.existsSync(input.filePath)) {
+    const ext = path4.extname(input.filePath).toLowerCase();
+    if (ext === ".mp4" || ext === ".m4a") mimeType = "audio/mp4";
+    else if (ext === ".wav") mimeType = "audio/wav";
+    else if (ext === ".mp3") mimeType = "audio/mpeg";
+    else mimeType = "audio/webm";
+    audioData = fs5.readFileSync(input.filePath).toString("base64");
+  }
+  if (apiKey && (audioData || input.text && input.text.trim().length > 3)) {
+    try {
+      const systemInstruction = `
+Sei l'Agente Voice Workout Logger (Aura & Socrates) di Area46 Landmine Lab.
+Il tuo compito \xE8 analizzare la dettatura vocale dell'atleta registrata durante il recupero post-serie
+ed estrarre i parametri numerici precisi del set eseguito in formato JSON strutturato.
+
+VINCOLI METODOLOGICI E REGOLE DI BUON SENSO:
+1. "carico_kg": numero decimale o intero espresso in kg (es. "cinquanta chili" -> 50, "quarantadue e mezzo" -> 42.5, "a corpo libero" -> 0).
+2. "ripetizioni": intero di ripetizioni o colpi eseguiti (es. "6 ripetizioni", "sei colpi", "8 rep" -> 6, 8).
+3. "rpe": stringa con il valore RPE.
+   - RISOLUTORE INTELLIGENTE DI RANGE RPE: Se l'atleta indica un range o un'incertezza (es. "tra 7.5 e 8.5", "fra 7.5 e 8.5", "otto o nove", "tra 7 e 8"),
+     CALCOLA LA MEDIA ESATTA DI BUON SENSO:
+     * (7.5 + 8.5) / 2 = 8.0 -> "8.0"
+     * (8 + 9) / 2 = 8.5 -> "8.5"
+     * (7 + 8) / 2 = 7.5 -> "7.5"
+     Se indica un valore singolo (es. "8", "8 e mezzo") -> "8.0" o "8.5".
+4. "note": isola eventuali sensazioni, fatica o commenti qualitativi (es. "fatto facile", "leggero compenso", "pesante").
+   DIVIETO ASSOLUTO del termine "biomeccanica": sostituiscilo sempre con "pattern motorio" o "economia del gesto".
+
+Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
+{
+  "carico_kg": number | null,
+  "ripetizioni": number | null,
+  "rpe": string | null,
+  "note": string | null,
+  "trascrizione": string
+}
+`;
+      const contentsParts = [];
+      if (audioData) {
+        contentsParts.push({
+          inlineData: {
+            mimeType,
+            data: audioData
+          }
+        });
+      }
+      if (input.text) {
+        contentsParts.push({
+          text: `Testo dettato: "${input.text}". Prescrizione scheda: ${input.targetPrescrizione || "N/D"}`
+        });
+      } else {
+        contentsParts.push({
+          text: `Ascolta la dettatura vocale dell'atleta e compila i campi del set. Prescrizione scheda: ${input.targetPrescrizione || "N/D"}`
+        });
+      }
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: contentsParts }],
+          systemInstruction: { parts: [{ text: systemInstruction }] },
+          generationConfig: {
+            temperature: 0.1,
+            responseMimeType: "application/json"
+          }
+        })
+      });
+      if (response.ok) {
+        const geminiData = await response.json();
+        const textResponse = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (textResponse) {
+          const parsed = JSON.parse(textResponse);
+          const rawText = parsed.trascrizione || input.text || "";
+          const pulisci = (s) => s ? s.replace(/biomeccanic[aoe]/gi, "pattern motorio") : null;
+          let finalRpe = parsed.rpe ? String(parsed.rpe).trim() : null;
+          if (finalRpe && (finalRpe.includes("-") || finalRpe.includes("e") || finalRpe.includes("o"))) {
+            const resolved = resolveRpeRange(finalRpe);
+            if (resolved) finalRpe = resolved;
+          }
+          return {
+            success: true,
+            carico_kg: parsed.carico_kg !== void 0 ? parsed.carico_kg : null,
+            ripetizioni: parsed.ripetizioni !== void 0 ? parsed.ripetizioni : null,
+            rpe: finalRpe,
+            note: pulisci(parsed.note),
+            raw_text: pulisci(rawText) || ""
+          };
+        }
+      }
+    } catch (err) {
+      console.warn("Chiamata Gemini API per voice workout logger fallita, passaggio al fallback euristico:", err);
+    }
+  }
+  const sourceText = input.text || "";
+  return parseWorkoutSetDeterministic(sourceText);
+}
+
+// server/audio-feedback-repo.ts
+import path5 from "node:path";
+import fs6 from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 function getDbPath() {
   const isServerless = process.env.VERCEL === "1" || !!process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === "production";
-  const localDb = path4.resolve(process.cwd(), "area46_v2.sqlite");
+  const localDb = path5.resolve(process.cwd(), "area46_v2.sqlite");
   const tmpDb = "/tmp/area46_v2.sqlite";
   if (isServerless) {
-    if (!fs5.existsSync(tmpDb)) {
-      if (fs5.existsSync(localDb)) {
+    if (!fs6.existsSync(tmpDb)) {
+      if (fs6.existsSync(localDb)) {
         try {
-          fs5.copyFileSync(localDb, tmpDb);
+          fs6.copyFileSync(localDb, tmpDb);
         } catch {
         }
       }
@@ -40164,12 +40912,12 @@ function getDbPath() {
     return tmpDb;
   }
   try {
-    fs5.accessSync(process.cwd(), fs5.constants.W_OK);
+    fs6.accessSync(process.cwd(), fs6.constants.W_OK);
     return localDb;
   } catch {
-    if (!fs5.existsSync(tmpDb) && fs5.existsSync(localDb)) {
+    if (!fs6.existsSync(tmpDb) && fs6.existsSync(localDb)) {
       try {
-        fs5.copyFileSync(localDb, tmpDb);
+        fs6.copyFileSync(localDb, tmpDb);
       } catch {
       }
     }
@@ -40406,9 +41154,9 @@ function updateAppSegnalazioneStatus(id, stato) {
 
 // local-api.ts
 var __filename = fileURLToPath(import.meta.url);
-var __dirname = path5.dirname(__filename);
+var __dirname = path6.dirname(__filename);
 var IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX === "true";
-var SANDBOX_FILE = path5.resolve(__dirname, "data", "sandbox-data.json");
+var SANDBOX_FILE = path6.resolve(__dirname, "data", "sandbox-data.json");
 var TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
 function isBookingIdCancelled(id, cancelledList) {
   if (!id || !cancelledList || !Array.isArray(cancelledList) || cancelledList.length === 0) return false;
@@ -40434,16 +41182,16 @@ function parseSafeDate(iso) {
 }
 function loadData() {
   let loaded = null;
-  if (IS_SANDBOX && fs6.existsSync(SANDBOX_FILE)) {
+  if (IS_SANDBOX && fs7.existsSync(SANDBOX_FILE)) {
     try {
-      const raw = fs6.readFileSync(SANDBOX_FILE, "utf-8");
+      const raw = fs7.readFileSync(SANDBOX_FILE, "utf-8");
       return JSON.parse(raw);
     } catch {
     }
   }
-  if (fs6.existsSync(TMP_DATA_FILE)) {
+  if (fs7.existsSync(TMP_DATA_FILE)) {
     try {
-      const raw = fs6.readFileSync(TMP_DATA_FILE, "utf-8");
+      const raw = fs7.readFileSync(TMP_DATA_FILE, "utf-8");
       loaded = JSON.parse(raw);
     } catch {
     }
@@ -40597,29 +41345,29 @@ function saveData(data, skipCloudSync = false) {
   db = data;
   if (IS_SANDBOX) {
     try {
-      fs6.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
-      fs6.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs7.writeFileSync(SANDBOX_FILE, JSON.stringify(data, null, 2), "utf-8");
+      fs7.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
     } catch {
     }
     return Promise.resolve();
   }
   try {
-    fs6.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+    fs7.writeFileSync(TMP_DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch {
   }
   try {
-    const directPath = path5.resolve(__dirname, "demo-data.json");
-    const parentPath = path5.resolve(__dirname, "..", "demo-data.json");
-    const destPath = fs6.existsSync(directPath) ? directPath : fs6.existsSync(parentPath) ? parentPath : null;
+    const directPath = path6.resolve(__dirname, "demo-data.json");
+    const parentPath = path6.resolve(__dirname, "..", "demo-data.json");
+    const destPath = fs7.existsSync(directPath) ? directPath : fs7.existsSync(parentPath) ? parentPath : null;
     if (destPath) {
       const sanitized = JSON.parse(JSON.stringify(data));
       if (sanitized.configurazione_lab && sanitized.configurazione_lab.stripe_secret_key) {
         sanitized.configurazione_lab.stripe_secret_key = "";
       }
-      fs6.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
+      fs7.writeFileSync(destPath, JSON.stringify(sanitized, null, 2), "utf-8");
       try {
-        const vaultDir = path5.resolve(path5.dirname(destPath), "data", "vault");
-        if (fs6.existsSync(vaultDir)) {
+        const vaultDir = path6.resolve(path6.dirname(destPath), "data", "vault");
+        if (fs7.existsSync(vaultDir)) {
           const mod1 = {
             profili_utenti: data.profili_utenti || [],
             movimenti_crediti: data.movimenti_crediti || [],
@@ -40628,7 +41376,7 @@ function saveData(data, skipCloudSync = false) {
             utenti_cancellati: data.utenti_cancellati || [],
             tariffario_pacchetti: data.tariffario_pacchetti || []
           };
-          fs6.writeFileSync(path5.join(vaultDir, "1_gestionale_utenti_crediti.json"), JSON.stringify(mod1, null, 2), "utf-8");
+          fs7.writeFileSync(path6.join(vaultDir, "1_gestionale_utenti_crediti.json"), JSON.stringify(mod1, null, 2), "utf-8");
           const mod2 = {
             prenotazioni_slot: data.prenotazioni_slot || [],
             prenotazioni_cancellate: data.prenotazioni_cancellate || [],
@@ -40636,29 +41384,29 @@ function saveData(data, skipCloudSync = false) {
             regole_palinsesto: data.regole_palinsesto || [],
             richieste_cancellazione_tardiva: data.richieste_cancellazione_tardiva || []
           };
-          fs6.writeFileSync(path5.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
+          fs7.writeFileSync(path6.join(vaultDir, "2_gestionale_calendario.json"), JSON.stringify(mod2, null, 2), "utf-8");
           const modDiario = {
             diario_utente: data.diario_utente || [],
             stato_allenamenti: data.stato_allenamenti || [],
             preferenze_utente: data.preferenze_utente || []
           };
-          fs6.writeFileSync(path5.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
+          fs7.writeFileSync(path6.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
           const mod4 = {
             database_esercizi: data.database_esercizi || [],
             livelli: data.livelli || [],
             ordine_livelli: data.ordine_livelli || []
           };
-          fs6.writeFileSync(path5.join(vaultDir, "4_metodologia_esercizi.json"), JSON.stringify(mod4, null, 2), "utf-8");
+          fs7.writeFileSync(path6.join(vaultDir, "4_metodologia_esercizi.json"), JSON.stringify(mod4, null, 2), "utf-8");
         }
       } catch {
       }
       const now = Date.now();
       if (now - lastAutoBackupTime > 4 * 3600 * 1e3) {
         lastAutoBackupTime = now;
-        const bkpDir = path5.resolve(path5.dirname(destPath), "backups");
-        if (fs6.existsSync(bkpDir)) {
-          const bkpFile = path5.join(bkpDir, `auto_backup_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`);
-          fs6.writeFileSync(bkpFile, JSON.stringify(data, null, 2), "utf-8");
+        const bkpDir = path6.resolve(path6.dirname(destPath), "backups");
+        if (fs7.existsSync(bkpDir)) {
+          const bkpFile = path6.join(bkpDir, `auto_backup_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`);
+          fs7.writeFileSync(bkpFile, JSON.stringify(data, null, 2), "utf-8");
         }
       }
     }
@@ -40683,16 +41431,16 @@ var FALLBACK_SERVICE_ACCOUNT = {
   client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/bot-allenamenti%40landmine-lab-level-pro.iam.gserviceaccount.com",
   universe_domain: "googleapis.com"
 };
-var CREDENZIALI_PATH = fs6.existsSync(path5.resolve(__dirname, "credenziali.json")) ? path5.resolve(__dirname, "credenziali.json") : path5.resolve(__dirname, "..", "credenziali.json");
+var CREDENZIALI_PATH = fs7.existsSync(path6.resolve(__dirname, "credenziali.json")) ? path6.resolve(__dirname, "credenziali.json") : path6.resolve(__dirname, "..", "credenziali.json");
 var GDRIVE_DEMO_DATA_ID = "129ts4wdwsypvWCB2cBHXWw3WTIKmtktA";
 function base64url(str) {
   return Buffer.from(str).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 async function getGoogleDriveAccessToken() {
   let creds = null;
-  if (fs6.existsSync(CREDENZIALI_PATH)) {
+  if (fs7.existsSync(CREDENZIALI_PATH)) {
     try {
-      creds = JSON.parse(fs6.readFileSync(CREDENZIALI_PATH, "utf-8"));
+      creds = JSON.parse(fs7.readFileSync(CREDENZIALI_PATH, "utf-8"));
     } catch {
     }
   }
@@ -40738,9 +41486,9 @@ async function getGoogleDriveAccessToken() {
 var GCAL_CALENDAR_ID = "firenzepersonaltrainer@gmail.com";
 async function getGoogleCalendarAccessToken() {
   let creds = null;
-  if (fs6.existsSync(CREDENZIALI_PATH)) {
+  if (fs7.existsSync(CREDENZIALI_PATH)) {
     try {
-      creds = JSON.parse(fs6.readFileSync(CREDENZIALI_PATH, "utf-8"));
+      creds = JSON.parse(fs7.readFileSync(CREDENZIALI_PATH, "utf-8"));
     } catch {
     }
   }
@@ -41089,14 +41837,14 @@ async function pullGoogleCalendarLabSlots(options = {}) {
       db.prenotazioni_slot.sort((a, b) => (a.data + a.orario).localeCompare(b.data + b.orario));
       await saveData(db);
       try {
-        const vaultCalFile = path5.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json");
-        const altVaultCalFile = path5.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json");
-        const targetVault = fs6.existsSync(vaultCalFile) ? vaultCalFile : fs6.existsSync(altVaultCalFile) ? altVaultCalFile : null;
+        const vaultCalFile = path6.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json");
+        const altVaultCalFile = path6.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json");
+        const targetVault = fs7.existsSync(vaultCalFile) ? vaultCalFile : fs7.existsSync(altVaultCalFile) ? altVaultCalFile : null;
         if (targetVault) {
-          const vData = JSON.parse(fs6.readFileSync(targetVault, "utf-8"));
+          const vData = JSON.parse(fs7.readFileSync(targetVault, "utf-8"));
           vData.prenotazioni_slot = db.prenotazioni_slot;
           vData.prenotazioni_cancellate = db.prenotazioni_cancellate;
-          fs6.writeFileSync(targetVault, JSON.stringify(vData, null, 2), "utf-8");
+          fs7.writeFileSync(targetVault, JSON.stringify(vData, null, 2), "utf-8");
         }
       } catch (vErr) {
         console.warn("[GCAL PULL] Vault file update:", vErr);
@@ -41146,9 +41894,9 @@ async function triggerSggSyncAsync(singleTx) {
     });
   }
   try {
-    const direct = path5.resolve(__dirname, "scripts", "sync_to_sgg.py");
-    const parent = path5.resolve(__dirname, "..", "scripts", "sync_to_sgg.py");
-    const scriptPath = fs6.existsSync(direct) ? direct : fs6.existsSync(parent) ? parent : null;
+    const direct = path6.resolve(__dirname, "scripts", "sync_to_sgg.py");
+    const parent = path6.resolve(__dirname, "..", "scripts", "sync_to_sgg.py");
+    const scriptPath = fs7.existsSync(direct) ? direct : fs7.existsSync(parent) ? parent : null;
     if (scriptPath) {
       import("node:child_process").then(({ exec }) => {
         exec(`python3 "${scriptPath}"`, (err) => {
@@ -41658,20 +42406,20 @@ async function handleLocalApi(req, res, next) {
   const url = new URL(req.url ?? "/", `http://${host}`);
   let pathname = url.pathname;
   if (pathname.startsWith("/uploads/audio_notes/")) {
-    const fileName = path5.basename(pathname);
-    let filePath = path5.resolve(__dirname, "uploads", "audio_notes", fileName);
-    if (!fs6.existsSync(filePath)) {
-      filePath = path5.join("/tmp/uploads/audio_notes", fileName);
+    const fileName = path6.basename(pathname);
+    let filePath = path6.resolve(__dirname, "uploads", "audio_notes", fileName);
+    if (!fs7.existsSync(filePath)) {
+      filePath = path6.join("/tmp/uploads/audio_notes", fileName);
     }
-    if (fs6.existsSync(filePath)) {
-      const ext = path5.extname(fileName).toLowerCase();
+    if (fs7.existsSync(filePath)) {
+      const ext = path6.extname(fileName).toLowerCase();
       const mime = ext === ".mp4" || ext === ".m4a" ? "audio/mp4" : ext === ".wav" ? "audio/wav" : "audio/webm";
       res.setHeader("Content-Type", mime);
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader("Accept-Ranges", "bytes");
-      const stat = fs6.statSync(filePath);
+      const stat = fs7.statSync(filePath);
       res.setHeader("Content-Length", stat.size);
-      const stream = fs6.createReadStream(filePath);
+      const stream = fs7.createReadStream(filePath);
       return stream.pipe(res);
     } else {
       res.statusCode = 404;
@@ -44968,23 +45716,23 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
       const ext = formato ? formato.startsWith(".") ? formato.slice(1) : formato : "webm";
       audioFileName += `.${ext}`;
       const isServerless = process.env.VERCEL === "1" || !!process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === "production";
-      let uploadDir = isServerless ? "/tmp/uploads/audio_notes" : path5.resolve(__dirname, "uploads", "audio_notes");
+      let uploadDir = isServerless ? "/tmp/uploads/audio_notes" : path6.resolve(__dirname, "uploads", "audio_notes");
       try {
-        if (!fs6.existsSync(uploadDir)) {
-          fs6.mkdirSync(uploadDir, { recursive: true });
+        if (!fs7.existsSync(uploadDir)) {
+          fs7.mkdirSync(uploadDir, { recursive: true });
         }
       } catch {
         uploadDir = "/tmp/uploads/audio_notes";
-        if (!fs6.existsSync(uploadDir)) {
-          fs6.mkdirSync(uploadDir, { recursive: true });
+        if (!fs7.existsSync(uploadDir)) {
+          fs7.mkdirSync(uploadDir, { recursive: true });
         }
       }
-      const fullFilePath = path5.join(uploadDir, audioFileName);
+      const fullFilePath = path6.join(uploadDir, audioFileName);
       if (rawAudio) {
         const cleanBase64 = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
-        fs6.writeFileSync(fullFilePath, Buffer.from(cleanBase64, "base64"));
+        fs7.writeFileSync(fullFilePath, Buffer.from(cleanBase64, "base64"));
       } else {
-        fs6.writeFileSync(fullFilePath, Buffer.from("RIFF....WAVEfmt ....data...."));
+        fs7.writeFileSync(fullFilePath, Buffer.from("RIFF....WAVEfmt ....data...."));
       }
       const audioUrl = `/uploads/audio_notes/${audioFileName}`;
       const aiAnalysis = await analyzeAudioWithGemini(fullFilePath, effectiveContesto, {
@@ -45159,12 +45907,37 @@ ${videoUrl ? `Guarda la pillola: ${videoUrl}` : ""}`.trim();
       res.statusCode = 404;
       return res.end(JSON.stringify({ error: "Nota non trovata" }));
     }
-    const filePath = path5.resolve(__dirname, note.audio_url.replace(/^\/+/, ""));
+    const filePath = path6.resolve(__dirname, note.audio_url.replace(/^\/+/, ""));
     const analysis = await analyzeAudioWithGemini(filePath, note.contesto, {
       noteTesto: note.trascrizione_testo || void 0
     });
     const updated = updateAudioNoteAnalysis(note.id, analysis);
     return res.end(JSON.stringify({ ok: true, ai: analysis, note: updated }));
+  }
+  if (pathname === "/app-api/ai-parse-voice-set" && method === "POST") {
+    try {
+      const { text, audioBase64, mimeType, audio, targetPrescrizione } = parsedBody || {};
+      const rawAudio = audioBase64 || audio;
+      let audioClean = "";
+      let audioMime = mimeType || "audio/webm";
+      if (rawAudio && typeof rawAudio === "string") {
+        const mimeMatch = rawAudio.match(/^data:(audio\/[a-zA-Z0-9.-]+);base64,/);
+        if (mimeMatch) audioMime = mimeMatch[1];
+        audioClean = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
+      }
+      const result = await parseVoiceWorkoutSet({
+        text: typeof text === "string" ? text : void 0,
+        audioBase64: audioClean || void 0,
+        mimeType: audioMime,
+        targetPrescrizione: typeof targetPrescrizione === "string" ? targetPrescrizione : void 0
+      });
+      res.statusCode = 200;
+      return res.end(JSON.stringify(result));
+    } catch (err) {
+      console.error("Errore parsing voice set:", err);
+      res.statusCode = 500;
+      return res.end(JSON.stringify({ error: err.message || "Errore elaborazione vocale set" }));
+    }
   }
   res.statusCode = 404;
   res.end(JSON.stringify({ error: "Endpoint demo non trovato" }));

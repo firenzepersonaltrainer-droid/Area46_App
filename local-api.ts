@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import nodemailer from "nodemailer";
 import defaultData from "./demo-data.json";
 import { analyzeAudioWithGemini, fallbackClinicalAnalysis } from "./server/ai-audio-analyzer";
+import { parseVoiceWorkoutSet } from "./server/voice-set-parser";
 import {
   insertAudioNote,
   getAudioNotes,
@@ -5866,6 +5867,37 @@ CALENDARIO E PRENOTAZIONI:
       const updated = updateAudioNoteAnalysis(note.id, analysis);
 
       return res.end(JSON.stringify({ ok: true, ai: analysis, note: updated }));
+    }
+
+    // POST /app-api/ai-parse-voice-set (Voice Workout Logger con Agente AI Aura & Socrates)
+    if (pathname === "/app-api/ai-parse-voice-set" && method === "POST") {
+      try {
+        const { text, audioBase64, mimeType, audio, targetPrescrizione } = parsedBody || {};
+        const rawAudio = audioBase64 || audio;
+
+        let audioClean = "";
+        let audioMime = mimeType || "audio/webm";
+
+        if (rawAudio && typeof rawAudio === "string") {
+          const mimeMatch = rawAudio.match(/^data:(audio\/[a-zA-Z0-9.-]+);base64,/);
+          if (mimeMatch) audioMime = mimeMatch[1];
+          audioClean = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
+        }
+
+        const result = await parseVoiceWorkoutSet({
+          text: typeof text === "string" ? text : undefined,
+          audioBase64: audioClean || undefined,
+          mimeType: audioMime,
+          targetPrescrizione: typeof targetPrescrizione === "string" ? targetPrescrizione : undefined,
+        });
+
+        res.statusCode = 200;
+        return res.end(JSON.stringify(result));
+      } catch (err: any) {
+        console.error("Errore parsing voice set:", err);
+        res.statusCode = 500;
+        return res.end(JSON.stringify({ error: err.message || "Errore elaborazione vocale set" }));
+      }
     }
 
     res.statusCode = 404;

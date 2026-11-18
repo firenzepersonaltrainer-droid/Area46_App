@@ -17,6 +17,9 @@ import {
   LayoutList,
   Bookmark,
   ArrowLeft,
+  Mic,
+  Sparkles,
+  SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -30,11 +33,40 @@ import {
 } from "../components/Dialog";
 import { toast } from "../components/Toast";
 import { getActiveUserId } from "../lib/useUser";
+import { WheelPickerModal } from "../components/WheelPicker";
+import { VoiceSetLoggerModal } from "../components/VoiceSetLoggerModal";
 
 interface SetRow {
   carico_kg: string;
   ripetizioni: string;
   rpe: string;
+}
+
+/**
+ * Parser dei default intelligenti dalla prescrizione della scheda (es. "4x8 @ RPE 8")
+ */
+function parsePrescrizioneDefaults(parametri?: string): { reps: string; rpe: string } {
+  if (!parametri) return { reps: "8", rpe: "8.0" };
+  const p = parametri.toLowerCase();
+
+  // Estrazione Ripetizioni (es: "4x8" -> "8", "3 x 10" -> "10", "4 X 6" -> "6", "10 rip" -> "10")
+  let reps = "8";
+  const repsMatch = p.match(/(?:[0-9]+\s*[xX]\s*([0-9]+))|([0-9]+)\s*(?:reps?|rip|colpi)/i);
+  if (repsMatch) {
+    reps = repsMatch[1] || repsMatch[2] || "8";
+  }
+
+  // Estrazione RPE (es: "@ RPE 8", "RPE 8.5", "RPE 7")
+  let rpe = "8.0";
+  const rpeMatch = p.match(/rpe\s*([0-9]+(?:[.,][0-9]+)?)/i);
+  if (rpeMatch) {
+    const val = parseFloat(rpeMatch[1].replace(",", "."));
+    if (!isNaN(val)) {
+      rpe = val.toFixed(1);
+    }
+  }
+
+  return { reps, rpe };
 }
 
 function parseSafeDate(iso: any): Date {
@@ -160,6 +192,12 @@ export default function EsercizioDetailPage() {
   const [editSaving, setEditSaving] = useState(false);
   const [aspectRatio, setAspectRatio] = useState<"16:9" | "9:16">("16:9");
 
+  // Stati Ruletta Touch Zero-Tastiera & Voice Workout Logger
+  const [wheelModalOpen, setWheelModalOpen] = useState(false);
+  const [activeSetIndex, setActiveSetIndex] = useState<number>(0);
+  const [voiceModalOpen, setVoiceModalOpen] = useState(false);
+  const [voiceSetIndex, setVoiceSetIndex] = useState<number>(0);
+
   // Chiave bozza per Jump Set e navigazione tra esercizi diversi
   const draftKey = `${livello || ""}_${giorno || ""}_${idEsercizio || ""}`;
   const loadedKeyRef = useRef<string | null>(null);
@@ -187,6 +225,38 @@ export default function EsercizioDetailPage() {
     }
   }, [sets, feedback, draftKey, idEsercizio]);
 
+  // APPLICAZIONE DEFAULT INTELLIGENTI ALLA SERIE 1 (da Prescrizione e Storico)
+  useEffect(() => {
+    if (!idEsercizio) return;
+    const drafts = getDraftsMap();
+    const existing = drafts[draftKey];
+    const hasExistingDraft =
+      existing &&
+      existing.sets &&
+      existing.sets.some((s) => s.carico_kg.trim() || s.ripetizioni.trim() || s.rpe.trim());
+
+    // Se non c'è una bozza utente salvata, compila la Serie 1 con i default intelligenti
+    if (!hasExistingDraft) {
+      const def = parsePrescrizioneDefaults(esercizio?.parametri);
+      setSets((prev) => {
+        const isPrimaSerieVuota =
+          prev.length <= 1 &&
+          (!prev[0] || (!prev[0].carico_kg.trim() && !prev[0].ripetizioni.trim() && !prev[0].rpe.trim()));
+
+        if (isPrimaSerieVuota) {
+          return [
+            {
+              carico_kg: ultimoCaricoStorico || "0",
+              ripetizioni: def.reps || "8",
+              rpe: def.rpe || "8.0",
+            },
+          ];
+        }
+        return prev;
+      });
+    }
+  }, [draftKey, idEsercizio, esercizio?.parametri, ultimoCaricoStorico]);
+
   useEffect(() => {
     if (dialogOpen) {
       document.body.style.overflow = "hidden";
@@ -203,8 +273,20 @@ export default function EsercizioDetailPage() {
     }
   }, [dialogOpen]);
 
+  // EREDITARIETÀ AUTOMATICA: quando si aggiunge un set, eredita integralmente i valori del set precedente!
   function addSet() {
-    setSets((prev) => [...prev, emptySet()]);
+    setSets((prev) => {
+      const last = prev[prev.length - 1];
+      if (!last) return [emptySet()];
+      return [
+        ...prev,
+        {
+          carico_kg: last.carico_kg || "",
+          ripetizioni: last.ripetizioni || "",
+          rpe: last.rpe || "",
+        },
+      ];
+    });
   }
 
   function removeSet(i: number) {
@@ -220,6 +302,54 @@ export default function EsercizioDetailPage() {
       return next;
     });
     toast.success(`Serie ${i + 1} duplicata!`);
+  }
+
+  // Apertura Ruletta Touch WheelPicker su una serie specifica
+  function openWheelPicker(index: number) {
+    setActiveSetIndex(index);
+    setWheelModalOpen(true);
+  }
+
+  // Apertura Voice Workout Logger su una serie specifica
+  function openVoiceLogger(index: number) {
+    setVoiceSetIndex(index);
+    setVoiceModalOpen(true);
+  }
+
+  function handleSaveWheelValues(values: { carico_kg: string; ripetizioni: string; rpe: string }) {
+    setSets((prev) =>
+      prev.map((s, idx) =>
+        idx === activeSetIndex
+          ? {
+              carico_kg: values.carico_kg,
+              ripetizioni: values.ripetizioni,
+              rpe: values.rpe,
+            }
+          : s,
+      ),
+    );
+  }
+
+  function handleApplyVoiceSet(result: {
+    carico_kg: number | null;
+    ripetizioni: number | null;
+    rpe: string | null;
+    note: string | null;
+  }) {
+    setSets((prev) =>
+      prev.map((s, idx) =>
+        idx === voiceSetIndex
+          ? {
+              carico_kg: result.carico_kg !== null ? String(result.carico_kg) : s.carico_kg,
+              ripetizioni: result.ripetizioni !== null ? String(result.ripetizioni) : s.ripetizioni,
+              rpe: result.rpe ? String(result.rpe) : s.rpe,
+            }
+          : s,
+      ),
+    );
+    if (result.note) {
+      setFeedback((prev) => (prev ? `${prev}\n${result.note}` : result.note!));
+    }
   }
 
   function duplicateEditSet(i: number) {
@@ -343,7 +473,7 @@ export default function EsercizioDetailPage() {
       });
       return res.ok ? res.json() : [];
     },
-    enabled: storicoOpen && !!idEsercizio,
+    enabled: !!idEsercizio,
   });
 
   const storicoRows = useMemo(() => {
@@ -351,6 +481,23 @@ export default function EsercizioDetailPage() {
       (a, b) => parseSafeDate(b.data_ora).getTime() - parseSafeDate(a.data_ora).getTime()
     );
   }, [rawStoricoRows]);
+
+  // Estrae il carico dell'ultima sessione registrata dall'atleta per questo esercizio
+  const ultimoCaricoStorico = useMemo(() => {
+    if (!storicoRows || storicoRows.length === 0) return null;
+    for (const r of storicoRows) {
+      const setsArr: any[] = r.sets_json ?? [];
+      for (const s of setsArr) {
+        if (s.carico_kg !== undefined && s.carico_kg !== null && !isNaN(parseFloat(String(s.carico_kg)))) {
+          return String(s.carico_kg);
+        }
+      }
+      if (r.carico_kg !== undefined && r.carico_kg !== null && !isNaN(parseFloat(String(r.carico_kg)))) {
+        return String(r.carico_kg);
+      }
+    }
+    return null;
+  }, [storicoRows]);
 
   const { bestRowId, lowestRowId } = useMemo(() => {
     if (storicoRows.length < 2) return { bestRowId: null, lowestRowId: null };
@@ -950,79 +1097,103 @@ export default function EsercizioDetailPage() {
 
                   {/* Intestazione Colonne */}
                   <div
-                    className="grid gap-2 text-center text-xs font-extrabold uppercase tracking-wider text-zinc-700"
-                    style={{ gridTemplateColumns: "36px 1fr 1fr 70px 32px 32px" }}
+                    className="grid gap-1.5 sm:gap-2 text-center text-[11px] font-extrabold uppercase tracking-wider text-zinc-700"
+                    style={{ gridTemplateColumns: "32px 1fr 1fr 78px 30px 30px 28px" }}
                   >
                     <span>Set</span>
-                    <span>Carico (kg)</span>
-                    <span>Ripetizioni</span>
+                    <span>Carico</span>
+                    <span>Reps</span>
                     <span>RPE</span>
-                    <span title="Duplica serie" className="text-xs text-zinc-500 font-bold">Dup.</span>
+                    <span title="Dettatura vocale con AI" className="text-[#1c00ff]">AI</span>
+                    <span title="Duplica serie" className="text-zinc-500 font-bold">Dup.</span>
                     <span />
                   </div>
 
-                  {/* Righe Serie */}
-                  <div className="space-y-2.5">
+                  {/* Righe Serie con Ruletta Touch Zero-Tastiera */}
+                  <div className="space-y-2">
                     {sets.map((s, i) => (
                       <div
                         key={i}
-                        className="grid items-center gap-2"
+                        className="grid items-center gap-1.5 sm:gap-2 p-1 rounded-2xl bg-zinc-50/70 border border-zinc-200/80 shadow-2xs"
                         style={{
-                          gridTemplateColumns: "36px 1fr 1fr 70px 32px 32px",
+                          gridTemplateColumns: "32px 1fr 1fr 78px 30px 30px 28px",
                         }}
                       >
+                        {/* Badge Numero Set */}
                         <span
-                          className="flex size-8 items-center justify-center rounded-full text-xs font-black shadow-sm"
+                          className="flex size-7 sm:size-8 items-center justify-center rounded-full text-xs font-black shadow-sm mx-auto"
                           style={{ background: "#1c00ff", color: "#ffffff" }}
                         >
                           {i + 1}
                         </span>
-                        <input
-                          type="number"
-                          step="any"
-                          placeholder="kg"
-                          value={s.carico_kg}
-                          onChange={(e) =>
-                            updateSet(i, "carico_kg", e.target.value)
-                          }
-                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-2 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
-                        />
-                        <input
-                          type="number"
-                          placeholder="reps"
-                          value={s.ripetizioni}
-                          onChange={(e) =>
-                            updateSet(i, "ripetizioni", e.target.value)
-                          }
-                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-2 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
-                        />
-                        <input
-                          type="text"
-                          placeholder="es. 8.5"
-                          value={s.rpe}
-                          onChange={(e) =>
-                            updateSet(i, "rpe", e.target.value)
-                          }
-                          inputMode="decimal"
-                          className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-1 text-center text-base font-bold text-zinc-900 placeholder:text-zinc-400 focus:border-[#1c00ff] focus:outline-none focus:ring-2 focus:ring-[#1c00ff]/20 shadow-sm"
-                        />
+
+                        {/* Ruletta Touch - Cella Carico (kg) */}
+                        <button
+                          type="button"
+                          onClick={() => openWheelPicker(i)}
+                          className="h-11 w-full rounded-xl border border-zinc-300/90 bg-white hover:bg-zinc-100/80 active:scale-95 transition-all px-1.5 text-center text-xs sm:text-sm font-black text-zinc-950 shadow-xs flex items-center justify-center cursor-pointer select-none"
+                          title="Tocca per scorrere la Ruletta Touch"
+                        >
+                          <span className="truncate">
+                            {s.carico_kg ? `${s.carico_kg} kg` : "0 kg"}
+                          </span>
+                        </button>
+
+                        {/* Ruletta Touch - Cella Ripetizioni */}
+                        <button
+                          type="button"
+                          onClick={() => openWheelPicker(i)}
+                          className="h-11 w-full rounded-xl border border-zinc-300/90 bg-white hover:bg-zinc-100/80 active:scale-95 transition-all px-1.5 text-center text-xs sm:text-sm font-black text-zinc-950 shadow-xs flex items-center justify-center cursor-pointer select-none"
+                          title="Tocca per scorrere la Ruletta Touch"
+                        >
+                          <span className="truncate">
+                            {s.ripetizioni ? `${s.ripetizioni} rip` : "8 rip"}
+                          </span>
+                        </button>
+
+                        {/* Ruletta Touch - Cella RPE */}
+                        <button
+                          type="button"
+                          onClick={() => openWheelPicker(i)}
+                          className="h-11 w-full rounded-xl border border-[#1c00ff]/30 bg-[#1c00ff]/10 hover:bg-[#1c00ff]/15 active:scale-95 transition-all px-1 text-center text-xs sm:text-sm font-black text-[#1c00ff] shadow-xs flex items-center justify-center cursor-pointer select-none"
+                          title="Tocca per scorrere la Ruletta RPE"
+                        >
+                          <span className="truncate">
+                            {s.rpe ? `RPE ${s.rpe}` : "RPE 8.0"}
+                          </span>
+                        </button>
+
+                        {/* Tasto Vocale Singolo Set */}
+                        <button
+                          type="button"
+                          onClick={() => openVoiceLogger(i)}
+                          className="flex size-7 sm:size-8 items-center justify-center rounded-lg bg-[#1c00ff]/10 text-[#1c00ff] hover:bg-[#1c00ff] hover:text-white transition-colors cursor-pointer"
+                          aria-label={`Dettatura vocale set ${i + 1}`}
+                          title="Dettatura vocale veloce per questa serie"
+                        >
+                          <Mic className="size-3.5 sm:size-4" />
+                        </button>
+
+                        {/* Tasto Duplica */}
                         <button
                           type="button"
                           onClick={() => duplicateSet(i)}
-                          className="flex size-8 items-center justify-center rounded-lg text-zinc-500 hover:text-[#1c00ff] hover:bg-[#1c00ff]/10 transition-colors cursor-pointer"
+                          className="flex size-7 sm:size-8 items-center justify-center rounded-lg text-zinc-500 hover:text-[#1c00ff] hover:bg-[#1c00ff]/10 transition-colors cursor-pointer"
                           aria-label={`Duplica set ${i + 1}`}
                           title="Duplica serie (copia valori)"
                         >
-                          <Copy className="size-4" />
+                          <Copy className="size-3.5 sm:size-4" />
                         </button>
+
+                        {/* Tasto Elimina */}
                         {sets.length > 1 ? (
                           <button
                             onClick={() => removeSet(i)}
-                            className="flex size-8 items-center justify-center rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                            className="flex size-7 sm:size-8 items-center justify-center rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                             aria-label={`Elimina set ${i + 1}`}
                             title="Elimina serie"
                           >
-                            <Trash2 className="size-4" />
+                            <Trash2 className="size-3.5 sm:size-4" />
                           </button>
                         ) : (
                           <span />
@@ -1051,14 +1222,35 @@ export default function EsercizioDetailPage() {
                     </div>
                   )}
 
-                  {/* Bottone Aggiungi Set */}
-                  <button
-                    onClick={addSet}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 bg-zinc-50/60 py-3 text-sm font-bold text-[#1c00ff] hover:bg-zinc-100/80 hover:border-[#1c00ff] transition-all cursor-pointer"
-                  >
-                    <PlusCircle className="size-4" />
-                    Aggiungi Set
-                  </button>
+                  {/* Pulsanti Azione Set: Aggiungi Set + Voice Workout Logger */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    {/* Bottone Aggiungi Set con Ereditarietà */}
+                    <button
+                      type="button"
+                      onClick={addSet}
+                      className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 bg-white py-3 text-xs sm:text-sm font-bold text-[#1c00ff] hover:bg-zinc-50 hover:border-[#1c00ff] transition-all cursor-pointer shadow-2xs"
+                    >
+                      <PlusCircle className="size-4" />
+                      <span>+ Aggiungi Set</span>
+                    </button>
+
+                    {/* Bottone Dettatura Vocale AI Rapida */}
+                    <button
+                      type="button"
+                      onClick={() => openVoiceLogger(sets.length - 1)}
+                      className="flex items-center justify-center gap-2 rounded-xl py-3 px-3 text-xs sm:text-sm font-black text-white shadow-sm transition-all hover:scale-[1.01] active:scale-98 cursor-pointer"
+                      style={{
+                        background: "#09090b",
+                        border: "1.5px solid #1c00ff",
+                      }}
+                    >
+                      <Mic className="size-4 text-[#e3ff00]" />
+                      <span>Voice Logging AI</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1c00ff] text-white uppercase tracking-wider font-extrabold">
+                        3 sec
+                      </span>
+                    </button>
+                  </div>
 
                   {/* Note e Feedback */}
                   <div className="space-y-1.5 pt-2 border-t border-zinc-200">
@@ -1066,7 +1258,7 @@ export default function EsercizioDetailPage() {
                       Note / Sensazioni dell'atleta
                     </label>
                     <textarea
-                      placeholder="Come ti sei sentito? Note su carico, velocità o sensazioni biomeccaniche…"
+                      placeholder="Come ti sei sentito? Note su carico, velocità o sensazioni sul pattern motorio…"
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
                       rows={3}
@@ -1126,6 +1318,26 @@ export default function EsercizioDetailPage() {
           </div>,
           document.body,
         )}
+
+      {/* Modal Ruletta Touch "Zero-Tastiera" */}
+      <WheelPickerModal
+        open={wheelModalOpen}
+        onClose={() => setWheelModalOpen(false)}
+        setIndex={activeSetIndex}
+        carico_kg={sets[activeSetIndex]?.carico_kg || "0"}
+        ripetizioni={sets[activeSetIndex]?.ripetizioni || "8"}
+        rpe={sets[activeSetIndex]?.rpe || "8.0"}
+        onSave={handleSaveWheelValues}
+      />
+
+      {/* Modal Dettatura Vocale con Agente AI */}
+      <VoiceSetLoggerModal
+        open={voiceModalOpen}
+        onClose={() => setVoiceModalOpen(false)}
+        setIndex={voiceSetIndex}
+        targetPrescrizione={esercizio?.parametri}
+        onApplyParsedSet={handleApplyVoiceSet}
+      />
     </div>
   );
 }
