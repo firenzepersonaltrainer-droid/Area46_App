@@ -313,7 +313,7 @@ function FeedbackSedutaModal({
     transcript?: string;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [receivedAdvice, setReceivedAdvice] = useState<CoachAdviceFeedback | null>(null);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   const toggleSensazione = (s: string) => {
     setSelectedSensazioni((prev) =>
@@ -322,7 +322,7 @@ function FeedbackSedutaModal({
   };
 
   const handleClose = () => {
-    setReceivedAdvice(null);
+    setFeedbackSubmitted(false);
     setRecordedAudio(null);
     setNote("");
     onOpenChange(false);
@@ -331,8 +331,6 @@ function FeedbackSedutaModal({
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      let adviceData: CoachAdviceFeedback | null = null;
-
       if (recordedAudio) {
         // Invio completo tramite la pipeline audio multimodale
         const res = await fetch("/app-api/audio-note", {
@@ -353,17 +351,10 @@ function FeedbackSedutaModal({
           }),
         });
         if (res.ok) {
-          const data = await res.json();
-          const noteObj = data.audio_note || {};
-          adviceData = {
-            allerta: noteObj.ai_allerta,
-            sintesi: noteObj.ai_sintesi,
-            propostaAzione: noteObj.ai_proposta_azione,
-            consiglioCoach: noteObj.consiglio_coach,
-          };
           queryClient.invalidateQueries({ queryKey: ["diario"] });
           queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
-          toast.success("Nota vocale e biofeedback analizzati con successo!");
+          toast.success("Nota vocale e feedback recapitati al Coach!");
+          setFeedbackSubmitted(true);
         } else {
           toast.error("Errore nell'invio del biofeedback vocale.");
         }
@@ -383,25 +374,12 @@ function FeedbackSedutaModal({
           }),
         });
         if (res.ok) {
-          const data = await res.json();
-          const itemObj = data.item || {};
-          adviceData = {
-            allerta: itemObj.ai_allerta,
-            sintesi: itemObj.ai_sintesi,
-            propostaAzione: itemObj.ai_proposta_azione,
-            consiglioCoach: itemObj.consiglio_coach,
-          };
           queryClient.invalidateQueries({ queryKey: ["diario"] });
-          toast.success("Feedback seduta registrato nel tuo diario!");
+          toast.success("Feedback recapitato al Coach!");
+          setFeedbackSubmitted(true);
         } else {
           toast.error("Errore nel salvataggio del feedback.");
         }
-      }
-
-      if (adviceData && (adviceData.consiglioCoach || adviceData.sintesi)) {
-        setReceivedAdvice(adviceData);
-      } else {
-        handleClose();
       }
     } catch {
       toast.error("Errore di connessione.");
@@ -419,69 +397,60 @@ function FeedbackSedutaModal({
       }}
     >
       <DialogContent className="max-w-md p-5 bg-white rounded-3xl shadow-2xl border-2 border-zinc-200 max-h-[90vh] overflow-y-auto">
-        {receivedAdvice ? (
-          /* Schermata Responso & Consiglio del Coach Stefano */
-          <div className="space-y-4 pt-1 animate-in fade-in duration-300">
-            <div className="flex items-center justify-between">
+        {feedbackSubmitted ? (
+          /* Schermata di Conferma Recapito Ufficiale al Coach Stefano */
+          <div className="space-y-4 pt-2 pb-1 animate-in fade-in duration-300 text-center">
+            <div className="size-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-inner">
+              <CheckCircle2 className="size-8" />
+            </div>
+
+            <div className="space-y-1">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#1c00ff] text-[#e3ff00]">
-                Analisi AI Biofeedback
+                Feedback Inviato
               </span>
-              {receivedAdvice.allerta && (
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                    receivedAdvice.allerta === "rosso"
-                      ? "bg-rose-100 text-rose-800 border border-rose-300"
-                      : receivedAdvice.allerta === "giallo"
-                      ? "bg-amber-100 text-amber-800 border border-amber-300"
-                      : "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                  }`}
-                >
-                  {receivedAdvice.allerta === "rosso"
-                    ? "🔴 Allerta Sovraccarico"
-                    : receivedAdvice.allerta === "giallo"
-                    ? "🟡 Attenzione / Scarico"
-                    : "🟢 Segnale Ottimale"}
-                </span>
+              <DialogTitle className="text-xl font-black text-zinc-900 tracking-tight">
+                Recapitato al Coach Stefano
+              </DialogTitle>
+            </div>
+
+            <p className="text-xs text-zinc-600 leading-relaxed font-medium max-w-sm mx-auto">
+              La tua nota vocale e le tue sensazioni sono state inviate con successo a <strong>Stefano Tronconi</strong>. Il Coach valuterà quanto hai comunicato per preparare le indicazioni operative della tua <strong>prossima seduta</strong>.
+            </p>
+
+            {/* Riepilogo Sintetico Ricevuta */}
+            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-left text-xs space-y-2">
+              <div className="flex items-center justify-between border-b border-zinc-200/80 pb-1.5">
+                <span className="font-bold text-zinc-500 uppercase text-[10px] tracking-wider">RPE Registrato:</span>
+                <span className="font-black text-zinc-900 font-mono">{rpe}/10</span>
+              </div>
+
+              {selectedSensazioni.length > 0 && (
+                <div className="border-b border-zinc-200/80 pb-1.5">
+                  <span className="font-bold text-zinc-500 uppercase text-[10px] tracking-wider block mb-1">Sensazioni rapide:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {selectedSensazioni.map((s) => (
+                      <span key={s} className="px-2 py-0.5 rounded-md bg-zinc-200/70 text-zinc-800 text-[10px] font-bold">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {recordedAudio && (
+                <div className="flex items-center justify-between text-blue-700 font-bold text-[11px] pt-0.5">
+                  <span className="flex items-center gap-1.5">
+                    <Mic className="size-3.5" />
+                    <span>Nota vocale allegata</span>
+                  </span>
+                  <span className="font-mono text-[10px] bg-blue-100 px-2 py-0.5 rounded-full">
+                    {recordedAudio.durationSec}s
+                  </span>
+                </div>
               )}
             </div>
 
-            <DialogTitle className="text-xl font-black text-zinc-900 tracking-tight flex items-center gap-2">
-              <Bot className="size-5 text-[#1c00ff]" />
-              Risposta del Coach Stefano
-            </DialogTitle>
-
-            {receivedAdvice.sintesi && (
-              <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-3">
-                <span className="text-[10px] font-black uppercase text-zinc-500 tracking-wider block mb-1">
-                  Sintesi Rilevata
-                </span>
-                <p className="text-xs text-zinc-700 leading-relaxed font-medium">
-                  {receivedAdvice.sintesi}
-                </p>
-              </div>
-            )}
-
-            {receivedAdvice.consiglioCoach && (
-              <div className="bg-[#09090b] text-white border-2 border-[#1c00ff] rounded-2xl p-4 shadow-xl space-y-2">
-                <div className="flex items-center gap-2">
-                  <Lightbulb className="size-4 text-[#e3ff00]" />
-                  <span className="text-xs font-black uppercase tracking-wider text-[#e3ff00]">
-                    Consiglio Operativo del Coach:
-                  </span>
-                </div>
-                <p className="text-xs text-zinc-200 leading-relaxed font-semibold">
-                  "{receivedAdvice.consiglioCoach}"
-                </p>
-                {receivedAdvice.propostaAzione && (
-                  <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400">
-                    <span className="text-zinc-300 font-bold">Azione raccomandata: </span>
-                    {receivedAdvice.propostaAzione}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="pt-2 flex justify-end">
+            <div className="pt-2">
               <button
                 type="button"
                 onClick={handleClose}
@@ -639,16 +608,27 @@ export default function GiornoDetailPage() {
 
   const coachAdvice = React.useMemo(() => {
     if (!diarioEntries || !Array.isArray(diarioEntries)) return null;
+    // REGOLE DI STEFANO TRONCONI:
+    // 1. I consigli appaiono all'atleta SOLO SU DECISIONE DEL COACH (consiglio_approvato_coach === true).
+    // 2. I consigli NON vengono prescritti nella seduta appena conclusa, ma nella seduta successiva (giorno_destinazione).
     const match = diarioEntries
-      .filter(
-        (e) =>
-          (e.livello === livello || !e.livello) &&
-          (String(e.giorno) === String(giornoDisplay) || String(e.giorno) === String(giornoNum)) &&
-          (e.tipo === "feedback_seduta" || e.tipo === "audio_note") &&
-          Boolean(e.consiglio_coach)
-      )
-      .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())[0];
-    return match;
+      .filter((e) => {
+        if (!e.consiglio_approvato_coach) return false;
+        if (!e.consiglio_coach) return false;
+        if (e.livello && livello && e.livello !== livello) return false;
+
+        const destNum = e.giorno_destinazione ? Number(String(e.giorno_destinazione).match(/[0-9]+/)?.[0]) : null;
+        if (destNum && destNum === giornoNum) return true;
+        if (e.giorno_destinazione && String(e.giorno_destinazione).trim().toLowerCase() === String(giornoDisplay).trim().toLowerCase()) return true;
+
+        // Fallback: se proviene dalla seduta precedente (giornoNum - 1) ed è approvato dal coach
+        const sorgenteNum = e.giorno ? Number(String(e.giorno).match(/[0-9]+/)?.[0]) : null;
+        if (sorgenteNum && sorgenteNum === giornoNum - 1) return true;
+
+        return false;
+      })
+      .sort((a, b) => new Date(b.created_at || b.data_ora || 0).getTime() - new Date(a.created_at || a.data_ora || 0).getTime())[0];
+    return match || null;
   }, [diarioEntries, livello, giornoDisplay, giornoNum]);
 
   const primoEsercizio = esercizi[0];
@@ -783,31 +763,27 @@ export default function GiornoDetailPage() {
         </div>
       </div>
 
-      {/* CARD CONSIGLIO DEL COACH STEFANO PER QUESTA SEDUTA (Se presente) */}
+      {/* CARD CONSIGLIO DEL COACH STEFANO PER QUESTA SEDUTA (Appare SOLO se approvato da Stefano) */}
       {coachAdvice && (
         <div className="rounded-2xl bg-[#09090b] border-2 border-[#1c00ff] p-3.5 sm:p-4 text-white shadow-xl space-y-2 print:hidden animate-in fade-in">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2">
               <Sparkles className="size-4 text-[#e3ff00]" />
               <span className="text-xs font-black uppercase tracking-wider text-[#e3ff00]">
-                Consiglio del Coach Stefano per questa Seduta
+                Direttiva Operativa del Coach Stefano Tronconi
               </span>
             </div>
-            {coachAdvice.ai_allerta && (
-              <span
-                className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                  coachAdvice.ai_allerta === "rosso"
-                    ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
-                    : coachAdvice.ai_allerta === "giallo"
-                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                    : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                }`}
-              >
-                {coachAdvice.ai_allerta === "rosso"
-                  ? "🔴 Modalità B / Cautela"
-                  : coachAdvice.ai_allerta === "giallo"
-                  ? "🟡 Affaticamento Rilevato"
-                  : "🟢 Progressione Libera"}
+            {coachAdvice.tipo_intervento === "spinta" ? (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#e3ff00] text-zinc-950 border border-[#e3ff00] flex items-center gap-1 shadow-xs">
+                <span>🚀 Spingere di Più (+Carico)</span>
+              </span>
+            ) : coachAdvice.tipo_intervento === "scarico" || coachAdvice.ai_allerta === "rosso" ? (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1">
+                <span>🛡️ Lavoro Più Leggero / Scarico</span>
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+                <span>🟢 Progressione Centrata</span>
               </span>
             )}
           </div>
@@ -816,7 +792,7 @@ export default function GiornoDetailPage() {
           </p>
           {coachAdvice.ai_proposta_azione && (
             <div className="pt-2 border-t border-zinc-800 text-[11px] text-zinc-400">
-              <span className="text-zinc-300 font-bold">Azione raccomandata: </span>
+              <span className="text-zinc-300 font-bold">Azione metodologica: </span>
               {coachAdvice.ai_proposta_azione}
             </div>
           )}

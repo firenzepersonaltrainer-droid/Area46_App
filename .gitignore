@@ -10,6 +10,7 @@ __pycache__/
 # Production build
 dist/
 build/
+api/uploads/
 
 # Credentials & Sensitive Keys (Crucial for GitHub security)
 credenziali.json

@@ -266,13 +266,29 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
       }
     });
 
-    // 3. Analisi Biofeedback & Note Atleta
+    // 3. Analisi Biofeedback & Note Atleta (Note Vocali + Parametri)
     const feedbacks = diario
       .map((v) => v.feedback?.trim())
       .filter((f): f is string => !!f);
 
-    const paroleAllerta = ["dolore", "male", "fastidio", "schiena", "spalla", "ginocchio", "gomito", "polso", "cedimento", "pesante", "fatica", "bloccato"];
-    const parolePositive = ["ottimo", "fluido", "leggero", "facile", "esplosivo", "veloce", "buono", "controllo", "energia", "perfetto"];
+    const noteVocaliRecenti: { testo: string; sintesi?: string; allerta?: string; giorno?: string }[] = [];
+    diario
+      .filter((v) => v.tipo === "feedback_seduta" || v.tipo === "audio_note")
+      .slice(-4)
+      .forEach((v) => {
+        const text = v.ai_sintesi || v.note_cinestesiche || v.feedback;
+        if (text) {
+          noteVocaliRecenti.push({
+            testo: v.note_cinestesiche || v.feedback || "",
+            sintesi: v.ai_sintesi || undefined,
+            allerta: v.ai_allerta || undefined,
+            giorno: v.giorno ? String(v.giorno) : undefined,
+          });
+        }
+      });
+
+    const paroleAllerta = ["dolore", "male", "fastidio", "schiena", "spalla", "ginocchio", "gomito", "polso", "cedimento", "pesante", "fatica", "bloccato", "duro"];
+    const parolePositive = ["ottimo", "fluido", "leggero", "facile", "esplosivo", "veloce", "buono", "controllo", "energia", "perfetto", "spingere"];
 
     const alertNotes: string[] = [];
     const positiveNotes: string[] = [];
@@ -305,7 +321,7 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
       );
     } else {
       consigli.push(
-        "Ottima aderenza biomeccanica: l'atleta non lamenta compensi o dolori articolari nei feedback."
+        "Ottima aderenza al pattern motorio: l'atleta non lamenta compensi o dolori articolari nei feedback."
       );
     }
 
@@ -328,6 +344,7 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
       progressioni,
       alertNotes,
       positiveNotes,
+      noteVocaliRecenti,
       consigli,
       totalSessions: diario.length,
     };
@@ -510,6 +527,40 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
                       </span>
                     </div>
 
+                    {/* Note Vocali e Sintesi AI dell'Atleta */}
+                    {aiAnalysis.noteVocaliRecenti && aiAnalysis.noteVocaliRecenti.length > 0 && (
+                      <div className="space-y-2 pt-1 border-b border-zinc-100 pb-2">
+                        <span className="text-[10px] font-black text-[#1c00ff] uppercase tracking-wider flex items-center gap-1.5">
+                          <Mic className="size-3" />
+                          <span>Note Vocali & Sintesi AI per il Coach:</span>
+                        </span>
+                        {aiAnalysis.noteVocaliRecenti.map((nv, idx) => (
+                          <div key={idx} className="p-2.5 rounded-xl bg-blue-50/60 border border-blue-200 text-xs space-y-1">
+                            <div className="flex items-center justify-between text-[10px]">
+                              <span className="font-bold text-blue-900 font-mono">
+                                Seduta {nv.giorno || "recente"}
+                              </span>
+                              {nv.allerta && (
+                                <span className={`px-2 py-0.2 rounded-full font-bold uppercase text-[9px] ${
+                                  nv.allerta === "rosso" ? "bg-red-100 text-red-800" : nv.allerta === "giallo" ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
+                                }`}>
+                                  {nv.allerta}
+                                </span>
+                              )}
+                            </div>
+                            {nv.sintesi && (
+                              <p className="text-zinc-900 font-bold leading-snug">
+                                {nv.sintesi}
+                              </p>
+                            )}
+                            <p className="text-[11px] text-zinc-600 italic font-medium leading-relaxed">
+                              &ldquo;{nv.testo}&rdquo;
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     {aiAnalysis.alertNotes.length > 0 && (
                       <div className="space-y-1.5">
                         <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">
@@ -542,7 +593,7 @@ export function PerformanceModal({ isOpen, onClose, atleta }: PerformanceModalPr
                       </div>
                     )}
 
-                    {aiAnalysis.alertNotes.length === 0 && aiAnalysis.positiveNotes.length === 0 && (
+                    {aiAnalysis.alertNotes.length === 0 && aiAnalysis.positiveNotes.length === 0 && (!aiAnalysis.noteVocaliRecenti || aiAnalysis.noteVocaliRecenti.length === 0) && (
                       <div className="text-zinc-500 text-[11px] italic">
                         Nessuna annotazione particolare nei feedback recenti.
                       </div>

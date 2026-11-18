@@ -65,10 +65,10 @@ function getDb(): DatabaseSync | null {
         audio_base64 TEXT,
         durata_sec INTEGER DEFAULT 0,
         trascrizione_testo TEXT,
-        ai_allerta TEXT DEFAULT 'verde\,
+        ai_allerta TEXT DEFAULT 'verde',
         ai_sintesi TEXT,
         ai_proposta_azione TEXT,
-        stato TEXT DEFAULT 'nuovo\,
+        stato TEXT DEFAULT 'nuovo',
         data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -77,25 +77,25 @@ function getDb(): DatabaseSync | null {
         utente_id TEXT,
         email_cliente TEXT,
         anonimo BOOLEAN DEFAULT 0,
-        tipo TEXT DEFAULT 'consiglio\,
+        tipo TEXT DEFAULT 'consiglio',
         titolo TEXT NOT NULL,
         descrizione TEXT NOT NULL,
         audio_id INTEGER,
         audio_base64 TEXT,
         device_info TEXT,
         ai_diagnosi_tecnica TEXT,
-        stato TEXT DEFAULT 'aperto\,
+        stato TEXT DEFAULT 'aperto',
         data_creazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
     // Migrazioni safe a caldo su colonne opzionali
-    try {
-      db.exec("ALTER TABLE audio_note_feedback ADD COLUMN audio_base64 TEXT;");
-    } catch {}
-    try {
-      db.exec("ALTER TABLE app_segnalazioni_bug ADD COLUMN audio_base64 TEXT;");
-    } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN audio_base64 TEXT;"); } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN consiglio_coach TEXT;"); } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN consiglio_approvato_coach BOOLEAN DEFAULT 0;"); } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN giorno_destinazione TEXT;"); } catch {}
+    try { db.exec("ALTER TABLE audio_note_feedback ADD COLUMN tipo_intervento TEXT;"); } catch {}
+    try { db.exec("ALTER TABLE app_segnalazioni_bug ADD COLUMN audio_base64 TEXT;"); } catch {}
 
     return db;
   } catch (err) {
@@ -206,7 +206,7 @@ export function getAudioNotes(filter?: {
       if (filter.stato === "tutti") {
         query += " AND stato != 'cestino'";
       } else if (filter.stato === "gestito") {
-        query += " AND stato IN ('ascoltato\, 'applicato\, 'archiviato\)";
+        query += " AND stato IN ('ascoltato', 'applicato', 'archiviato')";
       } else {
         query += " AND stato = ?";
         params.push(filter.stato);
@@ -237,22 +237,55 @@ export function getAudioNotes(filter?: {
 
 export function updateAudioNoteStatus(
   id: number,
-  stato: "nuovo" | "ascoltato" | "applicato" | "archiviato" | "cestino"
+  stato: "nuovo" | "ascoltato" | "applicato" | "archiviato" | "cestino",
+  extraData: {
+    consiglio_coach?: string;
+    consiglio_approvato_coach?: boolean;
+    giorno_destinazione?: string | number;
+    tipo_intervento?: string;
+  } = {}
 ): AudioNoteRecord | null {
   const db = getDb();
   if (db) {
-    const stmt = db.prepare("UPDATE audio_note_feedback SET stato = ? WHERE id = ?");
-    stmt.run(stato, id);
+    if (extraData.consiglio_coach !== undefined) {
+      db.prepare(`
+        UPDATE audio_note_feedback 
+        SET stato = ?, consiglio_coach = ?, consiglio_approvato_coach = ?, giorno_destinazione = ?, tipo_intervento = ? 
+        WHERE id = ?
+      `).run(
+        stato,
+        extraData.consiglio_coach,
+        extraData.consiglio_approvato_coach ? 1 : 0,
+        extraData.giorno_destinazione ? String(extraData.giorno_destinazione) : null,
+        extraData.tipo_intervento || null,
+        id
+      );
+    } else {
+      const stmt = db.prepare("UPDATE audio_note_feedback SET stato = ? WHERE id = ?");
+      stmt.run(stato, id);
+    }
     const row = db.prepare("SELECT * FROM audio_note_feedback WHERE id = ?").get(id) as any;
     db.close();
 
     const mem = inMemoryAudioNotes.find((n) => n.id === id);
-    if (mem) mem.stato = stato;
+    if (mem) {
+      mem.stato = stato;
+      if (extraData.consiglio_coach !== undefined) mem.consiglio_coach = extraData.consiglio_coach;
+      if (extraData.consiglio_approvato_coach !== undefined) mem.consiglio_approvato_coach = extraData.consiglio_approvato_coach;
+      if (extraData.giorno_destinazione !== undefined) mem.giorno_destinazione = extraData.giorno_destinazione;
+      if (extraData.tipo_intervento !== undefined) mem.tipo_intervento = extraData.tipo_intervento;
+    }
     return row || null;
   }
 
   const found = inMemoryAudioNotes.find((n) => n.id === id);
-  if (found) found.stato = stato;
+  if (found) {
+    found.stato = stato;
+    if (extraData.consiglio_coach !== undefined) found.consiglio_coach = extraData.consiglio_coach;
+    if (extraData.consiglio_approvato_coach !== undefined) found.consiglio_approvato_coach = extraData.consiglio_approvato_coach;
+    if (extraData.giorno_destinazione !== undefined) found.giorno_destinazione = extraData.giorno_destinazione;
+    if (extraData.tipo_intervento !== undefined) found.tipo_intervento = extraData.tipo_intervento;
+  }
   return found || null;
 }
 
@@ -368,7 +401,7 @@ export function getAppSegnalazioni(filter?: {
       if (filter.stato === "tutti") {
         query += " AND s.stato != 'cestino'";
       } else if (filter.stato === "gestito") {
-        query += " AND s.stato IN ('in_valutazione\, 'risolto\, 'scartato\)";
+        query += " AND s.stato IN ('in_valutazione', 'risolto', 'scartato')";
       } else {
         query += " AND s.stato = ?";
         params.push(filter.stato);

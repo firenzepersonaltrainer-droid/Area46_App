@@ -8,6 +8,8 @@ export interface AudioAnalysisResult {
   proposta_azione: string;
   consiglio_coach?: string;
   diagnosi_tecnica?: string;
+  tipo_intervento?: "spinta" | "scarico" | "consolidamento";
+  giorno_destinazione?: string | number;
 }
 
 /**
@@ -20,6 +22,27 @@ function sanitizzaLinguaggioAtleta(s: string): string {
     .replace(/catena\s+cinetica(?:\s+aperta|\s+chiusa)?/gi, "linea di spinta")
     .replace(/fulcro/gi, "punto d'appoggio")
     .replace(/obbligatori[aoe]/gi, "consigliato");
+}
+
+/**
+ * Calcola in modo deterministico il giorno di allenamento successivo
+ */
+export function calcolaGiornoSuccessivo(giorno?: string | number): string | number {
+  if (!giorno && giorno !== 0) return 2;
+  const str = String(giorno).trim();
+  const matchNum = str.match(/\d+/);
+  if (matchNum) {
+    const n = parseInt(matchNum[0], 10);
+    // Se la stringa è tipo "1 allenamento A" -> "2 allenamento B"
+    if (/allenamento\s+[ab]/i.test(str)) {
+      const nextN = n + 1;
+      const nextLettera = nextN % 2 === 1 ? "A" : "B";
+      return `${nextN} allenamento ${nextLettera}`;
+    }
+    // Altrimenti semplice numero incrementato
+    return n + 1;
+  }
+  return 2;
 }
 
 /**
@@ -68,26 +91,25 @@ export async function analyzeAudioWithGemini(
     try {
       const systemInstruction = `
 Sei l'Agente Clinico-Semantico & Tecnico Senior (Socrates & Aura) di Area46 Landmine Lab.
-Il tuo compito è trascrivere con assoluta precisione la nota audio dell'atleta, analizzare il biofeedback post-workout e produrre una risposta razionale con consiglio pratico per l'atleta.
+Il tuo compito è trascrivere con assoluta precisione la nota audio dell'atleta, analizzare il biofeedback post-workout e produrre una risposta razionale con consiglio pratico per la SEDUTA SUCCESSIVA dell'atleta.
 
 REGOLE PERENTORIE E VINCOLI METODOLOGICI:
 1. DIVIETO ASSOLUTO del termine "biomeccanica" o tecnicismi freddi per gli atleti: usa sempre "pattern motorio", "economia del gesto" o "cinematica".
-2. CLASSIFICAZIONE ALLERTA:
-   - 'verde': sessione regolare, sensazioni fluide, fatica fisiologica (RPE <= 8).
-   - 'giallo': affaticamento elevato, piccoli compensi posturali, RPE 8.5-9.
-   - 'rosso': fitte, dolore acuto articolare (lombare/L5-S1, ginocchio, anca, spalla), cedimento non controllato.
-3. CONSIGLIO DEL COACH PER L'ATLETA:
-   - Risposta diretta e rassicurante in prima persona singolare o come Comitato Tecnico del Coach Stefano Tronconi.
-   - Applica la Modalità B di Socrates: se c'è dolore o compenso, proponi rotazione con destrezza a terra o decompressione senza dogmi.
-   - Dai consigli concreti di recupero naturale (idratazione, respirazione diaframmatica a terra, sonno).
+2. CLASSIFICAZIONE ALLERTA & INTERVENTO:
+   - 'spinta' (verde): allenamento percepito leggero, fluido, ampio margine, atleta fresco con voglia di caricare -> consigliare di spingere maggiormente sul carico (+1.25/+2.5kg).
+   - 'scarico' (giallo/rosso): affaticamento elevato, piccoli compensi posturali, RPE >= 9, o fitte/dolori -> consigliare lavoro più leggero, scarico selettivo (Modalità B) o buffer 2 colpi.
+   - 'consolidamento' (verde): sessione regolare, stimolo centrato (RPE 7.5-8.5).
+3. I CONSIGLI SONO PER LA SEDUTA SUCCESSIVA: non prescrivere interventi sulla seduta appena chiusa.
+4. SINTESI VOCALE FEDELE: La sintesi per il Coach deve riassumere fedelmente quello che l'atleta ha detto a voce, non solo le caselle spuntate.
 
 Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
 {
   "trascrizione": "Trascrizione letterale fedele in italiano",
   "allerta": "verde" | "giallo" | "rosso",
-  "sintesi": "Riassunto conciso in 1 frase per il Coach",
+  "tipo_intervento": "spinta" | "scarico" | "consolidamento",
+  "sintesi": "Riassunto conciso dei contenuti vocali e clinici per il Coach Stefano",
   "proposta_azione": "Consiglio pratico operativo e metodologico per la seduta successiva",
-  "consiglio_coach": "Messaggio diretto, razionale e rassicurante rivolto all'atleta con il consiglio operativo del Coach",
+  "consiglio_coach": "Messaggio chiaro per l'atleta destinato alla seduta successiva",
   "diagnosi_tecnica": "Diagnosi tecnica (se contesto è app_feedback)"
 }
 `;
@@ -96,7 +118,8 @@ Rispondi ESCLUSIVAMENTE con un JSON valido con questa esatta struttura:
 Contesto: ${contesto}
 Metadati noti:
 - Livello: ${metadata.livello || "N/D"}
-- Giorno: ${metadata.giorno || "N/D"}
+- Giorno appena concluso: ${metadata.giorno || "N/D"}
+- Giorno successivo calcolato: ${calcolaGiornoSuccessivo(metadata.giorno)}
 - RPE registrato: ${metadata.rpe ?? "N/D"}
 - Sensazioni espresse a chip: ${(metadata.sensazioni || []).join(", ") || "Nessuna"}
 - Trascrizione vocale rilevata dal dispositivo: ${metadata.trascrizioneLive || "Nessuna trascrizione client disponibile"}
@@ -105,7 +128,7 @@ Metadati noti:
 - Titolo segnalazione: ${metadata.titolo || "N/D"}
 - Device info: ${metadata.deviceInfo || "N/D"}
 
-Ascolta l'audio allegato, trascrivilo fedelmente ed esegui l'analisi clinico-semantica o tecnica.
+Ascolta l'audio allegato, trascrivilo fedelmente ed esegui l'analisi clinico-semantica focalizzandoti sulle parole dell'atleta.
 `;
 
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -143,11 +166,16 @@ Ascolta l'audio allegato, trascrivilo fedelmente ed esegui l'analisi clinico-sem
           geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (textResponse) {
           const parsed = JSON.parse(textResponse);
+          const nextDay = calcolaGiornoSuccessivo(metadata.giorno);
           return {
             trascrizione: sanitizzaLinguaggioAtleta(parsed.trascrizione || ""),
             allerta: ["verde", "giallo", "rosso"].includes(parsed.allerta)
               ? parsed.allerta
               : "verde",
+            tipo_intervento: ["spinta", "scarico", "consolidamento"].includes(parsed.tipo_intervento)
+              ? parsed.tipo_intervento
+              : "consolidamento",
+            giorno_destinazione: nextDay,
             sintesi: sanitizzaLinguaggioAtleta(parsed.sintesi || ""),
             proposta_azione: sanitizzaLinguaggioAtleta(parsed.proposta_azione || ""),
             consiglio_coach: sanitizzaLinguaggioAtleta(parsed.consiglio_coach || parsed.proposta_azione || ""),
@@ -182,14 +210,17 @@ export function fallbackClinicalAnalysis(
     deviceInfo?: string;
   }
 ): AudioAnalysisResult {
-  const rawTranscript = metadata.trascrizioneLive || metadata.noteTesto || metadata.descrizione || "";
+  const rawTranscript = (metadata.trascrizioneLive || metadata.noteTesto || metadata.descrizione || "").trim();
+  const chipSensazioni = (metadata.sensazioni || []).join(" ");
   const testo = (
-    `${rawTranscript} ${metadata.noteTesto || ""} ${metadata.descrizione || ""} ${metadata.titolo || ""} ${(metadata.sensazioni || []).join(" ")}`
+    `${rawTranscript} ${metadata.noteTesto || ""} ${metadata.descrizione || ""} ${metadata.titolo || ""} ${chipSensazioni}`
   ).toLowerCase();
 
   const rpe = metadata.rpe ?? 8;
+  const nextDay = calcolaGiornoSuccessivo(metadata.giorno);
 
   if (contesto === "biofeedback_workout") {
+    // 1. Rilevamento Dolore / Allerta Rossa
     const isRedAlert =
       testo.includes("dolore") ||
       testo.includes("fitta") ||
@@ -202,6 +233,7 @@ export function fallbackClinicalAnalysis(
       testo.includes("male acuto") ||
       rpe >= 10;
 
+    // 2. Rilevamento Fatica Elevata / Scarico
     const isYellowAlert =
       !isRedAlert &&
       (testo.includes("fatica") ||
@@ -212,38 +244,89 @@ export function fallbackClinicalAnalysis(
         testo.includes("instabil") ||
         testo.includes("sporca") ||
         testo.includes("sporco") ||
+        testo.includes("duro") ||
         rpe >= 9);
 
+    // 3. Rilevamento Spinta / Facilità (L'allenamento si è rivelato leggero -> SPINGERE MAGGIORMENTE)
+    const isSpinta =
+      !isRedAlert &&
+      !isYellowAlert &&
+      (testo.includes("legger") ||
+        testo.includes("facile") ||
+        testo.includes("sping") ||
+        testo.includes("caric") ||
+        testo.includes("volav") ||
+        testo.includes("troppo poco") ||
+        testo.includes("ampio margine") ||
+        testo.includes("potevo dare di più") ||
+        testo.includes("potevo caricare") ||
+        testo.includes("fresco") ||
+        testo.includes("energia") ||
+        testo.includes("esplosiv") ||
+        chipSensazioni.toLowerCase().includes("carico leggero") ||
+        rpe <= 7);
+
     let allerta: "verde" | "giallo" | "rosso" = "verde";
-    let sintesi = "Sessione chiusa regolarmente con parametri motori stabili ed ottima risposta generale.";
-    let proposta = "Proseguire con la periodizzazione prevista per la seduta successiva mantenendo il focus sulla qualità esecutiva.";
-    let consiglioCoach = "Sessione chiusa con successo e ottimo controllo! Il corpo ha risposto con facilità al carico di lavoro. Ricorda di bere adeguatamente e presentati alla prossima seduta con la stessa concentrazione sul pattern motorio.";
+    let tipoIntervento: "spinta" | "scarico" | "consolidamento" = "consolidamento";
+    let sintesi = "";
+    let proposta = "";
+    let consiglioCoach = "";
+
+    // Sintesi fedele che valorizza in primo piano ciò che l'atleta ha detto a voce
+    const estrattiVocali = rawTranscript ? `"${rawTranscript}"` : "";
 
     if (isRedAlert) {
       allerta = "rosso";
-      sintesi = `Allerta articolare/carico: segnalata criticità durante la seduta (RPE ${rpe}/10).`;
+      tipoIntervento = "scarico";
+      sintesi = rawTranscript
+        ? `Nota Vocale: l'atleta segnala dolore o criticità articolare/muscolare (${estrattiVocali}). RPE: ${rpe}/10.`
+        : `Allerta articolare/carico: segnalata criticità durante la seduta (RPE ${rpe}/10).`;
       proposta =
-        "Modalità B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a terra, mobilità del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.";
+        `Per Seduta Successiva (Giorno ${nextDay}): Modalità B di Socrates: scarico attivo del pattern sofferente, sostituendolo con lavoro qualitativo a terra, mobilità lombo-pelvica e verifica tecnica con il Coach prima di toccare sovraccarichi.`;
       consiglioCoach =
-        "Ho registrato la tua segnalazione sul fastidio avvertito. Nessun allarmismo: il corpo cerca equilibrio. Nella prossima seduta applicheremo la Modalità B sostituendo il movimento pesante con decompressione e mobilità a terra per farti muovere con facilità e senza stress. Se hai fitte parlane con me in sala prima di iniziare.";
+        `Ho ascoltato la tua nota sul fastidio avvertito. Nessun allarme: il corpo cerca equilibrio. Per la prossima seduta applicheremo la Modalità B sostituendo il movimento pesante con decompressione e mobilità a terra per muoverti con facilità e zero stress.`;
     } else if (isYellowAlert) {
       allerta = "giallo";
-      sintesi = `Fatica periferica alta o compenso posturale segnalato (RPE ${rpe}/10).`;
+      tipoIntervento = "scarico";
+      sintesi = rawTranscript
+        ? `Nota Vocale: l'atleta riferisce fatica marcata o pesantezza d'intensità (${estrattiVocali}). RPE: ${rpe}/10.`
+        : `Fatica periferica alta o compenso posturale segnalato (RPE ${rpe}/10).`;
       proposta =
-        "Regolare i carichi mantenendo 1-2 ripetizioni di riserva nel fondamentale e idratare il tessuto con mobilità attiva di scarico tra le serie.";
+        `Per Seduta Successiva (Giorno ${nextDay}): Lavoro più leggero: regolare i carichi mantenendo 1-2 ripetizioni di riserva nel fondamentale e idratare il tessuto con mobilità attiva di scarico tra le serie.`;
       consiglioCoach =
-        `Hai espresso un'intensità elevata (RPE ${rpe}/10) con una sensazione di fatica marcata o piccolo compenso. Ottimo impegno per aver completato la scheda, ma per la prossima seduta mantieni 1-2 colpi di riserva (buffer) senza forzare la chiusura. Nelle prossime 24 ore dai priorità al sonno e ad una buona idratazione per favorire il recupero naturale dei tessuti.`;
+        `Hai espresso un'intensità elevata (RPE ${rpe}/10) con fatica marcata. Per la prossima seduta mantieni 1-2 colpi di riserva (buffer) senza forzare la chiusura. Nelle prossime 24 ore dai priorità a riposo e idratazione.`;
+    } else if (isSpinta) {
+      allerta = "verde";
+      tipoIntervento = "spinta";
+      sintesi = rawTranscript
+        ? `Nota Vocale: l'atleta riferisce facilità, ottima fluidità e margine sul carico (${estrattiVocali}). RPE: ${rpe}/10.`
+        : `Carico percepito leggero / ottima riserva energetica (RPE ${rpe}/10).`;
+      proposta =
+        `Per Seduta Successiva (Giorno ${nextDay}): Spingere maggiormente! Concedere incremento di sovraccarico progressivo (+1.25 / +2.5 kg sui fondamentali) o alzare l'intensità a target pieno per stimolare l'adattamento.`;
+      consiglioCoach =
+        `Ottima risposta cinestesica: la seduta è risultata agevole e il pattern solido. Nella prossima seduta concediti un incremento di carico (+1.25/+2.5 kg) sui fondamentali per continuare la scaletta a onda progressiva.`;
+    } else {
+      // Consolidamento a regime
+      allerta = "verde";
+      tipoIntervento = "consolidamento";
+      sintesi = rawTranscript
+        ? `Nota Vocale: l'atleta esprime sensazioni stabili e controllo centrato (${estrattiVocali}). RPE: ${rpe}/10.`
+        : `Sessione chiusa regolarmente con parametri motori stabili ed ottima risposta generale (RPE ${rpe}/10).`;
+      proposta =
+        `Per Seduta Successiva (Giorno ${nextDay}): Proseguire con la periodizzazione prevista mantenendo il focus sulla qualità e velocità del pattern motorio.`;
+      consiglioCoach =
+        `Sessione chiusa con successo e ottimo controllo sul pattern motorio! Per la prossima seduta mantieni la stessa qualità esecutiva.`;
     }
 
-    const trascrizioneGenerata = metadata.trascrizioneLive
-      ? metadata.trascrizioneLive
-      : metadata.noteTesto
-      ? metadata.noteTesto
+    const trascrizioneGenerata = rawTranscript
+      ? rawTranscript
       : `Registrazione vocale atleta su Seduta ${metadata.giorno || ""}: RPE percepito ${rpe}/10, sensazioni motorie: ${(metadata.sensazioni || []).join(", ") || "buone"}.`;
 
     return {
       trascrizione: sanitizzaLinguaggioAtleta(trascrizioneGenerata),
       allerta,
+      tipo_intervento: tipoIntervento,
+      giorno_destinazione: nextDay,
       sintesi: sanitizzaLinguaggioAtleta(sintesi),
       proposta_azione: sanitizzaLinguaggioAtleta(proposta),
       consiglio_coach: sanitizzaLinguaggioAtleta(consiglioCoach),

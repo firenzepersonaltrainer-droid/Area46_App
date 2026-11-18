@@ -142,6 +142,147 @@ function ExecutiveAudioPlayer({
   );
 }
 
+/**
+ * Sezione Decisionale Coach Stefano per Prescrizione Seduta Successiva
+ * Consente al Coach di scegliere se spingere o alleggerire e pubblicare solo su sua decisione
+ */
+function CoachAdviceDecisionSection({
+  note,
+  onSaveAdvice,
+  isPending,
+}: {
+  note: any;
+  onSaveAdvice: (data: {
+    id: number;
+    consiglio_coach: string;
+    consiglio_approvato_coach: boolean;
+    giorno_destinazione: string | number;
+    tipo_intervento: "spinta" | "scarico" | "consolidamento";
+  }) => void;
+  isPending: boolean;
+}) {
+  const rawGiorno = note.giorno || "";
+  const matchNum = String(rawGiorno).match(/\d+/);
+  const nextNum = matchNum ? parseInt(matchNum[0], 10) + 1 : 2;
+  const defaultDest = note.giorno_destinazione || nextNum;
+
+  const [tipo, setTipo] = useState<"spinta" | "scarico" | "consolidamento">(
+    note.tipo_intervento || (note.ai_allerta === "rosso" || note.ai_allerta === "giallo" ? "scarico" : "spinta")
+  );
+  const [consiglio, setConsiglio] = useState<string>(
+    note.consiglio_coach || note.ai_proposta_azione || ""
+  );
+  const destGiorno = defaultDest;
+  const isApproved = note.consiglio_approvato_coach === true;
+
+  const handleApplyPreset = (newTipo: "spinta" | "scarico" | "consolidamento") => {
+    setTipo(newTipo);
+    if (newTipo === "spinta") {
+      setConsiglio("Ottima risposta: la seduta è risultata agevole e il pattern solido. Nella prossima seduta concediti un incremento di sovraccarico progressivo (+1.25/+2.5 kg) sui movimenti chiave per continuare a spingere.");
+    } else if (newTipo === "scarico") {
+      setConsiglio("Ho ascoltato la tua nota sull'affaticamento/fastidio avvertito. Per la prossima seduta applicheremo un lavoro più leggero con Modalità B e mobilità a terra per farti recuperare senza stress articolare.");
+    } else {
+      setConsiglio("Sessione chiusa con successo e ottimo controllo sul pattern motorio! Per la prossima seduta mantieni la stessa qualità e concentrazione esecutiva.");
+    }
+  };
+
+  return (
+    <div className="p-3.5 rounded-2xl bg-[#09090b] text-white border-2 border-[#1c00ff] space-y-3 shadow-md">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#e3ff00]">
+          <Sparkles className="size-4" />
+          <span>Decisione Coach Stefano per Seduta {destGiorno}</span>
+        </div>
+        {isApproved && (
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500 text-white flex items-center gap-1 shadow-xs">
+            <CheckCircle2 className="size-3" /> Approvato & Visibile all'Atleta
+          </span>
+        )}
+      </div>
+
+      {/* Selezione Rapida Orientamento: Spinta vs Scarico vs Consolida */}
+      <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+        <button
+          type="button"
+          onClick={() => handleApplyPreset("spinta")}
+          className={`py-1.5 px-2 rounded-xl text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
+            tipo === "spinta"
+              ? "bg-[#e3ff00] text-zinc-950 shadow-md ring-2 ring-[#e3ff00]"
+              : "bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800"
+          }`}
+        >
+          <span>🚀 Spingi (+Carico)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleApplyPreset("scarico")}
+          className={`py-1.5 px-2 rounded-xl text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
+            tipo === "scarico"
+              ? "bg-rose-500 text-white shadow-md ring-2 ring-rose-400"
+              : "bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800"
+          }`}
+        >
+          <span>🛡️ Scarico / Cautela</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleApplyPreset("consolidamento")}
+          className={`py-1.5 px-2 rounded-xl text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
+            tipo === "consolidamento"
+              ? "bg-blue-600 text-white shadow-md ring-2 ring-blue-400"
+              : "bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800"
+          }`}
+        >
+          <span>⚖️ Consolida</span>
+        </button>
+      </div>
+
+      {/* Testo del consiglio editabile da Stefano */}
+      <div className="space-y-1">
+        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between">
+          <span>Testo direttiva per la Seduta {destGiorno}:</span>
+          <span className="text-[9px] text-[#e3ff00] font-normal">Modificabile liberamente</span>
+        </label>
+        <textarea
+          value={consiglio}
+          onChange={(e) => setConsiglio(e.target.value)}
+          rows={2}
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-100 font-medium focus:outline-none focus:border-[#1c00ff] leading-relaxed resize-none"
+        />
+      </div>
+
+      {/* Tasto Approvazione & Pubblicazione Ufficiale */}
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={() => {
+          onSaveAdvice({
+            id: note.id,
+            consiglio_coach: consiglio,
+            consiglio_approvato_coach: true,
+            giorno_destinazione: destGiorno,
+            tipo_intervento: tipo,
+          });
+        }}
+        className={`w-full py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md ${
+          isApproved
+            ? "bg-zinc-800 hover:bg-zinc-700 text-[#e3ff00]"
+            : "bg-[#1c00ff] hover:bg-[#1600cc] text-white"
+        }`}
+      >
+        <CheckCircle2 className="size-4" />
+        <span>
+          {isApproved
+            ? `Aggiorna Direttiva per Seduta ${destGiorno} ✓`
+            : `Approva e Mostra all'Atleta per Seduta ${destGiorno} ✓`}
+        </span>
+      </button>
+    </div>
+  );
+}
+
 export function CoachAudioFeedbackDrawer({
   open,
   onClose,
@@ -185,9 +326,43 @@ export function CoachAudioFeedbackDrawer({
     },
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
       if (vars.stato === "cestino") toast.success("Nota spostata nel cestino");
       else if (vars.stato === "nuovo") toast.success("Nota ripristinata");
       else toast.success("Stato nota aggiornato");
+    },
+  });
+
+  // Mutazione approvazione e pubblicazione consiglio Coach Stefano per la seduta successiva
+  const saveCoachAdviceMutation = useMutation({
+    mutationFn: async (payload: {
+      id: number;
+      consiglio_coach: string;
+      consiglio_approvato_coach: boolean;
+      giorno_destinazione: string | number;
+      tipo_intervento: "spinta" | "scarico" | "consolidamento";
+    }) => {
+      const res = await fetch(`/app-api/audio-notes/${payload.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stato: "applicato",
+          consiglio_coach: payload.consiglio_coach,
+          consiglio_approvato_coach: payload.consiglio_approvato_coach,
+          giorno_destinazione: payload.giorno_destinazione,
+          tipo_intervento: payload.tipo_intervento,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore salvataggio direttiva");
+      return res.json();
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
+      toast.success(`Direttiva approvata e inviata all'atleta per la Seduta ${vars.giorno_destinazione}!`);
+    },
+    onError: () => {
+      toast.error("Errore nell'invio della direttiva.");
     },
   });
 
@@ -202,6 +377,7 @@ export function CoachAudioFeedbackDrawer({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
       toast.success("Nota eliminata definitivamente");
     },
   });
@@ -504,17 +680,13 @@ export function CoachAudioFeedbackDrawer({
                       </div>
                     )}
 
-                    {/* Proposta d'Azione Socrate (Modalità B) */}
-                    {note.ai_proposta_azione && (
-                      <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-xs space-y-1">
-                        <div className="text-[10px] font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1">
-                          <CheckCircle2 className="size-3 text-emerald-600" />
-                          <span>Consiglio Operativo (Socrate - Modalità B):</span>
-                        </div>
-                        <p className="text-emerald-950 font-medium leading-relaxed">
-                          {note.ai_proposta_azione}
-                        </p>
-                      </div>
+                    {/* SEZIONE DECISIONALE COACH STEFANO PER SEDUTA SUCCESSIVA */}
+                    {note.stato !== "cestino" && (
+                      <CoachAdviceDecisionSection
+                        note={note}
+                        onSaveAdvice={(data) => saveCoachAdviceMutation.mutate(data)}
+                        isPending={saveCoachAdviceMutation.isPending}
+                      />
                     )}
 
                     {/* Azioni del Coach */}
@@ -578,22 +750,6 @@ export function CoachAudioFeedbackDrawer({
                               >
                                 <Check className="size-3.5 text-emerald-400" />
                                 <span>Segna come Ascoltato</span>
-                              </button>
-                            )}
-
-                            {note.stato !== "applicato" && (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  updateAudioStatusMutation.mutate({
-                                    id: note.id,
-                                    stato: "applicato",
-                                  })
-                                }
-                                className="px-3 py-1.5 bg-[#1c00ff] hover:bg-[#1600cc] text-white rounded-xl text-xs font-black transition-all flex items-center gap-1 shadow-xs cursor-pointer"
-                              >
-                                <CheckCircle2 className="size-3.5 text-[#e3ff00]" />
-                                <span>Applica Scarico</span>
                               </button>
                             )}
                           </div>

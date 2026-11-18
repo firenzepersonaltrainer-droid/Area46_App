@@ -16,6 +16,7 @@ import {
   PlayCircle,
   BookOpen,
   Sparkles,
+  ExternalLink,
 } from "lucide-react";
 import {
   Select,
@@ -61,6 +62,7 @@ interface ApprofondimentoItem {
   note_tecniche: string;
   link_video: string;
   data_pubblicazione: string | null;
+  immagine?: string | null;
 }
 
 function isNuovo(dataPubblicazione: string | null): boolean {
@@ -219,35 +221,95 @@ function ApprofondimentiSection() {
     );
   }
 
-  const haNewVideo = (items || []).some((item) => isNuovo(item.data_pubblicazione));
-
   return (
     <div className="space-y-3">
       {(items || []).map((item, i) => {
         const ytId = getYouTubeId(item.link_video ?? "");
         const nuovo = isNuovo(item.data_pubblicazione);
+        const hasExternalLink = !!item.link_video && !ytId;
+
         return (
-          <div key={i} className="rounded-lg border bg-raised p-4 flex items-start gap-4" style={{ borderColor: nuovo ? "#e3ff00" : "var(--color-border)", borderWidth: nuovo ? 1.5 : 1 }}>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full" style={{ background: "#374151" }}>
-              <BookOpen className="size-5" style={{ color: "#ffffff" }} />
-            </div>
+          <div
+            key={i}
+            className="rounded-xl border bg-raised p-4 flex items-start gap-3.5 transition-all hover:bg-zinc-50/50 shadow-2xs"
+            style={{
+              borderColor: nuovo ? "#e3ff00" : "var(--color-border)",
+              borderWidth: nuovo ? 2 : 1,
+              boxShadow: nuovo ? "0 0 14px rgba(227,255,0,0.22)" : undefined,
+            }}
+          >
+            {item.immagine ? (
+              <a
+                href={item.link_video || undefined}
+                target={item.link_video ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                className="shrink-0 block group/thumb"
+                title="Apri contenuto"
+              >
+                <img
+                  src={item.immagine}
+                  alt={item.nome_esercizio}
+                  className="w-20 h-14 sm:w-24 sm:h-16 rounded-xl object-cover border border-zinc-200/80 shadow-xs group-hover/thumb:brightness-95 transition-all"
+                  loading="lazy"
+                />
+              </a>
+            ) : (
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full" style={{ background: "#374151" }}>
+                <BookOpen className="size-5" style={{ color: "#ffffff" }} />
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-primary text-sm">{item.nome_esercizio}</p>
+                {item.link_video ? (
+                  <a
+                    href={item.link_video}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-primary text-sm hover:underline hover:text-[#1c00ff] transition-colors leading-snug"
+                  >
+                    {item.nome_esercizio}
+                  </a>
+                ) : (
+                  <p className="font-semibold text-primary text-sm leading-snug">{item.nome_esercizio}</p>
+                )}
                 {nuovo && (
-                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold" style={{ background: "#e3ff00", color: "#1c00ff" }}>Nuovo</span>
+                  <span
+                    className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-black uppercase tracking-wider shadow-2xs"
+                    style={{ background: "#e3ff00", color: "#1c00ff" }}
+                  >
+                    Nuovo
+                  </span>
                 )}
               </div>
-              {item.note_tecniche && <p className="text-xs text-secondary mt-0.5 leading-relaxed">{item.note_tecniche}</p>}
+              {item.note_tecniche && (
+                <p className="text-xs text-secondary mt-1 leading-relaxed">
+                  {item.note_tecniche}
+                </p>
+              )}
             </div>
-            {ytId && (
+            {ytId ? (
               <a href={item.link_video} target="_blank" rel="noopener noreferrer" className="shrink-0">
-                <button className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold cursor-pointer" style={{ background: "#1c00ff", color: "#ffffff" }}>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold cursor-pointer transition-all hover:brightness-110 shadow-xs"
+                  style={{ background: "#1c00ff", color: "#ffffff" }}
+                >
                   <PlayCircle className="size-3.5" />
                   Video
                 </button>
               </a>
-            )}
+            ) : hasExternalLink ? (
+              <a href={item.link_video} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold cursor-pointer transition-all hover:brightness-110 shadow-xs"
+                  style={{ background: "#1c00ff", color: "#ffffff" }}
+                >
+                  <ExternalLink className="size-3.5" />
+                  Leggi
+                </button>
+              </a>
+            ) : null}
           </div>
         );
       })}
@@ -791,6 +853,22 @@ export default function AllenamentiPage() {
   const isApprofondimenti = livello === "Approfondimenti ed extra";
   const archivioHref = livello ? `/archivio?livello=${encodeURIComponent(livello)}` : "/archivio";
 
+  React.useEffect(() => {
+    if (haNuoviApprofondimenti && ultimoVideoNuovo) {
+      const key = "notif_approfondimento_" + ultimoVideoNuovo.nome_esercizio;
+      if (!sessionStorage.getItem(key)) {
+        toast.info(`Nuovo approfondimento: ${ultimoVideoNuovo.nome_esercizio}`, {
+          duration: 7000,
+          action: {
+            label: "Leggi ora",
+            onClick: () => setLivello("Approfondimenti ed extra"),
+          },
+        });
+        sessionStorage.setItem(key, "1");
+      }
+    }
+  }, [haNuoviApprofondimenti, ultimoVideoNuovo, setLivello]);
+
   return (
     <>
       <DialogConfermaReset pending={reset.pending} resetting={reset.resetting} onConferma={reset.confermaReset} onAnnulla={reset.annullaReset} />
@@ -823,25 +901,54 @@ export default function AllenamentiPage() {
           </div>
         </div>
         {(livelli || []).length > 1 && (
-          <div className="relative inline-block">
-            <Select value={livello} onValueChange={setLivello}>
-              <SelectTrigger className="w-56 relative cursor-pointer font-bold">
-                <SelectValue placeholder="Tutti i livelli" />
-                {haNuoviApprofondimenti && !isApprofondimenti && (
-                  <span className="absolute -top-1.5 -right-1.5 flex h-3 w-3" title="Nuovo video in Approfondimenti ed Extra">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border border-white"></span>
-                  </span>
-                )}
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">Tutti i livelli</SelectItem>
-                {livelliAllenamento.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                {(livelli || []).includes("Approfondimenti ed extra") && (
-                  <SelectItem value="Approfondimenti ed extra">Approfondimenti ed extra</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 flex-wrap">
+            <div className="relative inline-block">
+              <Select value={livello} onValueChange={setLivello}>
+                <SelectTrigger className="w-56 relative cursor-pointer font-bold">
+                  <SelectValue placeholder="Tutti i livelli" />
+                  {haNuoviApprofondimenti && !isApprofondimenti && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-3 w-3" title="Nuovo approfondimento in Approfondimenti ed Extra">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border border-white"></span>
+                    </span>
+                  )}
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Tutti i livelli</SelectItem>
+                  {livelliAllenamento.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                  {(livelli || []).includes("Approfondimenti ed extra") && (
+                    <SelectItem value="Approfondimenti ed extra">
+                      <div className="flex items-center gap-1.5">
+                        <span>Approfondimenti ed extra</span>
+                        {haNuoviApprofondimenti && (
+                          <span className="rounded-full px-1.5 py-0.2 text-[10px] font-black uppercase tracking-wider bg-amber-400 text-zinc-950">
+                            Novità
+                          </span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {haNuoviApprofondimenti && !isApprofondimenti && ultimoVideoNuovo && (
+              <div
+                onClick={() => setLivello("Approfondimenti ed extra")}
+                className="rounded-xl px-3.5 py-2 flex items-center justify-between gap-3 cursor-pointer transition-all hover:bg-amber-500/15 border border-amber-500/40 bg-amber-500/10 text-amber-950 shadow-2xs group"
+                title="Tocca per visualizzare il nuovo approfondimento"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-base shrink-0 animate-bounce">🔥</span>
+                  <p className="text-xs font-bold truncate">
+                    Nuovo: <span className="font-extrabold underline">{ultimoVideoNuovo.nome_esercizio}</span>
+                  </p>
+                </div>
+                <span className="text-xs font-black underline shrink-0 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                  Leggi ora →
+                </span>
+              </div>
+            )}
           </div>
         )}
         {isApprofondimenti ? (

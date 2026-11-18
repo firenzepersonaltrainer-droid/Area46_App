@@ -62,31 +62,14 @@ export function AudioFeedbackRecorder({
     return "";
   };
 
+  const transcriptRef = useRef<string>("");
+
   const startRecording = async () => {
     setPermissionError(null);
     setLiveTranscript("");
+    transcriptRef.current = "";
     audioChunksRef.current = [];
     setRecordingSeconds(0);
-
-    try {
-      const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRec) {
-        const rec = new SpeechRec();
-        rec.lang = "it-IT";
-        rec.continuous = true;
-        rec.interimResults = true;
-        rec.onresult = (ev: any) => {
-          let t = "";
-          for (let i = 0; i < ev.results.length; i++) {
-            t += ev.results[i][0].transcript;
-          }
-          setLiveTranscript(t);
-        };
-        rec.onerror = () => {};
-        rec.start();
-        recognitionRef.current = rec;
-      }
-    } catch {}
 
     if (!navigator?.mediaDevices?.getUserMedia) {
       setPermissionError("Il tuo browser non supporta la registrazione vocale diretta.");
@@ -100,6 +83,33 @@ export function AudioFeedbackRecorder({
       const mediaRecorder = new MediaRecorder(stream, options);
 
       mediaRecorderRef.current = mediaRecorder;
+
+      // Avvia Speech Recognition DOPO aver ottenuto lo stream per evitare conflitti microfono
+      try {
+        const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (SpeechRec) {
+          const rec = new SpeechRec();
+          rec.lang = "it-IT";
+          rec.continuous = true;
+          rec.interimResults = true;
+          rec.onresult = (ev: any) => {
+            let t = "";
+            for (let i = 0; i < ev.results.length; i++) {
+              t += ev.results[i][0].transcript + " ";
+            }
+            const cleanT = t.trim();
+            setLiveTranscript(cleanT);
+            transcriptRef.current = cleanT;
+          };
+          rec.onerror = (e: any) => {
+            console.warn("SpeechRec warning:", e?.error);
+          };
+          rec.start();
+          recognitionRef.current = rec;
+        }
+      } catch (recErr) {
+        console.warn("Speech recognition non avviabile:", recErr);
+      }
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
@@ -126,7 +136,7 @@ export function AudioFeedbackRecorder({
             blob,
             base64,
             durationSec: recordingSeconds || 1,
-            transcript: liveTranscript.trim() || undefined,
+            transcript: (transcriptRef.current || liveTranscript).trim() || undefined,
           });
         };
       };
@@ -239,35 +249,46 @@ export function AudioFeedbackRecorder({
 
       {/* STATO 2: RECORDING IN CORSO */}
       {isRecording && (
-        <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-3">
-            {/* Animazione Onde Sonore Athletic Fluo */}
-            <div className="flex items-end gap-1 h-5">
-              <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-3" />
-              <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-5 [animation-delay:150ms]" />
-              <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-2 [animation-delay:300ms]" />
-              <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-4 [animation-delay:450ms]" />
+        <div className="space-y-2 pt-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* Animazione Onde Sonore Athletic Fluo */}
+              <div className="flex items-end gap-1 h-5">
+                <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-3" />
+                <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-5 [animation-delay:150ms]" />
+                <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-2 [animation-delay:300ms]" />
+                <span className="w-1 bg-[#e3ff00] rounded-full animate-bounce h-4 [animation-delay:450ms]" />
+              </div>
+
+              <div className="text-xs font-mono font-black text-[#e3ff00] tabular-nums">
+                REC {formatTime(recordingSeconds)} / {formatTime(maxDurationSec)}
+              </div>
             </div>
 
-            <div className="text-xs font-mono font-black text-[#e3ff00] tabular-nums">
-              REC {formatTime(recordingSeconds)} / {formatTime(maxDurationSec)}
-            </div>
+            <button
+              type="button"
+              onClick={stopRecording}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all cursor-pointer animate-pulse"
+            >
+              <Square className="size-3.5 fill-current" />
+              <span>Ferma</span>
+            </button>
           </div>
 
-          <button
-            type="button"
-            onClick={stopRecording}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all cursor-pointer animate-pulse"
-          >
-            <Square className="size-3.5 fill-current" />
-            <span>Ferma</span>
-          </button>
+          {liveTranscript && (
+            <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300 italic leading-snug">
+              <span className="text-[#e3ff00] font-bold not-italic block text-[9px] uppercase tracking-wider mb-0.5">
+                Trascrizione in tempo reale:
+              </span>
+              "{liveTranscript}"
+            </div>
+          )}
         </div>
       )}
 
       {/* STATO 3: REGISTRAZIONE COMPLETATA (Player & Gestione) */}
       {!isRecording && audioUrl && (
-        <div className="space-y-2 pt-1">
+        <div className="space-y-2.5 pt-1">
           <audio
             ref={audioElementRef}
             src={audioUrl}
@@ -315,10 +336,46 @@ export function AudioFeedbackRecorder({
             </div>
           </div>
 
+          {/* Testo trascritto o inseribile per garantire comprensione AI al 100% */}
+          <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-wider text-zinc-400 flex items-center justify-between">
+              <span>Trascrizione nota vocale (compresa da AI):</span>
+              <span className="text-[#e3ff00] font-normal normal-case text-[9px]">Editabile se vuoi correggere</span>
+            </label>
+            <input
+              type="text"
+              value={liveTranscript}
+              onChange={(e) => {
+                const val = e.target.value;
+                setLiveTranscript(val);
+                transcriptRef.current = val;
+                if (audioUrl) {
+                  // Aggiorna transcript nel genitore
+                  fetch(audioUrl)
+                    .then((r) => r.blob())
+                    .then((blob) => {
+                      const reader = new FileReader();
+                      reader.readAsDataURL(blob);
+                      reader.onloadend = () => {
+                        onAudioRecorded({
+                          blob,
+                          base64: reader.result as string,
+                          durationSec: totalRecordedSec || 1,
+                          transcript: val.trim() || undefined,
+                        });
+                      };
+                    });
+                }
+              }}
+              placeholder="Es. ottima coordinazione, carico leggero sul finale..."
+              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-[#1c00ff]"
+            />
+          </div>
+
           <div className="flex items-center justify-between text-[10px] text-emerald-400 font-bold px-1">
             <span className="flex items-center gap-1">
               <span className="size-1.5 rounded-full bg-emerald-400" />
-              Audio pronto • Verrà allegato e analizzato al salvataggio
+              Audio pronto • Verrà inviato e analizzato dal Coach
             </span>
           </div>
         </div>

@@ -97,7 +97,7 @@ function loadData() {
     const defaultAllenamenti = (defaultData as any).allenamenti;
     const defaultMissing = defaultAllenamenti.filter((a: any) => !(a.parametri || "").trim()).length;
     const loadedMissing = (loaded.allenamenti || []).filter((a: any) => !(a.parametri || "").trim()).length;
-    if (defaultMissing < loadedMissing || !loaded.allenamenti || loaded.allenamenti.length < 50) {
+    if (defaultMissing < loadedMissing || !loaded.allenamenti || loaded.allenamenti.length < defaultAllenamenti.length) {
       loaded.allenamenti = JSON.parse(JSON.stringify(defaultAllenamenti));
     }
   }
@@ -4944,8 +4944,16 @@ CALENDARIO E PRENOTAZIONI:
           note_tecniche: a.note_tecniche,
           link_video: a.link_video,
           data_pubblicazione: a.data_pubblicazione,
+          immagine: a.immagine || null,
         }))
-        .sort((a: any, b: any) => (a.data_pubblicazione > b.data_pubblicazione ? -1 : 1));
+        .sort((a: any, b: any) => {
+          if (a.data_pubblicazione && !b.data_pubblicazione) return -1;
+          if (!a.data_pubblicazione && b.data_pubblicazione) return 1;
+          if (a.data_pubblicazione && b.data_pubblicazione) {
+            return b.data_pubblicazione.localeCompare(a.data_pubblicazione);
+          }
+          return 0;
+        });
       return res.end(JSON.stringify(rows));
     }
 
@@ -5510,6 +5518,9 @@ CALENDARIO E PRENOTAZIONI:
         ai_sintesi: aiAnalysisResult?.sintesi ?? null,
         ai_proposta_azione: aiAnalysisResult?.proposta_azione ?? null,
         consiglio_coach: aiAnalysisResult?.consiglio_coach ?? null,
+        consiglio_approvato_coach: false, // SOLO su approvazione esplicita del Coach Stefano
+        giorno_destinazione: aiAnalysisResult?.giorno_destinazione ?? null,
+        tipo_intervento: aiAnalysisResult?.tipo_intervento ?? "consolidamento",
         data_ora: new Date().toISOString(),
         created_at: new Date().toISOString(),
       };
@@ -5518,6 +5529,8 @@ CALENDARIO E PRENOTAZIONI:
         tipo: newEntry.tipo,
         livello: newEntry.livello,
         giorno: newEntry.giorno,
+        giorno_destinazione: newEntry.giorno_destinazione,
+        tipo_intervento: newEntry.tipo_intervento,
         rpe_globale: newEntry.rpe_globale,
         sensazioni: newEntry.sensazioni,
       });
@@ -5737,6 +5750,9 @@ CALENDARIO E PRENOTAZIONI:
             ai_sintesi: aiAnalysis.sintesi,
             ai_proposta_azione: aiAnalysis.proposta_azione,
             consiglio_coach: aiAnalysis.consiglio_coach || aiAnalysis.proposta_azione || null,
+            consiglio_approvato_coach: false, // SOLO su decisione esplicita del Coach Stefano
+            giorno_destinazione: aiAnalysis.giorno_destinazione || null,
+            tipo_intervento: aiAnalysis.tipo_intervento || "consolidamento",
             data_ora: new Date().toISOString(),
             created_at: new Date().toISOString(),
           };
@@ -5810,24 +5826,73 @@ CALENDARIO E PRENOTAZIONI:
       return res.end(JSON.stringify(notes));
     }
 
-    // PATCH /app-api/audio-notes/:id (Aggiorna stato nota audio)
+    // PATCH /app-api/audio-notes/:id (Aggiorna stato nota audio e/o approva e invia consiglio Coach)
     const matchAudioPatch = pathname.match(/^\/app-api\/audio-notes\/(\d+)$/);
     if (matchAudioPatch && method === "PATCH") {
       const id = parseInt(matchAudioPatch[1], 10);
       const stato = parsedBody.stato;
-      if (!stato || !["nuovo", "ascoltato", "applicato", "archiviato", "cestino"].includes(stato)) {
+      const consiglioCoach = parsedBody.consiglio_coach;
+      const consiglioApprovato = parsedBody.consiglio_approvato_coach !== undefined ? !!parsedBody.consiglio_approvato_coach : undefined;
+      const giornoDestinazione = parsedBody.giorno_destinazione;
+      const tipoIntervento = parsedBody.tipo_intervento;
+
+      if (stato && !["nuovo", "ascoltato", "applicato", "archiviato", "cestino"].includes(stato)) {
         res.statusCode = 400;
         return res.end(JSON.stringify({ error: "Stato non valido" }));
       }
-      const updated = updateAudioNoteStatus(id, stato);
+      const updated = updateAudioNoteStatus(id, stato || "applicato", {
+        consiglio_coach: consiglioCoach,
+        consiglio_approvato_coach: consiglioApprovato,
+        giorno_destinazione: giornoDestinazione,
+        tipo_intervento: tipoIntervento,
+      });
       if (db.audio_note_feedback) {
         const found = db.audio_note_feedback.find((n: any) => Number(n.id) === id);
         if (found) {
-          found.stato = stato;
+          if (stato) found.stato = stato;
+          if (consiglioCoach !== undefined) found.consiglio_coach = consiglioCoach;
+          if (consiglioApprovato !== undefined) found.consiglio_approvato_coach = consiglioApprovato;
+          if (giornoDestinazione !== undefined) found.giorno_destinazione = giornoDestinazione;
+          if (tipoIntervento !== undefined) found.tipo_intervento = tipoIntervento;
+
+          // Se il Coach ha approvato / inviato il consiglio, propaga al diario atleta per renderlo visibile alla seduta successiva
+          if (consiglioApprovato === true || consiglioCoach) {
+            const athleteEmail = found.email_cliente;
+            if (athleteEmail && db.diario_utente) {
+              const destGiorno = giornoDestinazione || found.giorno_destinazione || null;
+              // Trova eventuale record recente collegato a questa nota o atleta
+              let diaryEntry = db.diario_utente
+                .filter((d: any) => (d.email_cliente || "").toLowerCase() === athleteEmail.toLowerCase())
+                .reverse()
+                .find((d: any) => d.audio_url === found.audio_url || d.id === found.id);
+
+              if (diaryEntry) {
+                if (consiglioCoach) diaryEntry.consiglio_coach = consiglioCoach;
+                if (consiglioApprovato !== undefined) diaryEntry.consiglio_approvato_coach = consiglioApprovato;
+                if (destGiorno) diaryEntry.giorno_destinazione = destGiorno;
+                if (tipoIntervento) diaryEntry.tipo_intervento = tipoIntervento;
+              } else {
+                db.diario_utente.push({
+                  id: Date.now(),
+                  email_cliente: athleteEmail,
+                  tipo: "feedback_seduta",
+                  livello: "PRO",
+                  giorno: destGiorno ? String(destGiorno) : null,
+                  giorno_destinazione: destGiorno || null,
+                  tipo_intervento: tipoIntervento || "spinta",
+                  consiglio_coach: consiglioCoach || found.ai_proposta_azione || null,
+                  consiglio_approvato_coach: true,
+                  feedback: `Consiglio del Coach Stefano per Seduta ${destGiorno || "successiva"}`,
+                  data_ora: new Date().toISOString(),
+                  created_at: new Date().toISOString(),
+                });
+              }
+            }
+          }
           saveData(db);
         }
       }
-      return res.end(JSON.stringify(updated || { id, stato }));
+      return res.end(JSON.stringify(updated || { id, stato: stato || "applicato" }));
     }
 
     // DELETE /app-api/audio-notes/:id (Elimina definitivamente nota audio)
