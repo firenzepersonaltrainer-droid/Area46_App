@@ -40886,26 +40886,37 @@ function parseWorkoutSetDeterministic(testo) {
   if (lower.includes("corpo libero") || lower.includes("senza peso") || lower.includes("peso corporeo") || lower.includes("solo il corpo")) {
     carico_kg = 0;
   } else {
-    const pKgWords = [
-      /([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\s*(?:e\s*mezzo)?/i,
-      /([a-z]+(?:\s+[a-z]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\s*(?:e\s*mezzo)?/i
-    ];
-    for (const pat of pKgWords) {
-      const m = lower.match(pat);
-      if (m) {
-        let val = null;
-        const rawPart = m[1].trim();
-        const words = rawPart.split(/\s+/);
-        if (words.length === 2) {
-          const w1 = parseNumeroParola(words[0]);
-          const w2 = parseNumeroParola(words[1]);
-          if (w1 !== null && w2 !== null && w1 >= 20 && w2 < 10) val = w1 + w2;
-        }
-        if (val === null) val = parseNumeroParola(rawPart);
-        if (val !== null) {
-          if (m[0].includes("e mezzo") || m[0].includes("mezzo")) val += 0.5;
-          carico_kg = val;
-          break;
+    const mNumKg = lower.match(/\b([0-9]+(?:[.,][0-9]+)?)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\b/i);
+    if (mNumKg) {
+      let val = parseFloat(mNumKg[1].replace(",", "."));
+      if (!isNaN(val)) {
+        if (mNumKg[0].includes("mezzo")) val += 0.5;
+        carico_kg = val;
+      }
+    }
+    if (carico_kg === null) {
+      const mWordKg = lower.match(/((?:[a-z]+\s+){0,2}[a-z]+)\s*(?:e\s*mezzo)?\s*(?:chili|kg|kili)\b/i);
+      if (mWordKg) {
+        const tokens = mWordKg[1].trim().split(/\s+/);
+        for (let len = Math.min(2, tokens.length); len >= 1; len--) {
+          const slice = tokens.slice(tokens.length - len);
+          if (slice.length === 2) {
+            const n1 = parseNumeroParola(slice[0]);
+            const n2 = parseNumeroParola(slice[1]);
+            if (n1 !== null && n2 !== null && n1 >= 20 && n2 < 10) {
+              let total = n1 + n2;
+              if (mWordKg[0].includes("mezzo")) total += 0.5;
+              carico_kg = total;
+              break;
+            }
+          } else if (slice.length === 1) {
+            let n = parseNumeroParola(slice[0]);
+            if (n !== null) {
+              if (mWordKg[0].includes("mezzo")) n += 0.5;
+              carico_kg = n;
+              break;
+            }
+          }
         }
       }
     }
