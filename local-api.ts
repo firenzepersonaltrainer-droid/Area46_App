@@ -58,38 +58,95 @@ function loadData() {
       return JSON.parse(raw);
     } catch {}
   }
+
+  // 1. Inizializza con defaultData come template base
+  try {
+    loaded = JSON.parse(JSON.stringify(defaultData));
+  } catch {
+    loaded = {
+      livelli: [],
+      ordine_livelli: [],
+      database_esercizi: [],
+      allenamenti: [],
+      diario_utente: [],
+      stato_allenamenti: [],
+      preferenze_utente: [],
+      profili_utenti: [],
+      configurazione_lab: {},
+      prenotazioni_slot: [],
+      tariffario_pacchetti: [],
+      transazioni_pagamenti: [],
+      movimenti_crediti: [],
+      eccezioni_calendario: [],
+      attivita_lab: [],
+      regole_palinsesto: [],
+      active_user_id: "usr-atleta-01",
+    };
+  }
+
+  // 2. VAULT AS SINGLE SOURCE OF TRUTH (Priorità Assoluta al Boot!)
+  const vaultCandidates = [
+    path.resolve(__dirname, "data", "vault"),
+    path.resolve(__dirname, "..", "data", "vault"),
+  ];
+  const vaultDir = vaultCandidates.find((p) => fs.existsSync(p));
+
+  if (vaultDir) {
+    try {
+      // Modulo 1: Utenti, Crediti, Transazioni
+      const mod1File = path.join(vaultDir, "1_gestionale_utenti_crediti.json");
+      if (fs.existsSync(mod1File)) {
+        const mod1 = JSON.parse(fs.readFileSync(mod1File, "utf-8"));
+        if (Array.isArray(mod1.profili_utenti) && mod1.profili_utenti.length > 0) {
+          loaded.profili_utenti = mod1.profili_utenti;
+        }
+        if (Array.isArray(mod1.movimenti_crediti)) loaded.movimenti_crediti = mod1.movimenti_crediti;
+        if (Array.isArray(mod1.transazioni_pagamenti)) loaded.transazioni_pagamenti = mod1.transazioni_pagamenti;
+        if (Array.isArray(mod1.transazioni_cancellate)) loaded.transazioni_cancellate = mod1.transazioni_cancellate;
+        if (Array.isArray(mod1.utenti_cancellati)) loaded.utenti_cancellati = mod1.utenti_cancellati;
+        if (Array.isArray(mod1.tariffario_pacchetti)) loaded.tariffario_pacchetti = mod1.tariffario_pacchetti;
+      }
+
+      // Modulo 2: Calendario, Slot ed Eccezioni (PROTEZIONE AUREA)
+      const mod2File = path.join(vaultDir, "2_gestionale_calendario.json");
+      if (fs.existsSync(mod2File)) {
+        const mod2 = JSON.parse(fs.readFileSync(mod2File, "utf-8"));
+        if (Array.isArray(mod2.prenotazioni_slot)) loaded.prenotazioni_slot = mod2.prenotazioni_slot;
+        if (Array.isArray(mod2.prenotazioni_cancellate)) loaded.prenotazioni_cancellate = mod2.prenotazioni_cancellate;
+        if (Array.isArray(mod2.eccezioni_calendario) && mod2.eccezioni_calendario.length > 0) {
+          loaded.eccezioni_calendario = mod2.eccezioni_calendario;
+        }
+        if (Array.isArray(mod2.regole_palinsesto)) loaded.regole_palinsesto = mod2.regole_palinsesto;
+        if (Array.isArray(mod2.richieste_cancellazione_tardiva)) loaded.richieste_cancellazione_tardiva = mod2.richieste_cancellazione_tardiva;
+      }
+
+      // Modulo 3: Diario e Allenamenti Atleti
+      const mod3File = path.join(vaultDir, "3_atleti_diario_progressi.json");
+      if (fs.existsSync(mod3File)) {
+        const mod3 = JSON.parse(fs.readFileSync(mod3File, "utf-8"));
+        if (Array.isArray(mod3.diario_utente)) loaded.diario_utente = mod3.diario_utente;
+        if (Array.isArray(mod3.stato_allenamenti)) loaded.stato_allenamenti = mod3.stato_allenamenti;
+        if (Array.isArray(mod3.preferenze_utente)) loaded.preferenze_utente = mod3.preferenze_utente;
+      }
+    } catch (vErr) {
+      console.warn("⚠️ [VAULT BOOT LOADER] Avviso lettura vault:", vErr);
+    }
+  }
+
+  // 3. Se esiste TMP_DATA_FILE con mutazioni recenti valide, unisci stati
   if (fs.existsSync(TMP_DATA_FILE)) {
     try {
       const raw = fs.readFileSync(TMP_DATA_FILE, "utf-8");
-      loaded = JSON.parse(raw);
-    } catch {
-      // fallback
-    }
-  }
-  if (!loaded) {
-    try {
-      loaded = JSON.parse(JSON.stringify(defaultData));
-    } catch {
-      loaded = {
-        livelli: [],
-        ordine_livelli: [],
-        database_esercizi: [],
-        allenamenti: [],
-        diario_utente: [],
-        stato_allenamenti: [],
-        preferenze_utente: [],
-        profili_utenti: [],
-        configurazione_lab: {},
-        prenotazioni_slot: [],
-        tariffario_pacchetti: [],
-        transazioni_pagamenti: [],
-        movimenti_crediti: [],
-        eccezioni_calendario: [],
-        attivita_lab: [],
-        regole_palinsesto: [],
-        active_user_id: "usr-atleta-01",
-      };
-    }
+      const tmpData = JSON.parse(raw);
+      if (tmpData && typeof tmpData === "object") {
+        if (Array.isArray(tmpData.eccezioni_calendario) && tmpData.eccezioni_calendario.length >= (loaded.eccezioni_calendario || []).length) {
+          loaded.eccezioni_calendario = tmpData.eccezioni_calendario;
+        }
+        if (Array.isArray(tmpData.prenotazioni_slot) && tmpData.prenotazioni_slot.length >= (loaded.prenotazioni_slot || []).length) {
+          loaded.prenotazioni_slot = tmpData.prenotazioni_slot;
+        }
+      }
+    } catch {}
   }
 
   // Salvaguardia metodologia: mai permettere a un file temporaneo stantio di declassare i parametri degli allenamenti
@@ -182,6 +239,25 @@ function validateDataIntegrity(data: any): boolean {
   if (Array.isArray(data.database_esercizi) && data.database_esercizi.length < 30) {
     console.error(`🚨 [AREA46 SAFETY LOCK] Tentativo di salvataggio anomalo: solo ${data.database_esercizi.length} esercizi trovati. Salvataggio bloccato!`);
     return false;
+  }
+  // Guardrail 3: salvaguardia eccezioni calendario (impedisce regressione/svuotamento eccezioni)
+  if (data && Array.isArray(data.eccezioni_calendario)) {
+    try {
+      const vaultCandidates = [
+        path.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json"),
+        path.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json"),
+      ];
+      const vaultFile = vaultCandidates.find((p) => fs.existsSync(p));
+      if (vaultFile) {
+        const vRaw = fs.readFileSync(vaultFile, "utf-8");
+        const vData = JSON.parse(vRaw);
+        const vCount = (vData.eccezioni_calendario || []).length;
+        if (vCount > 10 && data.eccezioni_calendario.length < Math.floor(vCount * 0.5)) {
+          console.error(`🚨 [AREA46 SAFETY LOCK] Tentativo anomalo di azzeramento eccezioni calendario: ${data.eccezioni_calendario.length} presenti vs ${vCount} nel vault. Salvataggio bloccato per protezione calendario!`);
+          return false;
+        }
+      }
+    } catch {}
   }
   return true;
 }
@@ -291,6 +367,8 @@ function saveData(data: any, skipCloudSync = false): Promise<void> {
             diario_utente: data.diario_utente || [],
             stato_allenamenti: data.stato_allenamenti || [],
             preferenze_utente: data.preferenze_utente || [],
+            audio_note_feedback: data.audio_note_feedback || [],
+            app_segnalazioni_bug: data.app_segnalazioni_bug || [],
           };
           fs.writeFileSync(path.join(vaultDir, "3_atleti_diario_progressi.json"), JSON.stringify(modDiario, null, 2), "utf-8");
 
@@ -1189,7 +1267,22 @@ async function tryLoadConfigFromGoogleDrive() {
       db.notifiche_email = driveDb.notifiche_email;
     }
     if (driveDb.eccezioni_calendario && Array.isArray(driveDb.eccezioni_calendario)) {
-      db.eccezioni_calendario = driveDb.eccezioni_calendario;
+      const excMap = new Map<string, any>();
+      // 1. Prima eccezioni dal cloud
+      for (const e of driveDb.eccezioni_calendario) {
+        if (!e) continue;
+        const key = e.id || `${e.data || e.dataInizio || ""}__${e.orario || "all"}`;
+        excMap.set(key, e);
+      }
+      // 2. Poi eccezioni locali (hanno precedenza assoluta per non perdere chiusure o modifiche recenti)
+      for (const e of (db.eccezioni_calendario || [])) {
+        if (!e) continue;
+        const key = e.id || `${e.data || e.dataInizio || ""}__${e.orario || "all"}`;
+        excMap.set(key, e);
+      }
+      db.eccezioni_calendario = Array.from(excMap.values()).sort((a: any, b: any) =>
+        (a.data || a.dataInizio || "").localeCompare(b.data || b.dataInizio || "")
+      );
     }
     if (driveDb.regole_palinsesto && Array.isArray(driveDb.regole_palinsesto)) {
       db.regole_palinsesto = driveDb.regole_palinsesto;
@@ -1583,8 +1676,34 @@ export async function handleLocalApi(
     const fileName = path.basename(pathname);
     let filePath = path.resolve(__dirname, "uploads", "audio_notes", fileName);
     if (!fs.existsSync(filePath)) {
+      filePath = path.resolve(__dirname, "api", "uploads", "audio_notes", fileName);
+    }
+    if (!fs.existsSync(filePath)) {
       filePath = path.join("/tmp/uploads/audio_notes", fileName);
     }
+
+    // Auto-recovery se il file fisico non esiste ma è salvato come base64 nel database
+    if (!fs.existsSync(filePath)) {
+      try {
+        const targetUrl = `/uploads/audio_notes/${fileName}`;
+        const matchEntry =
+          (db.audio_note_feedback || []).find((n: any) => n.audio_url === targetUrl && n.audio_base64) ||
+          (db.diario_utente || []).find((d: any) => d.audio_url === targetUrl && d.audio_base64);
+        if (matchEntry && matchEntry.audio_base64) {
+          const rawB64 = matchEntry.audio_base64;
+          const cleanB64 = rawB64.includes("base64,") ? rawB64.split("base64,")[1] : rawB64;
+          const recoveredBuf = Buffer.from(cleanB64, "base64");
+          const targetDir = path.resolve(__dirname, "uploads", "audio_notes");
+          if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+          filePath = path.join(targetDir, fileName);
+          fs.writeFileSync(filePath, recoveredBuf);
+          console.log(`[AUDIO RECOVERY] File ${fileName} ricostruito con successo da audio_base64 (${recoveredBuf.length} bytes).`);
+        }
+      } catch (recErr) {
+        console.warn("[AUDIO RECOVERY ERROR]", recErr);
+      }
+    }
+
     if (fs.existsSync(filePath)) {
       const ext = path.extname(fileName).toLowerCase();
       const mime =
@@ -5525,6 +5644,78 @@ CALENDARIO E PRENOTAZIONI:
         created_at: new Date().toISOString(),
       };
       db.diario_utente.push(newEntry);
+
+      if (parsedBody.tipo === "feedback_seduta") {
+        try {
+          const audioRec = insertAudioNote({
+            utente_id: currentUser?.id || null,
+            email_cliente: authorEmail,
+            nome_cliente: currentUser?.name || currentUser?.nome || null,
+            contesto: "biofeedback_workout",
+            audio_url: parsedBody.audio_url || "",
+            audio_base64: parsedBody.audio_base64 || null,
+            durata_sec: Number(parsedBody.durata_sec) || 0,
+            trascrizione_testo: parsedBody.note_cinestesiche || parsedBody.note || parsedBody.feedback || null,
+            ai_allerta: aiAnalysisResult?.allerta || "verde",
+            ai_sintesi: aiAnalysisResult?.sintesi || null,
+            ai_proposta_azione: aiAnalysisResult?.proposta_azione || null,
+            stato: "nuovo",
+            consiglio_coach: aiAnalysisResult?.consiglio_coach || null,
+            consiglio_approvato_coach: false,
+            giorno_destinazione: aiAnalysisResult?.giorno_destinazione || null,
+            tipo_intervento: aiAnalysisResult?.tipo_intervento || "consolidamento",
+          });
+          db.audio_note_feedback = db.audio_note_feedback || [];
+          db.audio_note_feedback.unshift(audioRec);
+        } catch (audioNoteErr) {
+          console.warn("[FEEDBACK SYNC TO AUDIO NOTE ERROR]", audioNoteErr);
+        }
+
+        // Notifica automatica immediata al Coach Stefano
+        try {
+          const athleteName = currentUser?.name || currentUser?.nome || authorEmail;
+          const emailSubject = `🎙️ Nuovo Feedback Seduta: ${athleteName} - Giorno ${parsedBody.giorno || "?"} (${parsedBody.livello || "PRO"})`;
+          const emailHtml = `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 16px; background: #ffffff;">
+              <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1c00ff; padding-bottom: 12px; margin-bottom: 16px;">
+                <span style="font-size: 18px; font-weight: 900; color: #09090b; letter-spacing: -0.5px;">AREA46 TRAINING LAB</span>
+                <span style="font-size: 11px; font-weight: 800; background: #1c00ff; color: #e3ff00; padding: 4px 8px; border-radius: 8px; text-transform: uppercase;">Feedback Workout</span>
+              </div>
+              <h2 style="font-size: 16px; font-weight: 800; color: #09090b; margin: 0 0 12px 0;">
+                Nuovo Biofeedback Seduta Recapitato
+              </h2>
+              <p style="font-size: 14px; color: #52525b; line-height: 1.5; margin: 0 0 16px 0;">
+                L'atleta <strong>${athleteName}</strong> (${authorEmail}) ha inviato il proprio feedback post-seduta.
+              </p>
+              <div style="background: #f4f4f5; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+                <div><strong>Seduta:</strong> Giorno ${parsedBody.giorno || "?"} — Livello ${parsedBody.livello || "PRO"}</div>
+                <div><strong>RPE Globale:</strong> <span style="font-weight: 900; color: #1c00ff;">${parsedBody.rpe_globale || 8}/10</span></div>
+                ${parsedBody.sensazioni && parsedBody.sensazioni.length ? `<div><strong>Sensazioni:</strong> ${Array.isArray(parsedBody.sensazioni) ? parsedBody.sensazioni.join(", ") : parsedBody.sensazioni}</div>` : ""}
+                ${parsedBody.note_cinestesiche ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #d4d4d8;"><strong>Note Atleta:</strong><br><em style="color: #18181b;">"${parsedBody.note_cinestesiche}"</em></div>` : ""}
+              </div>
+              ${aiAnalysisResult ? `
+              <div style="background: #eff6ff; border-left: 4px solid #1c00ff; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #1c00ff; margin-bottom: 4px;">Sintesi AI preventiva:</div>
+                <div style="font-size: 13px; color: #1e3a8a;">${aiAnalysisResult.sintesi || "Analisi effettuata con successo."}</div>
+                ${aiAnalysisResult.proposta_azione ? `<div style="font-size: 12px; color: #2563eb; margin-top: 6px;"><strong>Proposta per Seduta Successiva:</strong> ${aiAnalysisResult.proposta_azione}</div>` : ""}
+              </div>` : ""}
+              <div style="text-align: center;">
+                <p style="font-size: 12px; color: #71717a; margin: 0 0 12px 0;">Il feedback è disponibile nella tua <strong>Bacheca Note Coach</strong> nell'app per revisione ed approvazione prima della prossima seduta.</p>
+              </div>
+            </div>
+          `;
+          sendEmailNotification({
+            to: "firenzepersonaltrainer@gmail.com",
+            subject: emailSubject,
+            body: `Nuovo feedback da ${athleteName}: Giorno ${parsedBody.giorno || "?"} (${parsedBody.livello || "PRO"}), RPE ${parsedBody.rpe_globale || 8}/10. ${parsedBody.note_cinestesiche || ""}`,
+            html: emailHtml,
+            tipo: "biofeedback_coach",
+          }).catch((mailErr: any) => console.warn("[FEEDBACK MAIL NOTIFY ERROR]", mailErr));
+        } catch (mailWrapErr) {
+          console.warn("[FEEDBACK NOTIFY EXCEPTION]", mailWrapErr);
+        }
+      }
+
       logShadowEvent("WORKOUT_FEEDBACK", authorEmail, {
         tipo: newEntry.tipo,
         livello: newEntry.livello,
@@ -5686,7 +5877,7 @@ CALENDARIO E PRENOTAZIONI:
         const fullFilePath = path.join(uploadDir, audioFileName);
 
         if (rawAudio) {
-          const cleanBase64 = rawAudio.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, "");
+          const cleanBase64 = rawAudio.includes("base64,") ? rawAudio.split("base64,")[1] : rawAudio;
           fs.writeFileSync(fullFilePath, Buffer.from(cleanBase64, "base64"));
         } else {
           // File placeholder fittizio a salvaguardia (es. test audio)
@@ -5758,6 +5949,51 @@ CALENDARIO E PRENOTAZIONI:
           };
           db.diario_utente.push(newDiaryEntry);
           saveData(db);
+
+          // Notifica automatica immediata al Coach Stefano
+          try {
+            const atletaNome = currentUser?.name || currentUser?.nome || emailCliente || "Atleta";
+            const emailSubject = `🎙️ Nuova Nota Vocale Post-Workout: ${atletaNome} - Giorno ${giorno || "?"} (${livello || "PRO"})`;
+            const emailHtml = `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 16px; background: #ffffff;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1c00ff; padding-bottom: 12px; margin-bottom: 16px;">
+                  <span style="font-size: 18px; font-weight: 900; color: #09090b; letter-spacing: -0.5px;">AREA46 TRAINING LAB</span>
+                  <span style="font-size: 11px; font-weight: 800; background: #1c00ff; color: #e3ff00; padding: 4px 8px; border-radius: 8px; text-transform: uppercase;">Nota Vocale Post-Workout</span>
+                </div>
+                <h2 style="font-size: 16px; font-weight: 800; color: #09090b; margin: 0 0 12px 0;">
+                  Nuova Nota Vocale Seduta Recapitata
+                </h2>
+                <p style="font-size: 14px; color: #52525b; line-height: 1.5; margin: 0 0 16px 0;">
+                  L'atleta <strong>${atletaNome}</strong> (${emailCliente}) ha inviato una nota vocale al termine dell'allenamento.
+                </p>
+                <div style="background: #f4f4f5; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+                  <div><strong>Seduta:</strong> Giorno ${giorno || "?"} — Livello ${livello || "PRO"}</div>
+                  <div><strong>RPE Globale:</strong> <span style="font-weight: 900; color: #1c00ff;">${rpe || 8}/10</span></div>
+                  ${sensazioni && sensazioni.length ? `<div><strong>Sensazioni:</strong> ${Array.isArray(sensazioni) ? sensazioni.join(", ") : sensazioni}</div>` : ""}
+                  ${effectiveDuration ? `<div><strong>Durata Audio:</strong> ${effectiveDuration} secondi</div>` : ""}
+                  ${aiAnalysis.trascrizione ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #d4d4d8;"><strong>Trascrizione Nota Vocale:</strong><br><em style="color: #18181b;">"${aiAnalysis.trascrizione}"</em></div>` : ""}
+                  ${noteTesto && noteTesto !== aiAnalysis.trascrizione ? `<div style="margin-top: 8px;"><strong>Note Aggiuntive:</strong> ${noteTesto}</div>` : ""}
+                </div>
+                <div style="background: #eff6ff; border-left: 4px solid #1c00ff; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                  <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #1c00ff; margin-bottom: 4px;">Sintesi AI preventiva:</div>
+                  <div style="font-size: 13px; color: #1e3a8a;">${aiAnalysis.sintesi || "Analisi effettuata con successo."}</div>
+                  ${aiAnalysis.proposta_azione ? `<div style="font-size: 12px; color: #2563eb; margin-top: 6px;"><strong>Proposta per Seduta Successiva:</strong> ${aiAnalysis.proposta_azione}</div>` : ""}
+                </div>
+                <div style="text-align: center;">
+                  <p style="font-size: 12px; color: #71717a; margin: 0 0 12px 0;">Puoi ascoltare la nota vocale ed approvare il tuo consiglio nella <strong>Bacheca Note Coach</strong> prima della prossima seduta.</p>
+                </div>
+              </div>
+            `;
+            sendEmailNotification({
+              to: "firenzepersonaltrainer@gmail.com",
+              subject: emailSubject,
+              body: `Nuova nota vocale da ${atletaNome}: Giorno ${giorno || "?"} (${livello || "PRO"}), RPE ${rpe || 8}/10. Trascrizione: "${aiAnalysis.trascrizione || noteTesto || ""}"`,
+              html: emailHtml,
+              tipo: "biofeedback_coach",
+            }).catch((mailErr: any) => console.warn("[VOICE MAIL NOTIFY ERROR]", mailErr));
+          } catch (mailWrapErr) {
+            console.warn("[VOICE NOTIFY EXCEPTION]", mailWrapErr);
+          }
         }
 
         // Se è una segnalazione bug/consiglio con audio allegato
@@ -5814,6 +6050,47 @@ CALENDARIO E PRENOTAZIONI:
           map.set(Number(n.id), { ...existing, ...n });
         }
       });
+
+      // Inclusione bidirezionale resiliente da diario_utente (qualsiasi biofeedback registrato)
+      (db.diario_utente || []).forEach((d: any) => {
+        if (!d) return;
+        const isFeedback =
+          d.tipo === "feedback_seduta" ||
+          !!d.audio_url ||
+          !!d.audio_base64 ||
+          (d.nome_esercizio && String(d.nome_esercizio).startsWith("Feedback"));
+        if (!isFeedback) return;
+        const entryId = Number(d.id);
+        const existing = map.get(entryId) || {};
+        const profile = (db.profili_utenti || []).find(
+          (u: any) => (u.email || "").toLowerCase() === (d.email_cliente || "").toLowerCase()
+        );
+        map.set(entryId, {
+          id: entryId,
+          utente_id: d.utente_id || profile?.id || null,
+          email_cliente: d.email_cliente || null,
+          nome_cliente: profile?.nome || profile?.name || d.email_cliente || "Atleta",
+          contesto: "biofeedback_workout",
+          audio_url: d.audio_url || "",
+          audio_base64: d.audio_base64 || null,
+          durata_sec: d.durata_sec || 0,
+          trascrizione_testo: d.note_cinestesiche || d.feedback || null,
+          ai_allerta: d.ai_allerta || "verde",
+          ai_sintesi: d.ai_sintesi || d.feedback || null,
+          ai_proposta_azione: d.ai_proposta_azione || null,
+          consiglio_coach: d.consiglio_coach || null,
+          consiglio_approvato_coach: !!d.consiglio_approvato_coach,
+          giorno_destinazione: d.giorno_destinazione || null,
+          tipo_intervento: d.tipo_intervento || null,
+          coach_audio_url: d.coach_audio_url || null,
+          coach_audio_base64: d.coach_audio_base64 || null,
+          coach_audio_durata_sec: d.coach_audio_durata_sec || 0,
+          stato: d.stato || (d.consiglio_approvato_coach ? "applicato" : "nuovo"),
+          data_creazione: d.data_ora || d.created_at || new Date().toISOString(),
+          ...existing,
+        });
+      });
+
       let notes = Array.from(map.values());
       if (contesto) notes = notes.filter((n: any) => n.contesto === contesto);
       if (stato) {
@@ -5852,6 +6129,21 @@ CALENDARIO E PRENOTAZIONI:
         coach_audio_url: coachAudioUrl,
         coach_audio_durata_sec: coachAudioDurataSec,
       });
+      // Aggiornamento anche in db.diario_utente se id fa riferimento a una voce di diario o nota audio
+      if (db.diario_utente) {
+        let diaryEntry = db.diario_utente.find((d: any) => Number(d.id) === id);
+        if (diaryEntry) {
+          if (stato) diaryEntry.stato = stato;
+          if (consiglioCoach !== undefined) diaryEntry.consiglio_coach = consiglioCoach;
+          if (consiglioApprovato !== undefined) diaryEntry.consiglio_approvato_coach = consiglioApprovato;
+          if (giornoDestinazione !== undefined) diaryEntry.giorno_destinazione = giornoDestinazione;
+          if (tipoIntervento !== undefined) diaryEntry.tipo_intervento = tipoIntervento;
+          if (coachAudioBase64 !== undefined) diaryEntry.coach_audio_base64 = coachAudioBase64;
+          if (coachAudioUrl !== undefined) diaryEntry.coach_audio_url = coachAudioUrl;
+          if (coachAudioDurataSec !== undefined) diaryEntry.coach_audio_durata_sec = coachAudioDurataSec;
+        }
+      }
+
       if (db.audio_note_feedback) {
         const found = db.audio_note_feedback.find((n: any) => Number(n.id) === id);
         if (found) {
@@ -5904,9 +6196,9 @@ CALENDARIO E PRENOTAZIONI:
               }
             }
           }
-          saveData(db);
         }
       }
+      saveData(db);
       return res.end(JSON.stringify(updated || { id, stato: stato || "applicato" }));
     }
 

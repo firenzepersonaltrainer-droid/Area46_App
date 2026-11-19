@@ -242,6 +242,8 @@ export function splitIntoVaultModules() {
     diario_utente: d.diario_utente || [],
     stato_allenamenti: d.stato_allenamenti || [],
     preferenze_utente: d.preferenze_utente || [],
+    audio_note_feedback: d.audio_note_feedback || [],
+    app_segnalazioni_bug: d.app_segnalazioni_bug || [],
   };
   fs.writeFileSync(
     path.join(VAULT_DIR, "3_atleti_diario_progressi.json"),
