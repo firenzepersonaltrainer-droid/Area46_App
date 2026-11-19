@@ -48,6 +48,11 @@ Regole Tassative:
     - *Spettro Bipolare (Scarico vs Spinta):* Prevedere sia scarico se duro, sia l'indicazione di **spingere maggiormente** (+carico / +intensità) se l'allenamento è risultato agevole.
     - *Sovranità Esclusiva del Coach & Ricevuta Atleta:* Il consiglio compare all'atleta **solo previa approvazione esplicita del Coach Stefano**; all'invio del form l'atleta riceve solo la conferma di avvenuto recapito.
     - *Risposta Vocale del Coach per la Seduta Futura:* Il Coach Stefano può registrare una propria nota vocale di risposta per la seduta successiva (es. Seduta 44 per feedback della 43): l'atleta la troverà ed ascolterà aprendo la seduta del giorno.
+16. VAULT SINGLE SOURCE OF TRUTH & ZERO-REGRESSION CALENDARIO (REGOLA 19/11/2026):
+    - Il modulo `data/vault/2_gestionale_calendario.json` è la Single Source of Truth assoluta per prenotazioni ed eccezioni/chiusure di calendario.
+    - All'avvio del server (`loadData()`), i dati del Vault hanno precedenza gerarchica assoluta rispetto a file statici o temporanei.
+    - Nessun aggiornamento di contenuti o commit Git può cancellare o far regredire lo stato del calendario; qualsiasi merge cloud/locale adotta una union map additiva conservativa.
+    - Lo script `scripts/state_integrity_guard.mjs` integrato in `npm run verify` impedisce la perdita di blocchi e chiusure (inclusi i blocchi festività natalizie 25-12 -> 06-01).
 
 
 

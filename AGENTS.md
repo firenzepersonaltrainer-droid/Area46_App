@@ -148,6 +148,11 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
    - *Spettro Bipolare (Scarico vs Spinta):* Le indicazioni non si limitano al lavoro più leggero/scarico per le sedute dure, ma includono esplicitamente di **spingere maggiormente** (+sovraccarico progressivo / +intensità) se l'allenamento si è rivelato leggero e agevole.
    - *Sovranità Esclusiva del Coach & Ricevuta Atleta:* Il consiglio compare all'atleta **solo ed esclusivamente previa approvazione esplicita del Coach Stefano**. All'invio del feedback, l'atleta riceve unicamente la conferma formale di avvenuto recapito al coach (*"Feedback recapitato al Coach Stefano: la tua nota e le tue sensazioni sono state inviate con successo..."*).
    - *Risposta Vocale del Coach per la Seduta Futura:* Il Coach Stefano ha la facoltà di registrare e allegare una propria nota vocale di risposta direttamente dal drawer. Questa nota viene recapitata nell'allenamento successivo dell'atleta (es. Seduta 44 per feedback dato alla Seduta 43): aprendo l'allenamento del giorno, l'atleta trova ed ascolta il messaggio vocale di Stefano registrato per guidare la sessione.
+15. **VAULT SINGLE SOURCE OF TRUTH & ZERO-REGRESSION CALENDARIO (REGOLA 19/11/2026)**:
+   - *Single Source of Truth:* Il modulo `data/vault/2_gestionale_calendario.json` (e i relativi moduli Vault) costituisce la sorgente di verità assoluta per prenotazioni, crediti e chiusure/eccezioni di calendario.
+   - *Priorità al Boot:* All'avvio del server (`loadData()`), il sistema carica prioritariamente e inderogabilmente dai file fisici in `data/vault/`, impedendo che riavvii o cancellazioni di `/tmp` provochino perdite di stato.
+   - *Divieto di Regressione di Stato:* Nessun commit, modifica di contenuti (articoli di blog, schede o parametri) o sincronizzazione cloud può sovrascrivere o svuotare `eccezioni_calendario` o `prenotazioni_slot`. Qualsiasi merge cloud/locale DEVE applicare una logica additiva conservativa (union map).
+   - *Guardiano Permanente:* Lo script `scripts/state_integrity_guard.mjs` integrato in `npm run verify` vigila in modo permanente e previene regressioni o perdite di chiusure programmate (inclusi i blocchi natalizi dal 25 Dicembre al 6 Gennaio).
 
 
 

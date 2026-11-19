@@ -11,6 +11,8 @@ const TMP_DATA_FILE = "/tmp/demo-data.json";
 const BACKUPS_DIR = path.join(ROOT_DIR, "backups");
 const VAULT_DIR = path.join(ROOT_DIR, "data", "vault");
 
+import { runStateIntegrityGuard } from "./state_integrity_guard.mjs";
+
 // Assicura directory esistenti
 if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true });
 if (!fs.existsSync(VAULT_DIR)) fs.mkdirSync(VAULT_DIR, { recursive: true });
@@ -88,6 +90,18 @@ export function verifyIntegrity(data = null) {
   // Guardrail 4: catalogo esercizi
   if (exercises.length < 50) {
     report.errors.push(`Anomalia catalogo: solo ${exercises.length} esercizi presenti`);
+    report.ok = false;
+  }
+
+  // Guardrail 5: salvaguardia stato calendario e chiusure (Zero Regression)
+  try {
+    const guardRes = runStateIntegrityGuard(true);
+    if (!guardRes.ok) {
+      report.errors.push(`Anomalia calendario: ${guardRes.issues.join("; ")}`);
+      report.ok = false;
+    }
+  } catch (gErr) {
+    report.errors.push(`Errore guardiano calendario: ${gErr.message}`);
     report.ok = false;
   }
 
