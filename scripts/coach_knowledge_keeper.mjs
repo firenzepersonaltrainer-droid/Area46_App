@@ -143,6 +143,34 @@ export function validatePedagogy(targetCycleName, workouts = null) {
         `⚠️ LINGUAGGIO TROPPO TECNICO NELLE NOTE: Rilevato termine 'biomeccanica' nelle note di '${name}' in '${giorno}'. Sostituire con 'geometria di movimento', 'pattern motorio' o 'economia del gesto'.`
       );
     }
+
+    // Check 9: Divieto assoluto del termine 'cerniera d'anca' ovunque e sempre
+    if (/cerniera\s+d['’]anca/i.test(note) || /cerniera\s+d['’]anca/i.test(param)) {
+      errors.push(
+        `⛔ TERMINE VIETATO 'CERNIERA D’ANCA': Rilevato 'cerniera d’anca' in '${name}' in '${giorno}'. Regola assoluta del Coach: vietato utilizzare 'cerniera d’anca' ovunque e sempre.`
+      );
+    }
+
+    // Check 10: Divieto info di programmazione/periodizzazione nelle note per l'atleta
+    if (/(?:fondamentale\s+\w+\s+mesociclo|consolidat[oa]\s+mesociclo|mesociclo\s+\d+|scarico\s+mesociclo)/i.test(note)) {
+      errors.push(
+        `⛔ INFO PROGRAMMAZIONE NELLE NOTE ATLETI: Rilevato riferimento di programmazione/mesociclo nelle note di '${name}' in '${giorno}'. Queste informazioni riguardano solo il coach/programmatore e non devono comparire all'atleta.`
+      );
+    }
+
+    // Check 11: Allungamenti statici vietati a ripetizioni (Wall Stretch ID 030)
+    if (eid === "030" || name.toLowerCase().includes("wall stretch")) {
+      if (!param.includes('"') && !param.includes("'") && !/respir/i.test(param) && !/respir/i.test(note)) {
+        errors.push(
+          `⛔ ALLUNGAMENTO STATICO A RIPETIZIONI: '${name}' (ID ${eid}) è un allungamento statico. Non può essere prescritto a ripetizioni (es. vietato '8+8'). Prescrivere a tempo (30/60") o indicare cicli respiratori controllati.`
+        );
+      }
+      if (param.includes("+") && !param.includes('"')) {
+        errors.push(
+          `⛔ NOTAZIONE RIPETIZIONI SU ALLUNGAMENTO STATICO: '${name}' (ID ${eid}) ha ripetizioni '${param}'. Vietato prescrivere a ripetizioni.`
+        );
+      }
+    }
   }
 
   // 2. Controllo gerarchia propedeutiche storiche

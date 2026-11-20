@@ -240,7 +240,7 @@ function getEserciziB(round) {
       nome: "Landmine coiled Deadlift",
       param: "4x6+6",
       rec: 'RBS 75"',
-      note: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
+      note: "RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
       video: "https://youtu.be/q8pfMEqSrm8",
     },
     {

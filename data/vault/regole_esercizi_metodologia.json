@@ -145,7 +145,8 @@
       "vincolo_notazione": "STANDARD",
       "note_obbligatorie": [],
       "divieti_tassativi": [
-        "VIETATO_RPE_MASSIMALE: preservare freschezza, ritmo fasciale e decompressione articolare."
+        "VIETATO_RPE_MASSIMALE: preservare freschezza, ritmo fasciale e decompressione articolare.",
+        "DIVIETO_BASSE_RIPETIZIONI: vietato prescrivere a ripetizioni inferiori a 50 (ammesso solo a tempo continuo o da 50 rep in su)."
       ],
       "didattica_primo_utilizzo": null
     },
@@ -274,12 +275,17 @@
       "nome": "Aerial Jerk",
       "attrezzo": "landmine",
       "categoria": "engine e benchmark",
-      "pattern": "cerniera d'anca, salto",
+      "pattern": "spinta verticale esplosiva, split jump",
       "ruolo": "engine",
-      "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
-      "vincolo_notazione": "STANDARD",
-      "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
+      "vincolo_notazione": "OBBLIGATORIO_PIU",
+      "recupero_predefinito": "RBS 30\" - Rest 60\"",
+      "note_obbligatorie": [
+        "inizia dal lato più debole e ricorda di alternare il lato di partenza ad ogni seduta"
+      ],
+      "divieti_tassativi": [
+        "DIVIETO_INFO_PROGRAMMAZIONE: eliminare riferimenti a mesocicli o consolidamento dalle note rivolte all'atleta (informazioni riservate al coach/programmatore)."
+      ],
       "didattica_primo_utilizzo": null
     },
     "121": {
@@ -477,7 +483,9 @@
       "note_obbligatorie": [
         "utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo"
       ],
-      "divieti_tassativi": [],
+      "divieti_tassativi": [
+        "DIVIETO_NOTAZIONE_PIU: si svolge alternando una rip destra e una sinistra, divieto assoluto della notazione con '+' (mai 30\"+30\"). Prescrivere a tempo continuo (es. 3 X 45\")."
+      ],
       "didattica_primo_utilizzo": null
     },
     "160": {
@@ -1082,14 +1090,16 @@
     },
     "227": {
       "id": "227",
-      "nome": "Skyerg lunges",
+      "nome": "skierg lunges alternati",
       "attrezzo": "skierg",
       "categoria": "engine e benchmark",
       "pattern": "affondi alternati con trazione verso il basso",
       "ruolo": "engine",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
       "vincolo_notazione": "OBBLIGATORIO_PIU",
-      "note_obbligatorie": [],
+      "note_obbligatorie": [
+        "**NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**"
+      ],
       "divieti_tassativi": [],
       "didattica_primo_utilizzo": null
     },
@@ -1324,12 +1334,16 @@
       "nome": "Landmine coiled Deadlift",
       "attrezzo": "landmine",
       "categoria": "forza e struttura",
-      "pattern": "cerniera d'anca, trazione verticale dal basso, asimmetrico",
+      "pattern": "trazione verticale dal basso, asimmetrico, spirale di carico",
       "ruolo": "fondamentale",
       "modalita_prescrizione_predefinita": "RIPETIZIONI_MONOLATERALI_RBS",
       "vincolo_notazione": "OBBLIGATORIO_PIU",
-      "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "note_obbligatorie": [
+        "svolgi adeguate serie di avvicinamento prima delle serie allenanti"
+      ],
+      "divieti_tassativi": [
+        "DIVIETO_TERMINE_CERNIERA_ANCA: divieto assoluto del termine 'cerniera d'anca' nelle note atleti o prescrizione."
+      ],
       "didattica_primo_utilizzo": null
     },
     "082": {
@@ -2098,12 +2112,16 @@
       "nome": "Wall Stretch",
       "attrezzo": "corpo libero",
       "categoria": "warm up e mobilità",
-      "pattern": "routine di esercizi completa",
+      "pattern": "allungamento statico catena cinetica e apertura toracica",
       "ruolo": "",
-      "modalita_prescrizione_predefinita": "RIPETIZIONI_BILATERALI",
-      "vincolo_notazione": "STANDARD",
-      "note_obbligatorie": [],
-      "divieti_tassativi": [],
+      "modalita_prescrizione_predefinita": "TEMPO_TOTALE_CONTINUO",
+      "vincolo_notazione": "TEMPO_O_RESPIRAZIONI",
+      "note_obbligatorie": [
+        "tenere la posizione per circa 6/8 cicli respiratori profondi e controllati"
+      ],
+      "divieti_tassativi": [
+        "DIVIETO_RIPETIZIONI: è un allungamento statico, vietato prescrivere a ripetizioni (prescrivere a tempo 30-60\" o a numero di cicli respiratori controllati)."
+      ],
       "didattica_primo_utilizzo": null
     },
     "031": {

@@ -27633,7 +27633,7 @@ var demo_data_default = {
       parametri: "4x6+6",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
+      note_tecniche: "RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
       link_video: "https://youtu.be/q8pfMEqSrm8",
       data_pubblicazione: null
     },
@@ -27903,7 +27903,7 @@ var demo_data_default = {
       parametri: "4x6+6",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
+      note_tecniche: "RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
       link_video: "https://youtu.be/q8pfMEqSrm8",
       data_pubblicazione: null
     },
@@ -28173,7 +28173,7 @@ var demo_data_default = {
       parametri: "4x6+6",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
+      note_tecniche: "RPE 8 | caricamento della spirale fasciale dell'anca d'appoggio",
       link_video: "https://youtu.be/q8pfMEqSrm8",
       data_pubblicazione: null
     },
@@ -28268,7 +28268,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1309,
+      id: 1367,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28283,7 +28283,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1310,
+      id: 1368,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28298,7 +28298,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1311,
+      id: 1369,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28308,12 +28308,12 @@ var demo_data_default = {
       parametri: "4 X 6",
       recupero: '75/90"',
       minutaggio_blocco: "",
-      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5",
+      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | RPE 8.5",
       link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
       data_pubblicazione: null
     },
     {
-      id: 1312,
+      id: 1370,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28328,7 +28328,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1313,
+      id: 1371,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28343,7 +28343,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1314,
+      id: 1372,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28358,7 +28358,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1315,
+      id: 1373,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28373,7 +28373,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1316,
+      id: 1374,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28388,7 +28388,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1317,
+      id: 1375,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "43 allenamento A",
@@ -28403,22 +28403,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1318,
+      id: 1376,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
       sequenza: "1a",
       id_esercizio: "030",
       nome_esercizio: "Wall Stretch",
-      parametri: "3x8+8",
+      parametri: '3 X 45"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete | tenere la posizione per circa 6/8 cicli respiratori profondi e controllati",
       link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
       data_pubblicazione: null
     },
     {
-      id: 1319,
+      id: 1377,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28433,14 +28433,14 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1320,
+      id: 1378,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
       sequenza: "1c",
       id_esercizio: "158",
       nome_esercizio: "Bat around the head 90\xB0 e 180\xB0",
-      parametri: '3x30"+30"',
+      parametri: '3 X 45"',
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90\xB0 e 180\xB0",
@@ -28448,7 +28448,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1321,
+      id: 1379,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28458,12 +28458,12 @@ var demo_data_default = {
       parametri: "4x5+5",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
+      note_tecniche: "RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
       link_video: "https://youtu.be/q8pfMEqSrm8",
       data_pubblicazione: null
     },
     {
-      id: 1322,
+      id: 1380,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28478,7 +28478,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1323,
+      id: 1381,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28493,7 +28493,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1324,
+      id: 1382,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
@@ -28501,18 +28501,33 @@ var demo_data_default = {
       id_esercizio: "120",
       nome_esercizio: "Aerial Jerk",
       parametri: "4x6+6",
-      recupero: '60"',
+      recupero: 'RBS 30" - Rest 60"',
       minutaggio_blocco: "",
-      note_tecniche: "Consolidato Mesociclo 3 | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      note_tecniche: "RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici) | inizia dal lato pi\xF9 debole e ricorda di alternare il lato di partenza ad ogni seduta",
       link_video: "https://youtube.com/shorts/b1DU11BZKCk",
       data_pubblicazione: null
     },
     {
-      id: 1325,
+      id: 1383,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
-      sequenza: "5a",
+      sequenza: "5",
+      id_esercizio: "106",
+      nome_esercizio: "Dragon Roll",
+      parametri: "1x5'",
+      recupero: '60"',
+      minutaggio_blocco: "",
+      note_tecniche: "pratica dedicata: 5 minuti continui per acquisire padronanza, ritmo e fluidit\xE0 motoria con il Flow Rope",
+      link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
+      data_pubblicazione: null
+    },
+    {
+      id: 1384,
+      livello: "PRO",
+      settimana: "Ciclo 8",
+      giorno: "44 allenamento B",
+      sequenza: "6a",
       id_esercizio: "229",
       nome_esercizio: "Split Clean T&go",
       parametri: "x 6+6",
@@ -28523,37 +28538,37 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1326,
+      id: 1385,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
-      sequenza: "5b",
-      id_esercizio: "106",
-      nome_esercizio: "Dragon Roll",
-      parametri: '30"+30"',
+      sequenza: "6b",
+      id_esercizio: "102",
+      nome_esercizio: "jumping rope",
+      parametri: "50 rep",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 10' | rotazione dinamica Heavy Rope a tempo continuo",
-      link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
+      note_tecniche: "AMRAP 10' | saltelli continui a ritmo costante (in alternativa jumping jack per chi non ha corda o fluidit\xE0)",
+      link_video: "",
       data_pubblicazione: null
     },
     {
-      id: 1327,
+      id: 1386,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "44 allenamento B",
-      sequenza: "5c",
+      sequenza: "6c",
       id_esercizio: "227",
-      nome_esercizio: "Skyerg lunges",
+      nome_esercizio: "skierg lunges alternati",
       parametri: "x 10+10",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 10' | NB: svolgere la tirata con tecnica \u201Cpagaia\u201D, sul lato della gamba fissa (anteriore)",
+      note_tecniche: "AMRAP 10' | **NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**",
       link_video: "https://youtube.com/shorts/kYfL3_rgym8",
       data_pubblicazione: null
     },
     {
-      id: 1328,
+      id: 1387,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28568,7 +28583,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1329,
+      id: 1388,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28583,7 +28598,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1330,
+      id: 1389,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28593,12 +28608,12 @@ var demo_data_default = {
       parametri: "4 X 6",
       recupero: '75/90"',
       minutaggio_blocco: "",
-      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5",
+      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | RPE 8.5",
       link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
       data_pubblicazione: null
     },
     {
-      id: 1331,
+      id: 1390,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28613,7 +28628,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1332,
+      id: 1391,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28628,7 +28643,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1333,
+      id: 1392,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28643,7 +28658,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1334,
+      id: 1393,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28658,7 +28673,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1335,
+      id: 1394,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28673,7 +28688,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1336,
+      id: 1395,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "45 allenamento A",
@@ -28688,22 +28703,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1337,
+      id: 1396,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
       sequenza: "1a",
       id_esercizio: "030",
       nome_esercizio: "Wall Stretch",
-      parametri: "3x8+8",
+      parametri: '3 X 45"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete | tenere la posizione per circa 6/8 cicli respiratori profondi e controllati",
       link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
       data_pubblicazione: null
     },
     {
-      id: 1338,
+      id: 1397,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28718,14 +28733,14 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1339,
+      id: 1398,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
       sequenza: "1c",
       id_esercizio: "158",
       nome_esercizio: "Bat around the head 90\xB0 e 180\xB0",
-      parametri: '3x30"+30"',
+      parametri: '3 X 45"',
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90\xB0 e 180\xB0",
@@ -28733,7 +28748,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1340,
+      id: 1399,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28743,12 +28758,12 @@ var demo_data_default = {
       parametri: "4x5+5",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
+      note_tecniche: "RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
       link_video: "https://youtu.be/q8pfMEqSrm8",
       data_pubblicazione: null
     },
     {
-      id: 1341,
+      id: 1400,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28763,7 +28778,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1342,
+      id: 1401,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28778,7 +28793,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1343,
+      id: 1402,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28786,14 +28801,14 @@ var demo_data_default = {
       id_esercizio: "120",
       nome_esercizio: "Aerial Jerk",
       parametri: "4x6+6",
-      recupero: '60"',
+      recupero: 'RBS 30" - Rest 60"',
       minutaggio_blocco: "",
-      note_tecniche: "Consolidato Mesociclo 3 | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      note_tecniche: "RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici) | inizia dal lato pi\xF9 debole e ricorda di alternare il lato di partenza ad ogni seduta",
       link_video: "https://youtube.com/shorts/b1DU11BZKCk",
       data_pubblicazione: null
     },
     {
-      id: 1344,
+      id: 1403,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
@@ -28808,37 +28823,37 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1345,
+      id: 1404,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
       sequenza: "5b",
       id_esercizio: "106",
       nome_esercizio: "Dragon Roll",
-      parametri: '30"+30"',
+      parametri: "50 rep",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 11' | rotazione dinamica Heavy Rope a tempo continuo",
+      note_tecniche: "AMRAP 11' | 50 ripetizioni al giro: rotazione dinamica Flow Rope a ritmo fluido e continuo",
       link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
       data_pubblicazione: null
     },
     {
-      id: 1346,
+      id: 1405,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "46 allenamento B",
       sequenza: "5c",
       id_esercizio: "227",
-      nome_esercizio: "Skyerg lunges",
+      nome_esercizio: "skierg lunges alternati",
       parametri: "x 12+12",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 11' | NB: svolgere la tirata con tecnica \u201Cpagaia\u201D, sul lato della gamba fissa (anteriore)",
+      note_tecniche: "AMRAP 11' | **NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**",
       link_video: "https://youtube.com/shorts/kYfL3_rgym8",
       data_pubblicazione: null
     },
     {
-      id: 1347,
+      id: 1406,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28853,7 +28868,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1348,
+      id: 1407,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28868,7 +28883,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1349,
+      id: 1408,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28878,12 +28893,12 @@ var demo_data_default = {
       parametri: "4 X 6",
       recupero: '75/90"',
       minutaggio_blocco: "",
-      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5",
+      note_tecniche: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | RPE 8.5",
       link_video: "https://youtube.com/shorts/I9GYUvD_Ink",
       data_pubblicazione: null
     },
     {
-      id: 1350,
+      id: 1409,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28898,7 +28913,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1351,
+      id: 1410,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28913,7 +28928,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1352,
+      id: 1411,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28928,7 +28943,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1353,
+      id: 1412,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28943,7 +28958,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1354,
+      id: 1413,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28958,7 +28973,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1355,
+      id: 1414,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "47 allenamento A",
@@ -28973,22 +28988,22 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1356,
+      id: 1415,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
       sequenza: "1a",
       id_esercizio: "030",
       nome_esercizio: "Wall Stretch",
-      parametri: "3x8+8",
+      parametri: '3 X 45"',
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      note_tecniche: "tri-set | apertura toracica e allungamento miofasciale a parete | tenere la posizione per circa 6/8 cicli respiratori profondi e controllati",
       link_video: "https://youtube.com/shorts/SYXUt6RuHAU",
       data_pubblicazione: null
     },
     {
-      id: 1357,
+      id: 1416,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29003,14 +29018,14 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1358,
+      id: 1417,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
       sequenza: "1c",
       id_esercizio: "158",
       nome_esercizio: "Bat around the head 90\xB0 e 180\xB0",
-      parametri: '3x30"+30"',
+      parametri: '3 X 45"',
       recupero: '45"',
       minutaggio_blocco: "",
       note_tecniche: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90\xB0 e 180\xB0",
@@ -29018,7 +29033,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1359,
+      id: 1418,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29028,12 +29043,12 @@ var demo_data_default = {
       parametri: "4x5+5",
       recupero: 'RBS 75"',
       minutaggio_blocco: "",
-      note_tecniche: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
+      note_tecniche: "RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
       link_video: "https://youtu.be/q8pfMEqSrm8",
       data_pubblicazione: null
     },
     {
-      id: 1360,
+      id: 1419,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29048,7 +29063,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1361,
+      id: 1420,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29063,7 +29078,7 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1362,
+      id: 1421,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29071,14 +29086,14 @@ var demo_data_default = {
       id_esercizio: "120",
       nome_esercizio: "Aerial Jerk",
       parametri: "4x6+6",
-      recupero: '60"',
+      recupero: 'RBS 30" - Rest 60"',
       minutaggio_blocco: "",
-      note_tecniche: "Consolidato Mesociclo 3 | RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici)",
+      note_tecniche: "RPE 8 (se il movimento \xE8 incerto non tenere conto dell\u2019RPE indicato, concentrati sugli aspetti tecnici) | inizia dal lato pi\xF9 debole e ricorda di alternare il lato di partenza ad ogni seduta",
       link_video: "https://youtube.com/shorts/b1DU11BZKCk",
       data_pubblicazione: null
     },
     {
-      id: 1363,
+      id: 1422,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
@@ -29093,32 +29108,32 @@ var demo_data_default = {
       data_pubblicazione: null
     },
     {
-      id: 1364,
+      id: 1423,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
       sequenza: "5b",
       id_esercizio: "106",
       nome_esercizio: "Dragon Roll",
-      parametri: '30"+30"',
+      parametri: "50 rep",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 13' | rotazione dinamica Heavy Rope a tempo continuo",
+      note_tecniche: "AMRAP 13' | 50 ripetizioni al giro: rotazione dinamica Flow Rope a ritmo fluido e continuo",
       link_video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
       data_pubblicazione: null
     },
     {
-      id: 1365,
+      id: 1424,
       livello: "PRO",
       settimana: "Ciclo 8",
       giorno: "48 allenamento B",
       sequenza: "5c",
       id_esercizio: "227",
-      nome_esercizio: "Skyerg lunges",
+      nome_esercizio: "skierg lunges alternati",
       parametri: "x 15+15",
       recupero: "",
       minutaggio_blocco: "",
-      note_tecniche: "AMRAP 13' | NB: svolgere la tirata con tecnica \u201Cpagaia\u201D, sul lato della gamba fissa (anteriore)",
+      note_tecniche: "AMRAP 13' | **NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**",
       link_video: "https://youtube.com/shorts/kYfL3_rgym8",
       data_pubblicazione: null
     }

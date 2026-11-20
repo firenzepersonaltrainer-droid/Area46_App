@@ -51,7 +51,7 @@ function getEserciziA(round) {
       nome: "COMBO: Landmine Split snatch High hand switch T/GO",
       param: "4 X 6",
       rec: '75/90"',
-      note: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | Fondamentale Potenza Mesociclo 3 | RPE 8.5",
+      note: "Svolgi 2-4 serie di avvicinamento prima della serie allenante | RPE 8.5",
       video: "https://youtube.com/shorts/I9GYUvD_Ink",
     },
     {
@@ -116,14 +116,14 @@ function getEserciziB(round) {
   const amrapTime = round === 1 ? "10'" : round === 2 ? "11'" : "13'";
   const skyergLungesParam = round === 1 ? "x 10+10" : round === 2 ? "x 12+12" : "x 15+15";
 
-  return [
+  const baseList = [
     {
       seq: "1a",
       id: "030",
       nome: "Wall Stretch",
-      param: "3x8+8",
+      param: '3 X 45"',
       rec: "",
-      note: "tri-set | apertura toracica e allungamento miofasciale a parete",
+      note: "tri-set | apertura toracica e allungamento miofasciale a parete | tenere la posizione per circa 6/8 cicli respiratori profondi e controllati",
       video: "https://youtube.com/shorts/SYXUt6RuHAU",
     },
     {
@@ -139,7 +139,7 @@ function getEserciziB(round) {
       seq: "1c",
       id: "158",
       nome: "Bat around the head 90° e 180°",
-      param: '3x30"+30"',
+      param: '3 X 45"',
       rec: '45"',
       note: "tri-set | utilizzare una clava leggera per le prime volte, per abituare i polsi al movimento senza stressarli troppo | rotazione a spirale della spalla su bacino a 90° e 180°",
       video: "https://youtu.be/INNpiEJL9As?si=7-xSjR1LJL__jzU8",
@@ -150,7 +150,7 @@ function getEserciziB(round) {
       nome: "Landmine coiled Deadlift",
       param: "4x5+5",
       rec: 'RBS 75"',
-      note: "Fondamentale Cerniera d'Anca Mesociclo 3 | RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
+      note: "RPE 8.5 | svolgi adeguate serie di avvicinamento prima delle serie allenanti che dovranno arrivare ad RPE 8.5",
       video: "https://youtu.be/q8pfMEqSrm8",
     },
     {
@@ -176,10 +176,58 @@ function getEserciziB(round) {
       id: "120",
       nome: "Aerial Jerk",
       param: "4x6+6",
-      rec: '60"',
-      note: "Consolidato Mesociclo 3 | RPE 8 (se il movimento è incerto non tenere conto dell’RPE indicato, concentrati sugli aspetti tecnici)",
+      rec: 'RBS 30" - Rest 60"',
+      note: "RPE 8 (se il movimento è incerto non tenere conto dell’RPE indicato, concentrati sugli aspetti tecnici) | inizia dal lato più debole e ricorda di alternare il lato di partenza ad ogni seduta",
       video: "https://youtube.com/shorts/b1DU11BZKCk",
     },
+  ];
+
+  if (round === 1) {
+    // 1° Allenamento B (Seduta 44): Dragon Roll dedicato (5 minuti) per apprendimento motorio e fluidità; nell'AMRAP gli altri due esercizi con jumping rope
+    return [
+      ...baseList,
+      {
+        seq: "5",
+        id: "106",
+        nome: "Dragon Roll",
+        param: "1x5'",
+        rec: '60"',
+        note: "pratica dedicata: 5 minuti continui per acquisire padronanza, ritmo e fluidità motoria con il Flow Rope",
+        video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
+      },
+      {
+        seq: "6a",
+        id: "229",
+        nome: "Split Clean T&go",
+        param: "x 6+6",
+        rec: "",
+        note: "AMRAP 10' | cadenza continua e stabilità nello split",
+        video: "https://youtube.com/shorts/PQ-Ga27AgoM",
+      },
+      {
+        seq: "6b",
+        id: "102",
+        nome: "jumping rope",
+        param: "50 rep",
+        rec: "",
+        note: "AMRAP 10' | saltelli continui a ritmo costante (in alternativa jumping jack per chi non ha corda o fluidità)",
+        video: "",
+      },
+      {
+        seq: "6c",
+        id: "227",
+        nome: "skierg lunges alternati",
+        param: skyergLungesParam,
+        rec: "",
+        note: "AMRAP 10' | **NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**",
+        video: "https://youtube.com/shorts/kYfL3_rgym8",
+      },
+    ];
+  }
+
+  // 2° e 3° Allenamento B (Sedute 46 e 48): AMRAP originario con Dragon Roll a 50 rep al giro
+  return [
+    ...baseList,
     {
       seq: "5a",
       id: "229",
@@ -193,18 +241,18 @@ function getEserciziB(round) {
       seq: "5b",
       id: "106",
       nome: "Dragon Roll",
-      param: '30"+30"',
+      param: "50 rep",
       rec: "",
-      note: `AMRAP ${amrapTime} | rotazione dinamica Heavy Rope a tempo continuo`,
+      note: `AMRAP ${amrapTime} | 50 ripetizioni al giro: rotazione dinamica Flow Rope a ritmo fluido e continuo`,
       video: "https://youtu.be/I3Jpk2S2bRE?si=IkQQs9ghbHbBufWV",
     },
     {
       seq: "5c",
       id: "227",
-      nome: "Skyerg lunges",
+      nome: "skierg lunges alternati",
       param: skyergLungesParam,
       rec: "",
-      note: `AMRAP ${amrapTime} | NB: svolgere la tirata con tecnica “pagaia”, sul lato della gamba fissa (anteriore)`,
+      note: `AMRAP ${amrapTime} | **NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**`,
       video: "https://youtube.com/shorts/kYfL3_rgym8",
     },
   ];
@@ -280,12 +328,12 @@ if (fs.existsSync(REGISTRO_PRO_FILE)) {
   reg.storico_cicli["Ciclo 8"] = {
     status: "attivo / programmato",
     sessioni: 6,
-    focus: "Picco Mesociclo 3: Varietà Warm Up (Ground Mobility Series + Side Closing in A; Tri-set Wall Stretch + Wall Driver + Bat around head 90°-180° in B), Intensificazione Fondamentali RPE 8.5 (COMBO Split Snatch H-H Switch 4x6, Landmine Coiled Deadlift 4x5+5), Seated Endless Rope Power Pull 4x40\", Consolidamento Aerial Jerk 4x6+6, Punch Isoinerziale, Matador Transitions e AMRAP progressivo 10'-11'-13'",
+    focus: "Picco Mesociclo 3: Varietà Warm Up (Ground Mobility Series + Side Closing in A; Tri-set Wall Stretch 3x45\" con cicli respiratori + Wall Driver 3x45\" + Bat around head 3x45\" in B), Intensificazione Fondamentali RPE 8.5 (COMBO Split Snatch H-H Switch 4x6, Landmine Coiled Deadlift 4x5+5), Seated Endless Rope Power Pull 4x40\", Aerial Jerk 4x6+6 (RBS 30\" - Rest 60\"), Punch Isoinerziale, Matador Transitions e AMRAP progressivo 10'-11'-13' (Dragon Roll 5' dedicato in B1 e 50 rep al giro in B2/B3; skierg lunges alternati)",
   };
 
   const c8_used_ids = [
     "019", "025", "128", "023", "219", "242", "207", "089", "243",
-    "030", "047", "158", "056", "174", "028", "120", "229", "106", "227"
+    "030", "047", "158", "056", "174", "028", "120", "229", "106", "102", "227"
   ].map((id) => String(parseInt(id, 10)));
 
   for (const ex of reg.esercizi || []) {

@@ -53,6 +53,19 @@ Regole Tassative:
     - All'avvio del server (`loadData()`), i dati del Vault hanno precedenza gerarchica assoluta rispetto a file statici o temporanei.
     - Nessun aggiornamento di contenuti o commit Git può cancellare o far regredire lo stato del calendario; qualsiasi merge cloud/locale adotta una union map additiva conservativa.
     - Lo script `scripts/state_integrity_guard.mjs` integrato in `npm run verify` impedisce la perdita di blocchi e chiusure (inclusi i blocchi festività natalizie 25-12 -> 06-01).
+17. DIVIETO CATEGORICO TERMINE "CERNIERA D'ANCA" (REGOLA 20/11/2026):
+    - Vietato categoricamente utilizzare il termine "cerniera d’anca" ovunque e sempre (regola permanente su schede, app, note atleti, video ed esercizi). Rimuovere da Landmine Coiled Deadlift (ID 056) e da ogni altra scheda.
+18. SEPARAZIONE RIGOROSA DELLE NOTE ATLETA DALLA PROGRAMMAZIONE TECNICA (REGOLA 20/11/2026):
+    - Vietato inserire nelle note per l'atleta informazioni di periodizzazione o programmazione (es. "consolidamento mesociclo", "fondamentale mesociclo", "scarico mesociclo"). L'atleta riceve solo istruzioni esecutive, tecniche, RPE e recuperi.
+19. ALLUNGAMENTI STATICI (WALL STRETCH ID 030) (REGOLA 20/11/2026):
+    - Allungamenti statici vietati a ripetizioni (mai 8+8). Prescrivere esclusivamente a tempo (es. 30/60" o 3 X 45") o a numero di cicli respiratori profondi e controllati (es. 6/8 respiri).
+20. ESERCIZI ALTERNATI CONTINUI (BAT AROUND THE HEAD ID 158) (REGOLA 20/11/2026):
+    - Esercizi alternati continui dx/sx non possono mai essere prescritti con '+' (mai 30"+30"). Prescrivere a tempo complessivo continuo (es. 3 X 45").
+21. FLOW ROPE / DRAGON ROLL, AERIAL JERK E SKIERG LUNGES ALTERNATI (REGOLA 20/11/2026):
+    - Dragon Roll in AMRAP: 50 rep al giro. Nel 1° allenamento B del ciclo prescrivere come esercizio singolo dedicato di 5 minuti continui per fluidità, lasciando nell'AMRAP gli altri due esercizi con jumping rope al posto del Dragon Roll. Dal 2° allenamento B torna nell'AMRAP originario con 50 rep.
+    - Aerial Jerk: recupero con RBS 30" - Rest 60" (ricaricare fra un lato e l'altro). Nota obbligatoria: iniziare dal lato debole e alternare il lato di partenza ad ogni seduta.
+    - Skierg lunges alternati: denominazione "skierg lunges alternati". Nota obbligatoria in grassetto: '**NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**'.
+
 
 
 

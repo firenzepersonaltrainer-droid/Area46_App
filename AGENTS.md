@@ -153,6 +153,20 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
    - *Priorità al Boot:* All'avvio del server (`loadData()`), il sistema carica prioritariamente e inderogabilmente dai file fisici in `data/vault/`, impedendo che riavvii o cancellazioni di `/tmp` provochino perdite di stato.
    - *Divieto di Regressione di Stato:* Nessun commit, modifica di contenuti (articoli di blog, schede o parametri) o sincronizzazione cloud può sovrascrivere o svuotare `eccezioni_calendario` o `prenotazioni_slot`. Qualsiasi merge cloud/locale DEVE applicare una logica additiva conservativa (union map).
    - *Guardiano Permanente:* Lo script `scripts/state_integrity_guard.mjs` integrato in `npm run verify` vigila in modo permanente e previene regressioni o perdite di chiusure programmate (inclusi i blocchi natalizi dal 25 Dicembre al 6 Gennaio).
+16. **DIVIETO CATEGORICO DEL TERMINE "CERNIERA D'ANCA" (REGOLA STEFANO 20/11/2026)**:
+   - È categoricamente vietato utilizzare il termine *"cerniera d’anca"* ovunque e sempre (regola permanente su schede, note atleti, video ed esercizi).
+   - Nelle note del Landmine Coiled Deadlift (ID 056) o altri esercizi, eliminare tale dicitura mantenendo intatte solo le indicazioni di esecuzione, avvicinamento ed RPE.
+17. **SEPARAZIONE RIGOROSA DELLE NOTE ATLETA DALLA PROGRAMMAZIONE TECNICA (REGOLA STEFANO 20/11/2026)**:
+   - Nelle note dell'esercizio rivolte all'atleta è fatto divieto assoluto di inserire informazioni tecniche di periodizzazione riservate al coach o al programmatore (es. *"consolidamento mesociclo"*, *"fondamentale ... mesociclo"*, *"scarico mesociclo"*). L'atleta visualizza solo istruzioni operative, esecutive e tecniche.
+18. **ALLUNGAMENTI STATICI (WALL STRETCH ID 030) (REGOLA 20/11/2026)**:
+   - Gli allungamenti statici non possono MAI essere prescritti a ripetizioni (mai 8+8 o simili). Vanno prescritti esclusivamente a tempo (es. 30/60" o `3 X 45"`) o a numero di cicli respiratori (es. tenere la posizione per circa 6/8 cicli respiratori profondi e controllati).
+19. **ESERCIZI ALTERNATI CONTINUI (BAT AROUND THE HEAD ID 158) (REGOLA 20/11/2026)**:
+   - Esercizi alternati continui dx/sx (come Bat around the head) non possono MAI essere prescritti con notazione `+` (mai 30"+30"). Vanno prescritti a tempo continuo complessivo (es. `3 X 45"`).
+20. **FLOW ROPE / DRAGON ROLL, AERIAL JERK E SKIERG LUNGES ALTERNATI (REGOLA 20/11/2026)**:
+   - *Dragon Roll (ID 106) in AMRAP:* parametri a `50 rep` al giro. Nel 1° allenamento B di un ciclo, per favorire l'apprendimento di chi non ha ancora fluidità, va prescritto come esercizio singolo dedicato per 5 minuti continui, lasciando nell'AMRAP solo gli altri due esercizi con jumping rope (o jumping jacks) al posto del Dragon Roll. Dal 2° allenamento B torna nell'AMRAP originario con 50 rep.
+   - *Aerial Jerk (ID 120):* recupero con `RBS 30" - Rest 60"` (dopo serie esplosiva ricaricare fra i lati). Nota obbligatoria: iniziare dal lato più debole e alternare il lato di partenza ad ogni seduta rispetto alla volta precedente.
+   - *Skierg lunges alternati (ID 227):* denominazione "skierg lunges alternati". Nota obbligatoria in grassetto: `**NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**`.
+
 
 
 

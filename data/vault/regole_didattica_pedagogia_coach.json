@@ -80,8 +80,38 @@
       "prescrizione_obbligatoria": "RIPETIZIONI_TOTALI_ALTERNATE",
       "esempio_consentito": "3x10",
       "motivo": "Esercizio che si svolge alternando gamba destra e sinistra: prescrivere a ripetizioni totali (es. 3x10 o X 10), divieto assoluto della notazione monolaterale con '+' (vietato 8+8)."
+    },
+    {
+      "id": "158",
+      "nome": "Bat around the head 90° e 180°",
+      "prescrizione_obbligatoria": "TEMPO_COMPLESSIVO_CONTINUO",
+      "esempio_consentito": "3 X 45\"",
+      "motivo": "Esercizio che si svolge alternando una ripetizione a destra e una a sinistra: divieto assoluto della notazione con '+' (mai 30\"+30\"). Prescrivere a tempo continuo complessivo (es. 3 X 45\")."
     }
   ],
+  "allungamenti_statici_vietato_ripetizioni": [
+    {
+      "id": "030",
+      "nome": "Wall Stretch",
+      "prescrizione_obbligatoria": "TEMPO_O_CICLI_RESPIRATORI",
+      "esempio_consentito": "3 X 45\" (o 6/8 cicli respiratori profondi e controllati)",
+      "motivo": "Esercizio di allungamento statico: divieto assoluto di prescrizione a ripetizioni (mai 8+8). Prescrivere a tempo (30/60\") o a numero di respirazioni."
+    }
+  ],
+  "divieti_terminologici_permanenti": [
+    {
+      "termine_vietato": "cerniera d'anca",
+      "regola": "DIVIETO ASSOLUTO E PERMANENTE: vietato utilizzare il termine 'cerniera d'anca' ovunque e sempre (né nelle note per l'atleta, né in didattica, né in documentazione)."
+    }
+  ],
+  "regola_separazione_note_atleta_vs_programmazione": {
+    "regola": "Nelle note dell'esercizio rivolte all'atleta è fatto divieto assoluto di inserire informazioni tecniche relative alla programmazione e periodizzazione (es. 'consolidamento mesociclo', 'fondamentale ... mesociclo', 'scarico mesociclo'). Tali informazioni riguardano esclusivamente il coach e il programmatore. L'atleta deve visualizzare solo indicazioni tecniche esecutive, RPE e recuperi."
+  },
+  "regole_specifiche_amrap_e_esercizi_ciclo": {
+    "dragon_roll_amrap": "Nell'AMRAP finale prescrivere Dragon Roll (ID 106) a 50 ripetizioni al giro. Nel 1° allenamento B del ciclo, se l'esercizio non è ancora fluido per tutti, inserirlo come esercizio dedicato singolo da 5 minuti continui per apprendimento, lasciando nell'AMRAP solo gli altri due esercizi con jumping rope (o in alternativa jumping jack) al posto del Dragon Roll. Dal 2° allenamento B torna nell'AMRAP originario a 50 rep.",
+    "aerial_jerk": "In Aerial Jerk (ID 120), dopo una serie esplosiva l'atleta deve ricaricare fra un lato e l'altro: prescrivere RBS 30\" - Rest 60\". Nelle note consigliare di iniziare dal lato più debole e alternare il lato di partenza ad ogni seduta.",
+    "skierg_lunges_alternati": "Denominare 'skierg lunges alternati' (ID 227). Nelle note evidenziare in grassetto: '**NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**'."
+  },
   "regola_prescrizione_esercizi_monolaterali": {
     "descrizione": "Nella prescrizione degli esercizi, d'ora in avanti, quando si prescrivono esercizi monolaterali, chiedere sempre conferma preventiva al Coach Stefano se prescriverli 'x+x' (per lato) oppure 'x totale' (alternato/totale)."
   },
