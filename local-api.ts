@@ -86,6 +86,7 @@ function loadData() {
 
   // 2. VAULT AS SINGLE SOURCE OF TRUTH (Priorità Assoluta al Boot!)
   const vaultCandidates = [
+    path.resolve(process.cwd(), "data", "vault"),
     path.resolve(__dirname, "data", "vault"),
     path.resolve(__dirname, "..", "data", "vault"),
   ];
@@ -690,6 +691,61 @@ export async function deleteGoogleCalendarLabSlot(
   }
 }
 
+export async function updateGoogleCalendarLabSlot(
+  googleEventId?: string,
+  updates?: {
+    data?: string;
+    orario?: string;
+    nomeCliente?: string;
+    note?: string;
+  }
+): Promise<boolean> {
+  if (!googleEventId || !updates) return false;
+  try {
+    const token = await getGoogleCalendarAccessToken();
+    if (!token) return false;
+
+    const patchBody: any = {};
+    if (updates.nomeCliente) {
+      patchBody.summary = `🏋️ [LAB] ${updates.nomeCliente}`;
+    }
+    if (updates.data && updates.orario) {
+      const endTime = calculateSlotEndTime(updates.orario);
+      patchBody.start = {
+        dateTime: `${updates.data}T${updates.orario}:00+01:00`,
+        timeZone: "Europe/Rome",
+      };
+      patchBody.end = {
+        dateTime: `${updates.data}T${endTime}:00+01:00`,
+        timeZone: "Europe/Rome",
+      };
+    }
+    if (updates.note !== undefined) {
+      patchBody.description = `Prenotazione slot da Area46 Landmine Lab\nAtleta: ${updates.nomeCliente || "Atleta"}\nNote: ${updates.note || "Nessuna"}`;
+    }
+
+    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${GCAL_CALENDAR_ID}/events/${googleEventId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(patchBody),
+    });
+
+    if (res.ok) {
+      console.log(`[GCAL UPDATE OK] Evento ${googleEventId} aggiornato con successo su Google Calendar (${updates.data || ""} ${updates.orario || ""})`);
+      return true;
+    } else {
+      console.warn(`[GCAL UPDATE WARNING] Status ${res.status} durante update di ${googleEventId}:`, await res.text());
+      return false;
+    }
+  } catch (err) {
+    console.error("[GCAL UPDATE ERROR]", err);
+    return false;
+  }
+}
+
 export async function cleanupOrphanLabSlots(): Promise<{ checked: number; deleted: number; errors: number; details: string[] }> {
   const result = { checked: 0, deleted: 0, errors: 0, details: [] as string[] };
   try {
@@ -822,7 +878,7 @@ export async function pullGoogleCalendarLabSlots(
     }
     const data = await res.json();
     const items = data.items || [];
-
+    db = loadData();
     db.prenotazioni_slot = db.prenotazioni_slot || [];
     db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
     const users: any[] = db.profili_utenti || [];
@@ -909,6 +965,28 @@ export async function pullGoogleCalendarLabSlots(
               (`${u.nome || ""} ${u.cognome || ""}`.trim().toLowerCase() === athleteName.toLowerCase())))
       );
 
+      // 🛡️ SCUDO ANTI-FANTASMA & AUTO-HEALING: se lo slot è stato cancellato su Area46,
+      // non solo è VIETATO reimportarlo o riscalare crediti, ma va eliminato fisicamente da Google Calendar!
+      const isAlreadyCancelled =
+        (bookingId && isBookingIdCancelled(bookingId, db.prenotazioni_cancellate || [])) ||
+        (gcalId && (
+          isBookingIdCancelled(gcalId, db.prenotazioni_cancellate || []) ||
+          isBookingIdCancelled(`bk-${gcalId}`, db.prenotazioni_cancellate || [])
+        ));
+
+      if (isAlreadyCancelled) {
+        console.log(
+          `[GCAL AUTO-CLEANUP] Rilevato evento su Google Calendar per slot già cancellato su Area46 (${slotDate} ${slotTime} per ${athleteName || "Atleta"}, GCalId: ${gcalId}, BookingId: ${bookingId || "N/D"}). Rimozione automatica da GCal...`
+        );
+        deleteGoogleCalendarLabSlot(gcalId, {
+          data: slotDate,
+          orario: slotTime,
+          nomeCliente: athleteName,
+          bookingId: bookingId,
+        }).catch((err) => console.warn(`[GCAL AUTO-CLEANUP WARNING] Fallita rimozione orfano ${gcalId}:`, err));
+        continue;
+      }
+
       const existing = db.prenotazioni_slot.find(
         (b: any) =>
           b.google_event_id === gcalId ||
@@ -993,9 +1071,12 @@ export async function pullGoogleCalendarLabSlots(
       db.prenotazioni_slot.sort((a: any, b: any) => (a.data + a.orario).localeCompare(b.data + b.orario));
       await saveData(db);
       try {
-        const vaultCalFile = path.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json");
-        const altVaultCalFile = path.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json");
-        const targetVault = fs.existsSync(vaultCalFile) ? vaultCalFile : fs.existsSync(altVaultCalFile) ? altVaultCalFile : null;
+        const vaultCalCandidates = [
+          path.resolve(process.cwd(), "data", "vault", "2_gestionale_calendario.json"),
+          path.resolve(__dirname, "data", "vault", "2_gestionale_calendario.json"),
+          path.resolve(__dirname, "..", "data", "vault", "2_gestionale_calendario.json"),
+        ];
+        const targetVault = vaultCalCandidates.find((f) => fs.existsSync(f));
         if (targetVault) {
           const vData = JSON.parse(fs.readFileSync(targetVault, "utf-8"));
           vData.prenotazioni_slot = db.prenotazioni_slot;
@@ -1094,25 +1175,7 @@ async function syncDataToGoogleDrive(fullDb: any) {
       driveDb.utenti_cancellati = fullDb.utenti_cancellati || [];
     }
     if (fullDb.profili_utenti !== undefined) {
-      const incoming = fullDb.profili_utenti || [];
-      const existing = driveDb.profili_utenti || [];
-      const userMap = new Map<string, any>();
-      for (const u of existing) {
-        if (u.id) userMap.set(u.id, u);
-      }
-      for (const u of incoming) {
-        if (u.id) {
-          const prev = userMap.get(u.id);
-          if (!prev) {
-            userMap.set(u.id, u);
-          } else {
-            const prevTime = prev.updated_at ? new Date(prev.updated_at).getTime() : 0;
-            const newTime = u.updated_at ? new Date(u.updated_at).getTime() : 0;
-            userMap.set(u.id, newTime >= prevTime ? u : prev);
-          }
-        }
-      }
-      driveDb.profili_utenti = Array.from(userMap.values());
+      driveDb.profili_utenti = fullDb.profili_utenti || [];
     }
     if (fullDb.prenotazioni_cancellate !== undefined) {
       driveDb.prenotazioni_cancellate = Array.from(
@@ -1132,20 +1195,7 @@ async function syncDataToGoogleDrive(fullDb: any) {
       driveDb.prenotazioni_slot = Array.from(bkMap.values());
     }
     if (fullDb.movimenti_crediti !== undefined) {
-      const incoming = fullDb.movimenti_crediti || [];
-      const existing = driveDb.movimenti_crediti || [];
-      const movMap = new Map<string, any>();
-      for (const m of existing) {
-        if (m.id) movMap.set(m.id, m);
-      }
-      for (const m of incoming) {
-        if (m.id) movMap.set(m.id, m);
-      }
-      driveDb.movimenti_crediti = Array.from(movMap.values()).sort((a: any, b: any) => {
-        const da = a.data_movimento || a.created_at || "";
-        const dbTime = b.data_movimento || b.created_at || "";
-        return dbTime.localeCompare(da);
-      });
+      driveDb.movimenti_crediti = fullDb.movimenti_crediti || [];
     }
     if (fullDb.diario_utente !== undefined) {
       driveDb.diario_utente = fullDb.diario_utente || [];
@@ -1225,8 +1275,9 @@ async function tryLoadConfigFromGoogleDrive() {
         new Set([...(db.utenti_cancellati || []), ...driveDb.utenti_cancellati])
       );
     }
-    if (driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
-      // Garantire che le email e gli ID degli atleti attivi presenti su Drive non vengano filtrati da utenti_cancellati
+    // 🛡️ VAULT SINGLE SOURCE OF TRUTH: i profili utenti e movimenti crediti del Vault hanno precedenza assoluta.
+    // Solo se il database locale è privo di profili utenti accettiamo quelli dal cloud Drive.
+    if ((!db.profili_utenti || db.profili_utenti.length === 0) && driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
       const activeKeys = new Set(
         driveDb.profili_utenti.flatMap((p: any) => [p.id, p.email?.toLowerCase()]).filter(Boolean)
       );
@@ -1251,7 +1302,7 @@ async function tryLoadConfigFromGoogleDrive() {
         (p: any) => !isBookingIdCancelled(p.id, db.prenotazioni_cancellate)
       );
     }
-    if (driveDb.movimenti_crediti && Array.isArray(driveDb.movimenti_crediti)) {
+    if ((!db.movimenti_crediti || db.movimenti_crediti.length === 0) && driveDb.movimenti_crediti && Array.isArray(driveDb.movimenti_crediti)) {
       db.movimenti_crediti = driveDb.movimenti_crediti;
     }
     if (driveDb.diario_utente && Array.isArray(driveDb.diario_utente)) {
