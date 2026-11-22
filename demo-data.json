@@ -23537,13 +23537,13 @@
       "nickname": "Maddy",
       "name": "Anna Paola Maddalena",
       "ruolo": "atleta",
-      "crediti": 14,
+      "crediti": 15,
       "data_scadenza_crediti": "2027-01-07",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 0,
-      "updated_at": "2026-10-07T14:43:38.330Z",
+      "updated_at": "2026-11-22T17:01:04.692Z",
       "data_ultimo_accesso": "2026-11-18T08:08:33.897Z"
     },
     {
@@ -23573,12 +23573,13 @@
       "nickname": "Il Calo",
       "name": "Matteo Calosci",
       "ruolo": "atleta",
-      "crediti": 13,
+      "crediti": 14,
       "data_scadenza_crediti": "2026-12-07",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "data_ultimo_accesso": "2026-11-18T10:47:58.472Z"
+      "data_ultimo_accesso": "2026-11-18T10:47:58.472Z",
+      "updated_at": "2026-11-22T17:01:04.692Z"
     },
     {
       "id": "usr-bw-1953938",
@@ -23605,13 +23606,13 @@
       "nickname": "Casciozzi",
       "name": "Daniele Casci",
       "ruolo": "atleta",
-      "crediti": 0,
+      "crediti": 1,
       "data_scadenza_crediti": "2027-07-31",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 0,
-      "updated_at": "2026-10-07T14:45:15.354Z",
+      "updated_at": "2026-11-22T17:01:04.692Z",
       "data_ultimo_accesso": "2026-11-19T15:23:04.744Z"
     },
     {
@@ -23623,13 +23624,13 @@
       "nickname": "Matte",
       "name": "Matteo Tesse",
       "ruolo": "atleta",
-      "crediti": 2,
+      "crediti": 3,
       "data_scadenza_crediti": "2026-10-31",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
       "anticipi_da_scontare": 8,
-      "updated_at": "2026-10-09T16:52:34.156Z",
+      "updated_at": "2026-11-22T17:01:04.692Z",
       "data_ultimo_accesso": "2026-10-11T18:50:44.969Z"
     },
     {
@@ -30119,11 +30120,12 @@
       "email_cliente": "tebog1887@gmail.com",
       "nome_cliente": "Matteo Tesse",
       "telefono_cliente": "",
-      "stato": "confermata",
+      "stato": "cancellata_in_tempo",
       "credito_scalato": true,
-      "note": "Assegnazione diretta dal Coach",
+      "note": "Assegnazione diretta dal Coach (Riassegnata dal Coach)",
       "google_event_id": "vr3hu2u7a4m3c4ucrkscjh716g",
-      "created_at": "2026-11-07T17:01:24.000Z"
+      "created_at": "2026-11-07T17:01:24.000Z",
+      "cancellato_il": "2026-11-22T17:01:04.692Z"
     },
     {
       "id": "bk-1792683000000-casci-7",
@@ -30133,11 +30135,12 @@
       "email_cliente": "daniele.casci@gmail.com",
       "nome_cliente": "Daniele Casci",
       "telefono_cliente": "",
-      "stato": "confermata",
+      "stato": "cancellata_in_tempo",
       "credito_scalato": true,
-      "note": "Prenotazione Multipla Rapida",
+      "note": "Prenotazione Multipla Rapida (Riassegnata dal Coach)",
       "google_event_id": "3m7g9usl6ppu2siqn19j0b76k8",
-      "created_at": "2026-10-22T16:50:07.000Z"
+      "created_at": "2026-10-22T16:50:07.000Z",
+      "cancellato_il": "2026-11-22T17:01:04.692Z"
     },
     {
       "id": "bk-1794070842164",
@@ -30343,11 +30346,12 @@
       "email_cliente": "annap.maddy@gmail.com",
       "nome_cliente": "Anna Paola Maddalena",
       "telefono_cliente": "",
-      "stato": "confermata",
+      "stato": "cancellata_in_tempo",
       "credito_scalato": true,
-      "note": "",
+      "note": " (Riassegnata dal Coach)",
       "created_at": "2026-11-18T08:08:33.897Z",
-      "google_event_id": "r7gv99dm0nrqn92fst8ld3a8p0"
+      "google_event_id": "r7gv99dm0nrqn92fst8ld3a8p0",
+      "cancellato_il": "2026-11-22T17:01:04.692Z"
     },
     {
       "id": "bk-1794991151882",
@@ -30359,10 +30363,10 @@
       "telefono_cliente": "",
       "stato": "cancellata_in_tempo",
       "credito_scalato": true,
-      "note": "Annullata su Google Calendar",
+      "note": "Annullata su Google Calendar (Riassegnata dal Coach)",
       "created_at": "2026-11-18T08:39:11.882Z",
       "google_event_id": "2alp2m98jagqcb8coccbghgpds",
-      "cancellato_il": "2026-11-18T10:47:20.916Z"
+      "cancellato_il": "2026-11-22T17:01:04.692Z"
     },
     {
       "id": "bk-1794998860514",

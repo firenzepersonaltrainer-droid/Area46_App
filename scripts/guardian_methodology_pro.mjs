@@ -73,7 +73,7 @@ export function findExerciseRule(item, rulesMap) {
 /**
  * Stima realistica del tempo di una riga di allenamento in secondi
  */
-function estimateRowDurationSeconds(row) {
+export function estimateRowDurationSeconds(row) {
   const param = String(row.parametri || "").toLowerCase();
   const notes = String(row.note_tecniche || "").toLowerCase();
   const recStr = String(row.recupero || "").toLowerCase().trim();

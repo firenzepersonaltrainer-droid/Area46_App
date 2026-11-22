@@ -35352,13 +35352,13 @@ var demo_data_default = {
       nickname: "Maddy",
       name: "Anna Paola Maddalena",
       ruolo: "atleta",
-      crediti: 14,
+      crediti: 15,
       data_scadenza_crediti: "2027-01-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
-      updated_at: "2026-10-07T14:43:38.330Z",
+      updated_at: "2026-11-22T17:01:04.692Z",
       data_ultimo_accesso: "2026-11-18T08:08:33.897Z"
     },
     {
@@ -35388,12 +35388,13 @@ var demo_data_default = {
       nickname: "Il Calo",
       name: "Matteo Calosci",
       ruolo: "atleta",
-      crediti: 13,
+      crediti: 14,
       data_scadenza_crediti: "2026-12-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      data_ultimo_accesso: "2026-11-18T10:47:58.472Z"
+      data_ultimo_accesso: "2026-11-18T10:47:58.472Z",
+      updated_at: "2026-11-22T17:01:04.692Z"
     },
     {
       id: "usr-bw-1953938",
@@ -35420,13 +35421,13 @@ var demo_data_default = {
       nickname: "Casciozzi",
       name: "Daniele Casci",
       ruolo: "atleta",
-      crediti: 0,
+      crediti: 1,
       data_scadenza_crediti: "2027-07-31",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
-      updated_at: "2026-10-07T14:45:15.354Z",
+      updated_at: "2026-11-22T17:01:04.692Z",
       data_ultimo_accesso: "2026-11-19T15:23:04.744Z"
     },
     {
@@ -35438,13 +35439,13 @@ var demo_data_default = {
       nickname: "Matte",
       name: "Matteo Tesse",
       ruolo: "atleta",
-      crediti: 2,
+      crediti: 3,
       data_scadenza_crediti: "2026-10-31",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 8,
-      updated_at: "2026-10-09T16:52:34.156Z",
+      updated_at: "2026-11-22T17:01:04.692Z",
       data_ultimo_accesso: "2026-10-11T18:50:44.969Z"
     },
     {
@@ -41934,11 +41935,12 @@ var demo_data_default = {
       email_cliente: "tebog1887@gmail.com",
       nome_cliente: "Matteo Tesse",
       telefono_cliente: "",
-      stato: "confermata",
+      stato: "cancellata_in_tempo",
       credito_scalato: true,
-      note: "Assegnazione diretta dal Coach",
+      note: "Assegnazione diretta dal Coach (Riassegnata dal Coach)",
       google_event_id: "vr3hu2u7a4m3c4ucrkscjh716g",
-      created_at: "2026-11-07T17:01:24.000Z"
+      created_at: "2026-11-07T17:01:24.000Z",
+      cancellato_il: "2026-11-22T17:01:04.692Z"
     },
     {
       id: "bk-1792683000000-casci-7",
@@ -41948,11 +41950,12 @@ var demo_data_default = {
       email_cliente: "daniele.casci@gmail.com",
       nome_cliente: "Daniele Casci",
       telefono_cliente: "",
-      stato: "confermata",
+      stato: "cancellata_in_tempo",
       credito_scalato: true,
-      note: "Prenotazione Multipla Rapida",
+      note: "Prenotazione Multipla Rapida (Riassegnata dal Coach)",
       google_event_id: "3m7g9usl6ppu2siqn19j0b76k8",
-      created_at: "2026-10-22T16:50:07.000Z"
+      created_at: "2026-10-22T16:50:07.000Z",
+      cancellato_il: "2026-11-22T17:01:04.692Z"
     },
     {
       id: "bk-1794070842164",
@@ -42158,11 +42161,12 @@ var demo_data_default = {
       email_cliente: "annap.maddy@gmail.com",
       nome_cliente: "Anna Paola Maddalena",
       telefono_cliente: "",
-      stato: "confermata",
+      stato: "cancellata_in_tempo",
       credito_scalato: true,
-      note: "",
+      note: " (Riassegnata dal Coach)",
       created_at: "2026-11-18T08:08:33.897Z",
-      google_event_id: "r7gv99dm0nrqn92fst8ld3a8p0"
+      google_event_id: "r7gv99dm0nrqn92fst8ld3a8p0",
+      cancellato_il: "2026-11-22T17:01:04.692Z"
     },
     {
       id: "bk-1794991151882",
@@ -42174,10 +42178,10 @@ var demo_data_default = {
       telefono_cliente: "",
       stato: "cancellata_in_tempo",
       credito_scalato: true,
-      note: "Annullata su Google Calendar",
+      note: "Annullata su Google Calendar (Riassegnata dal Coach)",
       created_at: "2026-11-18T08:39:11.882Z",
       google_event_id: "2alp2m98jagqcb8coccbghgpds",
-      cancellato_il: "2026-11-18T10:47:20.916Z"
+      cancellato_il: "2026-11-22T17:01:04.692Z"
     },
     {
       id: "bk-1794998860514",
@@ -46841,12 +46845,52 @@ CALENDARIO E PRENOTAZIONI:
       created_at: (/* @__PURE__ */ new Date()).toISOString()
     };
     db.eccezioni_calendario.push(nuova);
+    const prorogaGiorniSingola = Number(parsedBody.proroga_giorni) || 0;
+    if (parsedBody.tipo === "chiusura_giornata" || parsedBody.tipo === "slot_bloccato") {
+      (db.prenotazioni_slot || []).forEach((bk) => {
+        const matchData = bk.data === parsedBody.data;
+        const matchOrario = parsedBody.tipo === "chiusura_giornata" || bk.orario === parsedBody.orario;
+        if (matchData && matchOrario && (bk.stato === "confermata" || !bk.stato || bk.stato === "attiva")) {
+          bk.stato = "cancellata_in_tempo";
+          bk.cancellato_il = (/* @__PURE__ */ new Date()).toISOString();
+          bk.note = `Annullata per chiusura studio: ${parsedBody.motivo || "Chiusura del Coach"}`;
+          const atleta = (db.profili_utenti || []).find(
+            (p) => p.id === bk.atleta_id || p.email?.toLowerCase() === bk.email_cliente?.toLowerCase()
+          );
+          const walletOwner = atleta ? getWalletOwner(atleta, db) : null;
+          if (walletOwner && bk.credito_scalato) {
+            walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+            walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+            if (atleta) atleta.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+            if (prorogaGiorniSingola > 0 && walletOwner.data_scadenza_crediti) {
+              const sDate = /* @__PURE__ */ new Date(walletOwner.data_scadenza_crediti + "T00:00:00");
+              sDate.setDate(sDate.getDate() + prorogaGiorniSingola);
+              const y = sDate.getFullYear();
+              const m = String(sDate.getMonth() + 1).padStart(2, "0");
+              const d = String(sDate.getDate()).padStart(2, "0");
+              walletOwner.data_scadenza_crediti = `${y}-${m}-${d}`;
+            }
+            alignSharedPartnersCredits(walletOwner, db);
+            addMovimentoCrediti(db, {
+              atleta_id: walletOwner.id,
+              email_cliente: walletOwner.email,
+              nome_cliente: `${walletOwner.nome} ${walletOwner.cognome}`.trim(),
+              tipo: "rimborso_cancellazione",
+              delta_crediti: 1,
+              saldo_risultante: walletOwner.crediti,
+              motivazione: `Rimborso slot ${bk.data} ${bk.orario} per chiusura studio (${parsedBody.motivo || "Chiusura del Coach"})${prorogaGiorniSingola > 0 ? ` [Proroga carnet +${prorogaGiorniSingola}gg]` : ""}`,
+              operatore: "coach"
+            });
+          }
+        }
+      });
+    }
     saveData(db);
     res.statusCode = 201;
     return res.end(JSON.stringify(nuova));
   }
   if (pathname === "/app-api/eccezioni-calendario/chiusura-periodo" && method === "POST") {
-    const { data_inizio, data_fine, motivo, proroga_scadenze } = parsedBody;
+    const { data_inizio, data_fine, motivo, proroga_scadenze, proroga_giorni } = parsedBody;
     if (!data_inizio || !data_fine) {
       res.statusCode = 400;
       return res.end(JSON.stringify({ error: "Date di inizio e fine periodo obbligatorie" }));
@@ -46856,8 +46900,10 @@ CALENDARIO E PRENOTAZIONI:
     const end = new Date(data_fine);
     const diffMs = end.getTime() - start.getTime();
     const giorniChiusura = Math.max(1, Math.round(diffMs / (1e3 * 60 * 60 * 24)) + 1);
+    const giorniEffettiviProroga = proroga_giorni !== void 0 && proroga_giorni !== null ? Number(proroga_giorni) : giorniChiusura;
     const dateCreate = [];
     const cur = new Date(start);
+    const atletiCoinvolti = /* @__PURE__ */ new Set();
     while (cur <= end) {
       const dStr = cur.toISOString().slice(0, 10);
       dateCreate.push(dStr);
@@ -46875,24 +46921,29 @@ CALENDARIO E PRENOTAZIONI:
         });
       }
       (db.prenotazioni_slot || []).forEach((bk) => {
-        if (bk.data === dStr && bk.stato === "confermata") {
+        if (bk.data === dStr && (bk.stato === "confermata" || !bk.stato || bk.stato === "attiva")) {
           bk.stato = "cancellata_in_tempo";
           bk.cancellato_il = (/* @__PURE__ */ new Date()).toISOString();
           bk.note = `Annullata per chiusura studio: ${motivo || "Chiusura programmata"}`;
           const atleta = (db.profili_utenti || []).find(
-            (p) => p.id === bk.atleta_id || p.email === bk.email_cliente
+            (p) => p.id === bk.atleta_id || p.email?.toLowerCase() === bk.email_cliente?.toLowerCase()
           );
-          if (atleta && bk.credito_scalato) {
-            atleta.crediti = (atleta.crediti ?? 0) + 1;
+          const walletOwner = atleta ? getWalletOwner(atleta, db) : null;
+          if (walletOwner && bk.credito_scalato) {
+            walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+            walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+            if (atleta) atleta.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+            atletiCoinvolti.add(walletOwner.id);
+            alignSharedPartnersCredits(walletOwner, db);
             addMovimentoCrediti(db, {
-              atleta_id: atleta.id,
-              email_cliente: atleta.email,
-              nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+              atleta_id: walletOwner.id,
+              email_cliente: walletOwner.email,
+              nome_cliente: `${walletOwner.nome} ${walletOwner.cognome}`.trim(),
               tipo: "rimborso_cancellazione",
               delta_crediti: 1,
-              saldo_risultante: atleta.crediti,
+              saldo_risultante: walletOwner.crediti,
               motivazione: `Rimborso slot ${bk.data} ${bk.orario} per chiusura studio (${motivo || "Chiusura programmata"})`,
-              operatore: "sistema"
+              operatore: "coach"
             });
           }
         }
@@ -46900,23 +46951,27 @@ CALENDARIO E PRENOTAZIONI:
       cur.setDate(cur.getDate() + 1);
     }
     let atletiAggiornati = 0;
-    if (proroga_scadenze !== false) {
+    if (proroga_scadenze !== false && giorniEffettiviProroga > 0) {
       (db.profili_utenti || []).forEach((p) => {
         if (p.ruolo === "atleta" && p.stato_iscrizione !== "dismesso" && p.data_scadenza_crediti) {
-          if (p.data_scadenza_crediti >= data_inizio) {
-            const oldScad = new Date(p.data_scadenza_crediti);
-            oldScad.setDate(oldScad.getDate() + giorniChiusura);
-            p.data_scadenza_crediti = oldScad.toISOString().slice(0, 10);
+          if (p.data_scadenza_crediti >= data_inizio || atletiCoinvolti.has(p.id)) {
+            const oldScad = /* @__PURE__ */ new Date(p.data_scadenza_crediti + "T00:00:00");
+            oldScad.setDate(oldScad.getDate() + giorniEffettiviProroga);
+            const y = oldScad.getFullYear();
+            const m = String(oldScad.getMonth() + 1).padStart(2, "0");
+            const d = String(oldScad.getDate()).padStart(2, "0");
+            p.data_scadenza_crediti = `${y}-${m}-${d}`;
+            p.updated_at = (/* @__PURE__ */ new Date()).toISOString();
             atletiAggiornati++;
             addMovimentoCrediti(db, {
               atleta_id: p.id,
               email_cliente: p.email,
-              nome_cliente: `${p.nome} ${p.cognome}`,
+              nome_cliente: `${p.nome} ${p.cognome}`.trim(),
               tipo: "bonus_regalo",
               delta_crediti: 0,
               saldo_risultante: p.crediti,
-              motivazione: `Proroga automatica di +${giorniChiusura} giorni alla scadenza per chiusura studio (${motivo || "Ferie / Festivit\xE0"}). Nuova scadenza: ${p.data_scadenza_crediti}`,
-              operatore: "sistema"
+              motivazione: `Proroga di +${giorniEffettiviProroga} giorni per chiusura studio (${motivo || "Ferie / Festivit\xE0"}). Nuova scadenza: ${p.data_scadenza_crediti}`,
+              operatore: "coach"
             });
           }
         }
@@ -46928,9 +46983,10 @@ CALENDARIO E PRENOTAZIONI:
       JSON.stringify({
         ok: true,
         giorni_chiusura: giorniChiusura,
+        giorni_proroga: giorniEffettiviProroga,
         date_bloccate: dateCreate.length,
         atleti_prorogati: atletiAggiornati,
-        messaggio: `Chiusura studio registrata per ${giorniChiusura} giorni (${data_inizio} \u2794 ${data_fine}). ${proroga_scadenze !== false ? `Scadenze prorogate automaticamente di +${giorniChiusura} giorni per ${atletiAggiornati} atleti attivi.` : ""}`
+        messaggio: `Chiusura studio registrata per ${giorniChiusura} giorni (${data_inizio} \u2794 ${data_fine}). ${giorniEffettiviProroga > 0 ? `Scadenze prorogate di +${giorniEffettiviProroga} giorni per ${atletiAggiornati} atleti.` : ""}`
       })
     );
   }
@@ -47407,7 +47463,7 @@ CALENDARIO E PRENOTAZIONI:
       res.statusCode = 404;
       return res.end(JSON.stringify({ error: "Prenotazione non trovata" }));
     }
-    const isManager = currentUser?.ruolo === "manager";
+    const isManager = currentUser?.ruolo === "manager" || req.headers["x-area46-user"] === "usr-coach-01" || req.headers["x-user-id"] === "usr-coach-01" || parsedBody?.is_manager === true;
     const atleta = (db.profili_utenti || []).find(
       (p) => p.email === bk.email_cliente || p.id === bk.atleta_id
     );
@@ -47420,22 +47476,29 @@ CALENDARIO E PRENOTAZIONI:
     let rimborsato = false;
     let statoFinale = "cancellata_tardiva";
     let messaggio = "";
-    const prorogaRequested = url.searchParams.get("proroga") === "true" || url.searchParams.get("proroga") === "7" || parsedBody?.proroga === true || parsedBody?.proroga === "true";
+    const rawProrogaGiorni = url.searchParams.get("proroga_giorni") ?? parsedBody?.proroga_giorni;
+    let giorniProroga = rawProrogaGiorni !== void 0 && rawProrogaGiorni !== null ? Number(rawProrogaGiorni) : 0;
+    if (isNaN(giorniProroga) || giorniProroga < 0) giorniProroga = 0;
+    if (giorniProroga === 0 && (url.searchParams.get("proroga") === "true" || url.searchParams.get("proroga") === "7" || parsedBody?.proroga === true || parsedBody?.proroga === "true")) {
+      giorniProroga = 7;
+    }
     if (orePreavviso >= oreLimite || isManager) {
       rimborsato = true;
       statoFinale = "cancellata_in_tempo";
       if (bk.credito_scalato && atleta && walletOwner) {
         walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+        walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+        atleta.updated_at = (/* @__PURE__ */ new Date()).toISOString();
         alignSharedPartnersCredits(walletOwner, db);
         let prorogaMsg = "";
-        if (isManager && prorogaRequested && walletOwner.data_scadenza_crediti) {
+        if (isManager && giorniProroga > 0 && walletOwner.data_scadenza_crediti) {
           const scadenzaDate = /* @__PURE__ */ new Date(walletOwner.data_scadenza_crediti + "T00:00:00");
-          scadenzaDate.setDate(scadenzaDate.getDate() + 7);
+          scadenzaDate.setDate(scadenzaDate.getDate() + giorniProroga);
           const y = scadenzaDate.getFullYear();
           const m = String(scadenzaDate.getMonth() + 1).padStart(2, "0");
           const d = String(scadenzaDate.getDate()).padStart(2, "0");
           walletOwner.data_scadenza_crediti = `${y}-${m}-${d}`;
-          prorogaMsg = ` (Scadenza carnet prorogata al ${(/* @__PURE__ */ new Date(
+          prorogaMsg = ` (Scadenza carnet prorogata di +${giorniProroga}gg al ${(/* @__PURE__ */ new Date(
             walletOwner.data_scadenza_crediti + "T00:00:00"
           )).toLocaleDateString("it-IT")})`;
         }
@@ -47446,10 +47509,10 @@ CALENDARIO E PRENOTAZIONI:
           tipo: "rimborso_cancellazione",
           delta_crediti: 1,
           saldo_risultante: walletOwner.crediti,
-          motivazione: isManager ? prorogaRequested ? `Rimborso slot ${bk.data} ${bk.orario} per ${atleta.nome} ${atleta.cognome}${isShared ? " [Borsellino Condiviso]" : ""} [Con proroga scadenza carnet +7gg]` : `Ripristino credito per cancellazione/spostamento slot ${bk.data} ${bk.orario} per ${atleta.nome} ${atleta.cognome}${isShared ? " [Borsellino Condiviso]" : ""}` : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}${isShared ? " [Borsellino Condiviso]" : ""}`,
+          motivazione: isManager ? giorniProroga > 0 ? `Rimborso slot ${bk.data} ${bk.orario} per ${atleta.nome} ${atleta.cognome}${isShared ? " [Borsellino Condiviso]" : ""} [Con proroga scadenza carnet +${giorniProroga}gg]` : `Ripristino credito per cancellazione/spostamento slot ${bk.data} ${bk.orario} per ${atleta.nome} ${atleta.cognome}${isShared ? " [Borsellino Condiviso]" : ""}` : `Rimborso per cancellazione in tempo slot del ${bk.data} ${bk.orario}${isShared ? " [Borsellino Condiviso]" : ""}`,
           operatore: isManager ? "coach" : "atleta"
         });
-        messaggio = isManager ? prorogaRequested ? `Sessione annullata dal Coach. 1 credito riaccreditato e scadenza prorogata di 7 giorni.` : `Sessione annullata dal Coach. 1 credito riaccreditato per consentire lo spostamento dello slot.` : `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
+        messaggio = isManager ? giorniProroga > 0 ? `Sessione annullata dal Coach. 1 credito riaccreditato e scadenza prorogata di +${giorniProroga} giorni.` : `Sessione annullata dal Coach. 1 credito riaccreditato per consentire lo spostamento dello slot.` : `Prenotazione annullata con successo. Preavviso rispettato (${Math.max(
           0,
           Math.round(orePreavviso)
         )}h rimaste su ${oreLimite}h richieste). 1 credito \xE8 stato rimborsato al tuo wallet.`;

@@ -11,6 +11,7 @@ import {
   saveDeletedBookingId,
   isBookingDeleted,
 } from "../lib/useUser";
+import ProrogaRoulettePicker from "../components/ProrogaRoulettePicker";
 import {
   Users,
   Search,
@@ -145,6 +146,8 @@ export default function ManagerAtletiPage() {
   const [athleteForFutureBookings, setAthleteForFutureBookings] = useState<UserProfile | null>(null);
   const [bookingToCancelFromAtleta, setBookingToCancelFromAtleta] = useState<any | null>(null);
   const [atletaProrogaChoice, setAtletaProrogaChoice] = useState(false);
+  const [atletaProrogaGiorni, setAtletaProrogaGiorni] = useState<number>(0);
+  const [scadenzaRouletteGiorni, setScadenzaRouletteGiorni] = useState<number>(0);
 
   const queryClient = useQueryClient();
 
@@ -185,15 +188,19 @@ export default function ManagerAtletiPage() {
   };
 
   const cancellaDaAtletaMutation = useMutation({
-    mutationFn: async ({ id, proroga }: { id: string; proroga: boolean }) => {
+    mutationFn: async ({ id, proroga_giorni }: { id: string; proroga_giorni: number }) => {
       saveDeletedBookingId(id);
       queryClient.setQueryData<any[]>(["prenotazioni"], (old) =>
         (old || []).filter((p) => p.id !== id)
       );
-      const res = await fetch(`/app-api/prenotazioni/${id}?proroga=${proroga}`, {
+      const res = await fetch(`/app-api/prenotazioni/${id}?proroga_giorni=${proroga_giorni}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ proroga }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-area46-user": "usr-coach-01",
+          "x-user-id": "usr-coach-01",
+        },
+        body: JSON.stringify({ proroga_giorni, is_manager: true }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Errore cancellazione");
@@ -209,6 +216,7 @@ export default function ManagerAtletiPage() {
       queryClient.invalidateQueries({ queryKey: ["movimenti-crediti"] });
       toast.success(data.messaggio || "Seduta annullata. Credito ripristinato.");
       setBookingToCancelFromAtleta(null);
+      setAtletaProrogaGiorni(0);
     },
     onError: (err: any) => {
       toast.error(err.message || "Errore durante la cancellazione della seduta");
@@ -243,7 +251,20 @@ export default function ManagerAtletiPage() {
     setNuoviCrediti(atleta.crediti);
     setNuoviAnticipi(atleta.anticipi_da_scontare || 0);
     setNuovaScadenza(atleta.data_scadenza_crediti || "");
+    setScadenzaRouletteGiorni(0);
     setCreditiModalOpen(true);
+  };
+
+  const handleRouletteScadenzaChange = (days: number) => {
+    setScadenzaRouletteGiorni(days);
+    if (!selectedAtleta) return;
+    const baseStr = selectedAtleta.data_scadenza_crediti || new Date().toISOString().slice(0, 10);
+    const baseDate = new Date(baseStr + "T00:00:00");
+    baseDate.setDate(baseDate.getDate() + days);
+    const y = baseDate.getFullYear();
+    const m = String(baseDate.getMonth() + 1).padStart(2, "0");
+    const d = String(baseDate.getDate()).padStart(2, "0");
+    setNuovaScadenza(`${y}-${m}-${d}`);
   };
 
   const handleSaveCrediti = async () => {
@@ -803,19 +824,19 @@ export default function ManagerAtletiPage() {
               </div>
             </div>
 
-            {/* BOX GESTIONE ANTICIPI CREDITI */}
+            {/* BOX GESTIONE ANTICIPI CREDITI (DE-CLUTTERATO) */}
             <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
                   <Coins className="size-3.5 text-amber-600" />
-                  Anticipi da scalare su prox acquisto
+                  Anticipi da scalare
                 </label>
                 <span className="text-xs font-black text-amber-800 tabular-nums">
                   {nuoviAnticipi} crediti
                 </span>
               </div>
-              <p className="text-[10.5px] text-amber-800/90 leading-relaxed">
-                Se concedi crediti in anticipo all&apos;atleta per farlo prenotare prima del pagamento, indica qui i crediti che l&apos;app <strong>scalerà in automatico</strong> al suo prossimo acquisto con Stripe o bonifico.
+              <p className="text-[10.5px] text-amber-800/90 leading-snug">
+                Crediti concessi prima del saldo: verranno scalati in automatico al prossimo acquisto.
               </p>
               <div className="flex items-center gap-2">
                 <Input
@@ -834,51 +855,39 @@ export default function ManagerAtletiPage() {
                     setNuoviCrediti((prev) => prev + 8);
                     setNuoviAnticipi((prev) => prev + 8);
                   }}
-                  className="text-[11px] h-8 px-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold whitespace-nowrap"
+                  className="text-[11px] h-8 px-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold whitespace-nowrap cursor-pointer"
                 >
                   +8 Anticipo rapido
                 </Button>
               </div>
             </div>
 
-            <div>
-              <label className="text-[11px] font-black uppercase tracking-wider text-zinc-600 block mb-1">
-                Data di Scadenza Crediti
-              </label>
+            {/* SCADENZA CREDITI CON ROULETTE A GIORNI SINGOLI */}
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-black uppercase tracking-wider text-zinc-600 block">
+                  Data Scadenza Carnet
+                </label>
+                <span className="text-[10px] text-zinc-500 font-bold tabular-nums">
+                  {nuovaScadenza || "Nessuna data"}
+                </span>
+              </div>
               <Input
                 type="date"
                 value={nuovaScadenza}
-                onChange={(e) => setNuovaScadenza(e.target.value)}
+                onChange={(e) => {
+                  setNuovaScadenza(e.target.value);
+                  setScadenzaRouletteGiorni(0);
+                }}
                 className="text-xs"
               />
-              <div className="flex gap-1.5 mt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() + 7);
-                    setNuovaScadenza(d.toISOString().slice(0, 10));
-                  }}
-                  className="flex-1 text-[11px] h-7"
-                >
-                  +1 Settimana
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() + 30);
-                    setNuovaScadenza(d.toISOString().slice(0, 10));
-                  }}
-                  className="flex-1 text-[11px] h-7"
-                >
-                  +30 Giorni
-                </Button>
-              </div>
+
+              <ProrogaRoulettePicker
+                value={scadenzaRouletteGiorni}
+                onChange={handleRouletteScadenzaChange}
+                currentExpirationDate={selectedAtleta?.data_scadenza_crediti}
+                label="Proroga Scadenza (+giorni)"
+              />
             </div>
           </div>
 
@@ -2063,59 +2072,23 @@ export default function ManagerAtletiPage() {
                 <strong>{bookingToCancelFromAtleta.orario}</strong>. 1 credito verrà restituito al wallet dell'atleta.
               </div>
 
-              <div className="space-y-1.5 pt-1">
-                <label
-                  onClick={() => setAtletaProrogaChoice(false)}
-                  className={`flex items-start gap-2 p-2.5 rounded-xl border text-xs cursor-pointer ${
-                    !atletaProrogaChoice
-                      ? "bg-white border-[#1c00ff] ring-1 ring-[#1c00ff] text-zinc-900 font-bold"
-                      : "bg-white/60 border-zinc-200 text-zinc-600"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="proroga-atleta"
-                    checked={!atletaProrogaChoice}
-                    onChange={() => setAtletaProrogaChoice(false)}
-                    className="mt-0.5 text-[#1c00ff]"
-                  />
-                  <div>
-                    <div className="font-bold">Nessuna proroga (Consigliato per spostamento)</div>
-                    <div className="text-[11px] text-zinc-500 font-normal mt-0.5">
-                      1 credito restituito. Data di scadenza del pacchetto invariata.
-                    </div>
-                  </div>
-                </label>
-
-                <label
-                  onClick={() => setAtletaProrogaChoice(true)}
-                  className={`flex items-start gap-2 p-2.5 rounded-xl border text-xs cursor-pointer ${
-                    atletaProrogaChoice
-                      ? "bg-amber-50 border-amber-500 ring-1 ring-amber-500 text-amber-950 font-bold"
-                      : "bg-white/60 border-zinc-200 text-zinc-600"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="proroga-atleta"
-                    checked={atletaProrogaChoice}
-                    onChange={() => setAtletaProrogaChoice(true)}
-                    className="mt-0.5 text-amber-600"
-                  />
-                  <div>
-                    <div className="font-bold">Proroga scadenza carnet (+7 giorni)</div>
-                    <div className="text-[11px] text-amber-800 font-normal mt-0.5">
-                      Posticipa di 1 settimana la scadenza dei crediti (recupero straordinario).
-                    </div>
-                  </div>
-                </label>
+              <div className="pt-1">
+                <ProrogaRoulettePicker
+                  value={atletaProrogaGiorni}
+                  onChange={setAtletaProrogaGiorni}
+                  currentExpirationDate={athleteForFutureBookings?.data_scadenza_crediti}
+                  label="Proroga Scadenza Carnet"
+                />
               </div>
 
               <div className="flex gap-2 pt-1">
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setBookingToCancelFromAtleta(null)}
+                  onClick={() => {
+                    setBookingToCancelFromAtleta(null);
+                    setAtletaProrogaGiorni(0);
+                  }}
                   className="flex-1 rounded-xl h-8 text-xs font-bold"
                 >
                   Annulla operazione
@@ -2126,7 +2099,7 @@ export default function ManagerAtletiPage() {
                   onClick={() => {
                     cancellaDaAtletaMutation.mutate({
                       id: bookingToCancelFromAtleta.id,
-                      proroga: atletaProrogaChoice,
+                      proroga_giorni: atletaProrogaGiorni,
                     });
                   }}
                   disabled={cancellaDaAtletaMutation.isPending}

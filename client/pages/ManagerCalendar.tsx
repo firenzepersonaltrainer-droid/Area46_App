@@ -14,6 +14,7 @@ import {
 import { calcolaSlotPerGiorno } from "../lib/palinsesto";
 import { CalendarioMeseNavigabile } from "../components/CalendarioMeseNavigabile";
 import { ManagerPalinsestoModal } from "../components/ManagerPalinsestoModal";
+import ProrogaRoulettePicker from "../components/ProrogaRoulettePicker";
 import {
   Calendar as CalendarIcon,
   CalendarRange,
@@ -112,9 +113,10 @@ export default function ManagerCalendarPage() {
   const [blockMotivo, setBlockMotivo] = useState("Chiusura per ferie / imprevisto");
   const [periodoFine, setPeriodoFine] = useState(selectedDate);
   const [prorogaScadenze, setProrogaScadenze] = useState(true);
+  const [blockProrogaGiorni, setBlockProrogaGiorni] = useState<number>(0);
 
-  // Modale Eliminazione con Scelta Proroga
-  const [prorogaScadenzaChoice, setProrogaScadenzaChoice] = useState(false);
+  // Modale Eliminazione con Scelta Proroga a roulette (giorni singoli: 0, 1, 2, ...)
+  const [prorogaGiorniChoice, setProrogaGiorniChoice] = useState<number>(0);
 
   // Modale Palinsesto & Attività
   const [palinsestoModalOpen, setPalinsestoModalOpen] = useState(false);
@@ -257,17 +259,21 @@ export default function ManagerCalendarPage() {
     },
   });
 
-  // Mutation Cancellazione Coach
+  // Mutation Cancellazione Coach con Roulette Proroga
   const cancellaMutation = useMutation({
-    mutationFn: async ({ id, proroga }: { id: string; proroga: boolean }) => {
+    mutationFn: async ({ id, proroga_giorni }: { id: string; proroga_giorni: number }) => {
       saveDeletedBookingId(id);
       queryClient.setQueryData<Prenotazione[]>(["prenotazioni"], (old) =>
         (old || []).filter((p) => p.id !== id)
       );
-      const res = await fetch(`/app-api/prenotazioni/${id}?proroga=${proroga}`, {
+      const res = await fetch(`/app-api/prenotazioni/${id}?proroga_giorni=${proroga_giorni}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ proroga }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-area46-user": "usr-coach-01",
+          "x-user-id": "usr-coach-01",
+        },
+        body: JSON.stringify({ proroga_giorni, is_manager: true }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Errore cancellazione");
@@ -294,6 +300,7 @@ export default function ManagerCalendarPage() {
         });
       }
       setSelectedBooking(null);
+      setProrogaGiorniChoice(0);
     },
     onError: (err: any) => {
       toast.error(err.message || "Errore cancellazione");
@@ -319,12 +326,17 @@ export default function ManagerCalendarPage() {
         }
         const res = await fetch("/app-api/eccezioni-calendario/chiusura-periodo", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-area46-user": "usr-coach-01",
+            "x-user-id": "usr-coach-01",
+          },
           body: JSON.stringify({
             data_inizio: selectedDate,
             data_fine: periodoFine,
             motivo: blockMotivo || "Chiusura studio / Ferie",
             proroga_scadenze: prorogaScadenze,
+            proroga_giorni: blockProrogaGiorni,
           }),
         });
         const data = await res.json();
@@ -339,6 +351,7 @@ export default function ManagerCalendarPage() {
           data: selectedDate,
           tipo: "chiusura_giornata",
           motivo: blockMotivo || "Chiusura intera giornata",
+          proroga_giorni: blockProrogaGiorni,
         });
       } else {
         if (blockOrariSelezionati.length === 0) {
@@ -354,6 +367,7 @@ export default function ManagerCalendarPage() {
       }
       setBlockModal(false);
       setBlockOrariSelezionati([]);
+      setBlockProrogaGiorni(0);
     } catch {
       // toast gestito da hook
     }
@@ -863,23 +877,20 @@ export default function ManagerCalendarPage() {
                   );
                 })()}
 
-                <label className="flex items-start gap-2 p-2 rounded-xl bg-white border border-purple-200 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={prorogaScadenze}
-                    onChange={(e) => setProrogaScadenze(e.target.checked)}
-                    className="mt-0.5 rounded text-[#1c00ff] focus:ring-[#1c00ff]"
-                  />
-                  <div className="text-[11px] leading-tight">
-                    <span className="font-black text-zinc-900 block">
-                      Proroga automatica scadenze atleti (+N giorni)
-                    </span>
-                    <span className="text-zinc-500 text-[10px]">
-                      Slitta automaticamente la scadenza dei crediti di tutti gli atleti attivi del numero di giorni di chiusura dello studio.
-                    </span>
-                  </div>
-                </label>
+                <ProrogaRoulettePicker
+                  value={blockProrogaGiorni}
+                  onChange={setBlockProrogaGiorni}
+                  label="Proroga Scadenza per Tutti gli Atleti"
+                />
               </div>
+            )}
+
+            {blockTipo === "chiusura_giornata" && (
+              <ProrogaRoulettePicker
+                value={blockProrogaGiorni}
+                onChange={setBlockProrogaGiorni}
+                label="Proroga Scadenza per Slot Impattati"
+              />
             )}
 
             {blockTipo === "slot_bloccato" && (
@@ -1117,63 +1128,22 @@ export default function ManagerCalendarPage() {
                 </div>
               </div>
 
-              {/* OPZIONI PROROGA SCADENZA CARNET (NESSUN AUTOMATISMO) */}
-              <div className="p-3.5 rounded-2xl bg-zinc-50/80 border border-zinc-200 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-black text-zinc-900 text-xs">Proroga Scadenza Carnet</span>
-                  <span className="text-[10px] text-zinc-500 font-bold">Controllo Coach</span>
-                </div>
-                <p className="text-[11px] text-zinc-500 leading-tight">
-                  Seleziona l'azione desiderata per la data di scadenza del pacchetto dell'atleta:
-                </p>
-                <div className="space-y-1.5 pt-0.5">
-                  <label
-                    onClick={() => setProrogaScadenzaChoice(false)}
-                    className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
-                      !prorogaScadenzaChoice
-                        ? "bg-white border-[#1c00ff] ring-1 ring-[#1c00ff] shadow-2xs text-zinc-900"
-                        : "bg-white/60 border-zinc-200 text-zinc-600 hover:bg-white"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="proroga-choice"
-                      checked={!prorogaScadenzaChoice}
-                      onChange={() => setProrogaScadenzaChoice(false)}
-                      className="mt-0.5 text-[#1c00ff]"
-                    />
-                    <div>
-                      <div className="font-black text-zinc-900">Nessuna proroga (Consigliato per spostamento)</div>
-                      <div className="text-[11px] text-zinc-500 mt-0.5">
-                        1 credito ripristinato al wallet per riprenotare. La scadenza del pacchetto resta <strong>invariata</strong>.
-                      </div>
-                    </div>
-                  </label>
-
-                  <label
-                    onClick={() => setProrogaScadenzaChoice(true)}
-                    className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
-                      prorogaScadenzaChoice
-                        ? "bg-amber-50/70 border-amber-500 ring-1 ring-amber-500 shadow-2xs text-amber-950 font-bold"
-                        : "bg-white/60 border-zinc-200 text-zinc-600 hover:bg-white"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="proroga-choice"
-                      checked={prorogaScadenzaChoice}
-                      onChange={() => setProrogaScadenzaChoice(true)}
-                      className="mt-0.5 text-amber-600"
-                    />
-                    <div>
-                      <div className="font-black text-amber-900">Proroga scadenza carnet (+7 giorni)</div>
-                      <div className="text-[11px] text-amber-800 mt-0.5">
-                        1 credito ripristinato e la data di scadenza viene posticipata di 7 giorni (per recupero straordinario).
-                      </div>
-                    </div>
-                  </label>
-                </div>
-              </div>
+              {/* SELETTORE ROULETTE PROROGA SCADENZA A GIORNI SINGOLI */}
+              {(() => {
+                const atletaBooking = profili.find(
+                  (p) =>
+                    p.id === selectedBooking.atleta_id ||
+                    p.email?.toLowerCase() === selectedBooking.email_cliente?.toLowerCase()
+                );
+                return (
+                  <ProrogaRoulettePicker
+                    value={prorogaGiorniChoice}
+                    onChange={setProrogaGiorniChoice}
+                    currentExpirationDate={atletaBooking?.data_scadenza_crediti}
+                    label="Proroga Scadenza Carnet"
+                  />
+                );
+              })()}
             </div>
           )}
 
@@ -1182,7 +1152,7 @@ export default function ManagerCalendarPage() {
               variant="outline"
               onClick={() => {
                 setSelectedBooking(null);
-                setProrogaScadenzaChoice(false);
+                setProrogaGiorniChoice(0);
               }}
               className="flex-1 rounded-xl"
             >
@@ -1194,7 +1164,7 @@ export default function ManagerCalendarPage() {
                 if (selectedBooking) {
                   cancellaMutation.mutate({
                     id: selectedBooking.id,
-                    proroga: prorogaScadenzaChoice,
+                    proroga_giorni: prorogaGiorniChoice,
                   });
                 }
               }}

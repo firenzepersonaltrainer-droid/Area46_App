@@ -16,8 +16,9 @@
     "vault:split": "node scripts/backup_manager.mjs split",
     "vault:merge": "node scripts/backup_manager.mjs merge",
     "dev:sandbox": "AREA46_MODE=sandbox vite",
-    "sandbox:reset": "node scripts/backup_manager.mjs sandbox",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "planner:test": "node .agents/skills/area46-methodology-planner/scripts/dry_run_planner.mjs",
+    "plan:test": "node .agents/skills/area46-methodology-planner/scripts/dry_run_planner.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
