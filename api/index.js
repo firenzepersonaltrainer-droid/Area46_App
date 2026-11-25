@@ -35354,8 +35354,8 @@ var demo_data_default = {
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 1,
-      updated_at: "2026-11-25T07:23:10.642Z",
-      data_ultimo_accesso: "2026-10-20T16:56:49.111Z"
+      updated_at: "2026-11-25T08:08:11.974Z",
+      data_ultimo_accesso: "2026-11-25T08:07:17.842Z"
     },
     {
       id: "usr-bw-2078480",
@@ -35506,6 +35506,78 @@ var demo_data_default = {
     }
   ],
   movimenti_crediti: [
+    {
+      id: "mov-1795594057776-706",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-25T08:07:37.776Z",
+      tipo: "penalty",
+      delta_crediti: -7,
+      saldo_risultante: 0,
+      motivazione: "Rettifica/Penalty manuale Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1795594037842-298",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-25T08:07:17.842Z",
+      tipo: "acquisto_carnet",
+      delta_crediti: 7,
+      saldo_risultante: 7,
+      motivazione: "Bonifico confermato per Pacchetto Lab 8 (scontati 1 crediti concessi in anticipo)",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1795593998155-51",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-25T08:06:38.155Z",
+      tipo: "penalty",
+      delta_crediti: -7,
+      saldo_risultante: 0,
+      motivazione: "Rettifica/Penalty manuale Coach",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1795593989780-917",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-25T08:06:29.780Z",
+      tipo: "versamento_manuale",
+      delta_crediti: 7,
+      saldo_risultante: 7,
+      motivazione: "Versamento manuale Pacchetto Lab 8 (\u20AC 280.00) registrato dal Coach (scontati 1 crediti concessi in anticipo)",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1795593858417-191",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-25T08:04:18.417Z",
+      tipo: "versamento_manuale",
+      delta_crediti: 7,
+      saldo_risultante: 7,
+      motivazione: "Versamento manuale Pacchetto Lab 8 (\u20AC 280.00) registrato dal Coach (scontati 1 crediti concessi in anticipo)",
+      operatore: "coach"
+    },
+    {
+      id: "mov-1795593818181-544",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-25T08:03:38.181Z",
+      tipo: "versamento_manuale",
+      delta_crediti: 7,
+      saldo_risultante: 7,
+      motivazione: "Versamento manuale Pacchetto Lab 8 (\u20AC 280.00) registrato dal Coach (scontati 1 crediti concessi in anticipo)",
+      operatore: "coach"
+    },
     {
       id: "mov-1795591390642-573",
       atleta_id: "usr-bw-2067105",
@@ -37365,7 +37437,8 @@ var demo_data_default = {
     "TX-MAN-46-264429",
     "TX-MAN-46-386831",
     "TX-46-873058",
-    "TX-46-899682"
+    "TX-46-899682",
+    "TX-46-033505"
   ],
   utenti_cancellati: [
     "usr-bw-2056285",
@@ -39943,6 +40016,78 @@ var demo_data_default = {
     }
   ],
   notifiche_email: [
+    {
+      id: "email-1795594037842-736",
+      destinatario: "sil_ba@hotmail.it",
+      oggetto: "\u2705 Bonifico Ricevuto e Crediti Attivati \u2014 Area46 Landmine Lab",
+      corpo: "Ciao Silvia!\n\nIl Coach Stefano Tronconi ha verificato e approvato il tuo bonifico bancario per Pacchetto Lab 8.\nI tuoi crediti sono stati caricati ed il tuo wallet \xE8 attivo:\n\n- Crediti aggiunti: +7 sedute (scontati 1 crediti concessi in anticipo)\n- Saldo totale disponibile: 7 crediti\n- Nuova data scadenza: 2027-01-24\n\nDa adesso puoi accedere all'App e prenotare liberamente i tuoi slot di allenamento:\nhttps://area46-app.vercel.app\n\nBuon allenamento con Landmine Lab!\n\u2014 Coach Stefano Tronconi",
+      html: `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">Ciao Silvia!<br><br>Il Coach Stefano Tronconi ha verificato e approvato il tuo bonifico bancario per Pacchetto Lab 8.<br>I tuoi crediti sono stati caricati ed il tuo wallet \xE8 attivo:<br><br>- Crediti aggiunti: +7 sedute (scontati 1 crediti concessi in anticipo)<br>- Saldo totale disponibile: 7 crediti<br>- Nuova data scadenza: 2027-01-24<br><br>Da adesso puoi accedere all'App e prenotare liberamente i tuoi slot di allenamento:<br>https://area46-app.vercel.app<br><br>Buon allenamento con Landmine Lab!<br>\u2014 Coach Stefano Tronconi</p>`,
+      inviato_il: "2026-11-25T08:07:17.842Z",
+      tipo: "conferma_bonifico_atleta",
+      stato: "inviata"
+    },
+    {
+      id: "email-1795594037755-451",
+      destinatario: "firenzepersonaltrainer@gmail.com",
+      oggetto: "\u{1F514} [AREA46 FISCO] Nuova Richiesta Bonifico \u2014 Silvia Usai (\u20AC 280.00)",
+      corpo: `NOTIFICA RICEZIONE RICHIESTA BONIFICO BANCARIO
+=============================================================================
+Data: 25/11/2026, 09:07:17
+Atleta: Silvia Usai
+Email: sil_ba@hotmail.it
+Codice Fiscale: Non specificato
+Pacchetto Scelto: Pacchetto Lab 8 (8 crediti)
+Importo da Riscuotere: \u20AC 280.00
+Causale Generata: AREA46-USAI-PACK-8-3505
+Codice Transazione: TX-46-033505
+=============================================================================
+STATO ATTUALE:
+- Transazione memorizzata in Prima Nota con stato 'in_attesa_bonifico'.
+- I crediti NON sono stati ancora accreditati (in attesa di tua conferma).
+- L'atleta \xE8 stata invitata ad avvisarti su WhatsApp e non potr\xE0 prenotare prima di 24 ore.
+
+COME APPROVARE L'ACCREDITO:
+Quando avrai verificato l'accredito sul tuo conto corrente MPS:
+1. Accedi alla sezione Manager Fisco dell'App.
+2. Troverai la card in evidenza "Bonifici in attesa di verifica".
+3. Clicca su "Approva ed Accredita Crediti": il sistema caricher\xE0 istantaneamente i crediti nel wallet dell'atleta e invier\xE0 l'email di conferma.
+=============================================================================
+Area46 Landmine Lab \u2014 Sistema Fiscale Automatizzato`,
+      html: `<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">NOTIFICA RICEZIONE RICHIESTA BONIFICO BANCARIO<br>=============================================================================<br>Data: 25/11/2026, 09:07:17<br>Atleta: Silvia Usai<br>Email: sil_ba@hotmail.it<br>Codice Fiscale: Non specificato<br>Pacchetto Scelto: Pacchetto Lab 8 (8 crediti)<br>Importo da Riscuotere: \u20AC 280.00<br>Causale Generata: AREA46-USAI-PACK-8-3505<br>Codice Transazione: TX-46-033505<br>=============================================================================<br>STATO ATTUALE:<br>- Transazione memorizzata in Prima Nota con stato 'in_attesa_bonifico'.<br>- I crediti NON sono stati ancora accreditati (in attesa di tua conferma).<br>- L'atleta \xE8 stata invitata ad avvisarti su WhatsApp e non potr\xE0 prenotare prima di 24 ore.<br><br>COME APPROVARE L'ACCREDITO:<br>Quando avrai verificato l'accredito sul tuo conto corrente MPS:<br>1. Accedi alla sezione Manager Fisco dell'App.<br>2. Troverai la card in evidenza "Bonifici in attesa di verifica".<br>3. Clicca su "Approva ed Accredita Crediti": il sistema caricher\xE0 istantaneamente i crediti nel wallet dell'atleta e invier\xE0 l'email di conferma.<br>=============================================================================<br>Area46 Landmine Lab \u2014 Sistema Fiscale Automatizzato</p>`,
+      inviato_il: "2026-11-25T08:07:17.755Z",
+      tipo: "fisco_pagamento",
+      stato: "inviata"
+    },
+    {
+      id: "email-1795593998005-536",
+      destinatario: "firenzepersonaltrainer@gmail.com",
+      oggetto: "\u{1F4DD} [AREA46 FISCO] Registrato Versamento Manuale \u2014 Silvia Usai (\u20AC 280.00)",
+      corpo: "REGISTRAZIONE VERSAMENTO MANUALE IN PRIMA NOTA\n=============================================================================\nData: 25/11/2026, 09:06:37\nAtleta: Silvia Usai\nImporto: \u20AC 280.00\nMetodo: BONIFICO\nDescrizione: Pacchetto Lab 8\nCodice Fiscale: -\nCodice Transazione: TX-MAN-46-989779\n=============================================================================\nMovimento memorizzato nel registro fiscale.",
+      html: '<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">REGISTRAZIONE VERSAMENTO MANUALE IN PRIMA NOTA<br>=============================================================================<br>Data: 25/11/2026, 09:06:37<br>Atleta: Silvia Usai<br>Importo: \u20AC 280.00<br>Metodo: BONIFICO<br>Descrizione: Pacchetto Lab 8<br>Codice Fiscale: -<br>Codice Transazione: TX-MAN-46-989779<br>=============================================================================<br>Movimento memorizzato nel registro fiscale.</p>',
+      inviato_il: "2026-11-25T08:06:38.005Z",
+      tipo: "fisco_pagamento",
+      stato: "inviata"
+    },
+    {
+      id: "email-1795593865816-476",
+      destinatario: "firenzepersonaltrainer@gmail.com",
+      oggetto: "\u{1F4DD} [AREA46 FISCO] Registrato Versamento Manuale \u2014 Silvia Usai (\u20AC 280.00)",
+      corpo: "REGISTRAZIONE VERSAMENTO MANUALE IN PRIMA NOTA\n=============================================================================\nData: 25/11/2026, 09:04:25\nAtleta: Silvia Usai\nImporto: \u20AC 280.00\nMetodo: BONIFICO\nDescrizione: Pacchetto Lab 8\nCodice Fiscale: -\nCodice Transazione: TX-MAN-46-858417\n=============================================================================\nMovimento memorizzato nel registro fiscale.",
+      html: '<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">REGISTRAZIONE VERSAMENTO MANUALE IN PRIMA NOTA<br>=============================================================================<br>Data: 25/11/2026, 09:04:25<br>Atleta: Silvia Usai<br>Importo: \u20AC 280.00<br>Metodo: BONIFICO<br>Descrizione: Pacchetto Lab 8<br>Codice Fiscale: -<br>Codice Transazione: TX-MAN-46-858417<br>=============================================================================<br>Movimento memorizzato nel registro fiscale.</p>',
+      inviato_il: "2026-11-25T08:04:25.816Z",
+      tipo: "fisco_pagamento",
+      stato: "inviata"
+    },
+    {
+      id: "email-1795593826934-159",
+      destinatario: "firenzepersonaltrainer@gmail.com",
+      oggetto: "\u{1F4DD} [AREA46 FISCO] Registrato Versamento Manuale \u2014 Silvia Usai (\u20AC 280.00)",
+      corpo: "REGISTRAZIONE VERSAMENTO MANUALE IN PRIMA NOTA\n=============================================================================\nData: 25/11/2026, 09:03:46\nAtleta: Silvia Usai\nImporto: \u20AC 280.00\nMetodo: BONIFICO\nDescrizione: Pacchetto Lab 8\nCodice Fiscale: -\nCodice Transazione: TX-MAN-46-818172\n=============================================================================\nMovimento memorizzato nel registro fiscale.",
+      html: '<p style="font-family: sans-serif; font-size: 14px; color: #333; line-height: 1.6;">REGISTRAZIONE VERSAMENTO MANUALE IN PRIMA NOTA<br>=============================================================================<br>Data: 25/11/2026, 09:03:46<br>Atleta: Silvia Usai<br>Importo: \u20AC 280.00<br>Metodo: BONIFICO<br>Descrizione: Pacchetto Lab 8<br>Codice Fiscale: -<br>Codice Transazione: TX-MAN-46-818172<br>=============================================================================<br>Movimento memorizzato nel registro fiscale.</p>',
+      inviato_il: "2026-11-25T08:03:46.934Z",
+      tipo: "fisco_pagamento",
+      stato: "inviata"
+    },
     {
       id: "email-1791529861144-670",
       destinatario: "pantanella@gmail.com",
@@ -45455,8 +45600,14 @@ CALENDARIO E PRENOTAZIONI:
       if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
         walletOwner.data_scadenza_crediti = nuovaScadenza;
       }
-      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-      if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+      walletOwner.data_ultimo_accesso = nowIso;
+      walletOwner.updated_at = nowIso;
+      if (atleta.id !== walletOwner.id) {
+        atleta.data_ultimo_accesso = nowIso;
+        atleta.updated_at = nowIso;
+      }
+      alignSharedPartnersCredits(walletOwner, db);
       let motivazioneExtra = "";
       if (debitiDecurtati > 0 && anticipiScontati > 0) {
         motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
@@ -45583,8 +45734,14 @@ CALENDARIO E PRENOTAZIONI:
           if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
             walletOwner.data_scadenza_crediti = nuovaScadenza;
           }
-          walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-          if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+          const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+          walletOwner.data_ultimo_accesso = nowIso;
+          walletOwner.updated_at = nowIso;
+          if (atleta.id !== walletOwner.id) {
+            atleta.data_ultimo_accesso = nowIso;
+            atleta.updated_at = nowIso;
+          }
+          alignSharedPartnersCredits(walletOwner, db);
           let motivazioneExtra = "";
           if (debitiDecurtati > 0 && anticipiScontati > 0) {
             motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
@@ -45747,7 +45904,14 @@ Contatta l'atleta o invia un link di pagamento per regolarizzare la quota.
           walletOwner.data_scadenza_crediti = nuovaScadenza;
         }
       }
-      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+      walletOwner.data_ultimo_accesso = nowIso;
+      walletOwner.updated_at = nowIso;
+      if (atleta.id !== walletOwner.id) {
+        atleta.data_ultimo_accesso = nowIso;
+        atleta.updated_at = nowIso;
+      }
+      alignSharedPartnersCredits(walletOwner, db);
       let motivazioneExtra = "";
       if (anticipiScontati > 0) {
         motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
@@ -45943,8 +46107,14 @@ Contatta l'atleta o invia un link di pagamento per regolarizzare la quota.
       if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
         walletOwner.data_scadenza_crediti = nuovaScadenza;
       }
-      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-      if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+      walletOwner.data_ultimo_accesso = nowIso;
+      walletOwner.updated_at = nowIso;
+      if (atleta.id !== walletOwner.id) {
+        atleta.data_ultimo_accesso = nowIso;
+        atleta.updated_at = nowIso;
+      }
+      alignSharedPartnersCredits(walletOwner, db);
       let motivazioneExtra = "";
       if (debitiDecurtati > 0 && anticipiScontati > 0) {
         motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;

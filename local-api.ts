@@ -4739,8 +4739,14 @@ CALENDARIO E PRENOTAZIONI:
         if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
           walletOwner.data_scadenza_crediti = nuovaScadenza;
         }
-        walletOwner.data_ultimo_accesso = new Date().toISOString();
-        if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = new Date().toISOString();
+        const nowIso = new Date().toISOString();
+        walletOwner.data_ultimo_accesso = nowIso;
+        walletOwner.updated_at = nowIso;
+        if (atleta.id !== walletOwner.id) {
+          atleta.data_ultimo_accesso = nowIso;
+          atleta.updated_at = nowIso;
+        }
+        alignSharedPartnersCredits(walletOwner, db);
 
         let motivazioneExtra = "";
         if (debitiDecurtati > 0 && anticipiScontati > 0) {
@@ -4899,8 +4905,14 @@ CALENDARIO E PRENOTAZIONI:
             if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
               walletOwner.data_scadenza_crediti = nuovaScadenza;
             }
-            walletOwner.data_ultimo_accesso = new Date().toISOString();
-            if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = new Date().toISOString();
+            const nowIso = new Date().toISOString();
+            walletOwner.data_ultimo_accesso = nowIso;
+            walletOwner.updated_at = nowIso;
+            if (atleta.id !== walletOwner.id) {
+              atleta.data_ultimo_accesso = nowIso;
+              atleta.updated_at = nowIso;
+            }
+            alignSharedPartnersCredits(walletOwner, db);
 
             let motivazioneExtra = "";
             if (debitiDecurtati > 0 && anticipiScontati > 0) {
@@ -5114,7 +5126,14 @@ Contatta l'atleta o invia un link di pagamento per regolarizzare la quota.
             walletOwner.data_scadenza_crediti = nuovaScadenza;
           }
         }
-        walletOwner.data_ultimo_accesso = new Date().toISOString();
+        const nowIso = new Date().toISOString();
+        walletOwner.data_ultimo_accesso = nowIso;
+        walletOwner.updated_at = nowIso;
+        if (atleta.id !== walletOwner.id) {
+          atleta.data_ultimo_accesso = nowIso;
+          atleta.updated_at = nowIso;
+        }
+        alignSharedPartnersCredits(walletOwner, db);
 
         let motivazioneExtra = "";
         if (anticipiScontati > 0) {
@@ -5342,8 +5361,14 @@ Contatta l'atleta o invia un link di pagamento per regolarizzare la quota.
         if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
           walletOwner.data_scadenza_crediti = nuovaScadenza;
         }
-        walletOwner.data_ultimo_accesso = new Date().toISOString();
-        if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = new Date().toISOString();
+        const nowIso = new Date().toISOString();
+        walletOwner.data_ultimo_accesso = nowIso;
+        walletOwner.updated_at = nowIso;
+        if (atleta.id !== walletOwner.id) {
+          atleta.data_ultimo_accesso = nowIso;
+          atleta.updated_at = nowIso;
+        }
+        alignSharedPartnersCredits(walletOwner, db);
 
         let motivazioneExtra = "";
         if (debitiDecurtati > 0 && anticipiScontati > 0) {

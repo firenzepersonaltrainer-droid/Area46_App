@@ -1368,23 +1368,31 @@ app.post("/app-api/transazioni/checkout", async (c) => {
 
   const currentCrediti = Number(atleta?.crediti || 0);
   const packCrediti = Number(pack.crediti);
+  const anticipiAttuali = Number(atleta?.anticipi_da_scontare || 0);
 
   let debitiDecurtati = 0;
-  let creditiEffettivi = packCrediti;
+  let anticipiScontati = 0;
   if (currentCrediti < 0) {
-    debitiDecurtati = Math.abs(currentCrediti);
-    creditiEffettivi = packCrediti - debitiDecurtati;
+    debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
   }
+  const creditiRimanenti = packCrediti - debitiDecurtati;
+  if (anticipiAttuali > 0 && body.metodo !== "bonifico") {
+    anticipiScontati = Math.min(anticipiAttuali, creditiRimanenti);
+  }
+
+  const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
 
   const isBonifico = body.metodo === "bonifico";
   const txCode = `TX-46-${Date.now().toString().slice(-6)}`;
   const causale = `AREA46-${(atleta?.cognome || "ATLETA").toUpperCase()}-${pack.id.toUpperCase()}-${txCode.slice(-4)}`;
 
   if (!isBonifico && atleta) {
-    const finalCrediti = currentCrediti < 0 ? creditiEffettivi : currentCrediti + packCrediti;
+    const finalCrediti = currentCrediti < 0 ? currentCrediti + debitiDecurtati + creditiEffettivi : currentCrediti + creditiEffettivi;
+    const finalAnticipi = Math.max(0, anticipiAttuali - anticipiScontati);
     await sql`
       UPDATE profili_utenti 
       SET crediti = ${finalCrediti}, 
+          anticipi_da_scontare = ${finalAnticipi},
           data_scadenza_crediti = (CURRENT_DATE + (${pack.giorni_validita} || ' days')::interval)::date,
           data_ultimo_accesso = NOW()
       WHERE email = ${atletaEmail}
@@ -1395,12 +1403,12 @@ app.post("/app-api/transazioni/checkout", async (c) => {
     INSERT INTO transazioni_pagamenti (
       codice_transazione, atleta_id, email_cliente, nome_cliente, codice_fiscale, indirizzo,
       id_pacchetto, nome_pacchetto, importo_euro, metodo, crediti_acquistati, debiti_decurtati,
-      crediti_effettivi_aggiunti, causale_bonifico, stato, stato_fattura
+      anticipi_decurtati, crediti_effettivi_aggiunti, causale_bonifico, stato, stato_fattura
     ) VALUES (
       ${txCode}, ${atleta?.id || null}, ${atletaEmail}, ${atleta ? `${atleta.nome} ${atleta.cognome}` : (user?.name || "Atleta")},
       ${body.codice_fiscale || atleta?.codice_fiscale || null}, ${body.indirizzo || atleta?.indirizzo || null},
       ${pack.id}, ${pack.nome}, ${pack.prezzo_euro}, ${body.metodo || 'carta'}, ${packCrediti},
-      ${debitiDecurtati}, ${creditiEffettivi}, ${isBonifico ? causale : null},
+      ${debitiDecurtati}, ${anticipiScontati}, ${creditiEffettivi}, ${isBonifico ? causale : null},
       ${isBonifico ? 'in_attesa_bonifico' : 'completato'}, 'da_emettere'
     )
     RETURNING *
@@ -1409,7 +1417,7 @@ app.post("/app-api/transazioni/checkout", async (c) => {
   return c.json({
     ok: true,
     transazione: rows[0],
-    crediti_attuali: atleta ? (currentCrediti < 0 ? creditiEffettivi : currentCrediti + packCrediti) : creditiEffettivi,
+    crediti_attuali: atleta ? (currentCrediti < 0 ? currentCrediti + debitiDecurtati + creditiEffettivi : currentCrediti + creditiEffettivi) : creditiEffettivi,
     ricevuta: {
       titolo: "RICEVUTA DI PAGAMENTO — AREA46 TRAINING LAB",
       codice: txCode,
@@ -1430,17 +1438,39 @@ app.post("/app-api/transazioni/:codice/approva-bonifico", async (c) => {
 
   if (tx.stato === "completato") return c.json({ ok: true, messaggio: "Già approvato." });
 
-  const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${tx.email_cliente} LIMIT 1`;
+  const atletaRows = await sql`SELECT * FROM profili_utenti WHERE email = ${tx.email_cliente} OR id = ${tx.atleta_id} LIMIT 1`;
   if (atletaRows.length > 0) {
     const atleta = atletaRows[0];
     const currentCrediti = Number(atleta.crediti || 0);
-    const finalCrediti = currentCrediti < 0 ? tx.crediti_effettivi_aggiunti : currentCrediti + tx.crediti_acquistati;
+    const packCrediti = Number(tx.crediti_acquistati || 0);
+    const anticipiAttuali = Number(atleta.anticipi_da_scontare || 0);
+
+    let debitiDecurtati = 0;
+    let anticipiScontati = 0;
+    if (currentCrediti < 0) {
+      debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
+    }
+    const creditiRimanenti = packCrediti - debitiDecurtati;
+    if (anticipiAttuali > 0) {
+      anticipiScontati = Math.min(anticipiAttuali, creditiRimanenti);
+    }
+    const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
+    const finalCrediti = currentCrediti < 0 ? currentCrediti + debitiDecurtati + creditiEffettivi : currentCrediti + creditiEffettivi;
+    const finalAnticipi = Math.max(0, anticipiAttuali - anticipiScontati);
+
     await sql`
       UPDATE profili_utenti 
       SET crediti = ${finalCrediti}, 
+          anticipi_da_scontare = ${finalAnticipi},
           data_scadenza_crediti = (CURRENT_DATE + interval '60 days')::date,
           data_ultimo_accesso = NOW()
-      WHERE email = ${tx.email_cliente}
+      WHERE id = ${atleta.id}
+    `;
+
+    await sql`
+      UPDATE transazioni_pagamenti 
+      SET anticipi_decurtati = ${anticipiScontati}, crediti_effettivi_aggiunti = ${creditiEffettivi}
+      WHERE codice_transazione = ${codice}
     `;
   }
 
@@ -1451,6 +1481,59 @@ app.post("/app-api/transazioni/:codice/approva-bonifico", async (c) => {
     RETURNING *
   `;
   return c.json({ ok: true, tx: updated[0] });
+});
+
+app.post("/app-api/transazioni/manuale", async (c) => {
+  const sql = neon(c.env.DATABASE_URL);
+  const body = await c.req.json();
+  const atletaRows = await sql`SELECT * FROM profili_utenti WHERE id = ${body.atleta_id} OR email = ${body.atleta_id} LIMIT 1`;
+  if (atletaRows.length === 0) return c.json({ error: "Atleta non trovato" }, 404);
+  const atleta = atletaRows[0];
+
+  const creditiDaAccreditare = Number(body.crediti_da_accreditare) || 0;
+  const currentCrediti = Number(atleta.crediti || 0);
+  const anticipiAttuali = Number(atleta.anticipi_da_scontare || 0);
+
+  let anticipiScontati = 0;
+  let creditiEffettivi = creditiDaAccreditare;
+  if (creditiDaAccreditare > 0 && anticipiAttuali > 0 && body.sconta_anticipi !== false) {
+    anticipiScontati = Math.min(anticipiAttuali, creditiDaAccreditare);
+    creditiEffettivi = creditiDaAccreditare - anticipiScontati;
+  }
+
+  const finalCrediti = currentCrediti + creditiEffettivi;
+  const finalAnticipi = Math.max(0, anticipiAttuali - anticipiScontati);
+  const validitaGiorni = Number(body.giorni_validita) || 60;
+
+  if (creditiDaAccreditare > 0) {
+    await sql`
+      UPDATE profili_utenti 
+      SET crediti = ${finalCrediti}, 
+          anticipi_da_scontare = ${finalAnticipi},
+          data_scadenza_crediti = (CURRENT_DATE + (${validitaGiorni} || ' days')::interval)::date,
+          data_ultimo_accesso = NOW()
+      WHERE id = ${atleta.id}
+    `;
+  }
+
+  const txCode = `TX-MAN-46-${Date.now().toString().slice(-6)}`;
+  const rows = await sql`
+    INSERT INTO transazioni_pagamenti (
+      codice_transazione, atleta_id, email_cliente, nome_cliente, codice_fiscale, indirizzo,
+      id_pacchetto, nome_pacchetto, importo_euro, metodo, crediti_acquistati, debiti_decurtati,
+      anticipi_decurtati, crediti_effettivi_aggiunti, stato, stato_fattura, note
+    ) VALUES (
+      ${txCode}, ${atleta.id}, ${atleta.email}, ${`${atleta.nome} ${atleta.cognome}`.trim()},
+      ${atleta.codice_fiscale || null}, ${atleta.indirizzo || null},
+      ${body.id_pacchetto || 'manuale'}, ${body.nome_pacchetto || 'Versamento Manuale'},
+      ${Number(body.importo_euro)}, ${body.metodo || 'bonifico'},
+      ${creditiDaAccreditare}, 0, ${anticipiScontati}, ${creditiEffettivi},
+      'completato', 'da_emettere', ${body.note || ''}
+    )
+    RETURNING *
+  `;
+
+  return c.json({ ok: true, tx: rows[0], crediti_risultanti: finalCrediti, anticipi_rimasti: finalAnticipi });
 });
 
 // ─── Stripe Connect & Pagamenti Digitali ─────────────────────────────────────
