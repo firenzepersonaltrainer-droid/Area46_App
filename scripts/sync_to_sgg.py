@@ -283,11 +283,14 @@ def sync_payments():
             print(f"   ❌ Errore sync locale transazione {tx_code}: {err}")
 
         # Invia anche al server cloud di SGG su Render
-        try:
+            secret = os.getenv("SGG_LANDMINE_SECRET") or "d7588785876d30eab9c614cc74cf04bd032f4f7a1533a9c8e82164936d71f9f3"
             req = urllib.request.Request(
                 "https://sistema-gestionale-globale.onrender.com/api/integrations/landmine-lab/payment",
                 data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
+                headers={
+                    "Content-Type": "application/json",
+                    "X-Landmine-Secret": secret,
+                },
                 method="POST"
             )
             with urllib.request.urlopen(req, timeout=12) as cloud_res:

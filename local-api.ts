@@ -1118,9 +1118,13 @@ async function sendPaymentToSggCloud(tx: any) {
       athlete_id: tx.atleta_id || "",
     };
 
+    const sggSecret = process.env.SGG_LANDMINE_SECRET || "d7588785876d30eab9c614cc74cf04bd032f4f7a1533a9c8e82164936d71f9f3";
     const res = await fetch("https://sistema-gestionale-globale.onrender.com/api/integrations/landmine-lab/payment", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Landmine-Secret": sggSecret,
+      },
       body: JSON.stringify(payload),
     });
     const data: any = await res.json().catch(() => ({}));

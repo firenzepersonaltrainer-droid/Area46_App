@@ -35348,13 +35348,13 @@ var demo_data_default = {
       nickname: "Usa",
       name: "Silvia Usai",
       ruolo: "atleta",
-      crediti: 0,
-      data_scadenza_crediti: "2026-11-07",
+      crediti: 23,
+      data_scadenza_crediti: "2027-02-17",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      anticipi_da_scontare: 1,
-      updated_at: "2026-11-25T08:08:11.974Z",
+      anticipi_da_scontare: 0,
+      updated_at: "2026-11-25T08:14:39.850Z",
       data_ultimo_accesso: "2026-11-25T08:07:17.842Z"
     },
     {
@@ -37244,6 +37244,29 @@ var demo_data_default = {
     }
   ],
   transazioni_pagamenti: [
+    {
+      id: "tx-man-1795594479850",
+      codice_transazione: "TX-MAN-46-479850",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      codice_fiscale: "",
+      indirizzo: "",
+      id_pacchetto: "pack-24",
+      nome_pacchetto: "Pacchetto Lab 24",
+      importo_euro: 690,
+      metodo: "bonifico",
+      crediti_acquistati: 24,
+      debiti_decurtati: 0,
+      anticipi_decurtati: 1,
+      crediti_effettivi_aggiunti: 23,
+      causale_bonifico: "AREA46-USAI-9850",
+      stato: "completato",
+      stato_fattura: "da_emettere",
+      created_at: "2026-11-24T00:00:00.000Z",
+      note: "Bonifico istantaneo del 24_11_26",
+      inserito_da: "coach_manuale"
+    },
     {
       id: "tx-man-1794513374015",
       codice_transazione: "TX-MAN-46-374015",
@@ -42619,9 +42642,13 @@ async function sendPaymentToSggCloud(tx) {
       athlete_address: tx.indirizzo || "",
       athlete_id: tx.atleta_id || ""
     };
+    const sggSecret = process.env.SGG_LANDMINE_SECRET || "d7588785876d30eab9c614cc74cf04bd032f4f7a1533a9c8e82164936d71f9f3";
     const res = await fetch("https://sistema-gestionale-globale.onrender.com/api/integrations/landmine-lab/payment", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Landmine-Secret": sggSecret
+      },
       body: JSON.stringify(payload)
     });
     const data = await res.json().catch(() => ({}));
