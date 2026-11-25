@@ -73,3 +73,7 @@ Regole Tassative:
       2. Evidenza visiva in app con badge numerico pulsante sulla voce 'Fisco' e banner nel pannello Manager.
       3. Modale atleta con coordinate, pulsante WhatsApp diretto (+39 392 011 1410) con testo precompilato, e avvertenze chiare (finché il coach non riceve l'avviso e verifica i crediti non sono attivi; prima di 24 ore non è possibile prenotare in autonomia).
       4. Fattura o ricevuta fiscale (SDI/commercialista) manuale a cura del Coach, sfruttando i dati in Prima Nota nel Fisco.
+22. **INTEGRAZIONE DIRETTA AREA46 ➡️ SGG (GESTIONALE GLOBALE) & CHIAVE DI SICUREZZA WEBHOOK (REGOLA 25/11/2026)**:
+   - *Autenticazione Obbligatoria Webhook:* Tutte le chiamate da Area46 verso SGG (/api/integrations/landmine-lab/payment su Render) devono includere l'header X-Landmine-Secret: d7588785876d30eab9c614cc74cf04bd032f4f7a1533a9c8e82164936d71f9f3. Senza tale header il server SGG rifiuta con 401 Unauthorized e i movimenti non compaiono in Prima Nota.
+   - *Allineamento Cloud / Locale:* I pagamenti inseriti da mobile vengono salvati in tempo reale su Google Drive e inoltrati via webhook a SGG. Sul database SGG (movements e invoices), ogni versamento genera immediatamente la voce di Prima Nota su conto 'Landmine Lab' e la Notula Proforma (o Fattura se completa di CF/indirizzo).
+   - *Verifica dell'Integrità:* Prima di considerare completato un versamento, verificare che il movimento sia presente sia in Area46 sia in SGG.
