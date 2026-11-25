@@ -2865,13 +2865,63 @@ export default function AreaPersonalePage() {
           {completedTx && (
             <div className="my-3 space-y-2 text-xs">
               {completedTx.transazione.stato === "in_attesa_bonifico" ? (
-                <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 space-y-2">
-                  <div className="font-bold text-amber-900">Causale Univoca Bonifico:</div>
-                  <div className="p-2 rounded-xl bg-white border border-amber-300 font-mono text-xs font-bold select-all text-center">
-                    {completedTx.transazione.causale_bonifico}
+                <div className="space-y-3">
+                  <div className="p-4 rounded-3xl bg-amber-50/90 border border-amber-200 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-black text-xs uppercase tracking-wider text-amber-950">
+                        Coordinate per il Bonifico
+                      </span>
+                      <span className="text-xs font-black text-amber-900 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                        € {Number(completedTx.transazione.importo_euro).toFixed(2)}
+                      </span>
+                    </div>
+
+                    <div className="bg-white p-2.5 rounded-2xl border border-amber-200/80 space-y-1 text-[11.5px] font-mono text-zinc-800">
+                      <div><span className="text-zinc-500 font-sans">IBAN:</span> <strong className="select-all">{config?.iban || "IT35A0103037761000000746509"}</strong></div>
+                      <div><span className="text-zinc-500 font-sans">Intestatario:</span> <strong>{config?.intestatario_iban || "Stefano Tronconi"}</strong></div>
+                      <div><span className="text-zinc-500 font-sans">Banca:</span> <strong>{config?.banca || "MPS"}</strong></div>
+                    </div>
+
+                    <div>
+                      <div className="font-bold text-[11px] text-amber-900 mb-1">Causale Univoca da inserire:</div>
+                      <div className="p-2.5 rounded-xl bg-white border-2 border-amber-300 font-mono text-xs font-black select-all text-center text-amber-950 tracking-wider">
+                        {completedTx.transazione.causale_bonifico}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-[11px] text-amber-800">
-                    Importo: <strong>{completedTx.transazione.importo_euro} €</strong>
+
+                  {/* BOX ISTRUZIONI INTELLIGENTI & AMICHEVOLI */}
+                  <div className="p-4 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50/60 border border-emerald-200 space-y-2.5 text-xs text-emerald-950">
+                    <div className="font-black text-[11.5px] uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
+                      <span>💬 Avvisa Stefano per l&apos;accredito</span>
+                    </div>
+
+                    <p className="text-[11.5px] text-emerald-900 leading-snug">
+                      Per caricarti le sedute sull&apos;App, appena hai disposto il bonifico dalla tua banca <strong>invia un messaggio WhatsApp a Stefano</strong> con la cifra, la data ed il pacchetto scelto.
+                    </p>
+
+                    {/* TASTO WHATSAPP DIRETTO */}
+                    <a
+                      href={`https://wa.me/393920111410?text=${encodeURIComponent(
+                        `Ciao Stefano! Ti ho appena disposto un bonifico di € ${completedTx.transazione.importo_euro} per il ${completedTx.transazione.nome_pacchetto} (${completedTx.transazione.crediti_acquistati || ""} sedute). Causale: ${completedTx.transazione.causale_bonifico}. ${user?.nome || ""} ${user?.cognome || ""}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 px-3 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-black text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer text-center"
+                    >
+                      <span>💬 Avvisa Stefano su WhatsApp con 1 tocco</span>
+                    </a>
+
+                    <div className="pt-1.5 border-t border-emerald-200/80 space-y-1.5 text-[10.5px] text-emerald-900/90 leading-tight">
+                      <div className="flex items-start gap-1.5">
+                        <span className="font-black text-amber-700 shrink-0">A:</span>
+                        <span>Finché Stefano non riceve il tuo avviso e verifica l&apos;accredito, i crediti non saranno visibili nell&apos;App.</span>
+                      </div>
+                      <div className="flex items-start gap-1.5">
+                        <span className="font-black text-amber-700 shrink-0">B:</span>
+                        <span>Prima delle 24 ore non potrai prenotare slot in autonomia. Se hai urgenza di fissare una sessione prima, scrivilo pure a Stefano nel messaggio e ci penserà direttamente lui a riservarti lo slot!</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : (

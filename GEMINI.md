@@ -65,7 +65,11 @@ Regole Tassative:
     - Dragon Roll in AMRAP: 50 rep al giro. Nel 1° allenamento B del ciclo prescrivere come esercizio singolo dedicato di 5 minuti continui per fluidità, lasciando nell'AMRAP gli altri due esercizi con jumping rope al posto del Dragon Roll. Dal 2° allenamento B torna nell'AMRAP originario con 50 rep.
     - Aerial Jerk: recupero con RBS 30" - Rest 60" (ricaricare fra un lato e l'altro). Nota obbligatoria: iniziare dal lato debole e alternare il lato di partenza ad ogni seduta.
     - Skierg lunges alternati: denominazione "skierg lunges alternati". Nota obbligatoria in grassetto: '**NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**'.
-
-
-
-
+22. PERSISTENZA INTEGRATA CREDITI, ANTICIPI E NOTIFICHE PAGAMENTI (REGOLA 25/11/2026):
+    - Merge Intelligente Dinamico Cloud/Locale: Nelle chiamate serverless e nei riavvii di runtime, la sincronizzazione da Google Drive applica un merge dinamico per timestamp (updated_at). Crediti, anticipi_da_scontare e scadenze memorizzati nel cloud hanno precedenza assoluta sui file statici del bundle.
+    - Anticipi da scalare: Supporto obbligatorio e decurtazione automatica all'acquisto/approvazione carnet.
+    - Flusso Bonifico Trasparente & Notifiche:
+      1. Notifica email istantanea al Coach Stefano (firenzepersonaltrainer@gmail.com) per ogni bonifico, incasso Stripe o versamento manuale.
+      2. Evidenza visiva in app con badge numerico pulsante sulla voce 'Fisco' e banner nel pannello Manager.
+      3. Modale atleta con coordinate, pulsante WhatsApp diretto (+39 392 011 1410) con testo precompilato, e avvertenze chiare (finché il coach non riceve l'avviso e verifica i crediti non sono attivi; prima di 24 ore non è possibile prenotare in autonomia).
+      4. Fattura o ricevuta fiscale (SDI/commercialista) manuale a cura del Coach, sfruttando i dati in Prima Nota nel Fisco.

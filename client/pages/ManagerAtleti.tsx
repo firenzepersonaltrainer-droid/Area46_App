@@ -234,6 +234,8 @@ export default function ManagerAtletiPage() {
     },
   });
 
+  const bonificiInAttesa = transazioni.filter((t: any) => t.stato === "in_attesa_bonifico");
+
   const atleti = profili.filter((p) => p.ruolo === "atleta");
 
   const filteredAtleti = atleti.filter((a) => {
@@ -419,9 +421,8 @@ export default function ManagerAtletiPage() {
       if (!res.ok) throw new Error("Errore recupero anteprima dismissione");
       const data = await res.json();
       setAnteprimaData(data);
-      if (data.penale_standard !== undefined) {
-        setPenaleInput(data.penale_standard);
-      }
+      const quotaDefault = data.totale_da_addebitare ?? data.quota_mensile_standard ?? data.penale_standard ?? 250;
+      setPenaleInput(quotaDefault);
     } catch (e: any) {
       toast.error(e.message || "Errore caricamento dati dismissione");
     } finally {
@@ -436,11 +437,9 @@ export default function ManagerAtletiPage() {
       const res = await dismettiAtleta({
         id: dismissioneAtleta.id,
         penale_euro: Number(penaleInput),
+        quota_mensile_saldo: Number(penaleInput),
         note: noteDismissione.trim(),
-        tariffa_seduta: anteprimaData?.tariffa_seduta,
-        sedute_svolte: anteprimaData?.sedute_svolte,
-        totale_versato: anteprimaData?.totale_gia_versato,
-      });
+      } as any);
 
       setDismissioneModalOpen(false);
       setEsitoDismissione(res);
@@ -481,6 +480,32 @@ export default function ManagerAtletiPage() {
           <Plus className="size-4" /> Nuovo Atleta
         </Button>
       </div>
+
+      {/* BANNER EVIDENZA BONIFICI IN ATTESA DI VERIFICA NEL FISCO */}
+      {bonificiInAttesa.length > 0 && (
+        <div className="p-3.5 rounded-2xl bg-amber-500/10 border-2 border-amber-400 shadow-sm flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="size-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm font-black">
+              <Receipt className="size-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-black text-amber-950 flex items-center gap-1.5">
+                <span>{bonificiInAttesa.length} {bonificiInAttesa.length === 1 ? "Bonifico da verificare" : "Bonifici da verificare"} nel Fisco</span>
+              </div>
+              <div className="text-[11px] text-amber-900/90 truncate">
+                {bonificiInAttesa.map((b: any) => `${b.nome_cliente} (€ ${b.importo_euro})`).join(" • ")}
+              </div>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            onClick={() => navigate("/manager/fisco")}
+            className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-black rounded-xl shrink-0 h-8 px-3 cursor-pointer shadow-sm"
+          >
+            Verifica &rarr;
+          </Button>
+        </div>
+      )}
 
       {/* BARRA DI RICERCA */}
       <div className="relative">
@@ -532,6 +557,11 @@ export default function ManagerAtletiPage() {
                       {atleta.stato_iscrizione === "dismesso" && (
                         <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-300">
                           Dismesso
+                        </span>
+                      )}
+                      {atleta.stato_iscrizione === "sospeso_insoluto" && (
+                        <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-red-600 text-white animate-pulse shadow-xs">
+                          ⚠️ Sospeso per Insoluto Stripe
                         </span>
                       )}
                       {atleta.tipo_abbonamento && atleta.tipo_abbonamento !== "nessuno" && (
@@ -1185,6 +1215,7 @@ export default function ManagerAtletiPage() {
                 >
                   <option value="attivo">Attivo</option>
                   <option value="sospeso">Sospeso</option>
+                  <option value="sospeso_insoluto">Sospeso per Insoluto (Stripe)</option>
                   <option value="dismesso">Dismesso</option>
                 </select>
               </div>
@@ -1645,20 +1676,20 @@ export default function ManagerAtletiPage() {
             </div>
             <DialogTitle className="text-lg font-black text-zinc-900 flex items-center gap-2">
               <UserX className="size-5 text-red-600" />
-              Dismissione Anticipata Atleta
+              Chiusura Accordo & Dismissione
             </DialogTitle>
             <DialogDescription className="text-xs text-zinc-500">
-              Calcolo automatico di conguaglio (decadenza sconto + penale), cancellazione slot calendario e avviso per emissione fattura.
+              Revoca slot futuri e saldo dell&apos;ultima mensilità contrattuale (preavviso 30 giorni ex art. 1373 c.c.).
             </DialogDescription>
           </DialogHeader>
 
           {loadingAnteprima ? (
             <div className="py-8 text-center text-xs text-zinc-500 flex flex-col items-center gap-2">
               <Clock className="size-6 text-red-600 animate-spin" />
-              <span>Calcolo in corso di sedute svolte e conguaglio penale...</span>
+              <span>Verifica del piano contrattuale in corso...</span>
             </div>
           ) : (
-            <div className="my-3 space-y-3.5 text-xs">
+            <div className="my-3 space-y-3 text-xs">
               {/* SCHEDA DATI ATLETA & PIANO */}
               <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1">
                 <div className="flex items-center justify-between">
@@ -1672,7 +1703,7 @@ export default function ManagerAtletiPage() {
                       ? "Continuativo 3X (359€/m)"
                       : anteprimaData?.tipo_abbonamento === "standard"
                       ? "Standard (Carnet)"
-                      : "Altro"}
+                      : "Continuativo"}
                   </span>
                 </div>
                 <div className="text-[11px] text-zinc-500 flex flex-col gap-0.5 font-mono">
@@ -1681,96 +1712,76 @@ export default function ManagerAtletiPage() {
                 </div>
               </div>
 
-              {/* DETTAGLIO CONTEGGIO & DECONTO */}
-              <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-2.5">
-                <div className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                  <Coins className="size-3.5 text-amber-700" />
-                  Ricalcolo Economico a Tariffa Piena
+              {/* QUOTA MENSILE STANDARD DI CHIUSURA */}
+              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
+                <div className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Coins className="size-3.5 text-amber-700" />
+                    Quota Mensile di Chiusura (Preavviso 30 Giorni)
+                  </span>
                 </div>
 
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between text-zinc-700">
-                    <span>Sedute svolte (a prezzo pieno):</span>
-                    <span className="font-bold">
-                      {anteprimaData?.sedute_svolte ?? 0} x {anteprimaData?.tariffa_seduta?.toFixed(2) ?? "33.25"} € ={" "}
-                      <strong>{(anteprimaData?.valore_sedute_pieno ?? 0).toFixed(2)} €</strong>
+                <div className="flex items-center justify-between gap-3 pt-1">
+                  <div>
+                    <span className="text-xs font-bold text-zinc-800 block">
+                      Importo standard approvato:
+                    </span>
+                    <span className="text-[10px] text-zinc-500">
+                      Pari a 1 mensilità contrattuale del piano sottoscritto
                     </span>
                   </div>
-
-                  <div className="flex items-center justify-between text-zinc-700">
-                    <span>Quota già versata dal cliente:</span>
-                    <span className="font-bold text-emerald-700">
-                      - {(anteprimaData?.totale_gia_versato ?? 0).toFixed(2)} €
-                    </span>
-                  </div>
-
-                  <div className="pt-2 border-t border-amber-200 flex items-center justify-between gap-2">
-                    <div>
-                      <span className="font-black text-zinc-900 block">Penale di Recesso & Svincolo Slot:</span>
-                      <span className="text-[10px] text-zinc-500">Preimpostata a 50 €, modificabile se opportuno</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Input
-                        type="number"
-                        min={0}
-                        step={5}
-                        value={penaleInput}
-                        onChange={(e) => setPenaleInput(Number(e.target.value))}
-                        className="w-20 text-right font-black text-xs h-8 bg-white border-amber-300"
-                      />
-                      <span className="font-black text-zinc-700">€</span>
-                    </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Input
+                      type="number"
+                      min={0}
+                      step={10}
+                      value={penaleInput}
+                      onChange={(e) => setPenaleInput(Number(e.target.value))}
+                      className="w-24 text-right font-black text-sm h-9 bg-white border-amber-300"
+                    />
+                    <span className="font-black text-zinc-700">€</span>
                   </div>
                 </div>
 
-                {/* TOTALE NETTO DA ADDEBITARE */}
-                {(() => {
-                  const valPieno = anteprimaData?.valore_sedute_pieno ?? 0;
-                  const versato = anteprimaData?.totale_gia_versato ?? 0;
-                  const pen = Number(penaleInput) || 0;
-                  const netto = Math.max(0, Math.round((valPieno + pen - versato) * 100) / 100);
-
-                  return (
-                    <div className="p-2.5 rounded-xl bg-red-600 text-white flex items-center justify-between mt-2 shadow-xs">
-                      <div>
-                        <div className="text-[10px] font-black uppercase tracking-wider text-red-200">
-                          Totale Netto da Addebitare
-                        </div>
-                        <div className="text-[10px] text-white/80">
-                          Decadenza sconto + penale a saldo
-                        </div>
-                      </div>
-                      <div className="text-xl font-black tabular-nums">{netto.toFixed(2)} €</div>
+                {/* TOTALE NETTO DA ADDEBITARE / FATTURARE */}
+                <div className="p-2.5 rounded-xl bg-red-600 text-white flex items-center justify-between mt-2 shadow-xs">
+                  <div>
+                    <div className="text-[10px] font-black uppercase tracking-wider text-red-200">
+                      Totale a Saldo Chiusura
                     </div>
-                  );
-                })()}
+                    <div className="text-[10px] text-white/80">
+                      Preavviso 30 giorni ex art. 1373 c.c.
+                    </div>
+                  </div>
+                  <div className="text-xl font-black tabular-nums">{Number(penaleInput || 0).toFixed(2)} €</div>
+                </div>
               </div>
 
-              {/* AZIONI AUTOMATICHE IRREVERSIBILI */}
+              {/* AZIONI AUTOMATICHE IN 1 CLIC */}
               <div className="p-3 rounded-2xl bg-zinc-900 text-white space-y-2">
                 <div className="text-[11px] font-black text-[#e3ff00] uppercase tracking-wider flex items-center gap-1.5">
                   <CheckCircle2 className="size-3.5" />
-                  Operazioni eseguite in 1 solo clic:
+                  Operazioni eseguite automaticamente:
                 </div>
                 <ul className="space-y-1.5 text-[11px] text-zinc-300">
                   <li className="flex items-start gap-1.5">
                     <span className="text-red-400 font-bold">•</span>
                     <span>
-                      <strong>Cancellazione Slot Futuri</strong>: verranno rimossi tutti i{" "}
-                      <strong>{anteprimaData?.prenotazioni_future?.length ?? 0} appuntamenti futuri</strong> dell'atleta e gli slot torneranno liberi nel calendario.
+                      <strong>Revoca Slot Futuri</strong>: verranno liberati all&apos;istante tutti i{" "}
+                      <strong>{anteprimaData?.prenotazioni_future?.length ?? 0} appuntamenti futuri</strong> dell&apos;atleta a calendario.
                     </span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <span className="text-[#e3ff00] font-bold">•</span>
                     <span>
-                      <strong>Avviso Email per Fattura</strong>: riceverai subito una mail su{" "}
-                      <strong>{anteprimaData?.email_coach || "firenzepersonaltrainer@gmail.com"}</strong> con i dati fiscali completi (CF, indirizzo, totale e causale consigliata).
+                      <strong>Avviso Fiscale SDI</strong>: riceverai una mail su{" "}
+                      <strong>{anteprimaData?.email_coach || "firenzepersonaltrainer@gmail.com"}</strong> con i dati fiscali completi per l&apos;emissione della fattura.
                     </span>
                   </li>
                   <li className="flex items-start gap-1.5">
                     <span className="text-emerald-400 font-bold">•</span>
                     <span>
-                      <strong>Stripe & Fisco</strong>: addebito automatico su carta salvata (o registrazione transazione) e inserimento nel Registro Fiscale come <strong>'Da emettere'</strong>.
+                      <strong>Stato Atleta</strong>: archiviato come <strong>Dismesso</strong> con registrazione contabile nel registro fiscale.
                     </span>
                   </li>
                 </ul>
@@ -1779,7 +1790,7 @@ export default function ManagerAtletiPage() {
               {/* NOTE OPZIONALI COACH */}
               <div>
                 <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-1">
-                  Note interne recesso (opzionale)
+                  Note interne chiusura (opzionale)
                 </label>
                 <Input
                   value={noteDismissione}
@@ -1806,7 +1817,7 @@ export default function ManagerAtletiPage() {
               className="flex-1 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-1.5 shadow-md shadow-red-600/20"
             >
               <UserX className="size-4" />
-              {isDismettendo ? "Elaborazione..." : "Conferma ed Esegui"}
+              {isDismettendo ? "Elaborazione..." : "Conferma ed Esegui Chiusura"}
             </Button>
           </DialogFooter>
         </DialogContent>

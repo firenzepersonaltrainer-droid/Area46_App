@@ -695,6 +695,7 @@ app.put("/app-api/profili/:id", async (c) => {
       citta = COALESCE(${body.citta}, citta),
       provincia = COALESCE(${body.provincia ? String(body.provincia).trim().toUpperCase() : null}, provincia),
       crediti = COALESCE(${body.crediti !== undefined ? Number(body.crediti) : null}, crediti),
+      anticipi_da_scontare = COALESCE(${body.anticipi_da_scontare !== undefined ? Number(body.anticipi_da_scontare) : null}, anticipi_da_scontare),
       tempo_cancellazione_ore = COALESCE(${body.tempo_cancellazione_ore !== undefined ? Number(body.tempo_cancellazione_ore) : null}, tempo_cancellazione_ore),
       data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti}, data_scadenza_crediti),
       note_coach = COALESCE(${body.note_coach}, note_coach),
@@ -761,13 +762,14 @@ app.delete("/app-api/transazioni/:id", async (c) => {
 app.post("/app-api/profili/:id/modifica-crediti", async (c) => {
   const sql = neon(c.env.DATABASE_URL);
   const id = c.req.param("id");
-  const body = await c.req.json<{ crediti?: number; delta?: number; data_scadenza_crediti?: string }>();
+  const body = await c.req.json<{ crediti?: number; delta?: number; data_scadenza_crediti?: string; anticipi_da_scontare?: number }>();
 
   let rows;
   if (body.crediti !== undefined) {
     rows = await sql`
       UPDATE profili_utenti 
       SET crediti = ${Number(body.crediti)}, 
+          anticipi_da_scontare = COALESCE(${body.anticipi_da_scontare !== undefined ? Number(body.anticipi_da_scontare) : null}, anticipi_da_scontare),
           data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti || null}, data_scadenza_crediti),
           updated_at = NOW()
       WHERE id = ${id}
@@ -777,6 +779,16 @@ app.post("/app-api/profili/:id/modifica-crediti", async (c) => {
     rows = await sql`
       UPDATE profili_utenti 
       SET crediti = crediti + ${Number(body.delta)}, 
+          anticipi_da_scontare = COALESCE(${body.anticipi_da_scontare !== undefined ? Number(body.anticipi_da_scontare) : null}, anticipi_da_scontare),
+          data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti || null}, data_scadenza_crediti),
+          updated_at = NOW()
+      WHERE id = ${id}
+      RETURNING *
+    `;
+  } else if (body.anticipi_da_scontare !== undefined) {
+    rows = await sql`
+      UPDATE profili_utenti 
+      SET anticipi_da_scontare = ${Number(body.anticipi_da_scontare)}, 
           data_scadenza_crediti = COALESCE(${body.data_scadenza_crediti || null}, data_scadenza_crediti),
           updated_at = NOW()
       WHERE id = ${id}
@@ -814,17 +826,29 @@ app.get("/app-api/atleti/:id/anteprima-dismissione", async (c) => {
     ORDER BY data ASC, orario ASC
   `;
 
+  let quotaMensileStandard = 250.0;
   const txRows = await sql`
     SELECT * FROM transazioni_pagamenti 
     WHERE (atleta_id = ${atleta.id} OR email_cliente = ${atleta.email})
       AND stato = 'completato'
-    ORDER BY created_at DESC LIMIT 1
+    ORDER BY created_at DESC
   `;
-  const totaleGiaVersato = txRows.length > 0 ? Number(txRows[0].importo_euro) : (isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0);
-  const penaleStandard = isContinuativo ? 50.0 : 0.0;
-  const valoreSedutePieno = isContinuativo ? Math.round(seduteSvolteCount * tariffaPiena * 100) / 100 : 0;
-  const totaleDovuto = isContinuativo ? Math.round((valoreSedutePieno + penaleStandard) * 100) / 100 : 0;
-  const totaleDaAddebitare = Math.max(0, Math.round((totaleDovuto - totaleGiaVersato) * 100) / 100);
+  const txContinuativo = txRows.find(
+    (t: any) =>
+      t.id_pacchetto?.includes("continuativo") ||
+      t.nome_pacchetto?.toLowerCase().includes("continuativo")
+  );
+  if (txContinuativo && Number(txContinuativo.importo_euro) > 0) {
+    quotaMensileStandard = Number(txContinuativo.importo_euro);
+  } else if (tipoAbb.includes("3x")) {
+    quotaMensileStandard = tipoAbb.includes("annuale") ? 329.0 : 359.0;
+  } else if (tipoAbb.includes("2x")) {
+    quotaMensileStandard = tipoAbb.includes("annuale") ? 230.0 : 250.0;
+  } else if (atleta.quota_mensile_euro) {
+    quotaMensileStandard = Number(atleta.quota_mensile_euro);
+  }
+
+  const totaleDaAddebitare = isContinuativo ? quotaMensileStandard : 0.0;
 
   const cfgRows = await sql`SELECT notifica_email FROM configurazione_lab WHERE id = 1 LIMIT 1`;
   const emailCoach = cfgRows[0]?.notifica_email || "firenzepersonaltrainer@gmail.com";
@@ -843,13 +867,9 @@ app.get("/app-api/atleti/:id/anteprima-dismissione", async (c) => {
       stato_iscrizione: atleta.stato_iscrizione || "attivo",
     },
     tipo_abbonamento: tipoAbb,
-    tariffa_seduta: tariffaPiena,
-    sedute_svolte: seduteSvolteCount,
-    valore_sedute_pieno: valoreSedutePieno,
-    penale_standard: penaleStandard,
-    totale_gia_versato: totaleGiaVersato,
-    totale_dovuto: totaleDovuto,
+    quota_mensile_standard: quotaMensileStandard,
     totale_da_addebitare: totaleDaAddebitare,
+    sedute_svolte: seduteSvolteCount,
     prenotazioni_future: prenotazioniFuture,
     email_coach: emailCoach,
   });
@@ -874,15 +894,8 @@ app.post("/app-api/atleti/:id/dismissione-anticipata", async (c) => {
 
   const tipoAbb = atleta.tipo_abbonamento || "standard";
   const isContinuativo = tipoAbb.startsWith("lab_continuativo");
-  const defaultTariffa = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
-  const tariffa = Number(body.tariffa_seduta ?? (isContinuativo ? defaultTariffa : 0));
-  const svolte = Number(body.sedute_svolte ?? 0);
-  const penale = Number(body.penale_euro ?? (isContinuativo ? 50.0 : 0.0));
-  const versato = Number(body.totale_versato ?? (isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0));
-
-  const valoreSedute = Math.round(svolte * tariffa * 100) / 100;
-  const totaleDovuto = Math.round((valoreSedute + penale) * 100) / 100;
-  const totaleDaAddebitare = Math.max(0, Math.round((totaleDovuto - versato) * 100) / 100);
+  const defaultQuota = isContinuativo ? (tipoAbb.includes("3x") ? 359.0 : 250.0) : 0.0;
+  const quotaFinale = Number(body.quota_mensile_saldo ?? body.penale_euro ?? defaultQuota);
   const txCode = `TX-DISM-${Date.now().toString().slice(-6)}`;
 
   await sql`
@@ -893,8 +906,8 @@ app.post("/app-api/atleti/:id/dismissione-anticipata", async (c) => {
     ) VALUES (
       ${txCode}, ${atleta.id}, ${atleta.email}, ${`${atleta.nome} ${atleta.cognome}`.trim()},
       ${atleta.codice_fiscale || null}, ${atleta.indirizzo || null}, 'dismissione-anticipata',
-      ${'Penale e conguaglio recesso anticipato (' + svolte + ' sedute x ' + tariffa + '€ + penale ' + penale + '€)'},
-      ${totaleDaAddebitare}, 'carta', 0, 0, 0, 'completato', 'da_emettere', NOW()
+      ${'Saldo chiusura accordo continuativo Lab e svincolo slot (preavviso 30 giorni ex art. 1373 c.c.)'},
+      ${quotaFinale}, 'carta', 0, 0, 0, 'completato', 'da_emettere', NOW()
     )
   `;
 
@@ -906,15 +919,13 @@ app.post("/app-api/atleti/:id/dismissione-anticipata", async (c) => {
 
   return c.json({
     ok: true,
-    messaggio: `Dismissione completata con successo! Revocate ${cancelledRows.length} prenotazioni future. Addebitato saldo di € ${totaleDaAddebitare.toFixed(2)}.`,
+    messaggio: `Dismissione completata con successo! Revocate ${cancelledRows.length} prenotazioni future. Addebitata quota di chiusura di € ${quotaFinale.toFixed(2)}.`,
     dettagli: {
       atleta_id: atleta.id,
       nome_cliente: `${atleta.nome} ${atleta.cognome}`,
       codice_transazione: txCode,
-      totale_addebitato: totaleDaAddebitare,
-      penale_applicata: penale,
-      sedute_svolte: svolte,
-      tariffa_seduta: tariffa,
+      totale_addebitato: quotaFinale,
+      quota_mensile: quotaFinale,
       prenotazioni_cancellate: cancelledRows,
     },
   });
@@ -1049,6 +1060,12 @@ app.post("/app-api/prenotazioni/batch", async (c) => {
   }
 
   if (!isManager && walletOwner) {
+    if (atleta?.stato_iscrizione === "sospeso_insoluto") {
+      return c.json({ error: "Account temporaneamente sospeso per rinnovo mensile non saldato. Contatta Coach Stefano o aggiorna la carta per sbloccare le prenotazioni." }, 403);
+    }
+    if (atleta?.stato_iscrizione === "dismesso") {
+      return c.json({ error: "Posizione contrattuale dismessa. Non è possibile prenotare nuove sessioni." }, 403);
+    }
     if ((walletOwner.crediti ?? 0) < totalCost) {
       return c.json({ error: `Crediti insufficienti. Disponibili: ${walletOwner.crediti}, richiesti: ${totalCost}` }, 403);
     }
@@ -1834,6 +1851,50 @@ app.post("/app-api/pagamenti/stripe-webhook", async (c) => {
           )
         `;
       }
+    }
+  }
+
+  // Gestione eventi fallimento pagamento / rinnovo ricorrente Stripe
+  if (
+    event?.type === "invoice.payment_failed" ||
+    event?.type === "payment_intent.payment_failed"
+  ) {
+    const obj = event.data?.object;
+    const customerEmail = (
+      obj?.customer_email ||
+      obj?.receipt_email ||
+      obj?.billing_details?.email ||
+      obj?.metadata?.atleta_email ||
+      ""
+    ).toLowerCase().trim();
+    const atletaId = obj?.metadata?.atleta_id || obj?.client_reference_id;
+    const customerId = obj?.customer;
+    const amountCents = obj?.amount_due ?? obj?.amount ?? 0;
+    const amountFailed = amountCents > 0 ? amountCents / 100 : 0;
+    const failureReason =
+      obj?.last_payment_error?.message ||
+      obj?.last_finalization_error?.message ||
+      obj?.failure_message ||
+      "Fondi insufficienti o carta rifiutata";
+
+    const atletaRows = await sql`
+      SELECT * FROM profili_utenti 
+      WHERE (${atletaId || null}::text IS NOT NULL AND id = ${atletaId})
+         OR (${customerEmail || null}::text IS NOT NULL AND LOWER(email) = ${customerEmail})
+         OR (${customerId || null}::text IS NOT NULL AND stripe_customer_id = ${customerId})
+      LIMIT 1
+    `;
+
+    if (atletaRows.length > 0) {
+      const atleta = atletaRows[0];
+      const notaAlert = `[⚠️ ALLERTA RINNOVO FALLITO il ${new Date().toLocaleDateString("it-IT")}: € ${amountFailed.toFixed(2)} non riscosso (${failureReason}). Posizione sospesa.]`;
+      await sql`
+        UPDATE profili_utenti
+        SET stato_iscrizione = 'sospeso_insoluto',
+            note_coach = CASE WHEN note_coach IS NOT NULL AND note_coach != '' THEN note_coach || ' | ' || ${notaAlert} ELSE ${notaAlert} END,
+            updated_at = NOW()
+        WHERE id = ${atleta.id}
+      `;
     }
   }
 

@@ -224,15 +224,18 @@ export function InfoContinuativoModal({
           </div>
 
           {/* TRASPARENZA & CLAUSOLA DI DISMISSIONE ANTICIPATA */}
-          <div className="p-3.5 rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-700 text-[11px] space-y-1">
+          <div className="p-3.5 rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-700 text-[11px] space-y-1.5">
             <span className="font-black text-zinc-900 block">
-              Trasparenza contrattuale & Recesso anticipato
+              Trasparenza Contrattuale & Recesso (30 Giorni di Preavviso)
             </span>
             <p className="text-zinc-600 leading-relaxed">
-              L&apos;impegno continuativo garantisce la tariffa agevolata e il blocco degli slot. In caso di
-              dismissione anticipata prima del termine semestrale o annuale, decade lo sconto fruito sulle
-              sedute effettuate che verranno ricalcolate a prezzo standard, con contestuale liberazione degli
-              slot futuri a calendario.
+              L&apos;Accordo Lab Continuativo (6 o 12 mesi) garantisce la tariffa scontata e la riserva prioritaria ed esclusiva degli slot a calendario per tutta la durata prescelta.
+            </p>
+            <p className="text-zinc-600 leading-relaxed">
+              L&apos;atleta ha facoltà di recedere in qualsiasi momento con un <strong>preavviso di 30 giorni</strong>, formalizzabile direttamente dall&apos;applicazione.
+            </p>
+            <p className="text-zinc-600 leading-relaxed">
+              Con l&apos;esercizio del recesso verrà addebitata l&apos;ultima mensilità contrattuale a saldo di chiusura (pari alla quota mensile sottoscritta). Durante il mese di preavviso l&apos;atleta potrà scegliere liberamente se usufruire delle sedute rimanenti o liberare anticipatamente i propri slot a calendario, estinguendo definitivamente ogni obbligazione reciproca.
             </p>
           </div>
         </div>

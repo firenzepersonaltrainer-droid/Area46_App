@@ -21903,8 +21903,8 @@
       "email_cliente": "firenzepersonaltrainer@gmail.com",
       "livello": "Level 1",
       "giorno": 1,
-      "stato": "non_iniziato",
-      "updated_at": "2026-11-16T15:09:38.654Z"
+      "stato": "completato",
+      "updated_at": "2026-11-23T16:09:03.281Z"
     },
     {
       "email_cliente": "firenzepersonaltrainer@gmail.com",
@@ -23375,6 +23375,20 @@
       "giorno": 14,
       "stato": "completato",
       "updated_at": "2026-11-19T13:48:51.781Z"
+    },
+    {
+      "email_cliente": "silvia.brenzini@gmail.com",
+      "livello": "Level 2",
+      "giorno": 15,
+      "stato": "completato",
+      "updated_at": "2026-11-24T13:40:19.908Z"
+    },
+    {
+      "email_cliente": "firenzepersonaltrainer@gmail.com",
+      "livello": "PRO",
+      "giorno": 45,
+      "stato": "completato",
+      "updated_at": "2026-11-25T05:38:21.004Z"
     }
   ],
   "preferenze_utente": [
@@ -23519,13 +23533,13 @@
       "nickname": "Usa",
       "name": "Silvia Usai",
       "ruolo": "atleta",
-      "crediti": 1,
+      "crediti": 0,
       "data_scadenza_crediti": "2026-11-07",
       "tempo_cancellazione_ore": 24,
       "tipo_abbonamento": "standard",
       "stato_iscrizione": "attivo",
-      "anticipi_da_scontare": 0,
-      "updated_at": "2026-10-07T14:42:56.468Z",
+      "anticipi_da_scontare": 1,
+      "updated_at": "2026-11-25T07:23:10.642Z",
       "data_ultimo_accesso": "2026-10-20T16:56:49.111Z"
     },
     {
@@ -23678,6 +23692,18 @@
   ],
   "movimenti_crediti": [
     {
+      "id": "mov-1795591390642-573",
+      "atleta_id": "usr-bw-2067105",
+      "email_cliente": "sil_ba@hotmail.it",
+      "nome_cliente": "Silvia Usai",
+      "data_ora": "2026-11-25T07:23:10.642Z",
+      "tipo": "penalty",
+      "delta_crediti": -1,
+      "saldo_risultante": 0,
+      "motivazione": "Rettifica/Penalty manuale Coach",
+      "operatore": "coach"
+    },
+    {
       "id": "mov-1795366864709-rgh0",
       "atleta_id": "usr-bw-1953992",
       "email_cliente": "matteo.calosci@gmail.com",
@@ -23730,56 +23756,112 @@
       "created_at": "2026-11-22T17:01:04.692Z"
     },
     {
-      "id": "mov-man-1794515911691",
-      "atleta_id": "usr-bw-1953985",
-      "email_cliente": "pantanella@gmail.com",
-      "nome_cliente": "Alessandro Pantanella",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 14,
-      "motivazione": "Prenotazione slot del 2026-11-13 ore 10:45 [Assegnazione diretta dal Coach]",
-      "operatore": "coach",
-      "data_movimento": "2026-11-12T20:38:32.000Z",
-      "created_at": "2026-11-12T20:38:32.000Z"
-    },
-    {
-      "id": "mov-man-1794058827306",
-      "atleta_id": "usr-bw-1953985",
-      "email_cliente": "pantanella@gmail.com",
-      "nome_cliente": "Alessandro Pantanella",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 11,
-      "motivazione": "Prenotazione slot del 2026-11-09 ore 18:15 per Pierpaola Ciancia [Borsellino Condiviso - Assegnazione Coach]",
-      "operatore": "coach",
-      "data_movimento": "2026-11-07T13:40:27.000Z",
-      "created_at": "2026-11-07T13:40:27.000Z"
-    },
-    {
-      "id": "mov-man-1793550023093",
-      "atleta_id": "usr-bw-1953985",
-      "email_cliente": "pantanella@gmail.com",
-      "nome_cliente": "Alessandro Pantanella",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 12,
-      "motivazione": "Prenotazione slot del 2026-11-02 ore 18:15 per Pierpaola Ciancia [Borsellino Condiviso - Assegnazione Coach]",
-      "operatore": "coach",
-      "data_movimento": "2026-11-01T16:20:23.000Z",
-      "created_at": "2026-11-01T16:20:23.000Z"
-    },
-    {
-      "id": "mov-man-1793294883723",
-      "atleta_id": "usr-bw-1953985",
-      "email_cliente": "pantanella@gmail.com",
-      "nome_cliente": "Alessandro Pantanella",
+      "id": "mov-1794998878472-610",
+      "atleta_id": "usr-bw-1953992",
+      "email_cliente": "matteo.calosci@gmail.com",
+      "nome_cliente": "Matteo Calosci",
+      "data_ora": "2026-11-18T10:47:58.472Z",
       "tipo": "prenotazione_slot",
       "delta_crediti": -1,
       "saldo_risultante": 13,
-      "motivazione": "Prenotazione slot del 2026-10-30 ore 09:15 [Assegnazione diretta dal Coach]",
-      "operatore": "coach",
-      "data_movimento": "2026-10-29T17:28:04.000Z",
-      "created_at": "2026-10-29T17:28:04.000Z"
+      "motivazione": "Prenotazione slot del 2026-11-20 ore 18:30 [Da Google Calendar]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794998861311-811",
+      "atleta_id": "usr-bw-1953992",
+      "email_cliente": "matteo.calosci@gmail.com",
+      "nome_cliente": "Matteo Calosci",
+      "data_ora": "2026-11-18T10:47:41.311Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 14,
+      "motivazione": "Prenotazione slot del 2026-11-20 ore 18:30",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1794998840916-131",
+      "atleta_id": "usr-bw-1953992",
+      "email_cliente": "matteo.calosci@gmail.com",
+      "nome_cliente": "Matteo Calosci",
+      "data_ora": "2026-11-18T10:47:20.916Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 15,
+      "motivazione": "Rimborso slot 2026-11-20 19:00 cancellato su Google Calendar",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794991152732-753",
+      "atleta_id": "usr-bw-1953992",
+      "email_cliente": "matteo.calosci@gmail.com",
+      "nome_cliente": "Matteo Calosci",
+      "data_ora": "2026-11-18T08:39:12.732Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 14,
+      "motivazione": "Prenotazione slot del 2026-11-20 ore 19:00",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1794989314881-869",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-11-18T08:08:34.881Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 14,
+      "motivazione": "Prenotazione slot del 2026-11-20 ore 17:30",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1794989287002-677",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-11-18T08:08:07.002Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 15,
+      "motivazione": "Rimborso per cancellazione in tempo slot del 2026-11-20 18:15",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1794856490433-649",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "data_ora": "2026-11-16T19:14:50.433Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 11,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-11-16 18:30 per Pierpaola Ciancia [Borsellino Condiviso]",
+      "operatore": "coach"
+    },
+    {
+      "id": "mov-1794841003579-627",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "data_ora": "2026-11-16T14:56:43.579Z",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 14,
+      "motivazione": "Prenotazione slot del 2026-11-20 ore 18:15",
+      "operatore": "atleta"
+    },
+    {
+      "id": "mov-1794837230087-437",
+      "atleta_id": "usr-bw-1953976",
+      "email_cliente": "daniele.casci@gmail.com",
+      "nome_cliente": "Daniele Casci",
+      "data_ora": "2026-11-16T13:53:50.087Z",
+      "tipo": "rimborso_cancellazione",
+      "delta_crediti": 1,
+      "saldo_risultante": 12,
+      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-12-30 17:15 per Daniele Casci",
+      "operatore": "coach"
     },
     {
       "id": "mov-1794761976673-557",
@@ -23804,6 +23886,19 @@
       "saldo_risultante": 15,
       "motivazione": "Prenotazione slot del 2026-11-16 ore 19:00",
       "operatore": "atleta"
+    },
+    {
+      "id": "mov-man-1794515911691",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 14,
+      "motivazione": "Prenotazione slot del 2026-11-13 ore 10:45 [Assegnazione diretta dal Coach]",
+      "operatore": "coach",
+      "data_movimento": "2026-11-12T20:38:32.000Z",
+      "created_at": "2026-11-12T20:38:32.000Z"
     },
     {
       "id": "mov-1794384772307-416",
@@ -23878,6 +23973,19 @@
       "operatore": "atleta"
     },
     {
+      "id": "mov-man-1794058827306",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 11,
+      "motivazione": "Prenotazione slot del 2026-11-09 ore 18:15 per Pierpaola Ciancia [Borsellino Condiviso - Assegnazione Coach]",
+      "operatore": "coach",
+      "data_movimento": "2026-11-07T13:40:27.000Z",
+      "created_at": "2026-11-07T13:40:27.000Z"
+    },
+    {
       "id": "mov-1793892740085-675",
       "atleta_id": "usr-bw-1953985",
       "email_cliente": "pantanella@gmail.com",
@@ -23888,6 +23996,32 @@
       "saldo_risultante": 18,
       "motivazione": "Prenotazione slot del 2026-11-06 ore 10:45 per Pierpaola Ciancia [Borsellino Condiviso]",
       "operatore": "coach"
+    },
+    {
+      "id": "mov-man-1793550023093",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 12,
+      "motivazione": "Prenotazione slot del 2026-11-02 ore 18:15 per Pierpaola Ciancia [Borsellino Condiviso - Assegnazione Coach]",
+      "operatore": "coach",
+      "data_movimento": "2026-11-01T16:20:23.000Z",
+      "created_at": "2026-11-01T16:20:23.000Z"
+    },
+    {
+      "id": "mov-man-1793294883723",
+      "atleta_id": "usr-bw-1953985",
+      "email_cliente": "pantanella@gmail.com",
+      "nome_cliente": "Alessandro Pantanella",
+      "tipo": "prenotazione_slot",
+      "delta_crediti": -1,
+      "saldo_risultante": 13,
+      "motivazione": "Prenotazione slot del 2026-10-30 ore 09:15 [Assegnazione diretta dal Coach]",
+      "operatore": "coach",
+      "data_movimento": "2026-10-29T17:28:04.000Z",
+      "created_at": "2026-10-29T17:28:04.000Z"
     },
     {
       "id": "mov-1793283667223-103",
@@ -25220,114 +25354,6 @@
       "saldo_risultante": 10,
       "motivazione": "Crediti configurati in anagrafica",
       "operatore": "coach"
-    },
-    {
-      "id": "mov-1794837230087-437",
-      "atleta_id": "usr-bw-1953976",
-      "email_cliente": "daniele.casci@gmail.com",
-      "nome_cliente": "Daniele Casci",
-      "data_ora": "2026-11-16T13:53:50.087Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 12,
-      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-12-30 17:15 per Daniele Casci",
-      "operatore": "coach"
-    },
-    {
-      "id": "mov-1794841003579-627",
-      "atleta_id": "usr-bw-2078480",
-      "email_cliente": "annap.maddy@gmail.com",
-      "nome_cliente": "Anna Paola Maddalena",
-      "data_ora": "2026-11-16T14:56:43.579Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 14,
-      "motivazione": "Prenotazione slot del 2026-11-20 ore 18:15",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-1794856490433-649",
-      "atleta_id": "usr-bw-1953985",
-      "email_cliente": "pantanella@gmail.com",
-      "nome_cliente": "Alessandro Pantanella",
-      "data_ora": "2026-11-16T19:14:50.433Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 11,
-      "motivazione": "Ripristino credito per cancellazione/spostamento slot 2026-11-16 18:30 per Pierpaola Ciancia [Borsellino Condiviso]",
-      "operatore": "coach"
-    },
-    {
-      "id": "mov-1794989287002-677",
-      "atleta_id": "usr-bw-2078480",
-      "email_cliente": "annap.maddy@gmail.com",
-      "nome_cliente": "Anna Paola Maddalena",
-      "data_ora": "2026-11-18T08:08:07.002Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 15,
-      "motivazione": "Rimborso per cancellazione in tempo slot del 2026-11-20 18:15",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-1794989314881-869",
-      "atleta_id": "usr-bw-2078480",
-      "email_cliente": "annap.maddy@gmail.com",
-      "nome_cliente": "Anna Paola Maddalena",
-      "data_ora": "2026-11-18T08:08:34.881Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 14,
-      "motivazione": "Prenotazione slot del 2026-11-20 ore 17:30",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-1794991152732-753",
-      "atleta_id": "usr-bw-1953992",
-      "email_cliente": "matteo.calosci@gmail.com",
-      "nome_cliente": "Matteo Calosci",
-      "data_ora": "2026-11-18T08:39:12.732Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 14,
-      "motivazione": "Prenotazione slot del 2026-11-20 ore 19:00",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-1794998840916-131",
-      "atleta_id": "usr-bw-1953992",
-      "email_cliente": "matteo.calosci@gmail.com",
-      "nome_cliente": "Matteo Calosci",
-      "data_ora": "2026-11-18T10:47:20.916Z",
-      "tipo": "rimborso_cancellazione",
-      "delta_crediti": 1,
-      "saldo_risultante": 15,
-      "motivazione": "Rimborso slot 2026-11-20 19:00 cancellato su Google Calendar",
-      "operatore": "coach"
-    },
-    {
-      "id": "mov-1794998861311-811",
-      "atleta_id": "usr-bw-1953992",
-      "email_cliente": "matteo.calosci@gmail.com",
-      "nome_cliente": "Matteo Calosci",
-      "data_ora": "2026-11-18T10:47:41.311Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 14,
-      "motivazione": "Prenotazione slot del 2026-11-20 ore 18:30",
-      "operatore": "atleta"
-    },
-    {
-      "id": "mov-1794998878472-610",
-      "atleta_id": "usr-bw-1953992",
-      "email_cliente": "matteo.calosci@gmail.com",
-      "nome_cliente": "Matteo Calosci",
-      "data_ora": "2026-11-18T10:47:58.472Z",
-      "tipo": "prenotazione_slot",
-      "delta_crediti": -1,
-      "saldo_risultante": 13,
-      "motivazione": "Prenotazione slot del 2026-11-20 ore 18:30 [Da Google Calendar]",
-      "operatore": "coach"
     }
   ],
   "transazioni_pagamenti": [
@@ -25531,7 +25557,9 @@
     "bogazziclaudia@gmail.com",
     "usr-bw-1953989",
     "domix89@msn.com",
-    "usr-glide-1791381752599-443"
+    "usr-glide-1791381752599-443",
+    "usr-test-continuativo",
+    "test.continuativo@example.com"
   ],
   "tariffario_pacchetti": [
     {
@@ -27403,11 +27431,12 @@
       "email_cliente": "daniele.casci@gmail.com",
       "nome_cliente": "Daniele Casci",
       "telefono_cliente": "",
-      "stato": "confermata",
+      "stato": "cancellata_in_tempo",
       "credito_scalato": true,
-      "note": "Prenotazione Multipla Rapida",
+      "note": "Prenotazione Multipla Rapida (Annullata su Google Calendar)",
       "google_event_id": "troc2qo3u3h96vp78ufdpo1olk",
-      "created_at": "2026-10-22T16:50:12.000Z"
+      "created_at": "2026-10-22T16:50:12.000Z",
+      "cancellato_il": "2026-11-24T07:13:46.851Z"
     },
     {
       "id": "bk-1792683000000-casci-12",
@@ -27523,20 +27552,6 @@
       "cancellato_il": "2026-11-22T17:01:04.692Z"
     },
     {
-      "id": "bk-1795105348389",
-      "data": "2026-11-23",
-      "orario": "18:15",
-      "atleta_id": "usr-bw-2078480",
-      "email_cliente": "annap.maddy@gmail.com",
-      "nome_cliente": "Anna Paola Maddalena",
-      "telefono_cliente": "",
-      "stato": "confermata",
-      "credito_scalato": true,
-      "note": "",
-      "created_at": "2026-11-19T16:22:28.389Z",
-      "google_event_id": "ootoq1e89q4p2e5jd2rjanh72c"
-    },
-    {
       "id": "bk-1795105368075",
       "data": "2026-11-25",
       "orario": "18:15",
@@ -27551,8 +27566,22 @@
       "google_event_id": "9rlpehl1577jocjmhbu9fsqbj4"
     },
     {
-      "id": "bk-1795175877813",
+      "id": "bk-1795423772286",
       "data": "2026-11-23",
+      "orario": "18:45",
+      "atleta_id": "usr-bw-2078480",
+      "email_cliente": "annap.maddy@gmail.com",
+      "nome_cliente": "Anna Paola Maddalena",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "Assegnazione diretta dal Coach",
+      "google_event_id": "a2u868i8c989urq0g6crjimc28",
+      "created_at": "2026-11-23T08:49:32.000Z"
+    },
+    {
+      "id": "bk-1795504417098",
+      "data": "2026-11-25",
       "orario": "19:00",
       "atleta_id": "usr-bw-1953992",
       "email_cliente": "matteo.calosci@gmail.com",
@@ -27561,8 +27590,22 @@
       "stato": "confermata",
       "credito_scalato": true,
       "note": "",
-      "created_at": "2026-11-20T11:57:57.813Z",
-      "google_event_id": "nuc8lra11d357e11riuem4cbf4"
+      "created_at": "2026-11-24T07:13:37.098Z",
+      "google_event_id": "3rlsoq0isks1kb047l36g66nm0"
+    },
+    {
+      "id": "bk-1795591297172",
+      "data": "2026-11-25",
+      "orario": "18:00",
+      "atleta_id": "usr-bw-2067105",
+      "email_cliente": "sil_ba@hotmail.it",
+      "nome_cliente": "Silvia Usai",
+      "telefono_cliente": "",
+      "stato": "confermata",
+      "credito_scalato": true,
+      "note": "Assegnazione diretta dal Coach",
+      "created_at": "2026-11-25T07:21:37.172Z",
+      "google_event_id": "h3ud7r8tsf1q34htkbc78guoh8"
     }
   ],
   "prenotazioni_cancellate": [
@@ -27632,7 +27675,11 @@
     "bk-1794989313897",
     "lab_bk-1794989313897",
     "bk-1794998860514",
-    "lab_bk-1794998860514"
+    "lab_bk-1794998860514",
+    "bk-1795175877813",
+    "lab_bk-1795175877813",
+    "bk-1795105348389",
+    "lab_bk-1795105348389"
   ],
   "eccezioni_calendario": [
     {
@@ -27826,6 +27873,14 @@
       "tipo": "slot_bloccato",
       "motivo": "Chiusura per ferie / imprevisto",
       "created_at": "2026-11-10T13:41:37.452Z"
+    },
+    {
+      "id": "exc-1795444323626-8l1f",
+      "data": "2026-12-04",
+      "orario": null,
+      "tipo": "chiusura_giornata",
+      "motivo": "Chiusura per corso di aggiornamento ",
+      "created_at": "2026-11-23T14:32:03.626Z"
     },
     {
       "id": "exc-1795110176331-qwb1",

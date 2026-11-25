@@ -133,6 +133,21 @@ function AppHeader({
     refetchInterval: 10000,
   });
 
+  const { data: transazioni = [] } = useQuery<any[]>({
+    queryKey: ["transazioni"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/transazioni");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!isManager,
+    refetchInterval: 15000,
+  });
+
+  const pendingBonificiCount = isManager
+    ? transazioni.filter((t) => t.stato === "in_attesa_bonifico").length
+    : 0;
+
   const unreadCount =
     audioNotes.filter((n) => n.stato === "nuovo").length +
     bugReports.filter((b) => b.stato === "aperto").length;
@@ -335,7 +350,7 @@ function AppContent() {
         { href: "/manager/atleti", label: "Atleti", icon: <Users /> },
         { href: "/", label: "Allenamenti", icon: <Dumbbell /> },
         { href: "/diario", label: "Diario", icon: <BookMarked /> },
-        { href: "/manager/fisco", label: "Fisco", icon: <Settings /> },
+        { href: "/manager/fisco", label: "Fisco", icon: <Settings />, badge: pendingBonificiCount },
       ]
     : [
         { href: "/", label: "Allenamenti", icon: <Dumbbell /> },

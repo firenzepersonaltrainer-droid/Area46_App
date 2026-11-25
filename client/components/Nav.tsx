@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@glide/cn";
 
-export interface NavItem { href: string; label: string; icon: React.ReactNode; }
+export interface NavItem { href: string; label: string; icon: React.ReactNode; badge?: number; }
 export interface NavProps { items: NavItem[]; layout?: "top" | "sidebar"; className?: string; }
 
 export function Nav({ items, className }: NavProps) {
@@ -48,6 +48,11 @@ export function Nav({ items, className }: NavProps) {
                   : "text-zinc-400 hover:text-white",
               )}
             >
+              {Number(item.badge || 0) > 0 && (
+                <span className="absolute top-0.5 right-1 sm:right-2 min-w-4 h-4 px-1 rounded-full bg-red-600 text-white font-black text-[9px] flex items-center justify-center animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.9)] z-10 border border-zinc-950">
+                  {item.badge}
+                </span>
+              )}
               {item.icon}
               <span className="truncate mt-0.5">{item.label}</span>
               {active && (

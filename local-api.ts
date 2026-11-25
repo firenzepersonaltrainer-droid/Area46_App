@@ -1275,18 +1275,48 @@ async function tryLoadConfigFromGoogleDrive() {
         new Set([...(db.utenti_cancellati || []), ...driveDb.utenti_cancellati])
       );
     }
-    // 🛡️ VAULT SINGLE SOURCE OF TRUTH: i profili utenti e movimenti crediti del Vault hanno precedenza assoluta.
-    // Solo se il database locale è privo di profili utenti accettiamo quelli dal cloud Drive.
-    if ((!db.profili_utenti || db.profili_utenti.length === 0) && driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
-      const activeKeys = new Set(
-        driveDb.profili_utenti.flatMap((p: any) => [p.id, p.email?.toLowerCase()]).filter(Boolean)
-      );
-      if (db.utenti_cancellati) {
-        db.utenti_cancellati = db.utenti_cancellati.filter((key: string) => !activeKeys.has(key));
+    // 🛡️ MERGE DINAMICO PROFILI UTENTI: Unione intelligente Cloud Drive <-> Locale basata su updated_at
+    if (driveDb.profili_utenti && Array.isArray(driveDb.profili_utenti)) {
+      db.profili_utenti = db.profili_utenti || [];
+      const userMap = new Map<string, any>();
+      for (const p of db.profili_utenti) {
+        if (!p) continue;
+        const key = p.id || p.email?.toLowerCase().trim();
+        if (key) userMap.set(key, p);
       }
-      db.profili_utenti = driveDb.profili_utenti.filter(
-        (p: any) => !db.utenti_cancellati?.includes(p.id) && !db.utenti_cancellati?.includes(p.email?.toLowerCase())
-      );
+
+      for (const dp of driveDb.profili_utenti) {
+        if (!dp) continue;
+        const key = dp.id || dp.email?.toLowerCase().trim();
+        if (!key) continue;
+        if (db.utenti_cancellati?.includes(dp.id) || db.utenti_cancellati?.includes(dp.email?.toLowerCase())) {
+          continue;
+        }
+
+        if (!userMap.has(key)) {
+          userMap.set(key, dp);
+          db.profili_utenti.push(dp);
+        } else {
+          const lp = userMap.get(key);
+          const dTime = new Date(dp.updated_at || 0).getTime();
+          const lTime = new Date(lp.updated_at || 0).getTime();
+          // Se la versione di Drive è più recente o uguale (o locale privo di timestamp), aggiorna campi dinamici
+          if (dTime >= lTime) {
+            lp.crediti = dp.crediti !== undefined ? dp.crediti : lp.crediti;
+            lp.anticipi_da_scontare = dp.anticipi_da_scontare !== undefined ? dp.anticipi_da_scontare : lp.anticipi_da_scontare;
+            lp.data_scadenza_crediti = dp.data_scadenza_crediti !== undefined ? dp.data_scadenza_crediti : lp.data_scadenza_crediti;
+            lp.stato_iscrizione = dp.stato_iscrizione || lp.stato_iscrizione;
+            lp.updated_at = dp.updated_at || lp.updated_at;
+            if (dp.note_coach) lp.note_coach = dp.note_coach;
+            if (dp.shared_wallet_with !== undefined) lp.shared_wallet_with = dp.shared_wallet_with;
+            if (dp.data_ultimo_accesso) lp.data_ultimo_accesso = dp.data_ultimo_accesso;
+            if (dp.tipo_abbonamento) lp.tipo_abbonamento = dp.tipo_abbonamento;
+            if (dp.telefono) lp.telefono = dp.telefono;
+            if (dp.codice_fiscale) lp.codice_fiscale = dp.codice_fiscale;
+            if (dp.indirizzo) lp.indirizzo = dp.indirizzo;
+          }
+        }
+      }
     }
     db.active_user_id = null;
     if (driveDb.prenotazioni_cancellate && Array.isArray(driveDb.prenotazioni_cancellate)) {
@@ -1302,8 +1332,46 @@ async function tryLoadConfigFromGoogleDrive() {
         (p: any) => !isBookingIdCancelled(p.id, db.prenotazioni_cancellate)
       );
     }
-    if ((!db.movimenti_crediti || db.movimenti_crediti.length === 0) && driveDb.movimenti_crediti && Array.isArray(driveDb.movimenti_crediti)) {
-      db.movimenti_crediti = driveDb.movimenti_crediti;
+    // 🛡️ MERGE ADDITIVO MOVIMENTI CREDITI
+    if (driveDb.movimenti_crediti && Array.isArray(driveDb.movimenti_crediti)) {
+      const movMap = new Map<string, any>();
+      for (const m of (db.movimenti_crediti || [])) {
+        if (m && m.id) movMap.set(m.id, m);
+      }
+      for (const m of driveDb.movimenti_crediti) {
+        if (m && m.id && !movMap.has(m.id)) {
+          movMap.set(m.id, m);
+        }
+      }
+      db.movimenti_crediti = Array.from(movMap.values()).sort((a: any, b: any) =>
+        new Date(b.data_ora || b.created_at || 0).getTime() - new Date(a.data_ora || a.created_at || 0).getTime()
+      );
+    }
+    // 🛡️ MERGE ADDITIVO TRANSAZIONI PAGAMENTI
+    if (driveDb.transazioni_pagamenti && Array.isArray(driveDb.transazioni_pagamenti)) {
+      const txMap = new Map<string, any>();
+      for (const t of (db.transazioni_pagamenti || [])) {
+        if (!t) continue;
+        const key = t.codice_transazione || t.id;
+        if (key && !db.transazioni_cancellate?.includes(key)) txMap.set(key, t);
+      }
+      for (const t of driveDb.transazioni_pagamenti) {
+        if (!t) continue;
+        const key = t.codice_transazione || t.id;
+        if (key && !db.transazioni_cancellate?.includes(key)) {
+          if (!txMap.has(key)) {
+            txMap.set(key, t);
+          } else {
+            const existing = txMap.get(key);
+            if (t.stato === "completato" && existing.stato !== "completato") {
+              txMap.set(key, t);
+            }
+          }
+        }
+      }
+      db.transazioni_pagamenti = Array.from(txMap.values()).sort((a: any, b: any) =>
+        new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      );
     }
     if (driveDb.diario_utente && Array.isArray(driveDb.diario_utente)) {
       db.diario_utente = driveDb.diario_utente;
@@ -1546,6 +1614,93 @@ export async function sendEmailNotification(
   return emailRecord;
 }
 
+export async function sendAdminPaymentNotification(
+  tipo: "bonifico" | "stripe" | "manuale",
+  transazione: any,
+  extra?: { pacchetto?: any; atleta?: any }
+) {
+  const emailCoach =
+    db?.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
+  let oggetto = "";
+  let corpo = "";
+
+  const nomeAtleta = transazione.nome_cliente || "Atleta";
+  const importoStr = `€ ${Number(transazione.importo_euro || 0).toFixed(2)}`;
+  const nomePack = transazione.nome_pacchetto || "Pacchetto Lab";
+
+  if (tipo === "bonifico") {
+    oggetto = `🔔 [AREA46 FISCO] Nuova Richiesta Bonifico — ${nomeAtleta} (${importoStr})`;
+    corpo = `
+NOTIFICA RICEZIONE RICHIESTA BONIFICO BANCARIO
+=============================================================================
+Data: ${new Date().toLocaleString("it-IT")}
+Atleta: ${nomeAtleta}
+Email: ${transazione.email_cliente}
+Codice Fiscale: ${transazione.codice_fiscale || "Non specificato"}
+Pacchetto Scelto: ${nomePack} (${transazione.crediti_acquistati || extra?.pacchetto?.crediti || "-"} crediti)
+Importo da Riscuotere: ${importoStr}
+Causale Generata: ${transazione.causale_bonifico || "-"}
+Codice Transazione: ${transazione.codice_transazione}
+=============================================================================
+STATO ATTUALE:
+- Transazione memorizzata in Prima Nota con stato 'in_attesa_bonifico'.
+- I crediti NON sono stati ancora accreditati (in attesa di tua conferma).
+- L'atleta è stata invitata ad avvisarti su WhatsApp e non potrà prenotare prima di 24 ore.
+
+COME APPROVARE L'ACCREDITO:
+Quando avrai verificato l'accredito sul tuo conto corrente MPS:
+1. Accedi alla sezione Manager Fisco dell'App.
+2. Troverai la card in evidenza "Bonifici in attesa di verifica".
+3. Clicca su "Approva ed Accredita Crediti": il sistema caricherà istantaneamente i crediti nel wallet dell'atleta e invierà l'email di conferma.
+=============================================================================
+Area46 Landmine Lab — Sistema Fiscale Automatizzato
+    `.trim();
+  } else if (tipo === "stripe") {
+    oggetto = `💰 [AREA46 INCASSO STRIPE] Pagamento Ricevuto — ${nomeAtleta} (${importoStr})`;
+    corpo = `
+INCASSO CARTA / STRIPE COMPLETATO CON SUCCESSO
+=============================================================================
+Data: ${new Date().toLocaleString("it-IT")}
+Atleta: ${nomeAtleta}
+Email: ${transazione.email_cliente}
+Pacchetto: ${nomePack}
+Importo Incassato: ${importoStr}
+Crediti Aggiunti: +${transazione.crediti_effettivi_aggiunti} (Nuovo Saldo: ${extra?.atleta?.crediti ?? "-"})
+Codice Transazione: ${transazione.codice_transazione}
+ID Sessione Stripe: ${transazione.stripe_session_id || "-"}
+=============================================================================
+REGISTRAZIONE CONTABILE:
+- Movimento registrato automaticamente nel Registro Incassi / Fisco.
+- Ricevuta emessa nel diario dell'atleta.
+- Ricorda di emettere fattura o ricevuta fiscale secondo il tuo regime.
+=============================================================================
+Area46 Landmine Lab
+    `.trim();
+  } else if (tipo === "manuale") {
+    oggetto = `📝 [AREA46 FISCO] Registrato Versamento Manuale — ${nomeAtleta} (${importoStr})`;
+    corpo = `
+REGISTRAZIONE VERSAMENTO MANUALE IN PRIMA NOTA
+=============================================================================
+Data: ${new Date().toLocaleString("it-IT")}
+Atleta: ${nomeAtleta}
+Importo: ${importoStr}
+Metodo: ${transazione.metodo?.toUpperCase()}
+Descrizione: ${transazione.nome_pacchetto}
+Codice Fiscale: ${transazione.codice_fiscale || "-"}
+Codice Transazione: ${transazione.codice_transazione}
+=============================================================================
+Movimento memorizzato nel registro fiscale.
+    `.trim();
+  }
+
+  await sendEmailNotification({
+    to: emailCoach,
+    subject: oggetto,
+    body: corpo,
+    tipo: "fisco_pagamento",
+  }).catch(() => {});
+}
+
 export function getHydratedUser(user: any, database: any) {
   if (!user) return null;
   const walletOwner = getWalletOwner(user, database);
@@ -1717,8 +1872,10 @@ export async function handleLocalApi(
   res: ServerResponse,
   next?: () => void
 ) {
+  if (!db) {
+    db = loadData();
+  }
   await ensureLatestDataFromDrive();
-  db = loadData();
   const host = req.headers?.host || "localhost:5173";
   const url = new URL(req.url ?? "/", `http://${host}`);
   let pathname = url.pathname;
@@ -2813,22 +2970,24 @@ firenzepersonaltrainer@gmail.com
           (t.atleta_id === atleta.id || t.email_cliente === atleta.email) &&
           t.stato === "completato"
       );
-      let totaleGiaVersato = 0;
-      if (transazioniAtleta.length > 0) {
-        totaleGiaVersato = Number(transazioniAtleta[0].importo_euro) || 0;
-      } else {
-        totaleGiaVersato = isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0;
+      // Calcolo quota mensile standard pre-approvata (quota esatta del piano senza formule arbitrarie)
+      let quotaMensileStandard = 250.0;
+      const txContinuativo = transazioniAtleta.find(
+        (t: any) =>
+          t.id_pacchetto?.includes("continuativo") ||
+          t.nome_pacchetto?.toLowerCase().includes("continuativo")
+      );
+      if (txContinuativo && Number(txContinuativo.importo_euro) > 0) {
+        quotaMensileStandard = Number(txContinuativo.importo_euro);
+      } else if (tipoAbb.includes("3x")) {
+        quotaMensileStandard = tipoAbb.includes("annuale") ? 329.0 : 359.0;
+      } else if (tipoAbb.includes("2x")) {
+        quotaMensileStandard = tipoAbb.includes("annuale") ? 230.0 : 250.0;
+      } else if ((atleta as any).quota_mensile_euro) {
+        quotaMensileStandard = Number((atleta as any).quota_mensile_euro);
       }
 
-      const penaleStandard = isContinuativo ? 50.0 : 0.0;
-      const valoreSedutePieno = isContinuativo
-        ? Math.round(seduteSvolteCount * tariffaPiena * 100) / 100
-        : 0;
-      const totaleDovuto = isContinuativo ? Math.round((valoreSedutePieno + penaleStandard) * 100) / 100 : 0;
-      const totaleDaAddebitare = Math.max(
-        0,
-        Math.round((totaleDovuto - totaleGiaVersato) * 100) / 100
-      );
+      const totaleDaAddebitare = isContinuativo ? quotaMensileStandard : 0.0;
 
       const emailCoach =
         db.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
@@ -2848,13 +3007,9 @@ firenzepersonaltrainer@gmail.com
             stato_iscrizione: atleta.stato_iscrizione || "attivo",
           },
           tipo_abbonamento: tipoAbb,
-          tariffa_seduta: tariffaPiena,
-          sedute_svolte: seduteSvolteCount,
-          valore_sedute_pieno: valoreSedutePieno,
-          penale_standard: penaleStandard,
-          totale_gia_versato: totaleGiaVersato,
-          totale_dovuto: totaleDovuto,
+          quota_mensile_standard: quotaMensileStandard,
           totale_da_addebitare: totaleDaAddebitare,
+          sedute_svolte: seduteSvolteCount,
           prenotazioni_future: prenotazioniFuture,
           email_coach: emailCoach,
         })
@@ -2892,22 +3047,15 @@ firenzepersonaltrainer@gmail.com
         }
       });
 
-      // 2. Calcolo importi
+      // 2. Determinazione quota mensile di saldo (identica alla tariffa approvata)
       const tipoAbb = atleta.tipo_abbonamento || "standard";
       const isContinuativo = tipoAbb.startsWith("lab_continuativo");
-      const defaultTariffa = tipoAbb === "lab_continuativo_2x" ? 35.0 : 33.25;
-      const tariffa = Number(parsedBody.tariffa_seduta ?? (isContinuativo ? defaultTariffa : 0));
-      const svolte = Number(parsedBody.sedute_svolte ?? 0);
-      const penale = Number(parsedBody.penale_euro ?? (isContinuativo ? 50.0 : 0.0));
-      const versato = Number(
-        parsedBody.totale_versato ?? (isContinuativo ? (tipoAbb === "lab_continuativo_2x" ? 250 : 359) : 0)
+      const defaultQuota = isContinuativo ? (tipoAbb.includes("3x") ? 359.0 : 250.0) : 0.0;
+      const quotaFinale = Number(
+        parsedBody.quota_mensile_saldo ?? parsedBody.penale_euro ?? defaultQuota
       );
 
-      const valoreSedute = Math.round(svolte * tariffa * 100) / 100;
-      const totaleDovuto = Math.round((valoreSedute + penale) * 100) / 100;
-      const totaleDaAddebitare = Math.max(0, Math.round((totaleDovuto - versato) * 100) / 100);
-
-      // 3. Registra transazione incasso / addebito penale
+      // 3. Registra transazione incasso / fatturazione chiusura accordo
       const txCode = `TX-DISM-${Date.now().toString().slice(-6)}`;
       const nuovaTransazione = {
         codice_transazione: txCode,
@@ -2917,15 +3065,15 @@ firenzepersonaltrainer@gmail.com
         codice_fiscale: atleta.codice_fiscale || "",
         indirizzo: atleta.indirizzo || "",
         id_pacchetto: "dismissione-anticipata",
-        nome_pacchetto: `Penale e conguaglio recesso anticipato (${svolte} sedute x ${tariffa}€ + penale ${penale}€)`,
-        importo_euro: totaleDaAddebitare,
+        nome_pacchetto: `Saldo chiusura accordo continuativo Lab e svincolo slot (preavviso 30 giorni ex art. 1373 c.c.)`,
+        importo_euro: quotaFinale,
         metodo: "carta",
         crediti_acquistati: 0,
         debiti_decurtati: 0,
         crediti_effettivi_aggiunti: 0,
         stato: "completato",
         stato_fattura: "da_emettere",
-        note: parsedBody.note || "Dismissione anticipata richiesta dal coach",
+        note: parsedBody.note || "Chiusura accordo con preavviso 30 giorni",
         created_at: new Date().toISOString(),
       };
       db.transazioni_pagamenti = db.transazioni_pagamenti || [];
@@ -2937,9 +3085,9 @@ firenzepersonaltrainer@gmail.com
       atleta.stato_iscrizione = "dismesso";
       atleta.tipo_abbonamento = "nessuno";
       atleta.data_ultimo_accesso = new Date().toISOString();
-      const notaAggiunta = `[DISMESSO ANTICIPATAMENTE il ${new Date().toLocaleDateString(
+      const notaAggiunta = `[DISMESSO il ${new Date().toLocaleDateString(
         "it-IT"
-      )}: addebitato saldo € ${totaleDaAddebitare} (penale € ${penale}, sedute ${svolte}x${tariffa}€). Revocati ${
+      )}: quota chiusura € ${quotaFinale.toFixed(2)} (preavviso 30 giorni). Revocati ${
         prenotazioniCancellate.length
       } slot.]`;
       atleta.note_coach = atleta.note_coach
@@ -2954,7 +3102,7 @@ firenzepersonaltrainer@gmail.com
         tipo: "penalty",
         delta_crediti: -creditiPrecedenti,
         saldo_risultante: 0,
-        motivazione: `Dismissione anticipata: ricalcolo sedute a tariffa piena (${tariffa}€) + penale recesso ${penale}€. Revocate ${prenotazioniCancellate.length} prenotazioni future.`,
+        motivazione: `Dismissione: saldo ultima mensilità contrattuale (€ ${quotaFinale.toFixed(2)}) e revoca di ${prenotazioniCancellate.length} slot futuri.`,
         operatore: "coach",
       });
 
@@ -2962,7 +3110,7 @@ firenzepersonaltrainer@gmail.com
       const emailCoach =
         db.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
       const emailBody = `
-RIEPILOGO DISMISSIONE ANTICIPATA — AREA46 TRAINING LAB
+RIEPILOGO CHIUSURA ACCORDO & PREAVVISO — AREA46 TRAINING LAB
 =============================================================================
 Data Operazione: ${new Date().toLocaleString("it-IT")}
 Codice Transazione: ${txCode}
@@ -2970,23 +3118,21 @@ Stato Fiscale: DA EMETTERE
 
 DATI FISCALI CLIENTE:
 - Nome e Cognome: ${atleta.nome} ${atleta.cognome}
-- Codice Fiscale: ${atleta.codice_fiscale || "NON SPECIFICATO (Richiedere al cliente)"}
+- Codice Fiscale: ${atleta.codice_fiscale || "NON SPECIFICATO"}
 - Indirizzo Fatturazione: ${atleta.indirizzo || "NON SPECIFICATO"}
 - Email: ${atleta.email}
 - Telefono: ${atleta.telefono || "-"}
 
-CONTEGGIO RECESSO ANTICIPATO:
-1. Sedute Svolte: ${svolte} x € ${tariffa.toFixed(2)} = € ${valoreSedute.toFixed(2)} (Ricalcolo tariffa base piena)
-2. Penale di Recesso / Spese Chiusura: € ${penale.toFixed(2)}
-3. Totale Valore Contrattuale: € ${totaleDovuto.toFixed(2)}
-4. Quota Già Versata dal Cliente: -€ ${versato.toFixed(2)}
+CONTEGGIO CHIUSURA ACCORDO:
+- Importo Mensilità di Chiusura / Preavviso (art. 1373 c.c.): € ${quotaFinale.toFixed(2)}
+- Slot revocati e liberati a calendario: ${prenotazioniCancellate.length} prenotazioni rimosse.
 -----------------------------------------------------------------------------
-TOTALE NETTO ADDEBITATO DA FATTURARE: € ${totaleDaAddebitare.toFixed(2)}
+TOTALE NETTO ADDEBITATO DA FATTURARE: € ${quotaFinale.toFixed(2)}
 =============================================================================
 
 INDICAZIONI PER EMISSIONE FATTURA (SDI / GESTIONALE):
-- Oggetto / Descrizione: "Saldo per risoluzione anticipata accordo continuativo Lab, conguaglio sedute fruite e penale di svincolo slot riservato."
-- Importo Imponibile: € ${totaleDaAddebitare.toFixed(2)}
+- Oggetto / Descrizione: "Saldo per risoluzione e chiusura accordo continuativo Lab, conguaglio preavviso 30 giorni e svincolo slot riservati ex art. 1373 c.c."
+- Importo Imponibile: € ${quotaFinale.toFixed(2)}
 - Regime: Forfettario (esente IVA ex L. 190/2014) o Ordinario.
 - Termine di emissione: Entro 12 giorni dalla data odierna.
 
@@ -2999,7 +3145,7 @@ CALENDARIO E PRENOTAZIONI:
       const emailRecord = {
         id: `email-${Date.now()}`,
         destinatario: emailCoach,
-        oggetto: `[AREA46 FISCO] Dismissione Anticipata ${atleta.nome} ${atleta.cognome} — Dati per Emissione Fattura`,
+        oggetto: `[AREA46 FISCO] Chiusura Accordo ${atleta.nome} ${atleta.cognome} — Dati per Emissione Fattura`,
         corpo: emailBody,
         inviato_il: new Date().toISOString(),
         stato: "inviata",
@@ -3012,17 +3158,14 @@ CALENDARIO E PRENOTAZIONI:
       return res.end(
         JSON.stringify({
           ok: true,
-          messaggio: `Dismissione completata con successo! Revocate ${prenotazioniCancellate.length} prenotazioni future. Addebitato saldo di € ${totaleDaAddebitare.toFixed(2)}.`,
+          messaggio: `Dismissione completata con successo! Revocate ${prenotazioniCancellate.length} prenotazioni future. Addebitata quota di chiusura di € ${quotaFinale.toFixed(2)}.`,
           dettagli: {
             atleta_id: atleta.id,
             nome_cliente: `${atleta.nome} ${atleta.cognome}`,
             codice_transazione: txCode,
-            totale_addebitato: totaleDaAddebitare,
-            penale_applicata: penale,
-            sedute_svolte: svolte,
-            tariffa_seduta: tariffa,
+            totale_addebitato: quotaFinale,
+            quota_mensile: quotaFinale,
             prenotazioni_cancellate: prenotazioniCancellate,
-            email_notifica: emailRecord,
           },
         })
       );
@@ -3541,6 +3684,27 @@ CALENDARIO E PRENOTAZIONI:
       const isShared = walletOwner && walletOwner.id !== atleta.id;
 
       if (!isManager) {
+        if (atleta.stato_iscrizione === "sospeso_insoluto") {
+          res.statusCode = 403;
+          return res.end(
+            JSON.stringify({
+              error:
+                "Account temporaneamente sospeso per rinnovo mensile non saldato. Contatta Coach Stefano o aggiorna la carta per sbloccare le prenotazioni.",
+              motivo: "sospeso_insoluto",
+            })
+          );
+        }
+        if (atleta.stato_iscrizione === "dismesso") {
+          res.statusCode = 403;
+          return res.end(
+            JSON.stringify({
+              error:
+                "Posizione contrattuale dismessa. Non è possibile prenotare nuove sessioni.",
+              motivo: "dismesso",
+            })
+          );
+        }
+
         if ((walletOwner.crediti ?? 0) < totalCost) {
           res.statusCode = 403;
           return res.end(
@@ -3766,6 +3930,26 @@ CALENDARIO E PRENOTAZIONI:
       const isShared = walletOwner && walletOwner.id !== atleta.id;
 
       if (!isManager) {
+        if (atleta.stato_iscrizione === "sospeso_insoluto") {
+          res.statusCode = 403;
+          return res.end(
+            JSON.stringify({
+              error:
+                "Account temporaneamente sospeso per rinnovo mensile non saldato. Contatta Coach Stefano o aggiorna la carta per sbloccare le prenotazioni.",
+              motivo: "sospeso_insoluto",
+            })
+          );
+        }
+        if (atleta.stato_iscrizione === "dismesso") {
+          res.statusCode = 403;
+          return res.end(
+            JSON.stringify({
+              error:
+                "Posizione contrattuale dismessa. Non è possibile prenotare nuove sessioni.",
+              motivo: "dismesso",
+            })
+          );
+        }
         if ((walletOwner.crediti ?? 0) <= 0) {
           res.statusCode = 403;
           return res.end(
@@ -4742,7 +4926,91 @@ CALENDARIO E PRENOTAZIONI:
             db.transazioni_pagamenti.unshift(nuovaTransazione);
             saveData(db);
             await syncDataToGoogleDrive(db).catch(() => {});
+            await sendAdminPaymentNotification("stripe", nuovaTransazione, { pacchetto, atleta: walletOwner }).catch(() => {});
           }
+        }
+      }
+
+      // Gestione eventi fallimento pagamento / rinnovo ricorrente Stripe
+      if (
+        event?.type === "invoice.payment_failed" ||
+        event?.type === "payment_intent.payment_failed"
+      ) {
+        const obj = event.data?.object;
+        const customerEmail = (
+          obj?.customer_email ||
+          obj?.receipt_email ||
+          obj?.billing_details?.email ||
+          obj?.metadata?.atleta_email ||
+          ""
+        )
+          .toLowerCase()
+          .trim();
+        const atletaId = obj?.metadata?.atleta_id || obj?.client_reference_id;
+        const customerId = obj?.customer;
+        const amountCents = obj?.amount_due ?? obj?.amount ?? 0;
+        const amountFailed = amountCents > 0 ? amountCents / 100 : 0;
+        const failureReason =
+          obj?.last_payment_error?.message ||
+          obj?.last_finalization_error?.message ||
+          obj?.failure_message ||
+          "Fondi insufficienti o carta rifiutata";
+
+        const atleta = (db.profili_utenti || []).find((p: any) => {
+          if (atletaId && p.id === atletaId) return true;
+          if (customerEmail && p.email?.toLowerCase().trim() === customerEmail) return true;
+          if (customerId && p.stripe_customer_id === customerId) return true;
+          return false;
+        });
+
+        if (atleta) {
+          atleta.stato_iscrizione = "sospeso_insoluto";
+          (atleta as any).ultimo_insoluto = {
+            data: new Date().toISOString(),
+            importo_euro: amountFailed,
+            motivo: failureReason,
+            evento: event.type,
+          };
+          const notaAlert = `[⚠️ ALLERTA RINNOVO FALLITO il ${new Date().toLocaleDateString(
+            "it-IT"
+          )}: € ${amountFailed.toFixed(2)} non riscosso (${failureReason}). Posizione sospesa.]`;
+          atleta.note_coach = atleta.note_coach ? `${atleta.note_coach} | ${notaAlert}` : notaAlert;
+
+          // Invia email immediata al coach
+          const emailCoach =
+            db.configurazione_lab?.notifica_email || "firenzepersonaltrainer@gmail.com";
+          const emailRecord = {
+            id: `email-fail-${Date.now()}`,
+            destinatario: emailCoach,
+            oggetto: `[ALLARME AREA46] Rinnovo Fallito / Insoluto — ${atleta.nome} ${atleta.cognome}`,
+            corpo: `
+ATTENZIONE: TENTATIVO DI ADDEBITO STRIPE FALLITO
+=============================================================================
+Data: ${new Date().toLocaleString("it-IT")}
+Evento Stripe: ${event.type}
+Atleta: ${atleta.nome} ${atleta.cognome}
+Email: ${atleta.email}
+Telefono: ${atleta.telefono || "-"}
+Importo non riscosso: € ${amountFailed.toFixed(2)}
+Motivo rifiuto: ${failureReason}
+=============================================================================
+AZIONI AUTOMATICHE APPLICATE DALL'APP:
+1. Stato atleta impostato su: SOSPESO PER INSOLUTO.
+2. Blocco preventivo delle prenotazioni di ulteriori slot.
+3. Segnalazione visiva rossa accesa nel pannello Manager Atleti.
+=============================================================================
+Contatta l'atleta o invia un link di pagamento per regolarizzare la quota.
+            `.trim(),
+            inviato_il: new Date().toISOString(),
+            stato: "inviata",
+          };
+
+          db.notifiche_email = db.notifiche_email || [];
+          db.notifiche_email.unshift(emailRecord);
+          saveData(db);
+          console.warn(
+            `[STRIPE WEBHOOK] Allerta insoluto registrata per ${atleta.email} (€ ${amountFailed})`
+          );
         }
       }
 
@@ -4878,6 +5146,7 @@ CALENDARIO E PRENOTAZIONI:
       await saveData(db);
       await syncDataToGoogleDrive(db).catch(() => {});
       await triggerSggSyncAsync(nuovaTransazione);
+      await sendAdminPaymentNotification("manuale", nuovaTransazione).catch(() => {});
 
       res.statusCode = 201;
       return res.end(
@@ -4996,6 +5265,7 @@ CALENDARIO E PRENOTAZIONI:
       db.transazioni_pagamenti.unshift(nuovaTransazione);
       saveData(db);
       await syncDataToGoogleDrive(db).catch(() => {});
+      await sendAdminPaymentNotification(isBonifico ? "bonifico" : "manuale", nuovaTransazione, { pacchetto, atleta }).catch(() => {});
 
       res.statusCode = 201;
       return res.end(
@@ -5041,30 +5311,86 @@ CALENDARIO E PRENOTAZIONI:
         (p: any) => p.id === tx.atleta_id || p.email === tx.email_cliente
       );
       if (atleta) {
-        const currentCrediti = Number(atleta.crediti) || 0;
+        const walletOwner = getWalletOwner(atleta, db) || atleta;
+        const currentCrediti = Number(walletOwner.crediti) || 0;
+        const packCrediti = Number(tx.crediti_acquistati) || 0;
+        const anticipiAttuali = Number(walletOwner.anticipi_da_scontare) || 0;
+
+        let debitiDecurtati = 0;
+        let anticipiScontati = 0;
+
         if (currentCrediti < 0) {
-          atleta.crediti = tx.crediti_effettivi_aggiunti;
-        } else {
-          atleta.crediti = currentCrediti + tx.crediti_acquistati;
+          debitiDecurtati = Math.min(Math.abs(currentCrediti), packCrediti);
         }
+
+        const creditiRimanenti = packCrediti - debitiDecurtati;
+        if (anticipiAttuali > 0) {
+          anticipiScontati = Math.min(anticipiAttuali, creditiRimanenti);
+          walletOwner.anticipi_da_scontare = Math.max(0, anticipiAttuali - anticipiScontati);
+        }
+
+        const creditiEffettivi = packCrediti - debitiDecurtati - anticipiScontati;
+        if (currentCrediti < 0) {
+          walletOwner.crediti = currentCrediti + debitiDecurtati + creditiEffettivi;
+        } else {
+          walletOwner.crediti = currentCrediti + creditiEffettivi;
+        }
+
         const pack = (db.tariffario_pacchetti || []).find((p: any) => p.id === tx.id_pacchetto);
         const giorni = pack?.giorni_validita || 60;
         const nuovaScadenza = new Date(Date.now() + giorni * 86400000).toISOString().slice(0, 10);
-        if (!atleta.data_scadenza_crediti || nuovaScadenza > atleta.data_scadenza_crediti) {
-          atleta.data_scadenza_crediti = nuovaScadenza;
+        if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
+          walletOwner.data_scadenza_crediti = nuovaScadenza;
         }
-        atleta.data_ultimo_accesso = new Date().toISOString();
+        walletOwner.data_ultimo_accesso = new Date().toISOString();
+        if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = new Date().toISOString();
+
+        let motivazioneExtra = "";
+        if (debitiDecurtati > 0 && anticipiScontati > 0) {
+          motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
+        } else if (debitiDecurtati > 0) {
+          motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito)`;
+        } else if (anticipiScontati > 0) {
+          motivazioneExtra = ` (scontati ${anticipiScontati} crediti concessi in anticipo)`;
+        }
+
+        tx.debiti_decurtati = debitiDecurtati;
+        tx.anticipi_decurtati = anticipiScontati;
+        tx.crediti_effettivi_aggiunti = creditiEffettivi;
 
         addMovimentoCrediti(db, {
-          atleta_id: atleta.id,
-          email_cliente: atleta.email,
-          nome_cliente: `${atleta.nome} ${atleta.cognome}`,
+          atleta_id: walletOwner.id,
+          email_cliente: walletOwner.email,
+          nome_cliente: `${walletOwner.nome || ""} ${walletOwner.cognome || ""}`.trim() || tx.nome_cliente,
           tipo: "acquisto_carnet",
-          delta_crediti: tx.crediti_effettivi_aggiunti,
-          saldo_risultante: atleta.crediti,
-          motivazione: `Bonifico confermato per ${tx.nome_pacchetto}`,
+          delta_crediti: creditiEffettivi,
+          saldo_risultante: walletOwner.crediti,
+          motivazione: `Bonifico confermato per ${tx.nome_pacchetto}${motivazioneExtra}`,
           operatore: "coach",
         });
+
+        // Invia email di conferma all'atleta
+        await sendEmailNotification({
+          to: walletOwner.email,
+          subject: `✅ Bonifico Ricevuto e Crediti Attivati — Area46 Landmine Lab`,
+          body: `
+Ciao ${walletOwner.nome}!
+
+Il Coach Stefano Tronconi ha verificato e approvato il tuo bonifico bancario per ${tx.nome_pacchetto}.
+I tuoi crediti sono stati caricati ed il tuo wallet è attivo:
+
+- Crediti aggiunti: +${creditiEffettivi} sedute${motivazioneExtra}
+- Saldo totale disponibile: ${walletOwner.crediti} crediti
+- Nuova data scadenza: ${walletOwner.data_scadenza_crediti}
+
+Da adesso puoi accedere all'App e prenotare liberamente i tuoi slot di allenamento:
+https://area46-app.vercel.app
+
+Buon allenamento con Landmine Lab!
+— Coach Stefano Tronconi
+          `.trim(),
+          tipo: "conferma_bonifico_atleta",
+        }).catch(() => {});
       }
 
       tx.stato = "completato";

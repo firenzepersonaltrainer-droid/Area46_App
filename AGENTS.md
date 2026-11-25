@@ -165,8 +165,11 @@ Queste regole sono vincolanti per qualsiasi agente AI che operi nel workspace `A
 20. **FLOW ROPE / DRAGON ROLL, AERIAL JERK E SKIERG LUNGES ALTERNATI (REGOLA 20/11/2026)**:
    - *Dragon Roll (ID 106) in AMRAP:* parametri a `50 rep` al giro. Nel 1° allenamento B di un ciclo, per favorire l'apprendimento di chi non ha ancora fluidità, va prescritto come esercizio singolo dedicato per 5 minuti continui, lasciando nell'AMRAP solo gli altri due esercizi con jumping rope (o jumping jacks) al posto del Dragon Roll. Dal 2° allenamento B torna nell'AMRAP originario con 50 rep.
    - *Aerial Jerk (ID 120):* recupero con `RBS 30" - Rest 60"` (dopo serie esplosiva ricaricare fra i lati). Nota obbligatoria: iniziare dal lato più debole e alternare il lato di partenza ad ogni seduta rispetto alla volta precedente.
-   - *Skierg lunges alternati (ID 227):* denominazione "skierg lunges alternati". Nota obbligatoria in grassetto: `**NB: sia con sbarra a destra che a sinistra svolgi affondi dietro alternati**`.
-
-
-
-
+21. **PERSISTENZA INTEGRATA CREDITI, ANTICIPI E NOTIFICHE PAGAMENTI (REGOLA STEFANO 25/11/2026)**:
+   - *Merge Intelligente Dinamico Cloud/Locale:* Nelle chiamate serverless e nei riavvii di runtime, la sincronizzazione da Google Drive DEVE applicare un merge dinamico per timestamp (`updated_at`): i valori runtime di crediti, anticipi da scalare (`anticipi_da_scontare`) e scadenze memorizzati nel cloud hanno precedenza assoluta e non possono essere ignorati o sovrascritti dai file statici congelati nel bundle.
+   - *Anticipi da Scalare:* Tutti gli endpoint di salvataggio anagrafica e modifica crediti DEVONO supportare e aggiornare `anticipi_da_scontare`. All'approvazione o acquisto di un pacchetto, gli anticipi vengono decurtati automaticamente.
+   - *Flusso Bonifico Trasparente & Notifiche:*
+     1. Ogni operazione finanziaria (richiesta bonifico, incasso Stripe, versamento manuale) invia una notifica email istantanea al Coach Stefano (`firenzepersonaltrainer@gmail.com`).
+     2. L'app evidenzia i bonifici in attesa tramite badge numerico pulsante sulla voce 'Fisco' nella navigazione mobile e banner nel pannello Manager Atleti.
+     3. L'atleta che richiede un bonifico riceve le coordinate chiare, il pulsante diretto per avvisare Stefano su WhatsApp (+39 392 011 1410) con testo precompilato, e l'avvertenza amichevole che prima di 24 ore non potrà prenotare in autonomia e che i crediti saranno attivi solo dopo la verifica e approvazione del Coach.
+     4. L'emissione formale della fattura o ricevuta fiscale (SDI/commercialista) compete manualmente al Coach, sfruttando i dati anagrafici e contabili registrati automaticamente in Prima Nota nel Fisco.

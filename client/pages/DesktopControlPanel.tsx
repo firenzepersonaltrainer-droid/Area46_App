@@ -116,6 +116,9 @@ export default function DesktopControlPanel() {
     (p) => p.ruolo === "atleta" && p.avviso_scadenza && p.stato_iscrizione !== "dismesso"
   ).length;
   const atletiInDebito = profili.filter((p) => p.ruolo === "atleta" && p.crediti < 0).length;
+  const atletiInInsoluto = profili.filter(
+    (p) => p.ruolo === "atleta" && p.stato_iscrizione === "sospeso_insoluto"
+  ).length;
 
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState("");
@@ -323,6 +326,15 @@ export default function DesktopControlPanel() {
               <div className="p-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex justify-between items-center">
                 <span>Atleti con Debiti:</span>
                 <strong className="font-mono text-red-400">{atletiInDebito}</strong>
+              </div>
+            )}
+
+            {atletiInInsoluto > 0 && (
+              <div className="p-2.5 rounded-xl bg-red-600/20 border border-red-500 text-red-200 text-xs flex justify-between items-center animate-pulse">
+                <span className="flex items-center gap-1.5 font-black">
+                  <AlertTriangle className="size-3.5 text-red-400" /> Insoluti Stripe:
+                </span>
+                <strong className="font-mono text-white bg-red-600 px-1.5 py-0.5 rounded text-[11px]">{atletiInInsoluto}</strong>
               </div>
             )}
           </div>
