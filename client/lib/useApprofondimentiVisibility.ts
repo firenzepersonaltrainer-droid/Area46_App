@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { Stato, statoKey } from "./useAllenamentiStati";
+import { type StatoAllenamento as Stato, statoKey } from "./useAllenamentiStati";
 
 export interface GiornoItemLite {
   giorno?: string;

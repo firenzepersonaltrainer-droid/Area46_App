@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ArrowUpRight,
   RefreshCw,
+  Mic,
 } from "lucide-react";
 import {
   Dialog,
@@ -69,6 +70,11 @@ interface VoceDiario {
   serie: number | null;
   feedback: string | null;
   sets_json: SetEntry[] | null;
+  tipo?: string;
+  ai_sintesi?: string;
+  note_cinestesiche?: string;
+  ai_allerta?: string;
+  giorno?: string | number;
 }
 
 interface PerformanceModalProps {

@@ -1086,7 +1086,7 @@ export default function ManagerCalendarPage() {
         onOpenChange={(open) => {
           if (!open) {
             setSelectedBooking(null);
-            setProrogaScadenzaChoice(false);
+            setProrogaScadenze(false);
           }
         }}
       >

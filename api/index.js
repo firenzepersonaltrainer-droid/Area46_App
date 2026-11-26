@@ -35174,8 +35174,8 @@ var demo_data_default = {
       email_cliente: "daniele.casci@gmail.com",
       livello: "PRO",
       giorno: 19,
-      stato: "in_corso",
-      updated_at: "2026-11-18T16:10:42.766Z"
+      stato: "completato",
+      updated_at: "2026-11-25T16:28:55.720Z"
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
@@ -35204,6 +35204,34 @@ var demo_data_default = {
       giorno: 45,
       stato: "completato",
       updated_at: "2026-11-25T05:38:21.004Z"
+    },
+    {
+      email_cliente: "sil_ba@hotmail.it",
+      livello: "Level 1",
+      giorno: 2,
+      stato: "completato",
+      updated_at: "2026-11-25T17:08:38.309Z"
+    },
+    {
+      email_cliente: "daniele.casci@gmail.com",
+      livello: "PRO",
+      giorno: 20,
+      stato: "in_corso",
+      updated_at: "2026-11-25T17:22:01.642Z"
+    },
+    {
+      email_cliente: "matteo.calosci@gmail.com",
+      livello: "Advanced",
+      giorno: 2,
+      stato: "completato",
+      updated_at: "2026-11-26T07:09:04.865Z"
+    },
+    {
+      email_cliente: "annap.maddy@gmail.com",
+      livello: "Level 1",
+      giorno: 6,
+      stato: "completato",
+      updated_at: "2026-11-26T09:13:31.963Z"
     }
   ],
   preferenze_utente: [
@@ -35366,14 +35394,14 @@ var demo_data_default = {
       nickname: "Maddy",
       name: "Anna Paola Maddalena",
       ruolo: "atleta",
-      crediti: 15,
+      crediti: 14,
       data_scadenza_crediti: "2027-01-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
       updated_at: "2026-11-22T17:01:04.692Z",
-      data_ultimo_accesso: "2026-11-18T08:08:33.897Z"
+      data_ultimo_accesso: "2026-11-26T09:20:08.252Z"
     },
     {
       id: "usr-bw-1953979",
@@ -35506,6 +35534,18 @@ var demo_data_default = {
     }
   ],
   movimenti_crediti: [
+    {
+      id: "mov-1795684809120-166",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      data_ora: "2026-11-26T09:20:09.120Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 14,
+      motivazione: "Prenotazione slot del 2026-11-27 ore 18:15",
+      operatore: "atleta"
+    },
     {
       id: "mov-1795594057776-706",
       atleta_id: "usr-bw-2067105",
@@ -39517,6 +39557,62 @@ var demo_data_default = {
       note: "Assegnazione diretta dal Coach",
       created_at: "2026-11-25T07:21:37.172Z",
       google_event_id: "h3ud7r8tsf1q34htkbc78guoh8"
+    },
+    {
+      id: "bk-1795644214428",
+      data: "2026-11-27",
+      orario: "17:30",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-25T22:03:34.428Z",
+      google_event_id: "0hvksqb25j8ed9lqil6mniai4c"
+    },
+    {
+      id: "bk-1795644329492",
+      data: "2026-11-27",
+      orario: "09:15",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-25T22:05:29.492Z",
+      google_event_id: "radj82v2ire61ch1ot6ssfesu4"
+    },
+    {
+      id: "bk-1795676963076",
+      data: "2026-11-27",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-26T07:09:23.076Z",
+      google_event_id: "703i4c5v2d56sm2769hn8g67ls"
+    },
+    {
+      id: "bk-1795684808252",
+      data: "2026-11-27",
+      orario: "18:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-26T09:20:08.252Z",
+      google_event_id: "tqgcav3fdmg3lljeuofr5ak4rk"
     }
   ],
   prenotazioni_cancellate: [
@@ -41351,7 +41447,7 @@ Rispondi ESCLUSIVAMENTE con un JSON valido:
             rpe: s.rpe ? String(s.rpe) : null,
             note: s.note ? sanitizzaTermineBiomeccanica(s.note) : null
           })) : [];
-          const first = setsArr[0] || { carico_kg: null, ripetizioni: null, rpe: null };
+          const first = setsArr[0] || { carico_kg: null, ripetizioni: null, rpe: null, note: null };
           return {
             success: true,
             is_multi_set: isMulti,

@@ -38,7 +38,7 @@ export interface UserProfile {
   mesi_inattivita?: number;
   avviso_inattivita?: boolean;
   tipo_abbonamento?: "nessuno" | "lab_continuativo_2x" | "lab_continuativo_3x" | "standard";
-  stato_iscrizione?: "attivo" | "dismesso" | "sospeso";
+  stato_iscrizione?: "attivo" | "dismesso" | "sospeso" | "sospeso_insoluto";
   data_inizio_abbonamento?: string;
   stripe_subscription_id?: string;
   stripe_customer_id?: string;
@@ -77,6 +77,7 @@ export interface EccezioneCalendario {
   orario?: string | null; // HH:mm
   tipo: "slot_straordinario" | "slot_bloccato" | "chiusura_giornata";
   motivo?: string;
+  proroga_giorni?: number;
   created_at: string;
 }
 
@@ -603,6 +604,7 @@ export function useEccezioniCalendario(data?: string) {
       orari?: string[];
       tipo: "slot_straordinario" | "slot_bloccato" | "chiusura_giornata";
       motivo?: string;
+      proroga_giorni?: number;
     }) => {
       const res = await fetch("/app-api/eccezioni-calendario", {
         method: "POST",

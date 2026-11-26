@@ -724,7 +724,7 @@ Rispondi ESCLUSIVAMENTE con un JSON valido:
               }))
             : [];
 
-          const first = setsArr[0] || { carico_kg: null, ripetizioni: null, rpe: null };
+          const first = setsArr[0] || { carico_kg: null, ripetizioni: null, rpe: null, note: null };
 
           return {
             success: true,

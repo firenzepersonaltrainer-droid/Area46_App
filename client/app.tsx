@@ -133,21 +133,6 @@ function AppHeader({
     refetchInterval: 10000,
   });
 
-  const { data: transazioni = [] } = useQuery<any[]>({
-    queryKey: ["transazioni"],
-    queryFn: async () => {
-      const res = await fetch("/app-api/transazioni");
-      if (!res.ok) return [];
-      return res.json();
-    },
-    enabled: !!isManager,
-    refetchInterval: 15000,
-  });
-
-  const pendingBonificiCount = isManager
-    ? transazioni.filter((t) => t.stato === "in_attesa_bonifico").length
-    : 0;
-
   const unreadCount =
     audioNotes.filter((n) => n.stato === "nuovo").length +
     bugReports.filter((b) => b.stato === "aperto").length;
@@ -272,6 +257,21 @@ function AppContent() {
   const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
   const [showCoachNotes, setShowCoachNotes] = useState(false);
   const location = useLocation();
+
+  const { data: transazioni = [] } = useQuery<any[]>({
+    queryKey: ["transazioni"],
+    queryFn: async () => {
+      const res = await fetch("/app-api/transazioni");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!isManager,
+    refetchInterval: 15000,
+  });
+
+  const pendingBonificiCount = isManager
+    ? transazioni.filter((t) => t.stato === "in_attesa_bonifico").length
+    : 0;
 
   const isDesktopRoute =
     location.pathname === "/desktop" ||
