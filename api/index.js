@@ -35379,7 +35379,7 @@ var demo_data_default = {
       cognome: "Pantanella",
       name: "Alessandro Pantanella",
       ruolo: "atleta",
-      crediti: 11,
+      crediti: 9,
       data_scadenza_crediti: "2026-12-30",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -35390,8 +35390,8 @@ var demo_data_default = {
         "Pierpaola Ciancia"
       ],
       anticipi_da_scontare: 0,
-      updated_at: "2026-11-27T18:59:27.512Z",
-      data_ultimo_accesso: "2026-11-22T16:51:53.306Z",
+      updated_at: "2026-11-27T19:21:07.438Z",
+      data_ultimo_accesso: "2026-11-25T22:05:29.492Z",
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: null
     },
@@ -35403,7 +35403,7 @@ var demo_data_default = {
       cognome: "Ciancia",
       name: "Pierpaola Ciancia",
       ruolo: "atleta",
-      crediti: 11,
+      crediti: 9,
       data_scadenza_crediti: "2026-12-30",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
@@ -35413,8 +35413,8 @@ var demo_data_default = {
       anticipi_da_scontare: 0,
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: "usr-bw-1953985",
-      updated_at: "2026-11-22T18:00:56.468Z",
-      data_ultimo_accesso: "2026-11-22T16:51:53.306Z"
+      updated_at: "2026-11-27T19:21:07.438Z",
+      data_ultimo_accesso: "2026-11-25T22:03:34.428Z"
     },
     {
       id: "usr-bw-2067105",
@@ -35425,14 +35425,14 @@ var demo_data_default = {
       nickname: "Usa",
       name: "Silvia Usai",
       ruolo: "atleta",
-      crediti: 23,
+      crediti: 21,
       data_scadenza_crediti: "2027-02-17",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
       anticipi_da_scontare: 0,
-      updated_at: "2026-11-25T08:14:39.850Z",
-      data_ultimo_accesso: "2026-11-25T08:07:17.842Z"
+      updated_at: "2026-11-27T19:21:07.438Z",
+      data_ultimo_accesso: "2026-11-27T08:25:49.671Z"
     },
     {
       id: "usr-bw-2078480",
@@ -35583,6 +35583,54 @@ var demo_data_default = {
     }
   ],
   movimenti_crediti: [
+    {
+      id: "mov-1795644329492-bk2",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-25T22:05:29.492Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 9,
+      motivazione: "Prenotazione slot del 2026-11-27 ore 09:15",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1795644214428-bk1",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      data_ora: "2026-11-25T22:03:34.428Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 10,
+      motivazione: "Prenotazione slot del 2026-11-27 ore 17:30 per Pierpaola Ciancia [Borsellino Condiviso]",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1795767949671-bk2",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-27T08:25:49.671Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 21,
+      motivazione: "Prenotazione slot del 2026-12-02 ore 18:15",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1795767845715-bk1",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      data_ora: "2026-11-27T08:24:05.715Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 22,
+      motivazione: "Prenotazione slot del 2026-11-30 ore 09:00",
+      operatore: "atleta"
+    },
     {
       id: "mov-1795805956737-bk3",
       atleta_id: "usr-bw-1953992",
@@ -46416,8 +46464,14 @@ Contatta l'atleta o invia un link di pagamento per regolarizzare la quota.
       if (!walletOwner.data_scadenza_crediti || nuovaScadenza > walletOwner.data_scadenza_crediti) {
         walletOwner.data_scadenza_crediti = nuovaScadenza;
       }
-      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-      if (atleta.id !== walletOwner.id) atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+      const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+      walletOwner.data_ultimo_accesso = nowIso;
+      walletOwner.updated_at = nowIso;
+      if (atleta.id !== walletOwner.id) {
+        atleta.data_ultimo_accesso = nowIso;
+        atleta.updated_at = nowIso;
+      }
+      alignSharedPartnersCredits(walletOwner, db);
       let motivazioneExtra = "";
       if (debitiDecurtati > 0 && anticipiScontati > 0) {
         motivazioneExtra = ` (sanati ${debitiDecurtati} crediti di debito e scalati ${anticipiScontati} anticipi)`;
