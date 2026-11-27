@@ -878,7 +878,10 @@ export async function pullGoogleCalendarLabSlots(
     }
     const data = await res.json();
     const items = data.items || [];
-    db = loadData();
+    if (!db) {
+      db = loadData();
+    }
+    await ensureLatestDataFromDrive();
     db.prenotazioni_slot = db.prenotazioni_slot || [];
     db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
     const users: any[] = db.profili_utenti || [];
@@ -914,6 +917,8 @@ export async function pullGoogleCalendarLabSlots(
           if (atleta && existingToCancel.credito_scalato) {
             const walletOwner = getWalletOwner(atleta, db) || atleta;
             walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+            walletOwner.updated_at = new Date().toISOString();
+            atleta.updated_at = new Date().toISOString();
             alignSharedPartnersCredits(walletOwner, db);
 
             addMovimentoCrediti(db, {
@@ -1042,8 +1047,12 @@ export async function pullGoogleCalendarLabSlots(
           const walletOwner = getWalletOwner(matchedUser, db) || matchedUser;
           const isShared = walletOwner && walletOwner.id !== matchedUser.id;
           walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
+          walletOwner.updated_at = new Date().toISOString();
           matchedUser.data_ultimo_accesso = new Date().toISOString();
-          if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
+          if (isShared) {
+            walletOwner.data_ultimo_accesso = new Date().toISOString();
+            matchedUser.updated_at = new Date().toISOString();
+          }
 
           alignSharedPartnersCredits(walletOwner, db);
 
@@ -1179,7 +1188,25 @@ async function syncDataToGoogleDrive(fullDb: any) {
       driveDb.utenti_cancellati = fullDb.utenti_cancellati || [];
     }
     if (fullDb.profili_utenti !== undefined) {
-      driveDb.profili_utenti = fullDb.profili_utenti || [];
+      const incoming = fullDb.profili_utenti || [];
+      const existing = driveDb.profili_utenti || [];
+      const userMap = new Map<string, any>();
+      for (const u of existing) {
+        if (u && u.id) userMap.set(u.id, u);
+      }
+      for (const u of incoming) {
+        if (u && u.id) {
+          const prev = userMap.get(u.id);
+          if (!prev) {
+            userMap.set(u.id, u);
+          } else {
+            const prevTime = prev.updated_at ? new Date(prev.updated_at).getTime() : 0;
+            const newTime = u.updated_at ? new Date(u.updated_at).getTime() : 0;
+            userMap.set(u.id, newTime >= prevTime ? u : prev);
+          }
+        }
+      }
+      driveDb.profili_utenti = Array.from(userMap.values());
     }
     if (fullDb.prenotazioni_cancellate !== undefined) {
       driveDb.prenotazioni_cancellate = Array.from(
@@ -1199,7 +1226,22 @@ async function syncDataToGoogleDrive(fullDb: any) {
       driveDb.prenotazioni_slot = Array.from(bkMap.values());
     }
     if (fullDb.movimenti_crediti !== undefined) {
-      driveDb.movimenti_crediti = fullDb.movimenti_crediti || [];
+      const incoming = fullDb.movimenti_crediti || [];
+      const existing = driveDb.movimenti_crediti || [];
+      const movMap = new Map<string, any>();
+      for (const m of existing) {
+        if (m && m.id) movMap.set(m.id, m);
+      }
+      for (const m of incoming) {
+        if (m && m.id && !movMap.has(m.id)) {
+          movMap.set(m.id, m);
+        }
+      }
+      driveDb.movimenti_crediti = Array.from(movMap.values()).sort((a: any, b: any) => {
+        const da = a.data_movimento || a.data_ora || a.created_at || "";
+        const dbTime = b.data_movimento || b.data_ora || b.created_at || "";
+        return dbTime.localeCompare(da);
+      });
     }
     if (fullDb.diario_utente !== undefined) {
       driveDb.diario_utente = fullDb.diario_utente || [];
@@ -3795,8 +3837,12 @@ CALENDARIO E PRENOTAZIONI:
 
       // Tutto verificato: applica le prenotazioni
       walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - totalCost);
+      walletOwner.updated_at = new Date().toISOString();
       atleta.data_ultimo_accesso = new Date().toISOString();
-      if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
+      atleta.updated_at = new Date().toISOString();
+      if (isShared) {
+        walletOwner.data_ultimo_accesso = new Date().toISOString();
+      }
       alignSharedPartnersCredits(walletOwner, db);
 
       const createPrenotazioni: any[] = [];
@@ -4005,8 +4051,12 @@ CALENDARIO E PRENOTAZIONI:
 
       // 3. Scalamento del credito (1 credito = 1 sessione)
       walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
+      walletOwner.updated_at = new Date().toISOString();
       atleta.data_ultimo_accesso = new Date().toISOString();
-      if (isShared) walletOwner.data_ultimo_accesso = new Date().toISOString();
+      atleta.updated_at = new Date().toISOString();
+      if (isShared) {
+        walletOwner.data_ultimo_accesso = new Date().toISOString();
+      }
       alignSharedPartnersCredits(walletOwner, db);
 
       const nuovaPrenotazione = {
@@ -4324,6 +4374,8 @@ CALENDARIO E PRENOTAZIONI:
 
         if (walletOwner) {
           walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+          walletOwner.updated_at = new Date().toISOString();
+          alignSharedPartnersCredits(walletOwner, db);
           addMovimentoCrediti(db, {
             atleta_id: walletOwner.id,
             email_cliente: walletOwner.email,

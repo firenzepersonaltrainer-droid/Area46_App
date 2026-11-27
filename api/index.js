@@ -34999,8 +34999,8 @@ var demo_data_default = {
       email_cliente: "pantanella@gmail.com",
       livello: "PRO",
       giorno: 20,
-      stato: "completato",
-      updated_at: "2026-11-11T10:33:15.410Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-27T09:31:49.765Z"
     },
     {
       email_cliente: "daniele.casci@gmail.com",
@@ -35090,8 +35090,8 @@ var demo_data_default = {
       email_cliente: "pantanella@gmail.com",
       livello: "PRO",
       giorno: 21,
-      stato: "completato",
-      updated_at: "2026-11-13T11:26:34.907Z"
+      stato: "non_iniziato",
+      updated_at: "2026-11-27T09:31:44.377Z"
     },
     {
       email_cliente: "tebog1887@gmail.com",
@@ -35161,7 +35161,7 @@ var demo_data_default = {
       livello: "PRO",
       giorno: 43,
       stato: "completato",
-      updated_at: "2026-11-18T17:57:11.426Z"
+      updated_at: "2026-11-27T16:26:34.004Z"
     },
     {
       email_cliente: "pierpaolaciancia@gmail.com",
@@ -35181,8 +35181,8 @@ var demo_data_default = {
       email_cliente: "firenzepersonaltrainer@gmail.com",
       livello: "PRO",
       giorno: 44,
-      stato: "in_corso",
-      updated_at: "2026-11-19T05:57:04.664Z"
+      stato: "completato",
+      updated_at: "2026-11-27T16:26:34.004Z"
     },
     {
       email_cliente: "silvia.brenzini@gmail.com",
@@ -35203,7 +35203,7 @@ var demo_data_default = {
       livello: "PRO",
       giorno: 45,
       stato: "completato",
-      updated_at: "2026-11-25T05:38:21.004Z"
+      updated_at: "2026-11-27T16:26:34.004Z"
     },
     {
       email_cliente: "sil_ba@hotmail.it",
@@ -35216,8 +35216,8 @@ var demo_data_default = {
       email_cliente: "daniele.casci@gmail.com",
       livello: "PRO",
       giorno: 20,
-      stato: "in_corso",
-      updated_at: "2026-11-25T17:22:01.642Z"
+      stato: "completato",
+      updated_at: "2026-11-27T16:39:44.540Z"
     },
     {
       email_cliente: "matteo.calosci@gmail.com",
@@ -35232,6 +35232,55 @@ var demo_data_default = {
       giorno: 6,
       stato: "completato",
       updated_at: "2026-11-26T09:13:31.963Z"
+    },
+    {
+      email_cliente: "sil_ba@hotmail.it",
+      livello: "Level 1",
+      giorno: 3,
+      stato: "completato",
+      updated_at: "2026-11-26T21:08:17.513Z"
+    },
+    {
+      email_cliente: "pantanella@gmail.com",
+      livello: "PRO",
+      giorno: 19,
+      stato: "completato",
+      updated_at: "2026-11-27T09:31:34.535Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 46,
+      stato: "completato",
+      updated_at: "2026-11-27T16:26:34.004Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 47,
+      stato: "completato",
+      updated_at: "2026-11-27T16:26:34.004Z"
+    },
+    {
+      email_cliente: "firenzepersonaltrainer@gmail.com",
+      livello: "PRO",
+      giorno: 48,
+      stato: "completato",
+      updated_at: "2026-11-27T16:26:34.004Z"
+    },
+    {
+      email_cliente: "daniele.casci@gmail.com",
+      livello: "PRO",
+      giorno: 21,
+      stato: "completato",
+      updated_at: "2026-11-27T17:43:01.679Z"
+    },
+    {
+      email_cliente: "pierpaolaciancia@gmail.com",
+      livello: "PRO",
+      giorno: 20,
+      stato: "completato",
+      updated_at: "2026-11-27T18:26:09.488Z"
     }
   ],
   preferenze_utente: [
@@ -35331,7 +35380,7 @@ var demo_data_default = {
       name: "Alessandro Pantanella",
       ruolo: "atleta",
       crediti: 11,
-      data_scadenza_crediti: "2026-11-29",
+      data_scadenza_crediti: "2026-12-30",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
@@ -35341,7 +35390,7 @@ var demo_data_default = {
         "Pierpaola Ciancia"
       ],
       anticipi_da_scontare: 0,
-      updated_at: "2026-11-22T18:00:56.468Z",
+      updated_at: "2026-11-27T18:59:27.512Z",
       data_ultimo_accesso: "2026-11-22T16:51:53.306Z",
       tempo_anticipo_prenotazione_ore: 24,
       shared_wallet_with: null
@@ -35355,7 +35404,7 @@ var demo_data_default = {
       name: "Pierpaola Ciancia",
       ruolo: "atleta",
       crediti: 11,
-      data_scadenza_crediti: "2026-11-29",
+      data_scadenza_crediti: "2026-12-30",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
@@ -35430,13 +35479,13 @@ var demo_data_default = {
       nickname: "Il Calo",
       name: "Matteo Calosci",
       ruolo: "atleta",
-      crediti: 14,
+      crediti: 11,
       data_scadenza_crediti: "2026-12-07",
       tempo_cancellazione_ore: 24,
       tipo_abbonamento: "standard",
       stato_iscrizione: "attivo",
-      data_ultimo_accesso: "2026-11-18T10:47:58.472Z",
-      updated_at: "2026-11-22T17:01:04.692Z"
+      data_ultimo_accesso: "2026-11-27T18:59:16.737Z",
+      updated_at: "2026-11-27T19:13:39.121Z"
     },
     {
       id: "usr-bw-1953938",
@@ -35534,6 +35583,42 @@ var demo_data_default = {
     }
   ],
   movimenti_crediti: [
+    {
+      id: "mov-1795805956737-bk3",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      data_ora: "2026-11-27T18:59:16.737Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 11,
+      motivazione: "Prenotazione slot del 2026-11-30 ore 19:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1795676963076-bk2",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      data_ora: "2026-11-26T07:09:23.076Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 12,
+      motivazione: "Prenotazione slot del 2026-11-27 ore 19:00",
+      operatore: "atleta"
+    },
+    {
+      id: "mov-1795504417098-bk1",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      data_ora: "2026-11-24T07:13:37.098Z",
+      tipo: "prenotazione_slot",
+      delta_crediti: -1,
+      saldo_risultante: 13,
+      motivazione: "Prenotazione slot del 2026-11-25 ore 19:00",
+      operatore: "atleta"
+    },
     {
       id: "mov-1795684809120-166",
       atleta_id: "usr-bw-2078480",
@@ -39262,6 +39347,48 @@ var demo_data_default = {
       google_event_id: "l4fgskh5fvg5ak6n3qkdqlrvpo"
     },
     {
+      id: "bk-1794384771514",
+      data: "2026-11-16",
+      orario: "18:30",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "1eu9sn99sfls8bmicgb8j5ec6c",
+      created_at: "2026-11-11T08:12:51.000Z"
+    },
+    {
+      id: "bk-1794597063217",
+      data: "2026-11-16",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-13T19:11:03.217Z",
+      google_event_id: "iol74spak179ec8m96lmbk0rrs"
+    },
+    {
+      id: "bk-1794761975914",
+      data: "2026-11-18",
+      orario: "11:00",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-15T16:59:35.914Z",
+      google_event_id: "a0vs7f99ln1mlf58e3qv459pk4"
+    },
+    {
       id: "bk-1792683000000-casci-6",
       data: "2026-11-18",
       orario: "17:15",
@@ -39274,6 +39401,21 @@ var demo_data_default = {
       note: "Prenotazione Multipla Rapida",
       google_event_id: "trb4a451uvekabf1879nfa7sso",
       created_at: "2026-10-22T16:50:06.000Z"
+    },
+    {
+      id: "bk-1794070884508",
+      data: "2026-11-20",
+      orario: "17:00",
+      atleta_id: "usr-bw-2080725",
+      email_cliente: "tebog1887@gmail.com",
+      nome_cliente: "Matteo Tesse",
+      telefono_cliente: "",
+      stato: "cancellata_in_tempo",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach (Riassegnata dal Coach)",
+      google_event_id: "vr3hu2u7a4m3c4ucrkscjh716g",
+      created_at: "2026-11-07T17:01:24.000Z",
+      cancellato_il: "2026-11-22T17:01:04.692Z"
     },
     {
       id: "bk-1792683000000-casci-7",
@@ -39291,6 +39433,50 @@ var demo_data_default = {
       cancellato_il: "2026-11-22T17:01:04.692Z"
     },
     {
+      id: "bk-1794989313897",
+      data: "2026-11-20",
+      orario: "17:30",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "cancellata_in_tempo",
+      credito_scalato: true,
+      note: " (Riassegnata dal Coach)",
+      created_at: "2026-11-18T08:08:33.897Z",
+      google_event_id: "r7gv99dm0nrqn92fst8ld3a8p0",
+      cancellato_il: "2026-11-22T17:01:04.692Z"
+    },
+    {
+      id: "bk-1794998860514",
+      data: "2026-11-20",
+      orario: "18:30",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "ovvg7t7193l8j46pu71dl4mi4o",
+      created_at: "2026-11-18T10:47:40.000Z"
+    },
+    {
+      id: "bk-1794991151882",
+      data: "2026-11-20",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "cancellata_in_tempo",
+      credito_scalato: true,
+      note: "Annullata su Google Calendar (Riassegnata dal Coach)",
+      created_at: "2026-11-18T08:39:11.882Z",
+      google_event_id: "2alp2m98jagqcb8coccbghgpds",
+      cancellato_il: "2026-11-22T17:01:04.692Z"
+    },
+    {
       id: "bk-1794070842164",
       data: "2026-11-23",
       orario: "18:00",
@@ -39305,6 +39491,50 @@ var demo_data_default = {
       created_at: "2026-11-07T17:00:42.000Z"
     },
     {
+      id: "bk-1795105348389",
+      data: "2026-11-23",
+      orario: "18:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "cancellata_in_tempo",
+      credito_scalato: true,
+      note: "Annullata su Google Calendar",
+      created_at: "2026-11-19T16:22:28.389Z",
+      google_event_id: "ootoq1e89q4p2e5jd2rjanh72c",
+      cancellato_il: "2026-11-24T07:13:44.890Z"
+    },
+    {
+      id: "bk-1795423772286",
+      data: "2026-11-23",
+      orario: "18:45",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      google_event_id: "a2u868i8c989urq0g6crjimc28",
+      created_at: "2026-11-23T08:49:32.000Z"
+    },
+    {
+      id: "bk-1795175877813",
+      data: "2026-11-23",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "cancellata_in_tempo",
+      credito_scalato: true,
+      note: "Annullata su Google Calendar",
+      created_at: "2026-11-20T11:57:57.813Z",
+      google_event_id: "nuc8lra11d357e11riuem4cbf4",
+      cancellato_il: "2026-11-24T07:13:44.889Z"
+    },
+    {
       id: "bk-1792683000000-casci-8",
       data: "2026-11-25",
       orario: "17:15",
@@ -39317,6 +39547,62 @@ var demo_data_default = {
       note: "Prenotazione Multipla Rapida",
       google_event_id: "s9ps4ntqmdcol7higgo7trcss8",
       created_at: "2026-10-22T16:50:09.000Z"
+    },
+    {
+      id: "bk-1795591297172",
+      data: "2026-11-25",
+      orario: "18:00",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "Assegnazione diretta dal Coach",
+      created_at: "2026-11-25T07:21:37.172Z",
+      google_event_id: "h3ud7r8tsf1q34htkbc78guoh8"
+    },
+    {
+      id: "bk-1795105368075",
+      data: "2026-11-25",
+      orario: "18:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-19T16:22:48.075Z",
+      google_event_id: "9rlpehl1577jocjmhbu9fsqbj4"
+    },
+    {
+      id: "bk-1795504417098",
+      data: "2026-11-25",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-24T07:13:37.098Z",
+      google_event_id: "3rlsoq0isks1kb047l36g66nm0"
+    },
+    {
+      id: "bk-1795644329492",
+      data: "2026-11-27",
+      orario: "09:15",
+      atleta_id: "usr-bw-1953985",
+      email_cliente: "pantanella@gmail.com",
+      nome_cliente: "Alessandro Pantanella",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-25T22:05:29.492Z",
+      google_event_id: "radj82v2ire61ch1ot6ssfesu4"
     },
     {
       id: "bk-1794070901767",
@@ -39347,6 +39633,62 @@ var demo_data_default = {
       created_at: "2026-10-22T16:50:10.000Z"
     },
     {
+      id: "bk-1795644214428",
+      data: "2026-11-27",
+      orario: "17:30",
+      atleta_id: "usr-bw-1953987",
+      email_cliente: "pierpaolaciancia@gmail.com",
+      nome_cliente: "Pierpaola Ciancia",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-25T22:03:34.428Z",
+      google_event_id: "0hvksqb25j8ed9lqil6mniai4c"
+    },
+    {
+      id: "bk-1795684808252",
+      data: "2026-11-27",
+      orario: "18:15",
+      atleta_id: "usr-bw-2078480",
+      email_cliente: "annap.maddy@gmail.com",
+      nome_cliente: "Anna Paola Maddalena",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-26T09:20:08.252Z",
+      google_event_id: "tqgcav3fdmg3lljeuofr5ak4rk"
+    },
+    {
+      id: "bk-1795676963076",
+      data: "2026-11-27",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-26T07:09:23.076Z",
+      google_event_id: "703i4c5v2d56sm2769hn8g67ls"
+    },
+    {
+      id: "bk-1795767845715",
+      data: "2026-11-30",
+      orario: "09:00",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-27T08:24:05.715Z",
+      google_event_id: "6v65l53gn9alnc84jke76ki22s"
+    },
+    {
       id: "bk-1794070860997",
       data: "2026-11-30",
       orario: "18:00",
@@ -39361,6 +39703,20 @@ var demo_data_default = {
       created_at: "2026-11-07T17:01:01.000Z"
     },
     {
+      id: "bk-1795805956737",
+      data: "2026-11-30",
+      orario: "19:00",
+      atleta_id: "usr-bw-1953992",
+      email_cliente: "matteo.calosci@gmail.com",
+      nome_cliente: "Matteo Calosci",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-27T18:59:16.737Z",
+      google_event_id: "lq4pch1jl2f49oe1t9clla7ur0"
+    },
+    {
       id: "bk-1792683000000-casci-10",
       data: "2026-12-02",
       orario: "17:15",
@@ -39373,6 +39729,20 @@ var demo_data_default = {
       note: "Prenotazione Multipla Rapida",
       google_event_id: "kn4tk8r03epqf4v79pm45pkn3o",
       created_at: "2026-10-22T16:50:11.000Z"
+    },
+    {
+      id: "bk-1795767949671",
+      data: "2026-12-02",
+      orario: "18:15",
+      atleta_id: "usr-bw-2067105",
+      email_cliente: "sil_ba@hotmail.it",
+      nome_cliente: "Silvia Usai",
+      telefono_cliente: "",
+      stato: "confermata",
+      credito_scalato: true,
+      note: "",
+      created_at: "2026-11-27T08:25:49.671Z",
+      google_event_id: "45ndo4opk8cup2ase2mog1f3uc"
     },
     {
       id: "bk-1792683000000-casci-11",
@@ -39460,159 +39830,18 @@ var demo_data_default = {
       created_at: "2026-10-22T16:50:18.000Z"
     },
     {
-      id: "bk-1794597063217",
-      data: "2026-11-16",
-      orario: "19:00",
-      atleta_id: "usr-bw-1953992",
-      email_cliente: "matteo.calosci@gmail.com",
-      nome_cliente: "Matteo Calosci",
+      id: "bk-1792683000000-casci-17",
+      data: "2026-12-30",
+      orario: "17:15",
+      atleta_id: "usr-bw-1953976",
+      email_cliente: "daniele.casci@gmail.com",
+      nome_cliente: "Daniele Casci",
       telefono_cliente: "",
       stato: "confermata",
       credito_scalato: true,
-      note: "",
-      created_at: "2026-11-13T19:11:03.217Z",
-      google_event_id: "iol74spak179ec8m96lmbk0rrs"
-    },
-    {
-      id: "bk-1794761975914",
-      data: "2026-11-18",
-      orario: "11:00",
-      atleta_id: "usr-bw-1953987",
-      email_cliente: "pierpaolaciancia@gmail.com",
-      nome_cliente: "Pierpaola Ciancia",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-15T16:59:35.914Z",
-      google_event_id: "a0vs7f99ln1mlf58e3qv459pk4"
-    },
-    {
-      id: "bk-1794991151882",
-      data: "2026-11-20",
-      orario: "19:00",
-      atleta_id: "usr-bw-1953992",
-      email_cliente: "matteo.calosci@gmail.com",
-      nome_cliente: "Matteo Calosci",
-      telefono_cliente: "",
-      stato: "cancellata_in_tempo",
-      credito_scalato: true,
-      note: "Annullata su Google Calendar (Riassegnata dal Coach)",
-      created_at: "2026-11-18T08:39:11.882Z",
-      google_event_id: "2alp2m98jagqcb8coccbghgpds",
-      cancellato_il: "2026-11-22T17:01:04.692Z"
-    },
-    {
-      id: "bk-1795105368075",
-      data: "2026-11-25",
-      orario: "18:15",
-      atleta_id: "usr-bw-2078480",
-      email_cliente: "annap.maddy@gmail.com",
-      nome_cliente: "Anna Paola Maddalena",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-19T16:22:48.075Z",
-      google_event_id: "9rlpehl1577jocjmhbu9fsqbj4"
-    },
-    {
-      id: "bk-1795423772286",
-      data: "2026-11-23",
-      orario: "18:45",
-      atleta_id: "usr-bw-2078480",
-      email_cliente: "annap.maddy@gmail.com",
-      nome_cliente: "Anna Paola Maddalena",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "Assegnazione diretta dal Coach",
-      google_event_id: "a2u868i8c989urq0g6crjimc28",
-      created_at: "2026-11-23T08:49:32.000Z"
-    },
-    {
-      id: "bk-1795504417098",
-      data: "2026-11-25",
-      orario: "19:00",
-      atleta_id: "usr-bw-1953992",
-      email_cliente: "matteo.calosci@gmail.com",
-      nome_cliente: "Matteo Calosci",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-24T07:13:37.098Z",
-      google_event_id: "3rlsoq0isks1kb047l36g66nm0"
-    },
-    {
-      id: "bk-1795591297172",
-      data: "2026-11-25",
-      orario: "18:00",
-      atleta_id: "usr-bw-2067105",
-      email_cliente: "sil_ba@hotmail.it",
-      nome_cliente: "Silvia Usai",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "Assegnazione diretta dal Coach",
-      created_at: "2026-11-25T07:21:37.172Z",
-      google_event_id: "h3ud7r8tsf1q34htkbc78guoh8"
-    },
-    {
-      id: "bk-1795644214428",
-      data: "2026-11-27",
-      orario: "17:30",
-      atleta_id: "usr-bw-1953987",
-      email_cliente: "pierpaolaciancia@gmail.com",
-      nome_cliente: "Pierpaola Ciancia",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-25T22:03:34.428Z",
-      google_event_id: "0hvksqb25j8ed9lqil6mniai4c"
-    },
-    {
-      id: "bk-1795644329492",
-      data: "2026-11-27",
-      orario: "09:15",
-      atleta_id: "usr-bw-1953985",
-      email_cliente: "pantanella@gmail.com",
-      nome_cliente: "Alessandro Pantanella",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-25T22:05:29.492Z",
-      google_event_id: "radj82v2ire61ch1ot6ssfesu4"
-    },
-    {
-      id: "bk-1795676963076",
-      data: "2026-11-27",
-      orario: "19:00",
-      atleta_id: "usr-bw-1953992",
-      email_cliente: "matteo.calosci@gmail.com",
-      nome_cliente: "Matteo Calosci",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-26T07:09:23.076Z",
-      google_event_id: "703i4c5v2d56sm2769hn8g67ls"
-    },
-    {
-      id: "bk-1795684808252",
-      data: "2026-11-27",
-      orario: "18:15",
-      atleta_id: "usr-bw-2078480",
-      email_cliente: "annap.maddy@gmail.com",
-      nome_cliente: "Anna Paola Maddalena",
-      telefono_cliente: "",
-      stato: "confermata",
-      credito_scalato: true,
-      note: "",
-      created_at: "2026-11-26T09:20:08.252Z",
-      google_event_id: "tqgcav3fdmg3lljeuofr5ak4rk"
+      note: "Prenotazione Multipla Rapida",
+      google_event_id: "71lr1798957ev6373gepesrcvc",
+      created_at: "2026-10-22T16:50:19.000Z"
     }
   ],
   prenotazioni_cancellate: [
@@ -42547,7 +42776,10 @@ async function pullGoogleCalendarLabSlots(options = {}) {
     }
     const data = await res.json();
     const items = data.items || [];
-    db = loadData();
+    if (!db) {
+      db = loadData();
+    }
+    await ensureLatestDataFromDrive();
     db.prenotazioni_slot = db.prenotazioni_slot || [];
     db.prenotazioni_cancellate = db.prenotazioni_cancellate || [];
     const users = db.profili_utenti || [];
@@ -42576,6 +42808,8 @@ async function pullGoogleCalendarLabSlots(options = {}) {
           if (atleta && existingToCancel.credito_scalato) {
             const walletOwner = getWalletOwner(atleta, db) || atleta;
             walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+            walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+            atleta.updated_at = (/* @__PURE__ */ new Date()).toISOString();
             alignSharedPartnersCredits(walletOwner, db);
             addMovimentoCrediti(db, {
               atleta_id: walletOwner.id,
@@ -42673,8 +42907,12 @@ async function pullGoogleCalendarLabSlots(options = {}) {
           const walletOwner = getWalletOwner(matchedUser, db) || matchedUser;
           const isShared = walletOwner && walletOwner.id !== matchedUser.id;
           walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
+          walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
           matchedUser.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-          if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+          if (isShared) {
+            walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+            matchedUser.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+          }
           alignSharedPartnersCredits(walletOwner, db);
           addMovimentoCrediti(db, {
             atleta_id: walletOwner.id,
@@ -42798,7 +43036,25 @@ async function syncDataToGoogleDrive(fullDb) {
       driveDb.utenti_cancellati = fullDb.utenti_cancellati || [];
     }
     if (fullDb.profili_utenti !== void 0) {
-      driveDb.profili_utenti = fullDb.profili_utenti || [];
+      const incoming = fullDb.profili_utenti || [];
+      const existing = driveDb.profili_utenti || [];
+      const userMap = /* @__PURE__ */ new Map();
+      for (const u of existing) {
+        if (u && u.id) userMap.set(u.id, u);
+      }
+      for (const u of incoming) {
+        if (u && u.id) {
+          const prev = userMap.get(u.id);
+          if (!prev) {
+            userMap.set(u.id, u);
+          } else {
+            const prevTime = prev.updated_at ? new Date(prev.updated_at).getTime() : 0;
+            const newTime = u.updated_at ? new Date(u.updated_at).getTime() : 0;
+            userMap.set(u.id, newTime >= prevTime ? u : prev);
+          }
+        }
+      }
+      driveDb.profili_utenti = Array.from(userMap.values());
     }
     if (fullDb.prenotazioni_cancellate !== void 0) {
       driveDb.prenotazioni_cancellate = Array.from(
@@ -42818,7 +43074,22 @@ async function syncDataToGoogleDrive(fullDb) {
       driveDb.prenotazioni_slot = Array.from(bkMap.values());
     }
     if (fullDb.movimenti_crediti !== void 0) {
-      driveDb.movimenti_crediti = fullDb.movimenti_crediti || [];
+      const incoming = fullDb.movimenti_crediti || [];
+      const existing = driveDb.movimenti_crediti || [];
+      const movMap = /* @__PURE__ */ new Map();
+      for (const m of existing) {
+        if (m && m.id) movMap.set(m.id, m);
+      }
+      for (const m of incoming) {
+        if (m && m.id && !movMap.has(m.id)) {
+          movMap.set(m.id, m);
+        }
+      }
+      driveDb.movimenti_crediti = Array.from(movMap.values()).sort((a, b) => {
+        const da = a.data_movimento || a.data_ora || a.created_at || "";
+        const dbTime = b.data_movimento || b.data_ora || b.created_at || "";
+        return dbTime.localeCompare(da);
+      });
     }
     if (fullDb.diario_utente !== void 0) {
       driveDb.diario_utente = fullDb.diario_utente || [];
@@ -44979,8 +45250,12 @@ CALENDARIO E PRENOTAZIONI:
       }
     }
     walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - totalCost);
+    walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-    if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    atleta.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+    if (isShared) {
+      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    }
     alignSharedPartnersCredits(walletOwner, db);
     const createPrenotazioni = [];
     const now = Date.now();
@@ -45147,8 +45422,12 @@ CALENDARIO E PRENOTAZIONI:
       }
     }
     walletOwner.crediti = Math.max(0, (walletOwner.crediti ?? 0) - 1);
+    walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
     atleta.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
-    if (isShared) walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    atleta.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+    if (isShared) {
+      walletOwner.data_ultimo_accesso = (/* @__PURE__ */ new Date()).toISOString();
+    }
     alignSharedPartnersCredits(walletOwner, db);
     const nuovaPrenotazione = {
       id: `bk-${Date.now()}`,
@@ -45399,6 +45678,8 @@ CALENDARIO E PRENOTAZIONI:
       item.triaged_by = currentUser?.nome || "coach";
       if (walletOwner) {
         walletOwner.crediti = (walletOwner.crediti ?? 0) + 1;
+        walletOwner.updated_at = (/* @__PURE__ */ new Date()).toISOString();
+        alignSharedPartnersCredits(walletOwner, db);
         addMovimentoCrediti(db, {
           atleta_id: walletOwner.id,
           email_cliente: walletOwner.email,
