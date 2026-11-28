@@ -490,57 +490,99 @@ export function TimerProvider({ children }: { children: React.ReactNode }) {
 }
 
 // ==============================================================================
-// 1. WIDGET ICONA / LINGUETTA HEADER (SUPERIORE FISSO)
+// 1. WIDGET FASCIA ATTIVA (A TUTTA ALTEZZA, COPRE IL LOGO A SINISTRA QUANDO IN FUNZIONE)
 // ==============================================================================
-export function HeaderTimerWidget() {
-  const { state, handleOpen, handleMinimize } = useTimer();
+export function HeaderActiveTimerBanner() {
+  const { state, handleMinimize } = useTimer();
   const { mode, running, minimized, countdownLeft, phaseLeft, steps, currentStepIndex } = state;
+
+  if (!minimized) return null;
 
   const activeStep = steps[currentStepIndex] || steps[0] || DEFAULT_STEPS[0];
   const phaseColor = activeStep.tipo === "work" ? "#38bdf8" : "#10b981";
+  const timeDisplay = mode === "countdown" ? fmt(countdownLeft) : fmt(phaseLeft);
+  const isWarning = mode === "countdown" && countdownLeft <= 5;
+  const digitsColor = isWarning ? "#ea580c" : mode === "countdown" ? "#e3ff00" : phaseColor;
 
-  // Se minimizzato: trasforma l'icona in una LINGUETTA / SEGNALIBRO compatta ed elegante nell'Header
-  if (minimized) {
-    const timeDisplay = mode === "countdown" ? fmt(countdownLeft) : fmt(phaseLeft);
-    const isWarning = mode === "countdown" && countdownLeft <= 5;
+  const badgeText = mode === "countdown" ? "COUNTDOWN" : activeStep.tipo === "work" ? "🔥 LAVORO" : "⏸️ RECUPERO";
+  const subText =
+    mode === "countdown"
+      ? running
+        ? "IN CORSO"
+        : "IN PAUSA"
+      : `ROUND ${state.currentRound}/${state.rounds}`;
 
-    return (
-      <button
-        type="button"
-        onClick={handleMinimize}
-        className={`h-8 sm:h-9 px-2.5 rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer select-none transition-all active:scale-95 border ${
-          isWarning
-            ? "bg-[#ea580c] text-white border-orange-400 animate-pulse"
-            : running
-            ? "bg-[#09090b] text-[#e3ff00] border-[#1c00ff] ring-1 ring-[#1c00ff]/50"
-            : "bg-[#15151e] text-zinc-200 border-zinc-700 hover:bg-zinc-800"
-        }`}
-        title="Tocca la linguetta per riaprire il Timer a grandezza completa"
-        aria-label="Riapri timer"
-      >
-        <Timer
-          className={`size-3.5 shrink-0 ${
-            running ? "text-[#e3ff00] animate-pulse" : "text-zinc-400"
-          }`}
-        />
-        <span
-          className="font-mono font-black text-[13px] sm:text-sm tabular-nums tracking-tight"
+  return (
+    <button
+      type="button"
+      onClick={handleMinimize}
+      className="absolute inset-y-0 left-0 right-[125px] sm:right-[155px] z-30 flex items-center justify-between px-3 sm:px-4 bg-[#09090b] text-white border-r-2 border-[#1c00ff] shadow-md cursor-pointer select-none transition-all hover:bg-[#121218] active:scale-[0.99] group overflow-hidden"
+      title="Tocca la fascia per espandere il Timer Lab"
+      aria-label="Espandi timer"
+    >
+      {/* Indicatore visivo fase e icona */}
+      <div className="flex items-center gap-2 min-w-0 pr-1">
+        <div
+          className="size-8 rounded-lg flex items-center justify-center shrink-0 border"
           style={{
-            color: isWarning
-              ? "#ffffff"
+            background: mode === "countdown" ? "#1c00ff" : phaseColor,
+            borderColor: mode === "countdown" ? "#e3ff00" : "#ffffff",
+          }}
+        >
+          <Timer
+            className={`size-4.5 ${
+              mode === "countdown" ? "text-[#e3ff00]" : "text-[#09090b]"
+            } ${running ? "animate-pulse" : ""}`}
+          />
+        </div>
+        <div className="flex flex-col text-left min-w-0">
+          <span
+            className="text-[11px] sm:text-xs font-black uppercase tracking-wider truncate leading-tight"
+            style={{ color: mode === "countdown" ? "#e3ff00" : phaseColor }}
+          >
+            {badgeText}
+          </span>
+          <span className="text-[10px] sm:text-[11px] font-mono text-zinc-400 font-bold truncate leading-tight mt-0.5">
+            {subText}
+          </span>
+        </div>
+      </div>
+
+      {/* Cifre Giganti del Cronometro ad altissima visibilità e icona espansione */}
+      <div className="flex items-center gap-2 shrink-0">
+        <span
+          className="font-mono font-black text-2xl sm:text-3xl tabular-nums tracking-tight leading-none"
+          style={{
+            color: digitsColor,
+            textShadow: isWarning
+              ? "0 0 16px rgba(234,88,12,0.6)"
               : mode === "countdown"
-              ? "#e3ff00"
-              : phaseColor,
+              ? "0 0 16px rgba(227,255,0,0.4)"
+              : `0 0 16px ${phaseColor}60`,
           }}
         >
           {timeDisplay}
         </span>
-      </button>
-    );
-  }
+        <div className="p-1 rounded-md bg-zinc-800/80 text-zinc-400 group-hover:text-white group-hover:bg-[#1c00ff] transition-all">
+          <Maximize2 className="size-3.5" />
+        </div>
+      </div>
+    </button>
+  );
+}
+
+// ==============================================================================
+// 2. ICONA TIMER QUADRATA A RIPOSO NELL'HEADER (QUANDO IL TIMER NON È RIDOTTO A FASCIA)
+// ==============================================================================
+export function HeaderTimerWidget() {
+  const { state, handleOpen } = useTimer();
+  const { running, minimized, open } = state;
+
+  // Se minimizzato, la fascia HeaderActiveTimerBanner copre la sinistra; nascondi il bottone singolo a destra
+  if (minimized) return null;
 
   // Stato normale: Icona quadrata ad angoli stondati pulita e integrata nella barra
-  const isTimerActive = running || state.open;
+  const isTimerActive = running || open;
 
   return (
     <button

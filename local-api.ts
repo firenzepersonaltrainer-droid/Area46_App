@@ -13,10 +13,12 @@ import {
   updateAudioNoteStatus,
   updateAudioNoteAnalysis,
   deleteAudioNotePermanently,
+  emptyAudioNotesTrash,
   insertAppSegnalazione,
   getAppSegnalazioni,
   updateAppSegnalazioneStatus,
   deleteAppSegnalazionePermanently,
+  emptyAppSegnalazioniTrash,
   setMemoryStore,
 } from "./server/audio-feedback-repo";
 
@@ -6667,15 +6669,14 @@ Buon allenamento con Landmine Lab!
         }
       });
 
-      // Inclusione controllata da diario_utente (senza duplicare record esistenti con stesso audio_url o id)
+      // Inclusione controllata da diario_utente (solo ed esclusivamente voci con nota vocale audio reale registrata)
       (db.diario_utente || []).forEach((d: any) => {
         if (!d) return;
-        const isFeedback =
-          d.tipo === "feedback_seduta" ||
-          !!d.audio_url ||
-          !!d.audio_base64 ||
-          (d.nome_esercizio && String(d.nome_esercizio).startsWith("Feedback"));
-        if (!isFeedback) return;
+        // Non considerare record già cestinati o eliminati
+        if (d.stato === "eliminato" || d.stato === "cestino") return;
+        // Vincolo fondamentale: deve contenere un audio vocale reale
+        const hasRealAudio = !!d.audio_url || !!d.audio_base64;
+        if (!hasRealAudio) return;
 
         const entryId = Number(d.id);
         // Cerca se esiste già in map per ID o per audio_url
@@ -6748,7 +6749,12 @@ Buon allenamento con Landmine Lab!
           db.audio_note_feedback = db.audio_note_feedback.filter((n: any) => !numIds.includes(Number(n.id)));
         }
         if (db.diario_utente) {
-          db.diario_utente = db.diario_utente.filter((d: any) => !numIds.includes(Number(d.id)));
+          db.diario_utente = db.diario_utente.map((d: any) => {
+            if (numIds.includes(Number(d.id))) {
+              return { ...d, audio_url: null, audio_base64: null, stato: "eliminato" };
+            }
+            return d;
+          });
         }
         saveData(db);
         return res.end(JSON.stringify({ ok: true, deleted: numIds }));
@@ -6770,8 +6776,9 @@ Buon allenamento con Landmine Lab!
       return res.end(JSON.stringify({ ok: true, updated: numIds, stato: targetStato }));
     }
 
-    // DELETE /app-api/audio-notes/trash (Svuota completamente il cestino delle note)
+    // DELETE /app-api/audio-notes/trash (Svuota completamente il cestino delle note sia da SQLite che da Vault)
     if (pathname === "/app-api/audio-notes/trash" && method === "DELETE") {
+      emptyAudioNotesTrash();
       const trashIds = (db.audio_note_feedback || [])
         .filter((n: any) => n.stato === "cestino")
         .map((n: any) => Number(n.id));
@@ -6783,7 +6790,12 @@ Buon allenamento con Landmine Lab!
         db.audio_note_feedback = db.audio_note_feedback.filter((n: any) => n.stato !== "cestino");
       }
       if (db.diario_utente) {
-        db.diario_utente = db.diario_utente.filter((d: any) => d.stato !== "cestino" && !trashIds.includes(Number(d.id)));
+        db.diario_utente = db.diario_utente.map((d: any) => {
+          if (d.stato === "cestino" || trashIds.includes(Number(d.id))) {
+            return { ...d, audio_url: null, audio_base64: null, stato: "eliminato" };
+          }
+          return d;
+        });
       }
       saveData(db);
       return res.end(JSON.stringify({ ok: true, clearedCount: trashIds.length }));
@@ -6936,11 +6948,20 @@ Buon allenamento con Landmine Lab!
     if (matchAudioDelete && method === "DELETE") {
       const id = parseInt(matchAudioDelete[1], 10);
       deleteAudioNotePermanently(id);
+
+      let targetAudioUrl: string | null = null;
       if (db.audio_note_feedback) {
+        const found = db.audio_note_feedback.find((n: any) => Number(n.id) === id);
+        if (found?.audio_url) targetAudioUrl = found.audio_url;
         db.audio_note_feedback = db.audio_note_feedback.filter((n: any) => Number(n.id) !== id);
       }
       if (db.diario_utente) {
-        db.diario_utente = db.diario_utente.filter((d: any) => Number(d.id) !== id);
+        db.diario_utente = db.diario_utente.map((d: any) => {
+          if (Number(d.id) === id || (targetAudioUrl && d.audio_url === targetAudioUrl)) {
+            return { ...d, audio_url: null, audio_base64: null, stato: "eliminato" };
+          }
+          return d;
+        });
       }
       saveData(db);
       res.statusCode = 200;
@@ -7089,8 +7110,9 @@ Buon allenamento con Landmine Lab!
       return res.end(JSON.stringify({ ok: true, updated: numIds, stato: targetStato }));
     }
 
-    // DELETE /app-api/segnalazioni-bug/trash (Svuota completamente il cestino delle segnalazioni)
+    // DELETE /app-api/segnalazioni-bug/trash (Svuota completamente il cestino delle segnalazioni sia da SQLite che da Vault)
     if (pathname === "/app-api/segnalazioni-bug/trash" && method === "DELETE") {
+      emptyAppSegnalazioniTrash();
       const trashIds = (db.app_segnalazioni_bug || [])
         .filter((b: any) => b.stato === "cestino")
         .map((b: any) => Number(b.id));

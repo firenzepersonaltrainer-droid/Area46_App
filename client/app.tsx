@@ -39,7 +39,7 @@ import ManagerAtletiPage from "./pages/ManagerAtleti";
 import ManagerFiscoPage from "./pages/ManagerFisco";
 import DesktopControlPanel from "./pages/DesktopControlPanel";
 import LoginPage from "./pages/Login";
-import FloatingTimerModal, { TimerProvider, HeaderTimerWidget } from "./components/FloatingTimer";
+import FloatingTimerModal, { TimerProvider, HeaderTimerWidget, HeaderActiveTimerBanner } from "./components/FloatingTimer";
 import { InstallPrompt } from "./components/InstallPrompt";
 
 function RequireManager({ children }: { children: React.ReactNode }) {
@@ -150,7 +150,10 @@ function AppHeader({
   const displayLevel = activeLevelRaw.trim().toUpperCase();
 
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between px-3.5 sm:px-4 py-2 bg-white/95 backdrop-blur-xs border-b border-zinc-200/80 shadow-2xs shrink-0 relative">
+    <header className="sticky top-0 z-40 flex items-center justify-between px-3.5 sm:px-4 py-2 bg-white/95 backdrop-blur-xs border-b border-zinc-200/80 shadow-2xs shrink-0 relative overflow-hidden">
+      {/* Quando il timer è in funzione e minimizzato, la fascia si allarga a sinistra coprendo il logo Area46 per tutta l'altezza */}
+      <HeaderActiveTimerBanner />
+
       <Link to="/" className="flex items-center gap-2 group cursor-pointer" title="Home Area46">
         <img
           src="/logo-area46-transparent.png"
@@ -159,8 +162,8 @@ function AppHeader({
         />
       </Link>
 
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        {/* Timer Widget nell'Header: Icona quadrata a riposo o Linguetta/Segnalibro minimizzata */}
+      <div className="flex items-center gap-1.5 sm:gap-2 z-10">
+        {/* Timer Widget nell'Header: Icona quadrata a riposo (quando non è a tutta fascia) */}
         <HeaderTimerWidget />
 
         {user && (

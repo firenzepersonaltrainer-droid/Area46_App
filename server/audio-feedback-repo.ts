@@ -239,7 +239,7 @@ export function getAudioNotes(filter?: {
 
     const rows = db.prepare(query).all(...params) as any[];
     db.close();
-    if (rows && rows.length > 0) return rows;
+    return rows || [];
   }
 
   return inMemoryAudioNotes.filter((n) => {
@@ -449,7 +449,7 @@ export function getAppSegnalazioni(filter?: {
 
     const rows = db.prepare(query).all(...params) as any[];
     db.close();
-    if (rows && rows.length > 0) return rows;
+    return rows || [];
   }
 
   return inMemoryBugs.filter((b) => {
@@ -499,5 +499,29 @@ export function deleteAppSegnalazionePermanently(id: number): boolean {
   }
   const idx = inMemoryBugs.findIndex((b) => b.id === id);
   if (idx !== -1) inMemoryBugs.splice(idx, 1);
+  return true;
+}
+
+export function emptyAudioNotesTrash(): boolean {
+  const db = getDb();
+  if (db) {
+    try {
+      db.prepare("DELETE FROM audio_note_feedback WHERE stato = 'cestino'").run();
+      db.close();
+    } catch {}
+  }
+  inMemoryAudioNotes = inMemoryAudioNotes.filter((n) => n.stato !== "cestino");
+  return true;
+}
+
+export function emptyAppSegnalazioniTrash(): boolean {
+  const db = getDb();
+  if (db) {
+    try {
+      db.prepare("DELETE FROM app_segnalazioni_bug WHERE stato = 'cestino'").run();
+      db.close();
+    } catch {}
+  }
+  inMemoryBugs = inMemoryBugs.filter((b) => b.stato !== "cestino");
   return true;
 }
