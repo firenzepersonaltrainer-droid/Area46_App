@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { type StatoAllenamento as Stato, statoKey } from "./useAllenamentiStati";
 
 export interface GiornoItemLite {
@@ -10,6 +10,12 @@ export interface GiornoItemLite {
 
 const STORAGE_PREFIX_APERTURE = "area46_approfondimento_aperture_";
 const STORAGE_PREFIX_DISMISSED = "area46_approfondimento_dismissed_";
+
+// Prefissi storage per Novità Approfondimenti Generali
+const STORAGE_PREFIX_NOVITA_ACCESSI = "area46_novita_accessi_";
+const STORAGE_PREFIX_NOVITA_LETTA = "area46_novita_letta_";
+const STORAGE_PREFIX_NOVITA_BOX_DISMISSED = "area46_novita_box_dismissed_";
+const STORAGE_PREFIX_NOVITA_POPUP_DISMISSED = "area46_novita_popup_dismissed_";
 
 export function getApprofondimentoApertureKey(userId: string | null | undefined, approfondimentoId: string): string {
   const uid = userId || "default_user";
@@ -65,6 +71,161 @@ export function incrementApprofondimentoAperture(
   } catch {
     return 0;
   }
+}
+
+// ─── GESTIONE REGOLE INTELLIGENTI NOVITÀ APPROFONDIMENTI ────────────────────────
+export function getNovitaAccessiCount(userId: string | null | undefined, novitaId: string | null | undefined): number {
+  if (typeof window === "undefined" || !novitaId) return 0;
+  try {
+    const uid = userId || "default_user";
+    const raw = localStorage.getItem(`${STORAGE_PREFIX_NOVITA_ACCESSI}${uid}_${novitaId}`);
+    if (!raw) return 0;
+    const num = parseInt(raw, 10);
+    return isNaN(num) ? 0 : num;
+  } catch {
+    return 0;
+  }
+}
+
+export function incrementNovitaAccessoIfNewSession(
+  userId: string | null | undefined,
+  novitaId: string | null | undefined
+): number {
+  if (typeof window === "undefined" || !novitaId) return 0;
+  try {
+    const uid = userId || "default_user";
+    const sessionKey = `area46_session_seen_${uid}_${novitaId}`;
+    const alreadySeenThisSession = sessionStorage.getItem(sessionKey);
+    const current = getNovitaAccessiCount(userId, novitaId);
+    if (!alreadySeenThisSession) {
+      sessionStorage.setItem(sessionKey, "1");
+      const next = current + 1;
+      localStorage.setItem(`${STORAGE_PREFIX_NOVITA_ACCESSI}${uid}_${novitaId}`, String(next));
+      return next;
+    }
+    return current;
+  } catch {
+    return 0;
+  }
+}
+
+export function isNovitaLetta(userId: string | null | undefined, novitaId: string | null | undefined): boolean {
+  if (typeof window === "undefined" || !novitaId) return false;
+  try {
+    const uid = userId || "default_user";
+    return localStorage.getItem(`${STORAGE_PREFIX_NOVITA_LETTA}${uid}_${novitaId}`) === "true";
+  } catch {
+    return false;
+  }
+}
+
+export function setNovitaLetta(userId: string | null | undefined, novitaId: string | null | undefined): void {
+  if (typeof window === "undefined" || !novitaId) return;
+  try {
+    const uid = userId || "default_user";
+    localStorage.setItem(`${STORAGE_PREFIX_NOVITA_LETTA}${uid}_${novitaId}`, "true");
+  } catch {}
+}
+
+export function isNovitaBoxDismissed(userId: string | null | undefined, novitaId: string | null | undefined): boolean {
+  if (typeof window === "undefined" || !novitaId) return false;
+  try {
+    const uid = userId || "default_user";
+    return localStorage.getItem(`${STORAGE_PREFIX_NOVITA_BOX_DISMISSED}${uid}_${novitaId}`) === "true";
+  } catch {
+    return false;
+  }
+}
+
+export function setNovitaBoxDismissed(userId: string | null | undefined, novitaId: string | null | undefined): void {
+  if (typeof window === "undefined" || !novitaId) return;
+  try {
+    const uid = userId || "default_user";
+    localStorage.setItem(`${STORAGE_PREFIX_NOVITA_BOX_DISMISSED}${uid}_${novitaId}`, "true");
+  } catch {}
+}
+
+export function isNovitaPopupDismissed(userId: string | null | undefined, novitaId: string | null | undefined): boolean {
+  if (typeof window === "undefined" || !novitaId) return false;
+  try {
+    const uid = userId || "default_user";
+    return localStorage.getItem(`${STORAGE_PREFIX_NOVITA_POPUP_DISMISSED}${uid}_${novitaId}`) === "true";
+  } catch {
+    return false;
+  }
+}
+
+export function setNovitaPopupDismissed(userId: string | null | undefined, novitaId: string | null | undefined): void {
+  if (typeof window === "undefined" || !novitaId) return;
+  try {
+    const uid = userId || "default_user";
+    localStorage.setItem(`${STORAGE_PREFIX_NOVITA_POPUP_DISMISSED}${uid}_${novitaId}`, "true");
+  } catch {}
+}
+
+export function useNovitaApprofondimenti({
+  userId,
+  novitaId,
+  maxAccessi = 3,
+}: {
+  userId?: string | null;
+  novitaId?: string | null;
+  maxAccessi?: number;
+}) {
+  const [letta, setLettaState] = useState(() => isNovitaLetta(userId, novitaId));
+  const [boxDismissed, setBoxDismissedState] = useState(() => isNovitaBoxDismissed(userId, novitaId));
+  const [popupDismissed, setPopupDismissedState] = useState(() => isNovitaPopupDismissed(userId, novitaId));
+  const [accessi, setAccessi] = useState(() => getNovitaAccessiCount(userId, novitaId));
+
+  useEffect(() => {
+    if (!novitaId) return;
+    const current = incrementNovitaAccessoIfNewSession(userId, novitaId);
+    setAccessi(current);
+    setLettaState(isNovitaLetta(userId, novitaId));
+    setBoxDismissedState(isNovitaBoxDismissed(userId, novitaId));
+    setPopupDismissedState(isNovitaPopupDismissed(userId, novitaId));
+  }, [userId, novitaId]);
+
+  const markLetta = useCallback(() => {
+    if (!novitaId) return;
+    setNovitaLetta(userId, novitaId);
+    setLettaState(true);
+  }, [userId, novitaId]);
+
+  const dismissBox = useCallback(() => {
+    if (!novitaId) return;
+    setNovitaBoxDismissed(userId, novitaId);
+    setBoxDismissedState(true);
+  }, [userId, novitaId]);
+
+  const dismissPopup = useCallback(() => {
+    if (!novitaId) return;
+    setNovitaPopupDismissed(userId, novitaId);
+    setPopupDismissedState(true);
+  }, [userId, novitaId]);
+
+  const shouldShowPopup = Boolean(
+    novitaId &&
+    !letta &&
+    !popupDismissed &&
+    accessi <= maxAccessi
+  );
+
+  const shouldShowBox = Boolean(
+    novitaId &&
+    !letta &&
+    !boxDismissed
+  );
+
+  return {
+    shouldShowPopup,
+    shouldShowBox,
+    accessi,
+    maxAccessi,
+    markLetta,
+    dismissBox,
+    dismissPopup,
+  };
 }
 
 export interface UseApprofondimentoCicloOptions {

@@ -22,7 +22,7 @@ export function Toaster({ className, ...props }: ToasterProps) {
   }, []);
 
   return (
-    <Sonner data-slot="toaster" theme={theme} position="bottom-center" visibleToasts={3} className={cn("toaster group", className)}
+    <Sonner data-slot="toaster" theme={theme} position="bottom-center" visibleToasts={3} closeButton={true} className={cn("toaster group", className)}
       style={{
         "--normal-bg": "var(--color-primary)", "--normal-text": "var(--color-background)", "--normal-border": "transparent",
         "--success-bg": "var(--color-success)", "--success-text": "var(--color-background)", "--success-border": "transparent",

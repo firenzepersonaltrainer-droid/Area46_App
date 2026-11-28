@@ -880,11 +880,11 @@ export default function AreaPersonalePage() {
             className="h-10 w-auto object-contain shrink-0 drop-shadow-2xs"
           />
           <div>
-            <h1 className="text-xl font-black tracking-tight text-zinc-900">
+            <h1 className="text-xl font-black tracking-tight text-zinc-900 leading-tight">
               Area Personale
             </h1>
             <p className="text-xs text-zinc-500 font-medium">
-              {user?.name} • Saldo: <strong className="text-[#1c00ff] font-black">{crediti} crediti</strong>
+              {user?.name || `${user?.nome} ${user?.cognome}`} • {user?.email}
             </p>
           </div>
         </div>
@@ -900,27 +900,112 @@ export default function AreaPersonalePage() {
         </div>
       </div>
 
-      {/* BANNER INFORMATIVO BORSELLINO CONDIVISO */}
-      {user?.is_shared_wallet && (
-        <div className="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-950 flex items-start gap-2.5 shadow-2xs">
-          <Share2 className="size-4 text-indigo-600 shrink-0 mt-0.5" />
-          <div className="text-xs leading-relaxed">
-            <span className="font-bold text-indigo-900">Borsellino Condiviso attivo:</span> Condividi il pacchetto crediti con{" "}
-            <strong>{user.shared_master_nome || "il Titolare"}</strong>. Le tue prenotazioni scalano automaticamente dal monte crediti comune, mentre il tuo calendario, i tuoi allenamenti e il diario restano 100% personali e privati.
+      {/* CARD UNIFICATA BORSELLINO & SALDO CREDITI */}
+      <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-xs space-y-3">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div
+              className={`size-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 shadow-xs ${
+                hasDebt
+                  ? "bg-red-50 text-red-600 border border-red-200"
+                  : isZeroCredits || isExpired
+                  ? "bg-amber-50 text-amber-700 border border-amber-200"
+                  : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+              }`}
+            >
+              <Coins className="size-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-black tracking-tight text-zinc-900 tabular-nums">
+                  {hasDebt
+                    ? `${Math.abs(crediti)} Sedute a Debito`
+                    : `${crediti} ${crediti === 1 ? "Credito" : "Crediti"}`}
+                </span>
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                    hasDebt
+                      ? "bg-red-100 text-red-800"
+                      : isZeroCredits || isExpired
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-emerald-100 text-emerald-800"
+                  }`}
+                >
+                  {hasDebt ? "Debito" : isZeroCredits ? "Zero Crediti" : isExpired ? "Scaduto" : "Attivo"}
+                </span>
+              </div>
+              <p className="text-xs font-medium text-zinc-500">
+                {user?.data_scadenza_crediti
+                  ? `Validità fino al: ${new Date(user.data_scadenza_crediti).toLocaleDateString("it-IT", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}`
+                  : "Pacchetto senza scadenza"}
+              </p>
+            </div>
           </div>
-        </div>
-      )}
 
-      {user?.is_wallet_master && (
-        <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 flex items-start gap-2.5 shadow-2xs">
-          <Crown className="size-4 text-amber-700 shrink-0 mt-0.5" />
-          <div className="text-xs leading-relaxed">
-            <span className="font-bold text-amber-900">Sei Titolare del Borsellino Condiviso:</span> Hai{" "}
-            <strong>{user.shared_partners_count} partner collegat{user.shared_partners_count === 1 ? "o" : "i"}</strong>{" "}
-            {user.shared_partner_names?.length ? `(${user.shared_partner_names.join(", ")})` : ""} che attinge al tuo pacchetto crediti. Le ricevute e i pagamenti sono intestati al tuo profilo.
-          </div>
+          {/* Tasto Ricarica rapido */}
+          <button
+            type="button"
+            onClick={() => setActiveTab("tariffario")}
+            className="px-3.5 py-2 rounded-xl text-xs font-black bg-[#e3ff00] hover:bg-[#d9f200] text-zinc-950 border border-zinc-900 shadow-xs transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+          >
+            <Sparkles className="size-3.5 text-[#1c00ff]" />
+            <span>Ricarica Pacchetto</span>
+          </button>
         </div>
-      )}
+
+        {/* NOTIFICHE DEBITO O INFO ZERO CREDITI */}
+        {hasDebt && (
+          <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs font-medium flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="size-4 text-red-600 shrink-0" />
+              <span>Hai <strong>{Math.abs(crediti)} sedute a debito</strong>. Verranno sanate al prossimo acquisto pacchetto.</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab("tariffario")}
+              className="text-red-900 font-bold underline shrink-0 cursor-pointer flex items-center gap-1"
+            >
+              Sana ora <ArrowRight className="size-3" />
+            </button>
+          </div>
+        )}
+
+        {!hasDebt && isZeroCredits && (
+          <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-200 text-blue-900 text-xs font-medium flex items-center gap-2">
+            <Sparkles className="size-4 text-[#1c00ff] shrink-0" />
+            <span>I tuoi programmi di allenamento sono gratuiti e sempre attivi! I crediti servono solo per prenotare le postazioni in presenza al Lab.</span>
+          </div>
+        )}
+
+        {/* GESTIONE BORSELLINO CONDIVISO SNELLA (SENZA RIDONDANZE) */}
+        {user?.is_shared_wallet && (
+          <div className="p-2.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-950 text-xs flex items-center gap-2">
+            <Share2 className="size-4 text-indigo-600 shrink-0" />
+            <div className="flex-1 leading-snug">
+              Borsellino condiviso con <strong>{user.shared_master_nome || "il Titolare"}</strong> ({crediti} crediti comuni). Le tue prenotazioni attingono al saldo comune; scheda e diario restano 100% personali.
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 shrink-0">
+              Partner
+            </span>
+          </div>
+        )}
+
+        {user?.is_wallet_master && (
+          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 text-xs flex items-center gap-2">
+            <Crown className="size-4 text-amber-700 shrink-0" />
+            <div className="flex-1 leading-snug">
+              Titolare del Borsellino ({user.shared_partners_count} partner collegat{user.shared_partners_count === 1 ? "o" : "i"}{user.shared_partner_names?.length ? `: ${user.shared_partner_names.join(", ")}` : ""}) • Fatturazione e gestione saldo al tuo profilo.
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 shrink-0">
+              Master
+            </span>
+          </div>
+        )}
+      </div>
 
       {/* TABS DI NAVIGAZIONE INTERNA */}
       <div className="grid grid-cols-4 gap-1 p-1 rounded-2xl bg-zinc-200/80 text-xs font-bold text-zinc-600">

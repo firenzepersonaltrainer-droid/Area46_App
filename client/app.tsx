@@ -373,7 +373,8 @@ function AppContent() {
     >
       <Toaster
         position="top-center"
-        offset="45vh"
+        closeButton={true}
+        offset="16px"
         style={{ pointerEvents: "none" } as React.CSSProperties}
         toastOptions={{ style: { pointerEvents: "auto" } }}
       />
@@ -396,9 +397,6 @@ function AppContent() {
 
       {/* Drawer Note Audio & Bug per il Coach su Mobile */}
       <CoachAudioFeedbackDrawer open={showCoachNotes} onClose={() => setShowCoachNotes(false)} />
-
-      {/* Wallet Bar con Saldo Crediti / Debito & Role Switcher */}
-      <WalletBar />
 
       {/* Area Contenuto a scorrimento verticale mobile */}
       <main className="w-full flex-1 overflow-y-auto px-4 pb-28 pt-2 select-text [scrollbar-width:thin]">

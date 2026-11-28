@@ -652,45 +652,30 @@ export default function EsercizioDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-1 text-sm text-secondary flex-wrap">
-        <Link to="/" className="hover:text-primary">Allenamenti</Link>
-        <ChevronRight className="size-3.5" />
-        <Link to={`/allenamento/${encodeURIComponent(livello!)}/${giorno}`} className="hover:text-primary">
-          {livello} — {esercizio.settimana ? `${esercizio.settimana} — ` : ""}{esercizio.giorno ? String(esercizio.giorno) : `Giorno ${giorno}`}
-        </Link>
-        <ChevronRight className="size-3.5" />
-        <span className="text-primary font-medium truncate max-w-[160px]">{esercizio.nome_esercizio}</span>
-      </nav>
-
-      {/* Intestazione */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <div
-            className="mb-1.5 inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-black tracking-wider shadow-xs"
-            style={{ background: "#09090b", color: "#e3ff00", border: "1.5px solid #1c00ff" }}
-          >
-            SEQ. {esercizio.sequenza}
-          </div>
-          <h1 className="text-2xl font-black tracking-tight text-zinc-900 leading-tight">
-            {esercizio.nome_esercizio}
-          </h1>
-        </div>
+      {/* Barra di Navigazione e Azioni Rapide */}
+      <div className="flex items-center justify-between gap-2.5 flex-wrap">
+        <nav className="flex items-center gap-1 text-xs sm:text-sm text-secondary flex-wrap">
+          <Link to="/" className="hover:text-primary">Allenamenti</Link>
+          <ChevronRight className="size-3.5" />
+          <Link to={`/allenamento/${encodeURIComponent(livello!)}/${giorno}`} className="hover:text-primary">
+            {livello} — {esercizio.settimana ? `${esercizio.settimana} — ` : ""}{esercizio.giorno ? String(esercizio.giorno) : `Giorno ${giorno}`}
+          </Link>
+        </nav>
         <div className="flex items-center gap-2 flex-wrap">
-          <Button onClick={() => setStoricoOpen(true)} variant="secondary" className="border-zinc-300 font-bold">
-            <History className="size-4" />
+          <Button onClick={() => setStoricoOpen(true)} variant="secondary" size="sm" className="border-zinc-300 font-bold rounded-xl text-xs sm:text-sm h-9">
+            <History className="size-3.5" />
             Storico
           </Button>
           <button
             onClick={() => setDialogOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer relative"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 h-9 rounded-xl text-xs sm:text-sm font-black shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer relative"
             style={{ background: "#1c00ff", color: "#ffffff", border: "1.5px solid #e3ff00" }}
           >
-            <ClipboardList className="size-4 text-[#e3ff00]" />
+            <ClipboardList className="size-3.5 text-[#e3ff00]" />
             <span>Registra Carico</span>
             {hasDraftContent && (
               <span
-                className="flex size-2.5 rounded-full bg-[#e3ff00] ring-2 ring-[#1c00ff] animate-pulse"
+                className="flex size-2 rounded-full bg-[#e3ff00] ring-2 ring-[#1c00ff] animate-pulse"
                 title="Bozza con serie in sospeso presente"
               />
             )}
@@ -724,16 +709,24 @@ export default function EsercizioDetailPage() {
         )}
       </div>
 
-      {/* Video YouTube (Supporto Orizzontale 16:9 e Verticale 9:16) */}
-      {videoId && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2">
-              <Play className="size-4 text-[#1c00ff]" />
-              <h2 className="text-sm font-black uppercase tracking-wider text-zinc-800">Video dimostrativo</h2>
+      {/* Blocco Video con Testata Integrata (Titolo Esercizio Immediatamente Sopra la Finestra Video Demo) */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div
+              className="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-black tracking-wider shadow-xs shrink-0"
+              style={{ background: "#09090b", color: "#e3ff00", border: "1.5px solid #1c00ff" }}
+            >
+              SEQ. {esercizio.sequenza}
             </div>
-            {/* Selettore Aspect Ratio 16:9 / 9:16 */}
-            <div className="flex items-center gap-1 bg-zinc-100 p-0.5 rounded-lg border border-zinc-200 text-xs">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-zinc-900 leading-tight">
+              {esercizio.nome_esercizio}
+            </h1>
+          </div>
+
+          {/* Selettore Aspect Ratio 16:9 / 9:16 */}
+          {videoId && (
+            <div className="flex items-center gap-1 bg-zinc-100 p-0.5 rounded-lg border border-zinc-200 text-xs shrink-0 ml-auto">
               <button
                 type="button"
                 onClick={() => setAspectRatio("16:9")}
@@ -757,7 +750,10 @@ export default function EsercizioDetailPage() {
                 9:16 Verticale
               </button>
             </div>
-          </div>
+          )}
+        </div>
+
+        {videoId ? (
           <div
             className={`w-full overflow-hidden rounded-2xl border-2 border-zinc-200 bg-black shadow-sm mx-auto transition-all ${
               aspectRatio === "9:16"
@@ -773,8 +769,12 @@ export default function EsercizioDetailPage() {
               className="h-full w-full"
             />
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="rounded-2xl border border-dashed border-zinc-300 p-6 text-center text-xs text-zinc-400 bg-zinc-50">
+            Nessun video disponibile per questo esercizio
+          </div>
+        )}
+      </div>
 
       {/* Note Tecniche */}
       {esercizio.note_tecniche && (

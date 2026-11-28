@@ -18,6 +18,7 @@ import {
   Sparkles,
   ExternalLink,
   ArrowRight,
+  X,
 } from "lucide-react";
 import {
   Select,
@@ -36,7 +37,10 @@ import {
 import { Button } from "../components/Button";
 import { toast } from "../components/Toast";
 import { ApprofondimentoProCiclo5 } from "../components/ApprofondimentoProCiclo5";
-import { useApprofondimentoProCiclo5Visibility } from "../lib/useApprofondimentiVisibility";
+import {
+  useApprofondimentoProCiclo5Visibility,
+  useNovitaApprofondimenti,
+} from "../lib/useApprofondimentiVisibility";
 import { getLivelloColors } from "../lib/livelloStyle";
 import { useLivelloMemoria } from "../lib/useLivelloMemoria";
 import { useCurrentUser, getActiveUserId } from "../lib/useUser";
@@ -825,6 +829,22 @@ export default function AllenamentiPage() {
   const haNuoviApprofondimenti = (approfondimentiItems || []).some((item) => isNuovo(item.data_pubblicazione));
   const ultimoVideoNuovo = (approfondimentiItems || []).find((item) => isNuovo(item.data_pubblicazione));
 
+  const novitaId = ultimoVideoNuovo
+    ? ultimoVideoNuovo.nome_esercizio.trim().toLowerCase().replace(/\s+/g, "_")
+    : null;
+
+  const {
+    shouldShowPopup,
+    shouldShowBox,
+    markLetta,
+    dismissBox,
+    dismissPopup,
+  } = useNovitaApprofondimenti({
+    userId: user?.id,
+    novitaId,
+    maxAccessi: 3,
+  });
+
   const { stati, statoMap, isLoading: loadingStati, setStato, setBatchStato, toggleCiclo } = useAllenamentiStati();
   const isLoading = loadingGiorni || loadingStati;
 
@@ -870,20 +890,25 @@ export default function AllenamentiPage() {
   });
 
   React.useEffect(() => {
-    if (haNuoviApprofondimenti && ultimoVideoNuovo) {
-      const key = "notif_approfondimento_" + ultimoVideoNuovo.nome_esercizio;
-      if (!sessionStorage.getItem(key)) {
-        toast.info(`Nuovo approfondimento: ${ultimoVideoNuovo.nome_esercizio}`, {
-          duration: 7000,
-          action: {
-            label: "Leggi ora",
-            onClick: () => setLivello("Approfondimenti ed extra"),
-          },
-        });
-        sessionStorage.setItem(key, "1");
-      }
+    if (isApprofondimenti) {
+      markLetta();
+      return;
     }
-  }, [haNuoviApprofondimenti, ultimoVideoNuovo, setLivello]);
+    if (shouldShowPopup && ultimoVideoNuovo) {
+      toast.info(`Nuovo approfondimento: ${ultimoVideoNuovo.nome_esercizio}`, {
+        duration: 8000,
+        onDismiss: () => dismissPopup(),
+        onAutoClose: () => dismissPopup(),
+        action: {
+          label: "Leggi ora",
+          onClick: () => {
+            markLetta();
+            setLivello("Approfondimenti ed extra");
+          },
+        },
+      });
+    }
+  }, [shouldShowPopup, isApprofondimenti, ultimoVideoNuovo, setLivello, markLetta, dismissPopup]);
 
   return (
     <>
@@ -922,7 +947,7 @@ export default function AllenamentiPage() {
               <Select value={livello} onValueChange={setLivello}>
                 <SelectTrigger className="w-56 relative cursor-pointer font-bold">
                   <SelectValue placeholder="Tutti i livelli" />
-                  {haNuoviApprofondimenti && !isApprofondimenti && (
+                  {shouldShowBox && !isApprofondimenti && (
                     <span className="absolute -top-1.5 -right-1.5 flex h-3 w-3" title="Nuovo approfondimento in Approfondimenti ed Extra">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border border-white"></span>
@@ -936,7 +961,7 @@ export default function AllenamentiPage() {
                     <SelectItem value="Approfondimenti ed extra">
                       <div className="flex items-center gap-1.5">
                         <span>Approfondimenti ed extra</span>
-                        {haNuoviApprofondimenti && (
+                        {shouldShowBox && (
                           <span className="rounded-full px-1.5 py-0.2 text-[10px] font-black uppercase tracking-wider bg-amber-400 text-zinc-950">
                             Novità
                           </span>
@@ -948,18 +973,35 @@ export default function AllenamentiPage() {
               </Select>
             </div>
 
-            {haNuoviApprofondimenti && !isApprofondimenti && ultimoVideoNuovo && (
+            {shouldShowBox && !isApprofondimenti && ultimoVideoNuovo && (
               <div
-                onClick={() => setLivello("Approfondimenti ed extra")}
-                className="w-full rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-amber-500/15 border border-amber-500/35 bg-amber-500/10 shadow-xs group"
+                onClick={() => {
+                  markLetta();
+                  setLivello("Approfondimenti ed extra");
+                }}
+                className="w-full rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-amber-500/15 border border-amber-500/35 bg-amber-500/10 shadow-xs group relative"
                 title="Tocca per andare ai video e ai contenuti extra del Lab"
               >
+                {/* Tasto di chiusura manuale immediata (X) */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dismissBox();
+                  }}
+                  className="absolute top-2.5 right-2.5 size-7 rounded-full flex items-center justify-center bg-amber-400/30 hover:bg-amber-400/60 text-amber-950 transition-colors cursor-pointer z-10"
+                  title="Chiudi avviso"
+                  aria-label="Chiudi avviso"
+                >
+                  <X className="size-4" />
+                </button>
+
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/25 border border-amber-400/40 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1.5">
                   <span className="text-xs">🔥</span>
                   <span>Nuovo Approfondimento Lab</span>
                 </div>
                 
-                <h4 className="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug px-2 max-w-md mx-auto">
+                <h4 className="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug px-6 max-w-md mx-auto">
                   {ultimoVideoNuovo.nome_esercizio}
                 </h4>
 
@@ -967,6 +1009,7 @@ export default function AllenamentiPage() {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
+                    markLetta();
                     setLivello("Approfondimenti ed extra");
                   }}
                   className="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black bg-amber-400 hover:bg-amber-300 text-zinc-950 transition-all shadow-xs cursor-pointer active:scale-95 group-hover:bg-amber-300"

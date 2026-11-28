@@ -9,6 +9,7 @@ import {
   Brain,
   Layers,
   Sparkles,
+  X,
 } from "lucide-react";
 import {
   Dialog,
@@ -95,10 +96,24 @@ export function ApprofondimentoProCiclo5({
           )}
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-[#1c00ff]/90 uppercase hidden sm:inline">
             {aperto ? "Comprimi" : "Mostra"}
           </span>
+          {inHome && onDismiss && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDismiss();
+              }}
+              className="size-6 rounded-lg flex items-center justify-center bg-[#1c00ff]/10 hover:bg-[#1c00ff]/20 text-[#1c00ff] transition-colors cursor-pointer"
+              title="Non mostrare più in Home"
+              aria-label="Non mostrare più in Home"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
