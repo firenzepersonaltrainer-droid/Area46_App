@@ -71,6 +71,10 @@ export function AppFeedbackBugModal({
       : "Desktop/Mobile";
 
     try {
+      const senderEmail = isAnonimo ? undefined : (currentUser?.email || undefined);
+      const senderName = isAnonimo ? undefined : (currentUser?.name || (currentUser as any)?.nome || undefined);
+      const senderId = isAnonimo ? undefined : (currentUser?.id || undefined);
+
       if (recordedAudio) {
         // Invio tramite pipeline audio multimodale con segnalazione
         const res = await fetch("/app-api/audio-note", {
@@ -87,12 +91,15 @@ export function AppFeedbackBugModal({
             transcript: recordedAudio.transcript || undefined,
             trascrizione_live: recordedAudio.transcript || undefined,
             anonimo: isAnonimo,
+            email_cliente: senderEmail,
+            nome_cliente: senderName,
+            utente_id: senderId,
             deviceInfo,
           }),
         });
 
         if (res.ok) {
-          toast.success("Segnalazione inviata con nota audio al team di sviluppo!");
+          toast.success("Segnalazione inviata con successo al Coach!");
           queryClient.invalidateQueries({ queryKey: ["segnalazioni-bug"] });
           queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
           resetForm();
@@ -110,13 +117,17 @@ export function AppFeedbackBugModal({
             titolo: titolo.trim(),
             descrizione: descrizione.trim(),
             anonimo: isAnonimo,
+            email_cliente: senderEmail,
+            nome_cliente: senderName,
+            utente_id: senderId,
             device_info: deviceInfo,
           }),
         });
 
         if (res.ok) {
-          toast.success("Grazie! Il tuo suggerimento o segnalazione è stato inviato.");
+          toast.success("Grazie! Il tuo suggerimento o segnalazione è stato inviato al Coach.");
           queryClient.invalidateQueries({ queryKey: ["segnalazioni-bug"] });
+          queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
           resetForm();
           onOpenChange(false);
         } else {

@@ -134,9 +134,9 @@ function AppHeader({
   });
 
   const unreadCount =
-    audioNotes.filter((n) => n.stato === "nuovo").length +
+    audioNotes.filter((n) => n.contesto === "biofeedback_workout" && n.stato === "nuovo").length +
     bugReports.filter((b) => b.stato === "aperto").length;
-  const hasRedAlert = audioNotes.some((n) => n.stato === "nuovo" && n.ai_allerta === "rosso");
+  const hasRedAlert = audioNotes.some((n) => n.contesto === "biofeedback_workout" && n.stato === "nuovo" && n.ai_allerta === "rosso");
 
   // Rileva dinamicamente il livello visualizzato o memorizzato
   const matchAllenamento = location.pathname.match(/^\/allenamento\/([^/]+)/);

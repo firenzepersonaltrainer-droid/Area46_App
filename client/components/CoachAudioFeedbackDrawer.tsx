@@ -24,6 +24,7 @@ import {
   Trash2,
   RotateCcw,
   Square,
+  CheckSquare,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -472,7 +473,28 @@ export function CoachAudioFeedbackDrawer({
 }: CoachAudioFeedbackDrawerProps) {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"workout" | "bug">("workout");
-  const [filterStato, setFilterStato] = useState<string>("tutti");
+  const [filterStato, setFilterStato] = useState<string>("nuovo");
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
+  // Reset selezione al cambio tab o filtro
+  const handleTabChange = (tab: "workout" | "bug") => {
+    setActiveTab(tab);
+    setSelectedIds(new Set());
+  };
+
+  const handleFilterChange = (st: string) => {
+    setFilterStato(st);
+    setSelectedIds(new Set());
+  };
+
+  const toggleSelect = (id: number) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   // Query note audio (tutte dal backend)
   const { data: audioNotes = [], refetch: refetchNotes } = useQuery<any[]>({
@@ -511,7 +533,8 @@ export function CoachAudioFeedbackDrawer({
       queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
       queryClient.invalidateQueries({ queryKey: ["diario"] });
       if (vars.stato === "cestino") toast.success("Nota spostata nel cestino");
-      else if (vars.stato === "nuovo") toast.success("Nota ripristinata");
+      else if (vars.stato === "nuovo") toast.success("Nota riportata in 'Da gestire'");
+      else if (vars.stato === "archiviato") toast.success("Nota archiviata in 'Gestiti'");
       else toast.success("Stato nota aggiornato");
     },
   });
@@ -585,7 +608,8 @@ export function CoachAudioFeedbackDrawer({
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["segnalazioni-bug"] });
       if (vars.stato === "cestino") toast.success("Segnalazione spostata nel cestino");
-      else if (vars.stato === "aperto") toast.success("Segnalazione ripristinata");
+      else if (vars.stato === "aperto") toast.success("Segnalazione riportata in 'Da gestire'");
+      else if (vars.stato === "risolto") toast.success("Segnalazione archiviata in 'Gestiti'");
       else toast.success("Stato segnalazione aggiornato");
     },
   });
@@ -605,9 +629,73 @@ export function CoachAudioFeedbackDrawer({
     },
   });
 
+  // Mutazioni Batch (Operazioni Massive)
+  const batchAudioMutation = useMutation({
+    mutationFn: async ({ ids, action, stato }: { ids: number[]; action?: string; stato?: string }) => {
+      const res = await fetch("/app-api/audio-notes/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids, action, stato }),
+      });
+      if (!res.ok) throw new Error("Errore operazione batch");
+      return res.json();
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
+      queryClient.invalidateQueries({ queryKey: ["diario"] });
+      setSelectedIds(new Set());
+      if (vars.action === "delete_permanent") toast.success(`${vars.ids.length} note eliminate definitivamente`);
+      else if (vars.stato === "cestino") toast.success(`${vars.ids.length} note spostate nel cestino`);
+      else if (vars.stato === "archiviato") toast.success(`${vars.ids.length} note archiviate in 'Gestiti'`);
+      else if (vars.stato === "nuovo") toast.success(`${vars.ids.length} note riportate in 'Da gestire'`);
+      else toast.success(`${vars.ids.length} note aggiornate`);
+    },
+  });
+
+  const batchBugMutation = useMutation({
+    mutationFn: async ({ ids, action, stato }: { ids: number[]; action?: string; stato?: string }) => {
+      const res = await fetch("/app-api/segnalazioni-bug/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids, action, stato }),
+      });
+      if (!res.ok) throw new Error("Errore operazione batch");
+      return res.json();
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["segnalazioni-bug"] });
+      setSelectedIds(new Set());
+      if (vars.action === "delete_permanent") toast.success(`${vars.ids.length} segnalazioni eliminate definitivamente`);
+      else if (vars.stato === "cestino") toast.success(`${vars.ids.length} segnalazioni spostate nel cestino`);
+      else if (vars.stato === "risolto") toast.success(`${vars.ids.length} segnalazioni archiviate in 'Gestiti'`);
+      else if (vars.stato === "aperto") toast.success(`${vars.ids.length} segnalazioni riportate in 'Da gestire'`);
+      else toast.success(`${vars.ids.length} segnalazioni aggiornate`);
+    },
+  });
+
+  // Mutazione svuota cestino
+  const emptyTrashMutation = useMutation({
+    mutationFn: async (tab: "workout" | "bug") => {
+      const url = tab === "workout" ? "/app-api/audio-notes/trash" : "/app-api/segnalazioni-bug/trash";
+      const res = await fetch(url, { method: "DELETE" });
+      if (!res.ok) throw new Error("Errore svuotamento cestino");
+      return res.json();
+    },
+    onSuccess: (_, tab) => {
+      if (tab === "workout") {
+        queryClient.invalidateQueries({ queryKey: ["audio-notes"] });
+        queryClient.invalidateQueries({ queryKey: ["diario"] });
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["segnalazioni-bug"] });
+      }
+      setSelectedIds(new Set());
+      toast.success("Cestino svuotato definitivamente!");
+    },
+  });
+
   if (!open) return null;
 
-  // Conteggi note workout
+  // Conteggi note workout (solo contesto biofeedback_workout)
   const rawWorkoutNotes = audioNotes.filter((n) => n.contesto === "biofeedback_workout");
   const workoutActiveCount = rawWorkoutNotes.filter((n) => n.stato !== "cestino").length;
   const workoutNewCount = rawWorkoutNotes.filter((n) => n.stato === "nuovo").length;
@@ -617,7 +705,7 @@ export function CoachAudioFeedbackDrawer({
   // Conteggi segnalazioni bug
   const bugActiveCount = bugReports.filter((b) => b.stato !== "cestino").length;
   const bugNewCount = bugReports.filter((b) => b.stato === "aperto").length;
-  const bugManagedCount = bugReports.filter((b) => ["in_valutazione", "risolto", "scartato"].includes(b.stato)).length;
+  const bugManagedCount = bugReports.filter((b) => ["in_valutazione", "risolto", "scartato", "archiviato"].includes(b.stato)).length;
   const bugTrashCount = bugReports.filter((b) => b.stato === "cestino").length;
 
   // Filtraggio effettivo
@@ -630,10 +718,74 @@ export function CoachAudioFeedbackDrawer({
 
   const filteredBugs = bugReports.filter((b) => {
     if (filterStato === "nuovo") return b.stato === "aperto";
-    if (filterStato === "gestito") return ["in_valutazione", "risolto", "scartato"].includes(b.stato);
+    if (filterStato === "gestito") return ["in_valutazione", "risolto", "scartato", "archiviato"].includes(b.stato);
     if (filterStato === "cestino") return b.stato === "cestino";
     return b.stato !== "cestino"; // tutti (escluso cestino)
   });
+
+  const currentList = activeTab === "workout" ? filteredWorkoutNotes : filteredBugs;
+  const allCurrentSelected = currentList.length > 0 && currentList.every((item) => selectedIds.has(item.id));
+
+  const toggleSelectAll = () => {
+    if (allCurrentSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(currentList.map((item) => item.id)));
+    }
+  };
+
+  const handleBatchArchive = () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (activeTab === "workout") {
+      batchAudioMutation.mutate({ ids, stato: "archiviato" });
+    } else {
+      batchBugMutation.mutate({ ids, stato: "risolto" });
+    }
+  };
+
+  const handleBatchRestore = () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (activeTab === "workout") {
+      batchAudioMutation.mutate({ ids, stato: "nuovo" });
+    } else {
+      batchBugMutation.mutate({ ids, stato: "aperto" });
+    }
+  };
+
+  const handleBatchTrash = () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (activeTab === "workout") {
+      batchAudioMutation.mutate({ ids, stato: "cestino" });
+    } else {
+      batchBugMutation.mutate({ ids, stato: "cestino" });
+    }
+  };
+
+  const handleBatchDeletePermanent = () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (confirm(`Confermi l'eliminazione definitiva di ${ids.length} elementi selezionati? Questa azione non può essere annullata.`)) {
+      if (activeTab === "workout") {
+        batchAudioMutation.mutate({ ids, action: "delete_permanent" });
+      } else {
+        batchBugMutation.mutate({ ids, action: "delete_permanent" });
+      }
+    }
+  };
+
+  const handleEmptyTrash = () => {
+    const trashCount = activeTab === "workout" ? workoutTrashCount : bugTrashCount;
+    if (trashCount === 0) {
+      toast.info("Il cestino è già vuoto.");
+      return;
+    }
+    if (confirm(`Confermi lo svuotamento del cestino? Verranno eliminati definitivamente tutti i ${trashCount} elementi.`)) {
+      emptyTrashMutation.mutate(activeTab);
+    }
+  };
 
   const currentAllCount = activeTab === "workout" ? workoutActiveCount : bugActiveCount;
   const currentNewCount = activeTab === "workout" ? workoutNewCount : bugNewCount;
@@ -710,7 +862,7 @@ export function CoachAudioFeedbackDrawer({
           <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-100 rounded-2xl border border-zinc-200/80">
             <button
               type="button"
-              onClick={() => setActiveTab("workout")}
+              onClick={() => handleTabChange("workout")}
               className={`py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === "workout"
                   ? "bg-[#1c00ff] text-white shadow-md shadow-[#1c00ff]/20"
@@ -723,7 +875,7 @@ export function CoachAudioFeedbackDrawer({
 
             <button
               type="button"
-              onClick={() => setActiveTab("bug")}
+              onClick={() => handleTabChange("bug")}
               className={`py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap ${
                 activeTab === "bug"
                   ? "bg-[#1c00ff] text-white shadow-md shadow-[#1c00ff]/20"
@@ -741,15 +893,15 @@ export function CoachAudioFeedbackDrawer({
               Stato:
             </span>
             {[
-              { key: "tutti", label: "Tutti", count: currentAllCount },
-              { key: "nuovo", label: "Nuovi", count: currentNewCount, dot: true },
+              { key: "nuovo", label: "Da gestire", count: currentNewCount, dot: true },
               { key: "gestito", label: "Gestiti", count: currentManagedCount },
               { key: "cestino", label: "Cestino", count: currentTrashCount, isTrash: true },
+              { key: "tutti", label: "Tutti attivi", count: currentAllCount },
             ].map((tab) => (
               <button
                 key={tab.key}
                 type="button"
-                onClick={() => setFilterStato(tab.key)}
+                onClick={() => handleFilterChange(tab.key)}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
                   filterStato === tab.key
                     ? "bg-zinc-950 text-[#e3ff00] font-black shadow-xs ring-1 ring-zinc-800"
@@ -773,6 +925,103 @@ export function CoachAudioFeedbackDrawer({
               </button>
             ))}
           </div>
+
+          {/* RIGA 3: BARRA AZIONI MASSIVE & SVUOTA CESTINO */}
+          {currentList.length > 0 && (
+            <div className="mt-2.5 pt-2 border-t border-zinc-200/80 flex flex-wrap items-center justify-between gap-2">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-zinc-700 hover:text-zinc-950">
+                <input
+                  type="checkbox"
+                  checked={allCurrentSelected}
+                  onChange={toggleSelectAll}
+                  className="size-4 rounded-md border-zinc-300 text-[#1c00ff] focus:ring-[#1c00ff] cursor-pointer"
+                />
+                <span>Seleziona tutti ({currentList.length})</span>
+              </label>
+
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {selectedIds.size > 0 && (
+                  <>
+                    <span className="text-[10px] font-mono font-bold text-[#1c00ff] px-2 py-0.5 bg-blue-50 rounded-full border border-blue-200">
+                      {selectedIds.size} sel.
+                    </span>
+
+                    {filterStato === "nuovo" && (
+                      <button
+                        type="button"
+                        onClick={handleBatchArchive}
+                        disabled={batchAudioMutation.isPending || batchBugMutation.isPending}
+                        className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                      >
+                        <Archive className="size-3 text-[#e3ff00]" />
+                        <span>Sposta in Gestiti</span>
+                      </button>
+                    )}
+
+                    {filterStato === "gestito" && (
+                      <button
+                        type="button"
+                        onClick={handleBatchRestore}
+                        disabled={batchAudioMutation.isPending || batchBugMutation.isPending}
+                        className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                      >
+                        <RotateCcw className="size-3 text-[#e3ff00]" />
+                        <span>Rimetti in Da gestire</span>
+                      </button>
+                    )}
+
+                    {filterStato !== "cestino" && (
+                      <button
+                        type="button"
+                        onClick={handleBatchTrash}
+                        disabled={batchAudioMutation.isPending || batchBugMutation.isPending}
+                        className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                        title="Sposta selezionati nel Cestino"
+                      >
+                        <Trash2 className="size-3" />
+                        <span>Cestina</span>
+                      </button>
+                    )}
+
+                    {filterStato === "cestino" && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={handleBatchRestore}
+                          disabled={batchAudioMutation.isPending || batchBugMutation.isPending}
+                          className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                        >
+                          <RotateCcw className="size-3" />
+                          <span>Ripristina</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleBatchDeletePermanent}
+                          disabled={batchAudioMutation.isPending || batchBugMutation.isPending}
+                          className="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                        >
+                          <Trash2 className="size-3" />
+                          <span>Elimina</span>
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
+
+                {filterStato === "cestino" && currentTrashCount > 0 && selectedIds.size === 0 && (
+                  <button
+                    type="button"
+                    onClick={handleEmptyTrash}
+                    disabled={emptyTrashMutation.isPending}
+                    className="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                  >
+                    <Trash2 className="size-3" />
+                    <span>Svuota Cestino ({currentTrashCount})</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* CONTENUTO SCROLLABILE */}
@@ -810,7 +1059,13 @@ export function CoachAudioFeedbackDrawer({
                   >
                     {/* Header Card Atleta & Allerta */}
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(note.id)}
+                          onChange={() => toggleSelect(note.id)}
+                          className="size-4.5 rounded-md border-zinc-300 text-[#1c00ff] focus:ring-[#1c00ff] cursor-pointer"
+                        />
                         <div className="size-8 rounded-full bg-[#1c00ff] text-[#e3ff00] flex items-center justify-center font-black text-xs shrink-0">
                           {note.email_cliente ? note.email_cliente.substring(0, 2).toUpperCase() : "AT"}
                         </div>
@@ -834,10 +1089,10 @@ export function CoachAudioFeedbackDrawer({
                               ? "bg-zinc-200 text-zinc-600 border border-zinc-300"
                               : note.stato === "nuovo"
                               ? "bg-blue-100 text-[#1c00ff] border border-blue-200"
-                              : "bg-zinc-100 text-zinc-500"
+                              : "bg-emerald-100 text-emerald-800 border border-emerald-200"
                           }`}
                         >
-                          {note.stato === "cestino" ? "Nel Cestino" : note.stato}
+                          {note.stato === "cestino" ? "Nel Cestino" : note.stato === "nuovo" ? "Da gestire" : "Gestito"}
                         </span>
                       </div>
                     </div>
@@ -879,7 +1134,7 @@ export function CoachAudioFeedbackDrawer({
                     )}
 
                     {/* Azioni del Coach */}
-                    <div className="pt-1 flex items-center justify-between border-t border-zinc-100">
+                    <div className="pt-2 flex items-center justify-between border-t border-zinc-100">
                       {note.stato === "cestino" ? (
                         <div className="w-full flex items-center justify-between gap-2">
                           <button
@@ -890,7 +1145,7 @@ export function CoachAudioFeedbackDrawer({
                                 stato: "nuovo",
                               })
                             }
-                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
                           >
                             <RotateCcw className="size-3.5" />
                             <span>Ripristina Nota</span>
@@ -903,7 +1158,7 @@ export function CoachAudioFeedbackDrawer({
                                 deleteAudioPermanentlyMutation.mutate(note.id);
                               }
                             }}
-                            className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                            className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
                           >
                             <Trash2 className="size-3.5" />
                             <span>Elimina Definitivamente</span>
@@ -919,26 +1174,40 @@ export function CoachAudioFeedbackDrawer({
                                 stato: "cestino",
                               })
                             }
-                            className="p-1.5 text-zinc-400 hover:text-red-500 rounded-xl hover:bg-red-50 transition-colors cursor-pointer"
+                            className="p-2 text-zinc-400 hover:text-red-500 rounded-xl hover:bg-red-50 transition-colors cursor-pointer"
                             title="Sposta nel Cestino"
                           >
                             <Trash2 className="size-4" />
                           </button>
 
                           <div className="flex items-center gap-2">
-                            {note.stato === "nuovo" && (
+                            {note.stato === "nuovo" ? (
                               <button
                                 type="button"
                                 onClick={() =>
                                   updateAudioStatusMutation.mutate({
                                     id: note.id,
-                                    stato: "ascoltato",
+                                    stato: "archiviato",
                                   })
                                 }
-                                className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                                className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
                               >
-                                <Check className="size-3.5 text-emerald-400" />
-                                <span>Segna come Ascoltato</span>
+                                <Archive className="size-3.5 text-[#e3ff00]" />
+                                <span>Sposta in Gestiti</span>
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  updateAudioStatusMutation.mutate({
+                                    id: note.id,
+                                    stato: "nuovo",
+                                  })
+                                }
+                                className="px-3.5 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-zinc-200"
+                              >
+                                <RotateCcw className="size-3.5 text-zinc-500" />
+                                <span>Rimetti in Da gestire</span>
                               </button>
                             )}
                           </div>
@@ -972,15 +1241,24 @@ export function CoachAudioFeedbackDrawer({
                 filteredBugs.map((bug) => (
                   <div
                     key={bug.id}
-                    className={`p-4 rounded-3xl bg-white border-2 shadow-xs space-y-3 ${
-                      bug.stato === "cestino"
+                    className={`p-4 rounded-3xl bg-white border-2 shadow-xs space-y-3 transition-all ${
+                      selectedIds.has(bug.id)
+                        ? "border-[#1c00ff] ring-2 ring-[#1c00ff]/20 bg-blue-50/20"
+                        : bug.stato === "cestino"
                         ? "border-zinc-300 bg-zinc-50 opacity-75"
                         : "border-zinc-200"
                     }`}
                   >
                     {/* Header Bug */}
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(bug.id)}
+                          onChange={() => toggleSelect(bug.id)}
+                          className="size-4 rounded text-[#1c00ff] focus:ring-[#1c00ff] border-zinc-300 cursor-pointer"
+                          title="Seleziona segnalazione"
+                        />
                         <div
                           className={`size-8 rounded-xl flex items-center justify-center font-bold shrink-0 ${
                             bug.tipo === "bug"
@@ -1021,12 +1299,12 @@ export function CoachAudioFeedbackDrawer({
                             ? "bg-zinc-200 text-zinc-600"
                             : bug.stato === "aperto"
                             ? "bg-rose-100 text-rose-700 border border-rose-200"
-                            : bug.stato === "risolto"
+                            : bug.stato === "risolto" || bug.stato === "archiviato"
                             ? "bg-emerald-100 text-emerald-800"
                             : "bg-zinc-100 text-zinc-600"
                         }`}
                       >
-                        {bug.stato === "cestino" ? "Nel Cestino" : bug.stato}
+                        {bug.stato === "cestino" ? "Nel Cestino" : bug.stato === "risolto" || bug.stato === "archiviato" ? "Gestito" : bug.stato}
                       </span>
                     </div>
 
@@ -1113,34 +1391,50 @@ export function CoachAudioFeedbackDrawer({
                           </button>
 
                           <div className="flex items-center gap-2">
-                            {bug.stato !== "in_valutazione" && bug.stato !== "risolto" && (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  updateBugStatusMutation.mutate({
-                                    id: bug.id,
-                                    stato: "in_valutazione",
-                                  })
-                                }
-                                className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
-                              >
-                                <span>Prendi in Carico</span>
-                              </button>
-                            )}
+                            {bug.stato !== "risolto" && bug.stato !== "archiviato" ? (
+                              <>
+                                {bug.stato !== "in_valutazione" && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      updateBugStatusMutation.mutate({
+                                        id: bug.id,
+                                        stato: "in_valutazione",
+                                      })
+                                    }
+                                    className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <span>Prendi in Carico</span>
+                                  </button>
+                                )}
 
-                            {bug.stato !== "risolto" && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateBugStatusMutation.mutate({
+                                      id: bug.id,
+                                      stato: "risolto",
+                                    })
+                                  }
+                                  className="px-3 py-1.5 bg-[#1c00ff] hover:bg-[#1600cc] text-white rounded-xl text-xs font-black transition-all flex items-center gap-1 shadow-xs cursor-pointer"
+                                >
+                                  <Check className="size-3.5 text-[#e3ff00]" />
+                                  <span>Sposta in Gestiti</span>
+                                </button>
+                              </>
+                            ) : (
                               <button
                                 type="button"
                                 onClick={() =>
                                   updateBugStatusMutation.mutate({
                                     id: bug.id,
-                                    stato: "risolto",
+                                    stato: "aperto",
                                   })
                                 }
-                                className="px-3 py-1.5 bg-[#1c00ff] hover:bg-[#1600cc] text-white rounded-xl text-xs font-black transition-all flex items-center gap-1 shadow-xs cursor-pointer"
+                                className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
                               >
-                                <Check className="size-3.5 text-[#e3ff00]" />
-                                <span>Segna come Risolto</span>
+                                <RotateCcw className="size-3.5" />
+                                <span>Rimetti in Da gestire</span>
                               </button>
                             )}
                           </div>

@@ -128,6 +128,8 @@ function loadData() {
         if (Array.isArray(mod3.diario_utente)) loaded.diario_utente = mod3.diario_utente;
         if (Array.isArray(mod3.stato_allenamenti)) loaded.stato_allenamenti = mod3.stato_allenamenti;
         if (Array.isArray(mod3.preferenze_utente)) loaded.preferenze_utente = mod3.preferenze_utente;
+        if (Array.isArray(mod3.audio_note_feedback)) loaded.audio_note_feedback = mod3.audio_note_feedback;
+        if (Array.isArray(mod3.app_segnalazioni_bug)) loaded.app_segnalazioni_bug = mod3.app_segnalazioni_bug;
       }
     } catch (vErr) {
       console.warn("⚠️ [VAULT BOOT LOADER] Avviso lettura vault:", vErr);
@@ -1942,9 +1944,10 @@ export async function handleLocalApi(
         const targetUrl = `/uploads/audio_notes/${fileName}`;
         const matchEntry =
           (db.audio_note_feedback || []).find((n: any) => n.audio_url === targetUrl && n.audio_base64) ||
+          (db.app_segnalazioni_bug || []).find((b: any) => (b.audio_url === targetUrl || (b.audio_id && (db.audio_note_feedback || []).some((an: any) => an.id === b.audio_id && an.audio_url === targetUrl))) && (b.audio_base64 || b.audioData)) ||
           (db.diario_utente || []).find((d: any) => d.audio_url === targetUrl && d.audio_base64);
-        if (matchEntry && matchEntry.audio_base64) {
-          const rawB64 = matchEntry.audio_base64;
+        if (matchEntry && (matchEntry.audio_base64 || matchEntry.audioData)) {
+          const rawB64 = matchEntry.audio_base64 || matchEntry.audioData;
           const cleanB64 = rawB64.includes("base64,") ? rawB64.split("base64,")[1] : rawB64;
           const recoveredBuf = Buffer.from(cleanB64, "base64");
           const targetDir = path.resolve(__dirname, "uploads", "audio_notes");
@@ -2019,6 +2022,9 @@ export async function handleLocalApi(
     }
 
     return new Promise((resolve) => {
+      if (typeof req.on !== "function") {
+        return resolve({ parsedBody: (req as any).body || {}, rawBody: JSON.stringify((req as any).body || {}) });
+      }
       let data = "";
       req.on("data", (chunk) => {
         data += chunk;
@@ -6389,9 +6395,11 @@ Buon allenamento con Landmine Lab!
         const effectiveDuration = Number(durata_sec) || 0;
         const effectiveAnonimo = !!anonimo;
 
-        // Gestione atleta o anonimo
-        const utenteId = effectiveAnonimo ? null : (currentUser?.id || "usr-atleta-01");
-        const emailCliente = effectiveAnonimo ? null : (currentUser?.email || "atleta@area46.it");
+        // Gestione atleta o anonimo con precedenza su campi espliciti da client
+        const utenteId = effectiveAnonimo ? null : (parsedBody.utente_id || currentUser?.id || "usr-atleta-01");
+        const emailCliente = effectiveAnonimo ? null : (parsedBody.email_cliente || currentUser?.email || "atleta@area46.it");
+        const nomeCliente = effectiveAnonimo ? null : (parsedBody.nome_cliente || currentUser?.name || currentUser?.nome || null);
+        const athleteDisplayName = effectiveAnonimo ? "Utente Anonimo" : (nomeCliente || emailCliente || "Atleta Lab");
 
         // Salvataggio fisico del file audio su disco in uploads/audio_notes/
         const rawAudio = audioBase64 || audioData || "";
@@ -6448,7 +6456,7 @@ Buon allenamento con Landmine Lab!
         const audioRecord = insertAudioNote({
           utente_id: utenteId,
           email_cliente: emailCliente,
-          nome_cliente: currentUser?.name || currentUser?.nome || null,
+          nome_cliente: nomeCliente,
           contesto: effectiveContesto,
           audio_url: audioUrl,
           audio_base64: rawAudio || null,
@@ -6457,7 +6465,7 @@ Buon allenamento con Landmine Lab!
           ai_allerta: aiAnalysis.allerta,
           ai_sintesi: aiAnalysis.sintesi,
           ai_proposta_azione: aiAnalysis.proposta_azione,
-          stato: "nuovo",
+          stato: effectiveContesto === "app_feedback" ? "collegato_bug" : "nuovo",
         });
 
         // Persistenza blindata su db JSON principale
@@ -6468,7 +6476,7 @@ Buon allenamento con Landmine Lab!
         // Se è un biofeedback di allenamento, arricchiamo anche il diario utente
         if (effectiveContesto === "biofeedback_workout" && emailCliente) {
           const newDiaryEntry = {
-            id: Date.now(),
+            id: audioRecord.id || Date.now(),
             email_cliente: emailCliente,
             tipo: "feedback_seduta",
             livello: livello ?? null,
@@ -6495,8 +6503,7 @@ Buon allenamento con Landmine Lab!
 
           // Notifica automatica immediata al Coach Stefano
           try {
-            const atletaNome = currentUser?.name || currentUser?.nome || emailCliente || "Atleta";
-            const emailSubject = `🎙️ Nuova Nota Vocale Post-Workout: ${atletaNome} - Giorno ${giorno || "?"} (${livello || "PRO"})`;
+            const emailSubject = `🎙️ Nuova Nota Vocale Post-Workout: ${athleteDisplayName} - Giorno ${giorno || "?"} (${livello || "PRO"})`;
             const emailHtml = `
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 16px; background: #ffffff;">
                 <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1c00ff; padding-bottom: 12px; margin-bottom: 16px;">
@@ -6507,7 +6514,7 @@ Buon allenamento con Landmine Lab!
                   Nuova Nota Vocale Seduta Recapitata
                 </h2>
                 <p style="font-size: 14px; color: #52525b; line-height: 1.5; margin: 0 0 16px 0;">
-                  L'atleta <strong>${atletaNome}</strong> (${emailCliente}) ha inviato una nota vocale al termine dell'allenamento.
+                  L'atleta <strong>${athleteDisplayName}</strong> (${emailCliente}) ha inviato una nota vocale al termine dell'allenamento.
                 </p>
                 <div style="background: #f4f4f5; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
                   <div><strong>Seduta:</strong> Giorno ${giorno || "?"} — Livello ${livello || "PRO"}</div>
@@ -6530,7 +6537,7 @@ Buon allenamento con Landmine Lab!
             sendEmailNotification({
               to: "firenzepersonaltrainer@gmail.com",
               subject: emailSubject,
-              body: `Nuova nota vocale da ${atletaNome}: Giorno ${giorno || "?"} (${livello || "PRO"}), RPE ${rpe || 8}/10. Trascrizione: "${aiAnalysis.trascrizione || noteTesto || ""}"`,
+              body: `Nuova nota vocale da ${athleteDisplayName}: Giorno ${giorno || "?"} (${livello || "PRO"}), RPE ${rpe || 8}/10. Trascrizione: "${aiAnalysis.trascrizione || noteTesto || ""}"`,
               html: emailHtml,
               tipo: "biofeedback_coach",
             }).catch((mailErr: any) => console.warn("[VOICE MAIL NOTIFY ERROR]", mailErr));
@@ -6542,23 +6549,85 @@ Buon allenamento con Landmine Lab!
         // Se è una segnalazione bug/consiglio con audio allegato
         let bugRecord: any = null;
         if (effectiveContesto === "app_feedback" || titolo || descrizione) {
+          const bugTitle = titolo || (clientTranscript ? `Nota Vocale: ${clientTranscript.substring(0, 35)}...` : `Feedback Vocale (${tipoSegnalazione || "Idea"})`);
+          const bugDesc = descrizione || aiAnalysis.trascrizione || clientTranscript || "Nota vocale allegata dall'atleta";
+          
           bugRecord = insertAppSegnalazione({
             utente_id: utenteId,
             email_cliente: emailCliente,
             anonimo: effectiveAnonimo,
             tipo: (tipoSegnalazione as any) || "consiglio",
-            titolo: titolo || "Nota Vocale Feedback",
-            descrizione: descrizione || aiAnalysis.trascrizione || clientTranscript || "Nessuna descrizione testuale",
+            titolo: bugTitle,
+            descrizione: bugDesc,
             audio_id: audioRecord.id,
+            audio_url: audioUrl,
             audio_base64: rawAudio || null,
+            durata_sec: effectiveDuration,
+            trascrizione_testo: aiAnalysis.trascrizione || clientTranscript || null,
             device_info: deviceInfo || "Web / Mobile",
             ai_diagnosi_tecnica: aiAnalysis.diagnosi_tecnica || "In attesa di revisione",
             stato: "aperto",
           });
 
+          // Arricchimento completo per persistenza Vault
+          bugRecord.audio_url = audioUrl;
+          bugRecord.audio_base64 = rawAudio || null;
+          bugRecord.durata_sec = effectiveDuration;
+          bugRecord.trascrizione_testo = aiAnalysis.trascrizione || clientTranscript || null;
+          bugRecord.nome_cliente = athleteDisplayName;
+          bugRecord.email_cliente = emailCliente;
+
           db.app_segnalazioni_bug = db.app_segnalazioni_bug || [];
           db.app_segnalazioni_bug.unshift(bugRecord);
           saveData(db);
+
+          // Notifica immediata al Coach Stefano per Segnalazione Bug o Idea con Nota Vocale
+          try {
+            const tipoLabel = (tipoSegnalazione || "consiglio").toUpperCase();
+            const emailSubject = `💡 Nuova Segnalazione Vocale [${tipoLabel}]: ${bugTitle} (${athleteDisplayName})`;
+            const emailHtml = `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 16px; background: #ffffff;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1c00ff; padding-bottom: 12px; margin-bottom: 16px;">
+                  <span style="font-size: 18px; font-weight: 900; color: #09090b; letter-spacing: -0.5px;">AREA46 TRAINING LAB</span>
+                  <span style="font-size: 11px; font-weight: 800; background: #1c00ff; color: #e3ff00; padding: 4px 8px; border-radius: 8px; text-transform: uppercase;">Voice Bug & Feedback</span>
+                </div>
+                <h2 style="font-size: 16px; font-weight: 800; color: #09090b; margin: 0 0 12px 0;">
+                  Nuova Segnalazione con Nota Vocale Ricevuta
+                </h2>
+                <p style="font-size: 14px; color: #52525b; line-height: 1.5; margin: 0 0 16px 0;">
+                  Mittente: <strong>${athleteDisplayName}</strong> ${emailCliente ? `(${emailCliente})` : ""}
+                </p>
+                <div style="background: #f4f4f5; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+                  <div><strong>Tipo:</strong> <span style="font-weight: 900; color: #1c00ff;">${tipoLabel}</span></div>
+                  <div><strong>Titolo:</strong> ${bugTitle}</div>
+                  <div><strong>Durata Nota Audio:</strong> ${effectiveDuration} secondi</div>
+                  <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #d4d4d8;">
+                    <strong>Contenuto / Trascrizione:</strong><br>
+                    <em style="color: #18181b;">"${bugDesc}"</em>
+                  </div>
+                  ${deviceInfo ? `<div style="margin-top: 6px; font-size: 11px; color: #71717a;"><strong>Dispositivo:</strong> ${deviceInfo}</div>` : ""}
+                </div>
+                ${aiAnalysis.diagnosi_tecnica ? `
+                  <div style="background: #09090b; color: #f4f4f5; border-radius: 8px; padding: 12px; font-size: 12px; font-family: monospace; margin-bottom: 20px;">
+                    <div style="color: #e3ff00; font-weight: bold; margin-bottom: 4px;">DIAGNOSI PRELIMINARE AI:</div>
+                    ${aiAnalysis.diagnosi_tecnica}
+                  </div>
+                ` : ""}
+                <div style="text-align: center;">
+                  <p style="font-size: 12px; color: #71717a; margin: 0;">Puoi ascoltare la nota vocale ed esaminare il feedback direttamente nella <strong>Bacheca Coach (Tab Idee & Bug)</strong>.</p>
+                </div>
+              </div>
+            `;
+            sendEmailNotification({
+              to: "firenzepersonaltrainer@gmail.com",
+              subject: emailSubject,
+              body: `Nuova segnalazione vocale [${tipoLabel}] da ${athleteDisplayName}: "${bugTitle}". Contenuto: "${bugDesc}"`,
+              html: emailHtml,
+              tipo: "app_feedback",
+            }).catch((mailErr: any) => console.warn("[BUG VOICE MAIL ERROR]", mailErr));
+          } catch (mailWrapErr) {
+            console.warn("[BUG VOICE MAIL WRAP ERROR]", mailWrapErr);
+          }
         }
 
         res.statusCode = 201;
@@ -6590,11 +6659,15 @@ Buon allenamento con Landmine Lab!
       rawSql.forEach((n: any) => {
         if (n && n.id) {
           const existing = map.get(Number(n.id)) || {};
-          map.set(Number(n.id), { ...existing, ...n });
+          // Non sovrascrivere lo stato cestinato o archiviato se già salvato nel Vault
+          const preferredStato = existing.stato === "cestino" || existing.stato === "archiviato"
+            ? existing.stato
+            : (n.stato || existing.stato || "nuovo");
+          map.set(Number(n.id), { ...existing, ...n, stato: preferredStato });
         }
       });
 
-      // Inclusione bidirezionale resiliente da diario_utente (qualsiasi biofeedback registrato)
+      // Inclusione controllata da diario_utente (senza duplicare record esistenti con stesso audio_url o id)
       (db.diario_utente || []).forEach((d: any) => {
         if (!d) return;
         const isFeedback =
@@ -6603,34 +6676,46 @@ Buon allenamento con Landmine Lab!
           !!d.audio_base64 ||
           (d.nome_esercizio && String(d.nome_esercizio).startsWith("Feedback"));
         if (!isFeedback) return;
+
         const entryId = Number(d.id);
-        const existing = map.get(entryId) || {};
+        // Cerca se esiste già in map per ID o per audio_url
+        let targetId = entryId;
+        for (const [existingId, item] of map.entries()) {
+          if (existingId === entryId || (d.audio_url && item.audio_url === d.audio_url)) {
+            targetId = existingId;
+            break;
+          }
+        }
+
+        const existing = map.get(targetId) || {};
         const profile = (db.profili_utenti || []).find(
           (u: any) => (u.email || "").toLowerCase() === (d.email_cliente || "").toLowerCase()
         );
-        map.set(entryId, {
-          id: entryId,
-          utente_id: d.utente_id || profile?.id || null,
-          email_cliente: d.email_cliente || null,
-          nome_cliente: profile?.nome || profile?.name || d.email_cliente || "Atleta",
-          contesto: "biofeedback_workout",
-          audio_url: d.audio_url || "",
-          audio_base64: d.audio_base64 || null,
-          durata_sec: d.durata_sec || 0,
-          trascrizione_testo: d.note_cinestesiche || d.feedback || null,
-          ai_allerta: d.ai_allerta || "verde",
-          ai_sintesi: d.ai_sintesi || d.feedback || null,
-          ai_proposta_azione: d.ai_proposta_azione || null,
-          consiglio_coach: d.consiglio_coach || null,
-          consiglio_approvato_coach: !!d.consiglio_approvato_coach,
-          giorno_destinazione: d.giorno_destinazione || null,
-          tipo_intervento: d.tipo_intervento || null,
-          coach_audio_url: d.coach_audio_url || null,
-          coach_audio_base64: d.coach_audio_base64 || null,
-          coach_audio_durata_sec: d.coach_audio_durata_sec || 0,
-          stato: d.stato || (d.consiglio_approvato_coach ? "applicato" : "nuovo"),
-          data_creazione: d.data_ora || d.created_at || new Date().toISOString(),
+        const resolvedStato = existing.stato || d.stato || (d.consiglio_approvato_coach ? "applicato" : "nuovo");
+
+        map.set(targetId, {
+          id: targetId,
+          utente_id: d.utente_id || profile?.id || existing.utente_id || null,
+          email_cliente: d.email_cliente || existing.email_cliente || null,
+          nome_cliente: profile?.nome || profile?.name || existing.nome_cliente || d.email_cliente || "Atleta",
+          contesto: existing.contesto || "biofeedback_workout",
+          audio_url: d.audio_url || existing.audio_url || "",
+          audio_base64: d.audio_base64 || existing.audio_base64 || null,
+          durata_sec: d.durata_sec || existing.durata_sec || 0,
+          trascrizione_testo: d.note_cinestesiche || d.feedback || existing.trascrizione_testo || null,
+          ai_allerta: d.ai_allerta || existing.ai_allerta || "verde",
+          ai_sintesi: d.ai_sintesi || d.feedback || existing.ai_sintesi || null,
+          ai_proposta_azione: d.ai_proposta_azione || existing.ai_proposta_azione || null,
+          consiglio_coach: d.consiglio_coach || existing.consiglio_coach || null,
+          consiglio_approvato_coach: d.consiglio_approvato_coach !== undefined ? !!d.consiglio_approvato_coach : !!existing.consiglio_approvato_coach,
+          giorno_destinazione: d.giorno_destinazione || existing.giorno_destinazione || null,
+          tipo_intervento: d.tipo_intervento || existing.tipo_intervento || null,
+          coach_audio_url: d.coach_audio_url || existing.coach_audio_url || null,
+          coach_audio_base64: d.coach_audio_base64 || existing.coach_audio_base64 || null,
+          coach_audio_durata_sec: d.coach_audio_durata_sec || existing.coach_audio_durata_sec || 0,
+          data_creazione: existing.data_creazione || d.data_ora || d.created_at || new Date().toISOString(),
           ...existing,
+          stato: resolvedStato, // Precedenza assoluta allo stato risolto (incluso cestino)
         });
       });
 
@@ -6644,6 +6729,64 @@ Buon allenamento con Landmine Lab!
       if (email) notes = notes.filter((n: any) => (n.email_cliente || "").toLowerCase() === email.toLowerCase());
       notes.sort((a: any, b: any) => (b.id || 0) - (a.id || 0));
       return res.end(JSON.stringify(notes));
+    }
+
+    // POST /app-api/audio-notes/batch (Operazioni massive su note audio)
+    if (pathname === "/app-api/audio-notes/batch" && method === "POST") {
+      const { ids, action, stato } = parsedBody;
+      if (!Array.isArray(ids) || ids.length === 0) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Array ids richiesto" }));
+      }
+      const numIds = ids.map((i: any) => Number(i));
+
+      if (action === "delete_permanent") {
+        for (const nid of numIds) {
+          deleteAudioNotePermanently(nid);
+        }
+        if (db.audio_note_feedback) {
+          db.audio_note_feedback = db.audio_note_feedback.filter((n: any) => !numIds.includes(Number(n.id)));
+        }
+        if (db.diario_utente) {
+          db.diario_utente = db.diario_utente.filter((d: any) => !numIds.includes(Number(d.id)));
+        }
+        saveData(db);
+        return res.end(JSON.stringify({ ok: true, deleted: numIds }));
+      }
+
+      const targetStato = stato || "archiviato";
+      for (const nid of numIds) {
+        updateAudioNoteStatus(nid, targetStato);
+        if (db.audio_note_feedback) {
+          const fn = db.audio_note_feedback.find((n: any) => Number(n.id) === nid);
+          if (fn) fn.stato = targetStato;
+        }
+        if (db.diario_utente) {
+          const fd = db.diario_utente.find((d: any) => Number(d.id) === nid);
+          if (fd) fd.stato = targetStato;
+        }
+      }
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, updated: numIds, stato: targetStato }));
+    }
+
+    // DELETE /app-api/audio-notes/trash (Svuota completamente il cestino delle note)
+    if (pathname === "/app-api/audio-notes/trash" && method === "DELETE") {
+      const trashIds = (db.audio_note_feedback || [])
+        .filter((n: any) => n.stato === "cestino")
+        .map((n: any) => Number(n.id));
+
+      for (const tid of trashIds) {
+        deleteAudioNotePermanently(tid);
+      }
+      if (db.audio_note_feedback) {
+        db.audio_note_feedback = db.audio_note_feedback.filter((n: any) => n.stato !== "cestino");
+      }
+      if (db.diario_utente) {
+        db.diario_utente = db.diario_utente.filter((d: any) => d.stato !== "cestino" && !trashIds.includes(Number(d.id)));
+      }
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, clearedCount: trashIds.length }));
     }
 
     // PATCH /app-api/audio-notes/:id (Aggiorna stato nota audio e/o approva e invia consiglio Coach)
@@ -6672,6 +6815,7 @@ Buon allenamento con Landmine Lab!
         coach_audio_url: coachAudioUrl,
         coach_audio_durata_sec: coachAudioDurataSec,
       });
+
       // Aggiornamento anche in db.diario_utente se id fa riferimento a una voce di diario o nota audio
       if (db.diario_utente) {
         let diaryEntry = db.diario_utente.find((d: any) => Number(d.id) === id);
@@ -6699,20 +6843,19 @@ Buon allenamento con Landmine Lab!
           if (coachAudioUrl !== undefined) found.coach_audio_url = coachAudioUrl;
           if (coachAudioDurataSec !== undefined) found.coach_audio_durata_sec = coachAudioDurataSec;
 
-          // Se il Coach ha approvato / inviato il consiglio o la nota vocale, propaga al diario atleta per renderlo visibile alla seduta successiva
+          // Se il Coach ha approvato / inviato il consiglio o la nota vocale, propaga al diario atleta per renderlo visibile alla seduta successiva e notifica via email
           if (consiglioApprovato === true || consiglioCoach || coachAudioBase64 || coachAudioUrl) {
             const athleteEmail = found.email_cliente;
             if (athleteEmail && db.diario_utente) {
               const destGiorno = giornoDestinazione || found.giorno_destinazione || null;
-              // Trova eventuale record recente collegato a questa nota o atleta
               let diaryEntry = db.diario_utente
                 .filter((d: any) => (d.email_cliente || "").toLowerCase() === athleteEmail.toLowerCase())
                 .reverse()
-                .find((d: any) => d.audio_url === found.audio_url || d.id === found.id);
+                .find((d: any) => d.audio_url === found.audio_url || Number(d.id) === found.id);
 
               if (diaryEntry) {
                 if (consiglioCoach !== undefined) diaryEntry.consiglio_coach = consiglioCoach;
-                if (consiglioApprovato !== undefined) diaryEntry.consiglio_approvato_coach = consiglioApprovato;
+                if (consiglioApprovato !== undefined) diaryEntry.consiglio_approvato_coach = true;
                 if (destGiorno) diaryEntry.giorno_destinazione = destGiorno;
                 if (tipoIntervento) diaryEntry.tipo_intervento = tipoIntervento;
                 if (coachAudioBase64 !== undefined) diaryEntry.coach_audio_base64 = coachAudioBase64;
@@ -6737,6 +6880,49 @@ Buon allenamento con Landmine Lab!
                   created_at: new Date().toISOString(),
                 });
               }
+
+              // Notifica email istantanea all'atleta per la risposta del Coach
+              try {
+                const atletaNome = found.nome_cliente || athleteEmail;
+                const emailSubject = `🎙️ Coach Stefano ti ha risposto per la Seduta ${destGiorno || "successiva"}!`;
+                const emailHtml = `
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 16px; background: #ffffff;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1c00ff; padding-bottom: 12px; margin-bottom: 16px;">
+                      <span style="font-size: 18px; font-weight: 900; color: #09090b; letter-spacing: -0.5px;">AREA46 TRAINING LAB</span>
+                      <span style="font-size: 11px; font-weight: 800; background: #1c00ff; color: #e3ff00; padding: 4px 8px; border-radius: 8px; text-transform: uppercase;">Direttiva del Coach</span>
+                    </div>
+                    <h2 style="font-size: 16px; font-weight: 800; color: #09090b; margin: 0 0 12px 0;">
+                      Il Coach Stefano ha risposto al tuo feedback!
+                    </h2>
+                    <p style="font-size: 14px; color: #52525b; line-height: 1.5; margin: 0 0 16px 0;">
+                      Ciao <strong>${atletaNome}</strong>, Stefano ha esaminato la tua seduta e ti ha lasciato indicazioni ${coachAudioBase64 || coachAudioUrl ? "e una nota vocale " : ""}per il tuo prossimo allenamento (${destGiorno ? `Giorno ${destGiorno}` : "prossima seduta"}).
+                    </p>
+                    ${consiglioCoach ? `
+                      <div style="background: #f4f4f5; border-left: 4px solid #1c00ff; border-radius: 8px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6; color: #18181b;">
+                        <strong>Indicazione del Coach:</strong><br>
+                        <em>"${consiglioCoach}"</em>
+                      </div>
+                    ` : ""}
+                    ${coachAudioDurataSec ? `
+                      <div style="background: #09090b; color: #e3ff00; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: bold; margin-bottom: 16px; display: inline-block;">
+                        🎙️ Nota vocale del Coach allegata (${coachAudioDurataSec}s)
+                      </div>
+                    ` : ""}
+                    <div style="text-align: center; margin-top: 20px;">
+                      <p style="font-size: 12px; color: #71717a; margin: 0;">Troverai la direttiva e la nota vocale pronta per l'ascolto aprendo la tua prossima seduta o nella tua Area Personale.</p>
+                    </div>
+                  </div>
+                `;
+                sendEmailNotification({
+                  to: athleteEmail,
+                  subject: emailSubject,
+                  body: `Ciao ${atletaNome}, il Coach Stefano ha risposto al tuo feedback per la Seduta ${destGiorno || "successiva"}: "${consiglioCoach || "Ascolta la nota vocale sull'app"}"`,
+                  html: emailHtml,
+                  tipo: "consiglio_coach",
+                }).catch((e: any) => console.warn("[COACH ADVICE EMAIL ERROR]", e));
+              } catch (coachMailErr) {
+                console.warn("[COACH ADVICE WRAP ERROR]", coachMailErr);
+              }
             }
           }
         }
@@ -6752,8 +6938,11 @@ Buon allenamento con Landmine Lab!
       deleteAudioNotePermanently(id);
       if (db.audio_note_feedback) {
         db.audio_note_feedback = db.audio_note_feedback.filter((n: any) => Number(n.id) !== id);
-        saveData(db);
       }
+      if (db.diario_utente) {
+        db.diario_utente = db.diario_utente.filter((d: any) => Number(d.id) !== id);
+      }
+      saveData(db);
       res.statusCode = 200;
       return res.end(JSON.stringify({ ok: true, deleted: id }));
     }
@@ -6772,6 +6961,9 @@ Buon allenamento con Landmine Lab!
           transcript,
           trascrizione_live,
           device_info,
+          nome_cliente,
+          email_cliente,
+          utente_id,
         } = parsedBody;
 
         if (!titolo && !descrizione && !audioBase64 && !audio_base64) {
@@ -6780,8 +6972,10 @@ Buon allenamento con Landmine Lab!
         }
 
         const isAnon = !!anonimo;
-        const utenteId = isAnon ? null : (currentUser?.id || null);
-        const emailCliente = isAnon ? null : (currentUser?.email || null);
+        const utenteId = isAnon ? null : (utente_id || currentUser?.id || null);
+        const emailCliente = isAnon ? null : (email_cliente || currentUser?.email || null);
+        const nomeCliente = isAnon ? null : (nome_cliente || currentUser?.name || currentUser?.nome || null);
+        const athleteDisplayName = isAnon ? "Utente Anonimo" : (nomeCliente || emailCliente || "Atleta");
         const clientTranscript = transcript || trascrizione_live || "";
 
         // Diagnosi preliminare intelligente
@@ -6807,9 +7001,53 @@ Buon allenamento con Landmine Lab!
           stato: "aperto",
         });
 
+        record.nome_cliente = athleteDisplayName;
+        record.email_cliente = emailCliente;
+
         db.app_segnalazioni_bug = db.app_segnalazioni_bug || [];
         db.app_segnalazioni_bug.unshift(record);
         saveData(db);
+
+        // Notifica email immediata al Coach Stefano per segnalazione testuale
+        try {
+          const tipoLabel = (tipo || "consiglio").toUpperCase();
+          const emailSubject = `💡 Nuova Segnalazione [${tipoLabel}]: ${record.titolo} (${athleteDisplayName})`;
+          const emailHtml = `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e4e4e7; border-radius: 16px; background: #ffffff;">
+              <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #1c00ff; padding-bottom: 12px; margin-bottom: 16px;">
+                <span style="font-size: 18px; font-weight: 900; color: #09090b; letter-spacing: -0.5px;">AREA46 TRAINING LAB</span>
+                <span style="font-size: 11px; font-weight: 800; background: #1c00ff; color: #e3ff00; padding: 4px 8px; border-radius: 8px; text-transform: uppercase;">Bug & Feedback</span>
+              </div>
+              <h2 style="font-size: 16px; font-weight: 800; color: #09090b; margin: 0 0 12px 0;">
+                Nuovo Suggerimento / Segnalazione Ricevuta
+              </h2>
+              <p style="font-size: 14px; color: #52525b; line-height: 1.5; margin: 0 0 16px 0;">
+                Mittente: <strong>${athleteDisplayName}</strong> ${emailCliente ? `(${emailCliente})` : ""}
+              </p>
+              <div style="background: #f4f4f5; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+                <div><strong>Tipo:</strong> <span style="font-weight: 900; color: #1c00ff;">${tipoLabel}</span></div>
+                <div><strong>Titolo:</strong> ${record.titolo}</div>
+                <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #d4d4d8;">
+                  <strong>Descrizione:</strong><br>
+                  <p style="color: #18181b; margin: 4px 0 0 0;">${record.descrizione}</p>
+                </div>
+                ${device_info ? `<div style="margin-top: 6px; font-size: 11px; color: #71717a;"><strong>Dispositivo:</strong> ${device_info}</div>` : ""}
+              </div>
+              <div style="text-align: center; margin-top: 16px;">
+                <p style="font-size: 12px; color: #71717a; margin: 0;">Puoi visualizzare e gestire la segnalazione nella <strong>Bacheca Live Coach (Tab Idee & Bug)</strong>.</p>
+              </div>
+            </div>
+          `;
+          sendEmailNotification({
+            to: "firenzepersonaltrainer@gmail.com",
+            subject: emailSubject,
+            body: `Nuova segnalazione [${tipoLabel}] da ${athleteDisplayName}: "${record.titolo}". Descrizione: "${record.descrizione}"`,
+            html: emailHtml,
+            tipo: "app_feedback",
+          }).catch((mailErr: any) => console.warn("[BUG NOTIFY ERROR]", mailErr));
+        } catch (mailWrapErr) {
+          console.warn("[BUG NOTIFY WRAP ERROR]", mailWrapErr);
+        }
 
         res.statusCode = 201;
         return res.end(JSON.stringify(record));
@@ -6817,6 +7055,54 @@ Buon allenamento con Landmine Lab!
         res.statusCode = 500;
         return res.end(JSON.stringify({ error: err.message || "Errore salvataggio segnalazione" }));
       }
+    }
+
+    // POST /app-api/segnalazioni-bug/batch (Operazioni massive su segnalazioni bug/idee)
+    if (pathname === "/app-api/segnalazioni-bug/batch" && method === "POST") {
+      const { ids, action, stato } = parsedBody;
+      if (!Array.isArray(ids) || ids.length === 0) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Array ids richiesto" }));
+      }
+      const numIds = ids.map((i: any) => Number(i));
+
+      if (action === "delete_permanent") {
+        for (const bid of numIds) {
+          deleteAppSegnalazionePermanently(bid);
+        }
+        if (db.app_segnalazioni_bug) {
+          db.app_segnalazioni_bug = db.app_segnalazioni_bug.filter((b: any) => !numIds.includes(Number(b.id)));
+        }
+        saveData(db);
+        return res.end(JSON.stringify({ ok: true, deleted: numIds }));
+      }
+
+      const targetStato = stato || "risolto";
+      for (const bid of numIds) {
+        updateAppSegnalazioneStatus(bid, targetStato as any);
+        if (db.app_segnalazioni_bug) {
+          const fb = db.app_segnalazioni_bug.find((b: any) => Number(b.id) === bid);
+          if (fb) fb.stato = targetStato;
+        }
+      }
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, updated: numIds, stato: targetStato }));
+    }
+
+    // DELETE /app-api/segnalazioni-bug/trash (Svuota completamente il cestino delle segnalazioni)
+    if (pathname === "/app-api/segnalazioni-bug/trash" && method === "DELETE") {
+      const trashIds = (db.app_segnalazioni_bug || [])
+        .filter((b: any) => b.stato === "cestino")
+        .map((b: any) => Number(b.id));
+
+      for (const tid of trashIds) {
+        deleteAppSegnalazionePermanently(tid);
+      }
+      if (db.app_segnalazioni_bug) {
+        db.app_segnalazioni_bug = db.app_segnalazioni_bug.filter((b: any) => b.stato !== "cestino");
+      }
+      saveData(db);
+      return res.end(JSON.stringify({ ok: true, clearedCount: trashIds.length }));
     }
 
     // GET /app-api/segnalazioni-bug (Elenco segnalazioni per il Coach)
@@ -6831,13 +7117,26 @@ Buon allenamento con Landmine Lab!
       rawSql.forEach((b: any) => {
         if (b && b.id) {
           const existing = map.get(Number(b.id)) || {};
-          map.set(Number(b.id), { ...existing, ...b });
+          const preferredStato = existing.stato === "cestino" || existing.stato === "risolto" || existing.stato === "scartato" || existing.stato === "archiviato"
+            ? existing.stato
+            : (b.stato || existing.stato || "aperto");
+          map.set(Number(b.id), {
+            ...existing,
+            ...b,
+            audio_url: existing.audio_url || b.audio_url,
+            audio_base64: existing.audio_base64 || b.audio_base64,
+            durata_sec: existing.durata_sec || b.durata_sec,
+            trascrizione_testo: existing.trascrizione_testo || b.trascrizione_testo,
+            nome_cliente: existing.nome_cliente || b.nome_cliente,
+            email_cliente: existing.email_cliente || b.email_cliente,
+            stato: preferredStato,
+          });
         }
       });
       let segnalazioni = Array.from(map.values());
       if (stato) {
         if (stato === "tutti") segnalazioni = segnalazioni.filter((b: any) => b.stato !== "cestino");
-        else if (stato === "gestito") segnalazioni = segnalazioni.filter((b: any) => ["in_valutazione", "risolto", "scartato"].includes(b.stato));
+        else if (stato === "gestito") segnalazioni = segnalazioni.filter((b: any) => ["in_valutazione", "risolto", "scartato", "archiviato"].includes(b.stato));
         else segnalazioni = segnalazioni.filter((b: any) => b.stato === stato);
       }
       if (tipo) segnalazioni = segnalazioni.filter((b: any) => b.tipo === tipo);
@@ -6850,7 +7149,7 @@ Buon allenamento con Landmine Lab!
     if (matchBugPatch && method === "PATCH") {
       const id = parseInt(matchBugPatch[1], 10);
       const stato = parsedBody.stato;
-      if (!stato || !["aperto", "in_valutazione", "risolto", "scartato", "cestino"].includes(stato)) {
+      if (!stato || !["aperto", "in_valutazione", "risolto", "scartato", "archiviato", "cestino"].includes(stato)) {
         res.statusCode = 400;
         return res.end(JSON.stringify({ error: "Stato non valido" }));
       }

@@ -81,10 +81,14 @@ export default function DesktopControlPanel() {
     refetchInterval: 10000,
   });
 
-  const unreadNotesCount = audioNotes.filter((n) => n.stato === "nuovo").length;
+  const unreadNotesCount = audioNotes.filter(
+    (n) => n.contesto === "biofeedback_workout" && n.stato === "nuovo"
+  ).length;
   const unreadBugsCount = bugReports.filter((b) => b.stato === "aperto").length;
   const totalUnread = unreadNotesCount + unreadBugsCount;
-  const hasRedAlert = audioNotes.some((n) => n.stato === "nuovo" && n.ai_allerta === "rosso");
+  const hasRedAlert = audioNotes.some(
+    (n) => n.contesto === "biofeedback_workout" && n.stato === "nuovo" && n.ai_allerta === "rosso"
+  );
 
   // Orologio tempo reale
   const [currentTime, setCurrentTime] = useState("");

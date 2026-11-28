@@ -50,7 +50,9 @@ import {
   Share2,
   Crown,
   MessageSquarePlus,
+  Mic,
 } from "lucide-react";
+import { ExecutiveAudioPlayer } from "../components/CoachAudioFeedbackDrawer";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import {
@@ -448,6 +450,28 @@ export default function AreaPersonalePage() {
           !p.stato?.startsWith("cancellata")
       );
     },
+    refetchInterval: 15000,
+  });
+
+  // Query Note & Consigli Approvati dal Coach Stefano per l'atleta loggato
+  const { data: coachAthleteAdvices = [] } = useQuery<any[]>({
+    queryKey: ["coach-athlete-advices", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return [];
+      const res = await fetch(`/app-api/diario?email=${encodeURIComponent(user.email)}`);
+      if (!res.ok) return [];
+      const entries: any[] = await res.json();
+      return entries.filter(
+        (e) =>
+          e.consiglio_approvato_coach === true &&
+          (e.consiglio_coach || e.coach_audio_base64 || e.coach_audio_url)
+      ).sort(
+        (a, b) =>
+          new Date(b.created_at || b.data_ora || 0).getTime() -
+          new Date(a.created_at || a.data_ora || 0).getTime()
+      );
+    },
+    enabled: !!user?.email,
     refetchInterval: 15000,
   });
 
@@ -2546,6 +2570,101 @@ export default function AreaPersonalePage() {
               );
             })()}
           </div>
+
+          {/* SEZIONE DIRETTIVE & RISPOSTE DEL COACH STEFANO (Solo se approvate dal Coach) */}
+          {coachAthleteAdvices.length > 0 && (
+            <div className="p-4 rounded-3xl bg-[#09090b] border-2 border-[#1c00ff] text-white shadow-xl space-y-3.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-xl bg-[#e3ff00] text-zinc-950 font-black">
+                    <Sparkles className="size-4 text-[#1c00ff]" />
+                  </div>
+                  <div>
+                    <h2 className="text-xs font-black uppercase tracking-wider text-[#e3ff00]">
+                      Direttive & Risposte del Coach Stefano
+                    </h2>
+                    <p className="text-[10px] text-zinc-400">
+                      Indicazioni operative personalizzate e risposte vocali per le tue prossime sedute
+                    </p>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#1c00ff] text-white">
+                  {coachAthleteAdvices.length} {coachAthleteAdvices.length === 1 ? "nota" : "note"}
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {coachAthleteAdvices.slice(0, 3).map((advice: any, idx: number) => (
+                  <div
+                    key={advice.id || `coach-advice-${idx}`}
+                    className="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-2.5 shadow-sm"
+                  >
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black text-white">
+                          {advice.giorno_destinazione
+                            ? `Per seduta: ${advice.giorno_destinazione}`
+                            : advice.giorno
+                            ? `Rif. seduta ${advice.giorno}`
+                            : "Direttiva Coach"}
+                        </span>
+                        {advice.livello && (
+                          <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300">
+                            {advice.livello}
+                          </span>
+                        )}
+                      </div>
+
+                      {advice.tipo_intervento === "spinta" ? (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#e3ff00] text-zinc-950">
+                          🚀 Spingere di Più (+Carico)
+                        </span>
+                      ) : advice.tipo_intervento === "scarico" || advice.ai_allerta === "rosso" ? (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                          🛡️ Lavoro Più Leggero
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                          🟢 Progressione Centrata
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Player Audio del Coach se presente */}
+                    {(advice.coach_audio_base64 || advice.coach_audio_url) && (
+                      <div className="p-2.5 rounded-xl bg-zinc-950 border border-[#e3ff00]/40 space-y-1.5">
+                        <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-[#e3ff00]">
+                          <span className="flex items-center gap-1.5">
+                            <Mic className="size-3.5 text-[#e3ff00]" />
+                            <span>Nota Vocale di Stefano Tronconi</span>
+                          </span>
+                          <span className="text-[9px] font-mono text-zinc-400">Audio Coach</span>
+                        </div>
+                        <ExecutiveAudioPlayer
+                          src={advice.coach_audio_base64 || advice.coach_audio_url}
+                          durationSec={advice.coach_audio_durata_sec || 0}
+                        />
+                      </div>
+                    )}
+
+                    {/* Testo Direttiva / Consiglio */}
+                    {advice.consiglio_coach && (
+                      <div className="text-xs text-zinc-200 font-medium leading-relaxed bg-zinc-950/60 p-2.5 rounded-xl border border-zinc-800/80">
+                        "{advice.consiglio_coach}"
+                      </div>
+                    )}
+
+                    {advice.ai_proposta_azione && (
+                      <div className="text-[10.5px] text-zinc-400 font-mono">
+                        <span className="text-zinc-300 font-bold">Focus: </span>
+                        {advice.ai_proposta_azione}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* GUIDA, CONTINUATIVO & ASSISTENTE AI */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
