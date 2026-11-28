@@ -39,7 +39,7 @@ import ManagerAtletiPage from "./pages/ManagerAtleti";
 import ManagerFiscoPage from "./pages/ManagerFisco";
 import DesktopControlPanel from "./pages/DesktopControlPanel";
 import LoginPage from "./pages/Login";
-import FloatingTimer from "./components/FloatingTimer";
+import FloatingTimerModal, { TimerProvider, HeaderTimerWidget } from "./components/FloatingTimer";
 import { InstallPrompt } from "./components/InstallPrompt";
 
 function RequireManager({ children }: { children: React.ReactNode }) {
@@ -150,16 +150,19 @@ function AppHeader({
   const displayLevel = activeLevelRaw.trim().toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between px-4 py-2.5 bg-white border-b shadow-xs shrink-0 relative">
+    <header className="sticky top-0 z-40 flex items-center justify-between px-3.5 sm:px-4 py-2 bg-white/95 backdrop-blur-xs border-b border-zinc-200/80 shadow-2xs shrink-0 relative">
       <Link to="/" className="flex items-center gap-2 group cursor-pointer" title="Home Area46">
         <img
           src="/logo-area46-transparent.png"
           alt="Area46 Landmine Lab"
-          className="h-10 w-auto max-w-[140px] object-contain transition-transform group-hover:scale-105 drop-shadow-2xs"
+          className="h-9 sm:h-10 w-auto max-w-[130px] sm:max-w-[140px] object-contain transition-transform group-hover:scale-105 drop-shadow-2xs"
         />
       </Link>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Timer Widget nell'Header: Icona quadrata a riposo o Linguetta/Segnalibro minimizzata */}
+        <HeaderTimerWidget />
+
         {user && (
           <CalendarNotificationBell
             userId={user.id}
@@ -299,7 +302,7 @@ function AppContent() {
     return (
       <div
         id="phone-frame"
-        className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col items-center justify-center relative overflow-hidden"
+        className="w-full sm:max-w-[420px] h-[100dvh] sm:h-auto sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col items-center justify-center relative overflow-hidden"
       >
         <div className="flex flex-col items-center gap-3">
           <div className="size-8 rounded-full border-2 border-[#1c00ff] border-t-transparent animate-spin" />
@@ -316,7 +319,7 @@ function AppContent() {
     return (
       <div
         id="phone-frame"
-        className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col relative overflow-hidden"
+        className="w-full sm:max-w-[420px] h-[100dvh] sm:h-auto sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col relative overflow-hidden"
       >
         <Toaster
           position="top-center"
@@ -337,6 +340,7 @@ function AppContent() {
             <Route path="*" element={<LoginPage />} />
           </Routes>
         </main>
+        <FloatingTimerModal />
         <InstallPrompt />
         <MobileHomeIndicator />
       </div>
@@ -362,7 +366,7 @@ function AppContent() {
   return (
     <div
       id="phone-frame"
-      className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col relative overflow-hidden"
+      className="w-full sm:max-w-[420px] h-[100dvh] sm:h-auto sm:min-h-[860px] sm:max-h-[min(920px,calc(100vh-32px))] bg-[#f8f9fa] sm:rounded-[48px] sm:border-[10px] sm:border-[#1a1a20] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,0,0,0.08),0_10px_30px_rgba(28,0,255,0.06)] flex flex-col relative overflow-hidden"
     >
       <Toaster
         position="top-center"
@@ -448,8 +452,8 @@ function AppContent() {
       {/* Barra di Navigazione Mobile Inferiore */}
       <Nav items={navItems} />
 
-      {/* Timer Flottante Sovraimpresso integrato nello smartphone */}
-      <FloatingTimer />
+      {/* Modale / Finestra Completa Timer Sovraimpresso */}
+      <FloatingTimerModal />
 
       {/* Prompt installazione PWA per Android/Chrome/iOS */}
       <InstallPrompt />
@@ -487,9 +491,11 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
-      <LayoutWrapper>
-        <AppContent />
-      </LayoutWrapper>
+      <TimerProvider>
+        <LayoutWrapper>
+          <AppContent />
+        </LayoutWrapper>
+      </TimerProvider>
     </BrowserRouter>
   );
 }
