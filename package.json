@@ -12,6 +12,7 @@
     "backup": "node scripts/backup_manager.mjs backup",
     "restore": "node scripts/backup_manager.mjs restore",
     "verify": "node scripts/backup_manager.mjs verify",
+    "reminders:check": "node scripts/check_reminders_24h.mjs",
     "guardian": "node scripts/guardian_methodology_pro.mjs",
     "vault:split": "node scripts/backup_manager.mjs split",
     "vault:merge": "node scripts/backup_manager.mjs merge",

@@ -14,5 +14,11 @@
       "source": "/((?!api|app-api).*)",
       "destination": "/index.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/app-api/promemoria-24h/check",
+      "schedule": "0 7,9,12,15,18,21 * * *"
+    }
   ]
 }

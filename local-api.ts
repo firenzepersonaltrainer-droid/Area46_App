@@ -21,12 +21,58 @@ import {
   emptyAppSegnalazioniTrash,
   setMemoryStore,
 } from "./server/audio-feedback-repo";
+import { process24hReminders } from "./server/reminder-24h-service";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX === "true";
 const SANDBOX_FILE = path.resolve(__dirname, "data", "sandbox-data.json");
 const TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
+
+let reminderSchedulerTimer: any = null;
+let isReminderScanRunning = false;
+export function ensureReminderBackgroundScheduler() {
+  if (reminderSchedulerTimer) return;
+  // Scansione iniziale all'avvio dopo 10 secondi
+  const initTimeout = setTimeout(async () => {
+    try {
+      if (db && !isReminderScanRunning) {
+        isReminderScanRunning = true;
+        await process24hReminders(db, {
+          sendEmailFn: sendEmailNotification,
+          logShadowEventFn: logShadowEvent,
+          saveDataFn: saveData,
+        });
+      }
+    } catch (e) {
+      console.warn("[REMINDER 24H AUTO-CHECK WARN]", e);
+    } finally {
+      isReminderScanRunning = false;
+    }
+  }, 10000);
+  if (initTimeout && typeof initTimeout.unref === "function") initTimeout.unref();
+
+  // Esecuzione periodica ogni 15 minuti
+  reminderSchedulerTimer = setInterval(async () => {
+    try {
+      if (db && !isReminderScanRunning) {
+        isReminderScanRunning = true;
+        await process24hReminders(db, {
+          sendEmailFn: sendEmailNotification,
+          logShadowEventFn: logShadowEvent,
+          saveDataFn: saveData,
+        });
+      }
+    } catch (e) {
+      console.warn("[REMINDER 24H PERIODIC WARN]", e);
+    } finally {
+      isReminderScanRunning = false;
+    }
+  }, 15 * 60 * 1000);
+  if (reminderSchedulerTimer && typeof reminderSchedulerTimer.unref === "function") {
+    reminderSchedulerTimer.unref();
+  }
+}
 
 export function isBookingIdCancelled(id: any, cancelledList?: any[]): boolean {
   if (!id || !cancelledList || !Array.isArray(cancelledList) || cancelledList.length === 0) return false;
@@ -1925,6 +1971,7 @@ export async function handleLocalApi(
   if (!db) {
     db = loadData();
   }
+  ensureReminderBackgroundScheduler();
   await ensureLatestDataFromDrive();
   const host = req.headers?.host || "localhost:5173";
   const url = new URL(req.url ?? "/", `http://${host}`);
@@ -4419,6 +4466,61 @@ CALENDARIO E PRENOTAZIONI:
           crediti_attuali: walletOwner ? walletOwner.crediti : atleta?.crediti,
           messaggio_whatsapp: messaggioWhatsApp,
           whatsapp_url: whatsappUrl,
+        })
+      );
+    }
+
+    // GET o POST /app-api/promemoria-24h/check (Scansione manuale o da Cron Vercel)
+    if (pathname === "/app-api/promemoria-24h/check" && (method === "GET" || method === "POST")) {
+      const isDryRun = url.searchParams.get("dryRun") === "true" || parsedBody?.dryRun === true;
+      const refDateParam = url.searchParams.get("date") || parsedBody?.date;
+      const scanDate = refDateParam ? new Date(refDateParam) : new Date();
+
+      const report = await process24hReminders(db, {
+        dryRun: isDryRun,
+        now: scanDate,
+        sendEmailFn: sendEmailNotification,
+        logShadowEventFn: logShadowEvent,
+        saveDataFn: saveData,
+      });
+
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          dryRun: isDryRun,
+          timestamp: report.timestamp,
+          totale_prenotazioni: report.totalePrenotazioni,
+          candidati_trovati: report.candidatiTrovati,
+          inviati_con_successo: report.inviatiConSuccesso,
+          saltati_gia_inviati: report.saltatiGiaInviati,
+          dettagli: report.dettagli,
+        })
+      );
+    }
+
+    // GET /app-api/promemoria-24h/status (Stato e cronologia promemoria)
+    if (pathname === "/app-api/promemoria-24h/status" && method === "GET") {
+      const bookings: any[] = db.prenotazioni_slot || [];
+      const inviati = bookings.filter((b) => b.reminder_24h_sent);
+      const storicNotifiche = (db.notifiche_promemoria || []).slice(0, 50);
+
+      return res.end(
+        JSON.stringify({
+          ok: true,
+          totale_prenotazioni: bookings.length,
+          promemoria_inviati_totali: inviati.length,
+          ultimi_promemoria: inviati.slice(-10).reverse().map((b) => ({
+            id: b.id,
+            nome_cliente: b.nome_cliente,
+            email_cliente: b.email_cliente,
+            data: b.data,
+            orario: b.orario,
+            reminder_24h_sent_at: b.reminder_24h_sent_at,
+            reminder_24h_deadline: b.reminder_24h_deadline,
+            reminder_24h_channel: b.reminder_24h_channel,
+            whatsapp_url: b.reminder_24h_whatsapp_url,
+          })),
+          storico_notifiche: storicNotifiche,
         })
       );
     }

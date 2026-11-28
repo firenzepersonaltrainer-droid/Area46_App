@@ -33148,84 +33148,6 @@ var demo_data_default = {
       created_at: "2026-11-09T18:05:34.794Z"
     },
     {
-      id: 1794326678183,
-      email_cliente: "atleta1@area46.it",
-      tipo: "feedback_seduta",
-      livello: "Livello PRO",
-      giorno: "1",
-      rpe_globale: 8,
-      sensazioni: [
-        "Ottima fluidit\xE0",
-        "RPE centrato"
-      ],
-      note_cinestesiche: "Test feedback convezione fluido.",
-      id_esercizio: null,
-      nome_esercizio: "Feedback Seduta Giorno 1",
-      carico_kg: null,
-      feedback: "Test feedback convezione fluido.",
-      ripetizioni: null,
-      serie: null,
-      sets_json: null,
-      rpe_json: null,
-      data_ora: "2026-11-10T16:04:38.183Z",
-      created_at: "2026-11-10T16:04:38.183Z",
-      stato: "archiviato",
-      audio_url: null,
-      audio_base64: null
-    },
-    {
-      id: 1794326714148,
-      email_cliente: "atleta1@area46.it",
-      tipo: "feedback_seduta",
-      livello: "Livello PRO",
-      giorno: "1",
-      rpe_globale: 8,
-      sensazioni: [
-        "Ottima fluidit\xE0",
-        "RPE centrato"
-      ],
-      note_cinestesiche: "Test feedback convezione fluido.",
-      id_esercizio: null,
-      nome_esercizio: "Feedback Seduta Giorno 1",
-      carico_kg: null,
-      feedback: "Test feedback convezione fluido.",
-      ripetizioni: null,
-      serie: null,
-      sets_json: null,
-      rpe_json: null,
-      data_ora: "2026-11-10T16:05:14.148Z",
-      created_at: "2026-11-10T16:05:14.148Z",
-      stato: "archiviato",
-      audio_url: null,
-      audio_base64: null
-    },
-    {
-      id: 1794326738460,
-      email_cliente: "atleta1@area46.it",
-      tipo: "feedback_seduta",
-      livello: "Livello PRO",
-      giorno: "1",
-      rpe_globale: 8,
-      sensazioni: [
-        "Ottima fluidit\xE0",
-        "RPE centrato"
-      ],
-      note_cinestesiche: "Test feedback convezione fluido.",
-      id_esercizio: null,
-      nome_esercizio: "Feedback Seduta Giorno 1",
-      carico_kg: null,
-      feedback: "Test feedback convezione fluido.",
-      ripetizioni: null,
-      serie: null,
-      sets_json: null,
-      rpe_json: null,
-      data_ora: "2026-11-10T16:05:38.460Z",
-      created_at: "2026-11-10T16:05:38.460Z",
-      stato: "archiviato",
-      audio_url: null,
-      audio_base64: null
-    },
-    {
       id: 1794418468932,
       email_cliente: "daniele.casci@gmail.com",
       tipo: "esercizio",
@@ -33350,32 +33272,6 @@ var demo_data_default = {
       created_at: "2026-11-13T06:36:39.257Z"
     },
     {
-      id: 1794553127846,
-      email_cliente: "firenzepersonaltrainer@gmail.com",
-      tipo: "feedback_seduta",
-      livello: "PRO",
-      giorno: "42",
-      rpe_globale: 8,
-      sensazioni: [
-        "Affaticamento generale",
-        "Tensione anca/schiena"
-      ],
-      note_cinestesiche: "",
-      id_esercizio: null,
-      nome_esercizio: "Feedback Seduta Giorno 42",
-      carico_kg: null,
-      feedback: "RPE 8/10 \u2022 Affaticamento generale, Tensione anca/schiena",
-      ripetizioni: null,
-      serie: null,
-      sets_json: null,
-      rpe_json: null,
-      data_ora: "2026-11-13T06:58:47.846Z",
-      created_at: "2026-11-13T06:58:47.846Z",
-      stato: "archiviato",
-      audio_url: null,
-      audio_base64: null
-    },
-    {
       id: 1794566076032,
       email_cliente: "pantanella@gmail.com",
       tipo: "esercizio",
@@ -33444,29 +33340,6 @@ var demo_data_default = {
       created_at: "2026-11-13T17:22:56.547Z"
     },
     {
-      id: 1794988761396,
-      email_cliente: "atleta@area46.it",
-      tipo: "feedback_seduta",
-      livello: "Livello Pro",
-      giorno: "1 allenamento A",
-      rpe_globale: 9,
-      sensazioni: [
-        "stanchezza",
-        "buona coordinazione"
-      ],
-      note_cinestesiche: "Sensazione di affaticamento lombare nelle ultime 2 serie al coiled deadlift, per il resto pattern motorio solido.",
-      nome_esercizio: "Feedback Vocale Giorno 1 allenamento A",
-      feedback: "Nota Vocale (18s) \u2022 Allerta articolare/carico: segnalata criticit\xE0 durante la seduta (RPE 9/10). \u2022 Allerta: ROSSO",
-      audio_url: null,
-      ai_allerta: "rosso",
-      ai_sintesi: "Allerta articolare/carico: segnalata criticit\xE0 durante la seduta (RPE 9/10).",
-      ai_proposta_azione: "Modalit\xE0 B di Socrates: scarico attivo del pattern sofferente nella seduta successiva, sostituendolo con lavoro qualitativo a catena cinetica aperta, mobilit\xE0 del cingolo lombo-pelvico e verifica tecnica diretta con il Coach prima di toccare sovraccarichi.",
-      data_ora: "2026-11-18T07:59:21.396Z",
-      created_at: "2026-11-18T07:59:21.396Z",
-      stato: "archiviato",
-      audio_base64: null
-    },
-    {
       id: 1795019579447,
       email_cliente: "daniele.casci@gmail.com",
       tipo: "esercizio",
@@ -33495,57 +33368,6 @@ var demo_data_default = {
       consiglio_coach: null,
       data_ora: "2026-11-18T16:32:59.447Z",
       created_at: "2026-11-18T16:32:59.447Z"
-    },
-    {
-      id: 1795024680898,
-      email_cliente: "firenzepersonaltrainer@gmail.com",
-      tipo: "feedback_seduta",
-      livello: "PRO",
-      giorno: "43",
-      rpe_globale: 7,
-      sensazioni: [
-        "Affaticamento generale",
-        "Tensione anca/schiena"
-      ],
-      note_cinestesiche: "Registrazione vocale atleta su Seduta 43: RPE percepito 7/10, sensazioni motorie: Affaticamento generale, Tensione anca/schiena.",
-      nome_esercizio: "Feedback Vocale Giorno 43",
-      feedback: "Nota Vocale (1s) \u2022 Fatica periferica alta o compenso posturale segnalato (RPE 7/10). \u2022 Allerta: GIALLO",
-      audio_url: null,
-      audio_base64: null,
-      ai_allerta: "giallo",
-      ai_sintesi: "Fatica periferica alta o compenso posturale segnalato (RPE 7/10).",
-      ai_proposta_azione: "Regolare i carichi mantenendo 1-2 ripetizioni di riserva nel fondamentale e idratare il tessuto con mobilit\xE0 attiva di scarico tra le serie.",
-      consiglio_coach: "Hai espresso un'intensit\xE0 elevata (RPE 7/10) con una sensazione di fatica marcata o piccolo compenso. Ottimo impegno per aver completato la scheda, ma per la prossima seduta mantieni 1-2 colpi di riserva (buffer) senza forzare la chiusura. Nelle prossime 24 ore dai priorit\xE0 al sonno e ad una buona idratazione per favorire il recupero naturale dei tessuti.",
-      data_ora: "2026-11-18T17:58:00.898Z",
-      created_at: "2026-11-18T17:58:00.898Z",
-      stato: "archiviato"
-    },
-    {
-      id: 1795027047245,
-      email_cliente: "atleta@area46.it",
-      tipo: "feedback_seduta",
-      livello: "PRO",
-      giorno: "43",
-      rpe_globale: 6.5,
-      sensazioni: [
-        "Ottima fluidit\xE0",
-        "Carico leggero"
-      ],
-      note_cinestesiche: "Oggi al Landmine Squat sentivo le gambe volare, carico facilissimo e ampio margine. Possiamo spingere di pi\xF9 la prossima volta!",
-      nome_esercizio: "Feedback Vocale Giorno 43",
-      feedback: `Nota Vocale (15s) \u2022 Nota Vocale: l'atleta riferisce facilit\xE0, ottima fluidit\xE0 e margine sul carico ("Oggi al Landmine Squat sentivo le gambe volare, carico facilissimo e ampio margine. Possiamo spingere di pi\xF9 la prossima volta!"). RPE: 6.5/10. \u2022 Allerta: VERDE`,
-      audio_url: null,
-      audio_base64: null,
-      ai_allerta: "verde",
-      ai_sintesi: `Nota Vocale: l'atleta riferisce facilit\xE0, ottima fluidit\xE0 e margine sul carico ("Oggi al Landmine Squat sentivo le gambe volare, carico facilissimo e ampio margine. Possiamo spingere di pi\xF9 la prossima volta!"). RPE: 6.5/10.`,
-      ai_proposta_azione: "Per Seduta Successiva (Giorno 44): Spingere maggiormente! Concedere incremento di sovraccarico progressivo (+1.25 / +2.5 kg sui fondamentali) o alzare l'intensit\xE0 a target pieno per stimolare l'adattamento.",
-      consiglio_coach: "Grande risposta Stefano! Visto che era leggero, nella Seduta 44 incrementiamo di +2.5 kg sul fondamentale.",
-      consiglio_approvato_coach: true,
-      giorno_destinazione: 44,
-      tipo_intervento: "spinta",
-      data_ora: "2026-11-18T18:37:27.245Z",
-      created_at: "2026-11-18T18:37:27.245Z",
-      stato: "archiviato"
     },
     {
       id: 1795095343753,
@@ -35257,8 +35079,8 @@ var demo_data_default = {
     },
     {
       email_cliente: "firenzepersonaltrainer@gmail.com",
-      memoria_livello: "Approfondimenti ed extra",
-      updated_at: "2026-11-28T11:01:44.662Z"
+      memoria_livello: "PRO",
+      updated_at: "2026-11-28T17:05:21.068Z"
     },
     {
       email_cliente: "silvia.brenzini@gmail.com",
@@ -42064,12 +41886,297 @@ function emptyAppSegnalazioniTrash() {
   return true;
 }
 
+// server/reminder-24h-service.ts
+function getSlotDate(dataStr, orarioStr) {
+  const [year, month, day] = dataStr.split("-").map((v) => parseInt(v, 10));
+  const [hours, minutes] = orarioStr.split(":").map((v) => parseInt(v, 10));
+  return new Date(year, month - 1, day, hours, minutes, 0, 0);
+}
+function pad2(n) {
+  return n < 10 ? `0${n}` : `${n}`;
+}
+function getFirstName(atleta, rawNome) {
+  if (atleta?.nome && atleta.nome.trim()) {
+    const n = atleta.nome.trim();
+    return n.charAt(0).toUpperCase() + n.slice(1);
+  }
+  if (rawNome && rawNome.trim()) {
+    const firstWord = rawNome.trim().split(/\s+/)[0];
+    return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
+  }
+  return "Atleta";
+}
+function cleanPhoneNumber(rawPhone) {
+  if (!rawPhone) return "";
+  let p = rawPhone.replace(/[^\d+]/g, "");
+  if (p.startsWith("00")) {
+    p = "+" + p.slice(2);
+  } else if (!p.startsWith("+") && p.length === 10 && (p.startsWith("3") || p.startsWith("0"))) {
+    p = "+39" + p;
+  }
+  return p;
+}
+function buildReminderMessage(params) {
+  const { nome, orario, oraLimite, testoLimiteData = "di oggi", telefono } = params;
+  const messaggio = `Ciao ${nome}! Ti ricordiamo che domani alle ${orario} hai un allenamento prenotato in Area46. Non mancare, ti aspettiamo!
+Promemoria utile: se hai un imprevisto, hai tempo fino alle ore ${oraLimite} ${testoLimiteData} per modificare o disdire la tua prenotazione in autonomia dall'app.`.trim();
+  const phoneClean = cleanPhoneNumber(telefono);
+  const whatsappUrl = phoneClean ? `https://api.whatsapp.com/send?phone=${phoneClean.replace(/^\+/, "")}&text=${encodeURIComponent(messaggio)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(messaggio)}`;
+  return { messaggio, whatsappUrl };
+}
+function isBookingEligibleFor24hReminder(booking, atleta, configLab, now = /* @__PURE__ */ new Date(), cancelledList) {
+  const rawId = String(booking.id || "").trim();
+  const cleanId = rawId.startsWith("lab_") ? rawId.slice(4) : rawId;
+  const labId = rawId.startsWith("lab_") ? rawId : `lab_${rawId}`;
+  if (cancelledList && (cancelledList.includes(rawId) || cancelledList.includes(cleanId) || cancelledList.includes(labId))) {
+    return { eligible: false, reason: "prenotazione_cancellata_in_elenco" };
+  }
+  const stato = (booking.stato || "").toLowerCase();
+  if (stato === "cancellata" || stato === "cancellata_tardiva" || stato === "cancellata_in_tempo") {
+    return { eligible: false, reason: "prenotazione_gia_cancellata" };
+  }
+  if (booking.reminder_24h_sent) {
+    return { eligible: false, reason: "reminder_gia_inviato" };
+  }
+  if (!booking.data || !booking.orario) {
+    return { eligible: false, reason: "data_o_orario_mancante" };
+  }
+  const slotDate = getSlotDate(booking.data, booking.orario);
+  if (isNaN(slotDate.getTime())) {
+    return { eligible: false, reason: "data_slot_non_valida" };
+  }
+  const oreLimite = Number(
+    atleta?.tempo_cancellazione_ore || configLab?.tempo_cancellazione_ore || 24
+  );
+  const deadlineDate = new Date(slotDate.getTime() - oreLimite * 60 * 60 * 1e3);
+  const nowMs = now.getTime();
+  const slotMs = slotDate.getTime();
+  const deadlineMs = deadlineDate.getTime();
+  if (slotMs <= nowMs) {
+    return { eligible: false, reason: "slot_nel_passato" };
+  }
+  if (nowMs >= deadlineMs) {
+    return { eligible: false, reason: "deadline_24h_gia_scaduta" };
+  }
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const tomorrowStr = `${tomorrow.getFullYear()}-${pad2(tomorrow.getMonth() + 1)}-${pad2(tomorrow.getDate())}`;
+  const oreAllaSeduta = (slotMs - nowMs) / (1e3 * 60 * 60);
+  const isForTomorrow = booking.data === tomorrowStr;
+  const isWithin36Hours = oreAllaSeduta <= 36 && oreAllaSeduta >= oreLimite;
+  if (!isForTomorrow && !isWithin36Hours) {
+    return { eligible: false, reason: "troppo_anticipo_rispetto_a_24h" };
+  }
+  const oraLimiteH = pad2(deadlineDate.getHours());
+  const oraLimiteM = pad2(deadlineDate.getMinutes());
+  const oraLimiteStr = `${oraLimiteH}:${oraLimiteM}`;
+  const nowDateStr = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+  const deadlineDateStr = `${deadlineDate.getFullYear()}-${pad2(deadlineDate.getMonth() + 1)}-${pad2(deadlineDate.getDate())}`;
+  const testoLimiteData = deadlineDateStr === nowDateStr ? "di oggi" : `del ${pad2(deadlineDate.getDate())}/${pad2(deadlineDate.getMonth() + 1)}`;
+  return {
+    eligible: true,
+    slotDate,
+    deadlineDate,
+    oreLimite,
+    oraLimiteStr,
+    testoLimiteData
+  };
+}
+async function process24hReminders(db2, options = {}) {
+  const {
+    dryRun = false,
+    now = /* @__PURE__ */ new Date(),
+    sendEmailFn,
+    logShadowEventFn,
+    saveDataFn
+  } = options;
+  const bookings = db2?.prenotazioni_slot || [];
+  const users = db2?.profili_utenti || [];
+  const configLab = db2?.configurazione_lab || {};
+  const cancelledList = db2?.prenotazioni_cancellate || [];
+  const report = {
+    timestamp: now.toISOString(),
+    totalePrenotazioni: bookings.length,
+    esaminate: 0,
+    candidatiTrovati: 0,
+    inviatiConSuccesso: 0,
+    saltatiGiaInviati: 0,
+    saltatiScadutiOTardivi: 0,
+    dettagli: []
+  };
+  let mutazioniEffettuate = false;
+  for (const bk of bookings) {
+    report.esaminate++;
+    if (bk.reminder_24h_sent) {
+      report.saltatiGiaInviati++;
+      continue;
+    }
+    const atleta = users.find(
+      (u) => bk.atleta_id && u.id === bk.atleta_id || bk.email_cliente && u.email?.toLowerCase() === bk.email_cliente.toLowerCase()
+    ) || null;
+    const check = isBookingEligibleFor24hReminder(bk, atleta, configLab, now, cancelledList);
+    if (!check.eligible) {
+      if (check.reason === "deadline_24h_gia_scaduta" || check.reason === "prenotazione_gia_cancellata") {
+        report.saltatiScadutiOTardivi++;
+      }
+      continue;
+    }
+    report.candidatiTrovati++;
+    const nome = getFirstName(atleta, bk.nome_cliente);
+    const telefono = atleta?.telefono || bk.telefono_cliente || "";
+    const emailDest = bk.email_cliente || atleta?.email || "";
+    const oraLimite = check.oraLimiteStr || bk.orario;
+    const testoLimiteData = check.testoLimiteData || "di oggi";
+    const { messaggio, whatsappUrl } = buildReminderMessage({
+      nome,
+      orario: bk.orario,
+      oraLimite,
+      testoLimiteData,
+      telefono
+    });
+    let emailSentOk = false;
+    if (!dryRun && sendEmailFn && emailDest) {
+      try {
+        await sendEmailFn({
+          to: emailDest,
+          subject: `\u{1F4C5} Promemoria Allenamento Domani alle ${bk.orario} - Area46 Landmine Lab`,
+          body: messaggio,
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 580px; margin: 0 auto; background-color: #0b0f17; color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+              <div style="background: linear-gradient(135deg, #161e2e 0%, #0b0f17 100%); padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.06); text-align: center;">
+                <h1 style="color: #ff6b00; margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 1px;">AREA46 LANDMINE LAB</h1>
+                <p style="margin: 4px 0 0; color: #94a3b8; font-size: 13px; letter-spacing: 0.5px;">PROMEMORIA ALLENAMENTO</p>
+              </div>
+              <div style="padding: 28px 24px; line-height: 1.6;">
+                <p style="font-size: 16px; margin-top: 0; color: #f1f5f9;">Ciao <strong style="color: #ffffff;">${nome}</strong>!</p>
+                <div style="background-color: rgba(255, 107, 0, 0.08); border-left: 4px solid #ff6b00; padding: 14px 18px; border-radius: 6px; margin: 20px 0;">
+                  <p style="margin: 0; font-size: 15px; color: #ffffff;">
+                    Ti ricordiamo che <strong>domani alle ore ${bk.orario}</strong> hai un allenamento prenotato in Area46.<br>
+                    <span style="color: #ff9944;">Non mancare, ti aspettiamo carichi in sala!</span>
+                  </p>
+                </div>
+                <div style="background-color: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 14px 18px; border-radius: 6px; margin: 20px 0;">
+                  <p style="margin: 0; font-size: 13px; color: #94a3b8;">
+                    \u2139\uFE0F <strong>Promemoria utile:</strong> se hai un imprevisto, hai tempo fino alle ore <strong style="color: #ffffff;">${oraLimite} ${testoLimiteData}</strong> per modificare o disdire la tua prenotazione in autonomia dall'app senza perdere il credito.
+                  </p>
+                </div>
+                <p style="margin: 24px 0 0; font-size: 13px; color: #64748b; text-align: center;">
+                  Area46 Training Lab \u2022 Via del Landmine 46, Firenze
+                </p>
+              </div>
+            </div>
+          `,
+          tipo: "promemoria_24h"
+        });
+        emailSentOk = true;
+      } catch (err) {
+        console.warn(`[REMINDER 24H EMAIL WARN] Invio email fallito per ${emailDest}:`, err?.message || err);
+      }
+    }
+    const detail = {
+      bookingId: bk.id,
+      nome,
+      email: emailDest,
+      telefono,
+      data: bk.data,
+      orario: bk.orario,
+      oraLimite,
+      deadlineIso: check.deadlineDate ? check.deadlineDate.toISOString() : "",
+      messaggio,
+      whatsappUrl,
+      emailInviata: emailSentOk,
+      canale: emailSentOk ? "email+whatsapp_ready" : "whatsapp_ready",
+      timestamp: now.toISOString()
+    };
+    report.dettagli.push(detail);
+    if (!dryRun) {
+      bk.reminder_24h_sent = true;
+      bk.reminder_24h_sent_at = now.toISOString();
+      bk.reminder_24h_deadline = `${oraLimite} ${testoLimiteData}`;
+      bk.reminder_24h_whatsapp_url = whatsappUrl;
+      bk.reminder_24h_message = messaggio;
+      bk.reminder_24h_channel = detail.canale;
+      db2.notifiche_promemoria = db2.notifiche_promemoria || [];
+      db2.notifiche_promemoria.unshift({
+        id: `rem-24h-${Date.now()}-${Math.floor(Math.random() * 1e3)}`,
+        booking_id: bk.id,
+        atleta_id: bk.atleta_id || atleta?.id || "",
+        email_cliente: emailDest,
+        nome_cliente: bk.nome_cliente || nome,
+        data_allenamento: bk.data,
+        orario_allenamento: bk.orario,
+        ora_limite_cancellazione: oraLimite,
+        messaggio,
+        whatsapp_url: whatsappUrl,
+        inviato_il: now.toISOString()
+      });
+      if (logShadowEventFn) {
+        logShadowEventFn("REMINDER_24H_SENT", emailDest || bk.id, {
+          bookingId: bk.id,
+          data: bk.data,
+          orario: bk.orario,
+          oraLimite,
+          canale: detail.canale
+        });
+      }
+      mutazioniEffettuate = true;
+      report.inviatiConSuccesso++;
+    } else {
+      report.inviatiConSuccesso++;
+    }
+  }
+  if (!dryRun && mutazioniEffettuate && saveDataFn) {
+    await saveDataFn(db2);
+  }
+  return report;
+}
+
 // local-api.ts
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = path6.dirname(__filename);
 var IS_SANDBOX = process.env.AREA46_MODE === "sandbox" || process.env.SANDBOX === "true";
 var SANDBOX_FILE = path6.resolve(__dirname, "data", "sandbox-data.json");
 var TMP_DATA_FILE = IS_SANDBOX ? "/tmp/sandbox-data.json" : "/tmp/demo-data.json";
+var reminderSchedulerTimer = null;
+var isReminderScanRunning = false;
+function ensureReminderBackgroundScheduler() {
+  if (reminderSchedulerTimer) return;
+  const initTimeout = setTimeout(async () => {
+    try {
+      if (db && !isReminderScanRunning) {
+        isReminderScanRunning = true;
+        await process24hReminders(db, {
+          sendEmailFn: sendEmailNotification,
+          logShadowEventFn: logShadowEvent,
+          saveDataFn: saveData
+        });
+      }
+    } catch (e) {
+      console.warn("[REMINDER 24H AUTO-CHECK WARN]", e);
+    } finally {
+      isReminderScanRunning = false;
+    }
+  }, 1e4);
+  if (initTimeout && typeof initTimeout.unref === "function") initTimeout.unref();
+  reminderSchedulerTimer = setInterval(async () => {
+    try {
+      if (db && !isReminderScanRunning) {
+        isReminderScanRunning = true;
+        await process24hReminders(db, {
+          sendEmailFn: sendEmailNotification,
+          logShadowEventFn: logShadowEvent,
+          saveDataFn: saveData
+        });
+      }
+    } catch (e) {
+      console.warn("[REMINDER 24H PERIODIC WARN]", e);
+    } finally {
+      isReminderScanRunning = false;
+    }
+  }, 15 * 60 * 1e3);
+  if (reminderSchedulerTimer && typeof reminderSchedulerTimer.unref === "function") {
+    reminderSchedulerTimer.unref();
+  }
+}
 function isBookingIdCancelled(id, cancelledList) {
   if (!id || !cancelledList || !Array.isArray(cancelledList) || cancelledList.length === 0) return false;
   const raw = String(id).trim();
@@ -43625,6 +43732,7 @@ async function handleLocalApi(req, res, next) {
   if (!db) {
     db = loadData();
   }
+  ensureReminderBackgroundScheduler();
   await ensureLatestDataFromDrive();
   const host = req.headers?.host || "localhost:5173";
   const url = new URL(req.url ?? "/", `http://${host}`);
@@ -45671,6 +45779,54 @@ CALENDARIO E PRENOTAZIONI:
         crediti_attuali: walletOwner ? walletOwner.crediti : atleta?.crediti,
         messaggio_whatsapp: messaggioWhatsApp,
         whatsapp_url: whatsappUrl
+      })
+    );
+  }
+  if (pathname === "/app-api/promemoria-24h/check" && (method === "GET" || method === "POST")) {
+    const isDryRun = url.searchParams.get("dryRun") === "true" || parsedBody?.dryRun === true;
+    const refDateParam = url.searchParams.get("date") || parsedBody?.date;
+    const scanDate = refDateParam ? new Date(refDateParam) : /* @__PURE__ */ new Date();
+    const report = await process24hReminders(db, {
+      dryRun: isDryRun,
+      now: scanDate,
+      sendEmailFn: sendEmailNotification,
+      logShadowEventFn: logShadowEvent,
+      saveDataFn: saveData
+    });
+    return res.end(
+      JSON.stringify({
+        ok: true,
+        dryRun: isDryRun,
+        timestamp: report.timestamp,
+        totale_prenotazioni: report.totalePrenotazioni,
+        candidati_trovati: report.candidatiTrovati,
+        inviati_con_successo: report.inviatiConSuccesso,
+        saltati_gia_inviati: report.saltatiGiaInviati,
+        dettagli: report.dettagli
+      })
+    );
+  }
+  if (pathname === "/app-api/promemoria-24h/status" && method === "GET") {
+    const bookings = db.prenotazioni_slot || [];
+    const inviati = bookings.filter((b) => b.reminder_24h_sent);
+    const storicNotifiche = (db.notifiche_promemoria || []).slice(0, 50);
+    return res.end(
+      JSON.stringify({
+        ok: true,
+        totale_prenotazioni: bookings.length,
+        promemoria_inviati_totali: inviati.length,
+        ultimi_promemoria: inviati.slice(-10).reverse().map((b) => ({
+          id: b.id,
+          nome_cliente: b.nome_cliente,
+          email_cliente: b.email_cliente,
+          data: b.data,
+          orario: b.orario,
+          reminder_24h_sent_at: b.reminder_24h_sent_at,
+          reminder_24h_deadline: b.reminder_24h_deadline,
+          reminder_24h_channel: b.reminder_24h_channel,
+          whatsapp_url: b.reminder_24h_whatsapp_url
+        })),
+        storico_notifiche: storicNotifiche
       })
     );
   }
