@@ -127,7 +127,7 @@ export interface AudioNoteRecord {
   coach_audio_url?: string | null;
   coach_audio_base64?: string | null;
   coach_audio_durata_sec?: number | null;
-  stato?: "nuovo" | "ascoltato" | "applicato" | "archiviato" | "cestino";
+  stato?: "nuovo" | "ascoltato" | "applicato" | "archiviato" | "cestino" | "collegato_bug";
   data_creazione?: string;
 }
 
@@ -135,6 +135,7 @@ export interface AppSegnalazioneRecord {
   id?: number;
   utente_id?: string | null;
   email_cliente?: string | null;
+  nome_cliente?: string | null;
   anonimo?: boolean;
   tipo: "consiglio" | "bug" | "altro";
   titolo: string;

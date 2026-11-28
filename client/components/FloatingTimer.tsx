@@ -13,6 +13,7 @@ import {
   Pause,
   RotateCcw,
   Minimize2,
+  Maximize2,
   ChevronDown,
   ChevronUp,
   GripHorizontal,
@@ -494,23 +495,39 @@ export function TimerProvider({ children }: { children: React.ReactNode }) {
 // ==============================================================================
 export function HeaderActiveTimerBanner() {
   const { state, handleMinimize } = useTimer();
-  const { mode, running, minimized, countdownLeft, phaseLeft, steps, currentStepIndex } = state;
+  const { mode, running, minimized, countdownLeft, countdownTotal, phaseLeft, steps, currentStepIndex } = state;
 
   if (!minimized) return null;
 
-  const activeStep = steps[currentStepIndex] || steps[0] || DEFAULT_STEPS[0];
+  const stepsSafe = Array.isArray(steps) && steps.length > 0 ? steps : DEFAULT_STEPS;
+  const safeIdx =
+    typeof currentStepIndex === "number" && currentStepIndex >= 0 && currentStepIndex < stepsSafe.length
+      ? currentStepIndex
+      : 0;
+  const activeStep = stepsSafe[safeIdx] || DEFAULT_STEPS[0];
   const phaseColor = activeStep.tipo === "work" ? "#38bdf8" : "#10b981";
-  const timeDisplay = mode === "countdown" ? fmt(countdownLeft) : fmt(phaseLeft);
-  const isWarning = mode === "countdown" && countdownLeft <= 5;
+
+  const phaseLeftSafe =
+    typeof phaseLeft === "number" && !isNaN(phaseLeft) ? phaseLeft : activeStep.durataSecs;
+  const countdownLeftSafe =
+    typeof countdownLeft === "number" && !isNaN(countdownLeft) ? countdownLeft : (countdownTotal || 60);
+
+  const timeDisplay = mode === "countdown" ? fmt(countdownLeftSafe) : fmt(phaseLeftSafe);
+  const isWarning = mode === "countdown" && countdownLeftSafe <= 5;
   const digitsColor = isWarning ? "#ea580c" : mode === "countdown" ? "#e3ff00" : phaseColor;
 
-  const badgeText = mode === "countdown" ? "COUNTDOWN" : activeStep.tipo === "work" ? "🔥 LAVORO" : "⏸️ RECUPERO";
+  const badgeText =
+    mode === "countdown"
+      ? "COUNTDOWN"
+      : activeStep.tipo === "work"
+      ? "🔥 LAVORO"
+      : "⏸️ RECUPERO";
   const subText =
     mode === "countdown"
       ? running
         ? "IN CORSO"
         : "IN PAUSA"
-      : `ROUND ${state.currentRound}/${state.rounds}`;
+      : `ROUND ${state.currentRound || 1}/${state.rounds || 4}`;
 
   return (
     <button
